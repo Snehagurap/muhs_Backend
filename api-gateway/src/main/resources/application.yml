@@ -1,0 +1,19 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  config:
+    import: "optional:configserver:http://localhost:8888"
+  profiles:
+    active:
+      - dev
+#  cloud:
+#      routes:
+#    gateway:
+#        - id: user-management
+#          predicates:
+#          uri: lb://user-management
+#            - Path=/usm/**
+

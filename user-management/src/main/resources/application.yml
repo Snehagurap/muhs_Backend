@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: user-management
+  config:
+    import: "optional:configserver:"
+  profiles:
+    active:
+      - dev
+
+server:
+  port: 8003
+
