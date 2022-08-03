@@ -1,18 +1,24 @@
 package in.cdac.university.authserver.entity;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import javax.persistence.*;
 import java.io.Serializable;
 
-@Embeddable
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UmmtUserMstId implements Serializable {
 
-    @Column(name = "gnum_userid", unique = true, nullable = false, precision = 8)
-    private Integer gnumUserId;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ummt_user_mst")
+    @SequenceGenerator(name = "ummt_user_mst", sequenceName = "seq_ummt_user_mst", allocationSize = 1)
+    @Column(name = "gnum_userid", nullable = false)
+    private Long gnumUserId;
 
-    @Column(name = "gstr_user_full_name", nullable = false, length = 300)
-    private String gstrUserFullName;
+    @Column(name = "gnum_isvalid", nullable = false, insertable = false, columnDefinition = "numeric default 1")
+    private Integer gnumIsvalid;
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<UmmtUserMst, UmmtUserMstId> {
 
-    @Query("select a from UmmtUserMst a where gnumIsvalid = ?1 and gstrUsername = ?2")
-    UmmtUserMst findByUsername(Integer gnumIsvalid, String gstrUsername);
+    @Query("select a from UmmtUserMst a where a.gstrUsername = ?1 and a.id.gnumIsvalid = ?2")
+    UmmtUserMst findUser(String gstrUsername, Integer gnumIsvalid);
+
 }

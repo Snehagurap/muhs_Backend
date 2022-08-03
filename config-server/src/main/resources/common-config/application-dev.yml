@@ -13,4 +13,16 @@ config:
 
 jwt:
   secret: BvPHGM8C0ia4uOuxxqPD5DTbWC9F9TWvPStp3pb7ARo0oK2mJ3pd3YG4lxA9i8bj6OTbadwezxgeEByY
-  expirationTime: 1500
+  expirationTime: 3600
+
+spring:
+  datasource:
+    url: jdbc:postgresql://devmuhsnashik.dcservices.in:5432/muhs_nashik
+    username: muhsnashik
+    password: MuHs123NaShIk
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      ddl-auto: update

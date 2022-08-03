@@ -1,6 +1,5 @@
 package in.cdac.university.apigateway.config;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import in.cdac.university.apigateway.response.ResponseHandler;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Objects;
 
@@ -45,6 +43,7 @@ public class AuthenticationFilter implements GatewayFilter {
 
             final String token = this.getAuthHeader(request).substring(7);
             log.info("Token: " + token);
+            jwtUtil.getApplicationType(token);
 
             if (jwtUtil.isInvalid(token)) {
                 log.info("Authorization header is invalid");

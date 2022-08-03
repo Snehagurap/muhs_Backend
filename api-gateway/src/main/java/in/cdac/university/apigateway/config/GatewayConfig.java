@@ -16,7 +16,7 @@ public class GatewayConfig {
     public RouteLocator routes(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route("usm", r -> r.path("/usm/**")
-                                        .filters(f -> f.filter(authenticationFilter))
+                                        //.filters(f -> f.filter(authenticationFilter))
                                         .uri("lb://user-management"))
 
                 .build();

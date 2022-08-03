@@ -40,6 +40,19 @@ public class JwtUtil {
         return this.isTokenExpired(token);
     }
 
+    public int getApplicationType(String token) {
+        try {
+            System.out.println("Application Type: " + this.getAllClaimsFromToken(token)
+                    .get("applicationType", Integer.class));
+            return 1;
+        } catch (ExpiredJwtException e) {
+            log.info("Token expired");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 1;
+    }
+
     private boolean isTokenExpired(String token) {
         try {
             return this.getAllClaimsFromToken(token)

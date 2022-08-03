@@ -10,16 +10,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api")
 @Slf4j
+@CrossOrigin(origins = "*")
 public class LoginController {
 
     @Value("${config.oauth2.url}")
@@ -35,14 +35,14 @@ public class LoginController {
     private RestTemplate restTemplate;
 
     @PostMapping(value = "/login")
-    public ResponseEntity<?> login(@RequestBody UserDetail userDetail) {
+    public ResponseEntity<?> login(@Valid @RequestBody UserDetail userDetail) {
         final String url = oauthUrl + "/oauth/token";
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth(oauthClientId, oauthClientSecret);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("username", userDetail.getUsername());
+        body.add("username", userDetail.getApplicationType() + "##" + userDetail.getUsername());
         body.add("password", userDetail.getPassword());
         body.add("grant_type", "password");
 
@@ -57,6 +57,7 @@ public class LoginController {
                 userDetailResponse.setUserId(tokenResponse.getBody().getUserId());
                 userDetailResponse.setUserType(tokenResponse.getBody().getUserType());
                 userDetailResponse.setUniversityId(tokenResponse.getBody().getUniversityId());
+                userDetailResponse.setApplicationType(userDetail.getApplicationType());
             }
 
             return ResponseHandler.generateResponse(userDetailResponse);

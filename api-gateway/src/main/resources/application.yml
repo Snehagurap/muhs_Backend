@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8180
 
 spring:
   application:
@@ -9,6 +9,15 @@ spring:
   profiles:
     active:
       - dev
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
 #  cloud:
 #      routes:
 #    gateway:
