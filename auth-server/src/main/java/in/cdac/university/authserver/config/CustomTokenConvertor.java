@@ -27,6 +27,8 @@ public class CustomTokenConvertor extends JwtAccessTokenConverter implements Jwt
             details.setUserType((Integer) map.get("userType"));
         if (map.containsKey("universityId"))
             details.setUniversityId((Integer) map.get("universityId"));
+        if (map.containsKey("applicationType"))
+            details.setApplicationType((Integer) map.get("applicationType"));
         authentication.setDetails(details);
         return authentication;
     }
@@ -41,6 +43,8 @@ public class CustomTokenConvertor extends JwtAccessTokenConverter implements Jwt
             info.put("userType", customUser.getUserType());
         if (customUser.getUniversityId() != null)
             info.put("universityId", customUser.getUniversityId());
+        if (customUser.getApplicationType() != null)
+            info.put("applicationType", customUser.getApplicationType());
 
         DefaultOAuth2AccessToken customAccessToken = new DefaultOAuth2AccessToken(accessToken);
         customAccessToken.setAdditionalInformation(info);

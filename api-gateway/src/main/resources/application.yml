@@ -18,6 +18,8 @@ spring:
             allowedMethods:
               - GET
               - POST
+            allowedHeaders:
+              - Authorization
 #  cloud:
 #      routes:
 #    gateway:

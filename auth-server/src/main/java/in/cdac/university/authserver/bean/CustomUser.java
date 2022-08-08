@@ -20,4 +20,5 @@ public class CustomUser implements UserDetails {
     private boolean accountNonLocked = true;
     private boolean credentialsNonExpired = true;
     private boolean enabled = true;
+    private Integer applicationType;
 }

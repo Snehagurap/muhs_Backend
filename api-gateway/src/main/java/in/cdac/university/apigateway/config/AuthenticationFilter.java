@@ -43,11 +43,11 @@ public class AuthenticationFilter implements GatewayFilter {
 
             final String token = this.getAuthHeader(request).substring(7);
             log.info("Token: " + token);
-            jwtUtil.getApplicationType(token);
+            log.info("Application Type: " + jwtUtil.getApplicationType(token));
 
             if (jwtUtil.isInvalid(token)) {
-                log.info("Authorization header is invalid");
-                return this.onError(exchange, "Authorization header is invalid", HttpStatus.UNAUTHORIZED);
+                log.info("Token expired");
+                return this.onError(exchange, "Token expired", HttpStatus.UNAUTHORIZED);
             }
             this.populateRequestWithHeaders(exchange, token);
         }
@@ -56,11 +56,10 @@ public class AuthenticationFilter implements GatewayFilter {
     }
 
     private void populateRequestWithHeaders(ServerWebExchange exchange, String token) {
-        Claims claims = jwtUtil.getAllClaimsFromToken(token);
         exchange.getRequest()
                 .mutate()
-                .header("id", String.valueOf(claims.get("id")))
-                .header("role", String.valueOf(claims.get("role")))
+                .header("userId", Integer.toString(jwtUtil.getUserId(token)))
+                .header("Authorization", "Bearer " + token)
                 .build();
     }
 

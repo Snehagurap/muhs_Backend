@@ -32,7 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         String applicationType = username.split("##")[0];
         username = username.split("##")[1];
 
-        return switch (applicationType) {
+        CustomUser user = switch (applicationType) {
             case "1" ->
                 // Application user
                     findApplicationUser(username);
@@ -44,6 +44,9 @@ public class CustomUserDetailsService implements UserDetailsService {
                     findUserManagementSuperUser(username);
             default -> throw new UsernameNotFoundException("User not found");
         };
+        if (user != null)
+            user.setApplicationType(Integer.valueOf(applicationType));
+        return user;
     }
 
     private CustomUser findUserManagementSuperUser(String username) {

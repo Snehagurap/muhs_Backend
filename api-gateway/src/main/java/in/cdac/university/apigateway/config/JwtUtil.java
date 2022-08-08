@@ -2,6 +2,7 @@ package in.cdac.university.apigateway.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Date;
+import java.util.function.Function;
 
 @Component
 @Slf4j
@@ -27,7 +29,6 @@ public class JwtUtil {
     }
 
     public Claims getAllClaimsFromToken(String token) {
-        log.info("Getting claims from Token: " + token);
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -42,15 +43,24 @@ public class JwtUtil {
 
     public int getApplicationType(String token) {
         try {
-            System.out.println("Application Type: " + this.getAllClaimsFromToken(token)
-                    .get("applicationType", Integer.class));
-            return 1;
+            return Integer.parseInt(this.getAllClaimsFromToken(token).get("applicationType").toString());
         } catch (ExpiredJwtException e) {
             log.info("Token expired");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return 1;
+        return -1;
+    }
+
+    public int getUserId(String token) {
+        try {
+            return Integer.parseInt(this.getAllClaimsFromToken(token).get("userId").toString());
+        } catch (ExpiredJwtException e) {
+            log.info("Token expired");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     private boolean isTokenExpired(String token) {
@@ -65,5 +75,4 @@ public class JwtUtil {
         }
         return true;
     }
-
 }

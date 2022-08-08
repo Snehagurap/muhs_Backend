@@ -7,10 +7,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserCategoryBean extends GlobalBean {
+public class ModuleBean extends GlobalBean {
     @ComboKey
-    private Integer gnumUserCatId;
+    private Integer gnumModuleId;
     @ComboValue
-    private String gstrUserCatName;
-    private Integer gnumIsvalid;
+    private String gstrModuleName;
+    private Integer gblIsvalid;
+    private Integer gnumModuleType;
+    private String gstrModuleSchema;
 }
