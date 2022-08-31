@@ -1,12 +1,11 @@
 package in.cdac.university.usm.util;
 
 import in.cdac.university.usm.bean.ComboBean;
+import in.cdac.university.usm.util.annotations.ComboKey;
+import in.cdac.university.usm.util.annotations.ComboValue;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class ComboUtility {
 
@@ -16,12 +15,13 @@ public class ComboUtility {
         List<ComboBean> comboData = new ArrayList<>();
         for (Object obj : dataList) {
             Class<?> clazz = obj.getClass();
-            List<String> key = new ArrayList<>();
+            Map<Integer, String> key = new TreeMap<>();
             List<String> value = new ArrayList<>();
             for (Field field: clazz.getDeclaredFields()) {
                 field.setAccessible(true);
                 if (field.isAnnotationPresent(ComboKey.class)) {
-                    key.add(String.valueOf(field.get(obj)));
+                    ComboKey comboKey = field.getAnnotation(ComboKey.class);
+                    key.put(comboKey.index(), String.valueOf(field.get(obj)));
                 }
                 if (field.isAnnotationPresent(ComboValue.class)) {
                     value.add(String.valueOf(field.get(obj)));
@@ -30,7 +30,7 @@ public class ComboUtility {
             if (key.isEmpty() || value.isEmpty()) {
                 throw new IllegalArgumentException("Objects in the list does not have @ComboKey or @ComboValue annotations");
             }
-            String comboKey = Base64.getEncoder().encodeToString(String.join("^", key).getBytes());
+            String comboKey = String.join("^", key.values());
             String comboValue = String.join(", ", value);
             comboData.add(new ComboBean(comboKey, comboValue));
         }

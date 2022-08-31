@@ -1,8 +1,8 @@
 package in.cdac.university.apigateway.config;
 
+import in.cdac.university.apigateway.response.UserDetail;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Date;
-import java.util.function.Function;
+import java.util.Optional;
 
 @Component
 @Slf4j
@@ -41,26 +41,44 @@ public class JwtUtil {
         return this.isTokenExpired(token);
     }
 
-    public int getApplicationType(String token) {
+    public UserDetail getUserDetail(String token) {
+        UserDetail userDetail = new UserDetail();
         try {
-            return Integer.parseInt(this.getAllClaimsFromToken(token).get("applicationType").toString());
+            Claims allClaimsFromToken = this.getAllClaimsFromToken(token);
+            int universityId = Optional.ofNullable(allClaimsFromToken.get("universityId"))
+                                        .map(value -> Integer.valueOf(value.toString()))
+                                        .orElse(-1);
+            userDetail.setUniversityId(universityId);
+
+            int userId = Optional.ofNullable(allClaimsFromToken.get("userId"))
+                                .map(value -> Integer.valueOf(value.toString()))
+                                .orElse(-1);
+            userDetail.setUserId(userId);
+
+            int applicationType = Optional.ofNullable(allClaimsFromToken.get("applicationType"))
+                                        .map(value -> Integer.valueOf(value.toString()))
+                                        .orElse(-1);
+            userDetail.setApplicationType(applicationType);
         } catch (ExpiredJwtException e) {
             log.info("Token expired");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return -1;
+        return userDetail;
     }
 
-    public int getUserId(String token) {
+    public long getTTLForToken(String token) {
+        long diff = 0;
         try {
-            return Integer.parseInt(this.getAllClaimsFromToken(token).get("userId").toString());
-        } catch (ExpiredJwtException e) {
-            log.info("Token expired");
+            Date expirationDate = this.getAllClaimsFromToken(token)
+                                        .getExpiration();
+            diff = expirationDate.getTime() - System.currentTimeMillis();
+            if (diff < 0)
+                diff = 0;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return 0;
+        return diff;
     }
 
     private boolean isTokenExpired(String token) {

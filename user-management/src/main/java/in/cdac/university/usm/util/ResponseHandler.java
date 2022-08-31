@@ -24,4 +24,8 @@ public class ResponseHandler {
     public static ResponseEntity<Object> generateErrorResponse(String message) {
         return generateResponse(0, message, null);
     }
+
+    public static ResponseEntity<Object> generateResponse(ServiceResponse serviceResponse) {
+        return generateResponse(serviceResponse.getStatus(), serviceResponse.getMessage(), serviceResponse.getResponeObject());
+    }
 }

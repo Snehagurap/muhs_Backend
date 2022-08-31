@@ -2,7 +2,9 @@ package in.cdac.university.usm.bean;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import in.cdac.university.usm.util.IdProperty;
+import in.cdac.university.usm.util.ListPageUtility;
+import in.cdac.university.usm.util.annotations.IdProperty;
+import in.cdac.university.usm.util.annotations.ListColumnBean;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,10 +12,7 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
@@ -22,6 +21,7 @@ import java.util.stream.Collectors;
 public class GlobalBean implements Serializable {
 
 	private String id;
+	private String[] idsToDelete;
 	private String strMessage;
 
 	// -1 error message, 0 normal message, 1 warning message
@@ -98,5 +98,9 @@ public class GlobalBean implements Serializable {
 		if (Double.class == clazz)
 			return Double.parseDouble(value);
 		return value;
+	}
+
+	public List<ListColumnBean> generateListPageColumns() throws IllegalAccessException {
+		return ListPageUtility.getColumns(this.getClass());
 	}
 }

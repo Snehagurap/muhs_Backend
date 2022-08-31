@@ -23,7 +23,7 @@ public class UmstUserCategoryMst implements java.io.Serializable {
 	@Column(name = "gnum_user_cat_id", unique = true, nullable = false)
 	private Integer gnumUserCatId;
 
-	@Column(name = "gstr_user_cat_name", nullable = false, length = 200)
+	@Column(name = "gstr_user_cat_name", nullable = false, length = 200, unique = true)
 	private String gstrUserCatName;
 
 	@Temporal(TemporalType.TIMESTAMP)

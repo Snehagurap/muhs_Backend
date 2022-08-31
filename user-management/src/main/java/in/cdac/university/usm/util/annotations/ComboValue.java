@@ -1,4 +1,4 @@
-package in.cdac.university.usm.util;
+package in.cdac.university.usm.util.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

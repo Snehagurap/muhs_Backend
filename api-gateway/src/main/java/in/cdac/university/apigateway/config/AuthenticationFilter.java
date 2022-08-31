@@ -1,7 +1,8 @@
 package in.cdac.university.apigateway.config;
 
+import in.cdac.university.apigateway.controller.LoginController;
 import in.cdac.university.apigateway.response.ResponseHandler;
-import io.jsonwebtoken.Claims;
+import in.cdac.university.apigateway.response.UserDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,20 +36,24 @@ public class AuthenticationFilter implements GatewayFilter {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         if (routerValidator.isSecured.test(request)) {
-            log.info("Authentication Filter: checking for valid token");
             if (this.isAuthMissing(request)) {
                 log.info("Authorization header is missing in the request.");
-                return this.onError(exchange, "Authorization header is missing in the request", HttpStatus.UNAUTHORIZED);
+                return this.onError(exchange, "Authorization header is missing in the request");
             }
 
             final String token = this.getAuthHeader(request).substring(7);
-            log.info("Token: " + token);
-            log.info("Application Type: " + jwtUtil.getApplicationType(token));
 
             if (jwtUtil.isInvalid(token)) {
                 log.info("Token expired");
-                return this.onError(exchange, "Token expired", HttpStatus.UNAUTHORIZED);
+                return this.onError(exchange, "Token expired");
             }
+
+            // Check for blacklisted tokens
+            if (LoginController.blackListedTokens.containsKey(token)) {
+                log.info("User already logged out");
+                return this.onError(exchange, "User already logged out");
+            }
+
             this.populateRequestWithHeaders(exchange, token);
         }
 
@@ -56,9 +61,13 @@ public class AuthenticationFilter implements GatewayFilter {
     }
 
     private void populateRequestWithHeaders(ServerWebExchange exchange, String token) {
+        UserDetail userDetail = jwtUtil.getUserDetail(token);
+        JSONObject userDetailObject = new JSONObject(userDetail);
+
         exchange.getRequest()
                 .mutate()
-                .header("userId", Integer.toString(jwtUtil.getUserId(token)))
+                .header("userId", Integer.toString(userDetail.getUserId()))
+                .header("userDetail", userDetailObject.toString())
                 .header("Authorization", "Bearer " + token)
                 .build();
     }
@@ -68,18 +77,18 @@ public class AuthenticationFilter implements GatewayFilter {
     }
 
     @SuppressWarnings("unchecked")
-    private Mono<Void> onError(ServerWebExchange exchange, String error, HttpStatus httpStatus) {
+    private Mono<Void> onError(ServerWebExchange exchange, String error) {
         log.info("Error in validating Token: " + error);
         ServerHttpResponse response = exchange.getResponse();
-        ResponseEntity<Object> responseEntity = ResponseHandler.generateResponse(httpStatus, error);
+        ResponseEntity<Object> responseEntity = ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, error);
         error = new JSONObject((Map<String, Object>) Objects.requireNonNull(responseEntity.getBody())).toString();
         DataBuffer responseBody = response.bufferFactory().wrap(error.getBytes());
-        response.setStatusCode(httpStatus);
+        response.setStatusCode(HttpStatus.UNAUTHORIZED);
         return response.writeWith(Mono.just(responseBody));
     }
 
     private boolean isAuthMissing(ServerHttpRequest request) {
-        log.info("Request Headers: " + request.getHeaders().toString());
+        log.info("Request Headers: " + request.getHeaders());
         return !request.getHeaders().containsKey("Authorization");
     }
 

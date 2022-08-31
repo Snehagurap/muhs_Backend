@@ -1,11 +1,11 @@
 package in.cdac.university.authserver.config;
 
+import in.cdac.university.authserver.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.jwt.crypto.sign.RsaSigner;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
@@ -34,8 +34,11 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Value("${config.oauth2.clientSecret}")
     private String clientSecret;
 
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
+
     @Override
-    public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+    public void configure(AuthorizationServerSecurityConfigurer security) {
         security.tokenKeyAccess("permitAll()")
                 .checkTokenAccess("isAuthenticated()");
     }
@@ -47,24 +50,26 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .secret(passwordEncoder.encode(clientSecret))
                 .scopes("read", "write")
                 .authorizedGrantTypes("password", "refresh_token")
-                .accessTokenValiditySeconds(expirationTime);
+                .accessTokenValiditySeconds(expirationTime)
+                .refreshTokenValiditySeconds(86400);
     }
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints.authenticationManager(authenticationManager)
                 .tokenStore(tokenStore())
-                .accessTokenConverter(tokenEnhancer());
+                .accessTokenConverter(tokenEnhancer())
+                .userDetailsService(userDetailsService);
     }
 
-    private JwtTokenStore tokenStore() {
+    private JwtTokenStore tokenStore() throws Exception {
         return new JwtTokenStore(tokenEnhancer());
     }
 
-    private JwtAccessTokenConverter tokenEnhancer() {
+    private JwtAccessTokenConverter tokenEnhancer() throws Exception {
         JwtAccessTokenConverter converter = new CustomTokenConvertor();
         converter.setSigningKey(signingKey);
-        converter.setVerifierKey(signingKey);
+        converter.afterPropertiesSet();
         return converter;
     }
 

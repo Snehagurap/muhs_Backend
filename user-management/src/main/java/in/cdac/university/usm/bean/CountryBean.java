@@ -1,7 +1,7 @@
 package in.cdac.university.usm.bean;
 
-import in.cdac.university.usm.util.ComboKey;
-import in.cdac.university.usm.util.ComboValue;
+import in.cdac.university.usm.util.annotations.ComboKey;
+import in.cdac.university.usm.util.annotations.ComboValue;
 import lombok.Getter;
 import lombok.Setter;
 

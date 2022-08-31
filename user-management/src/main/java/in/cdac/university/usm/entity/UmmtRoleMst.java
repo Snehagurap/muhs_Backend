@@ -32,10 +32,10 @@ public class UmmtRoleMst implements java.io.Serializable {
 	@Column(name="gdt_entry_date", nullable = false, insertable = false, columnDefinition = "timestamp without time zone default current_timestamp")
 	private Date gdtEntrydate;
 
-	@Column(name="gbl_isvalid", nullable = false, insertable = false, columnDefinition = "numeric default 1")
+	@Column(name="gbl_isvalid", nullable = false, columnDefinition = "numeric default 1")
 	private Integer gblIsvalid;
 
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "gnum_module_id")
 	private UmstModuleMst module;
 }

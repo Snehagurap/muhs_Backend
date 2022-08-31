@@ -20,6 +20,7 @@ public class GlobalExceptionHandlerAdvice {
 
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<Object> handleException(Exception e) {
+        e.printStackTrace();
         log.info("Handling Exception: " + e.getClass().getCanonicalName());
         ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
         return ResponseHandler.generateResponse(HttpStatus.EXPECTATION_FAILED, "Unable to process request at this time. Please try again", errorResponse);
@@ -27,13 +28,13 @@ public class GlobalExceptionHandlerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        e.printStackTrace();
         BindingResult result = e.getBindingResult();
         Map<String, Object> errorMap = new HashMap<>();
         List<FieldError> fieldErrors = result.getFieldErrors();
         for (FieldError fieldError : fieldErrors) {
             errorMap.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
-        ErrorResponse errorResponse = new ErrorResponse("Required parameters are missing");
         return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, "Required parameters are missing", errorMap);
     }
 }

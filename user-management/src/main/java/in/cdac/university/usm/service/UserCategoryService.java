@@ -17,4 +17,5 @@ public class UserCategoryService {
     public List<UserCategoryBean> getAllUserCategories() {
         return BeanUtils.copyListProperties(userCategoryRepository.findAll(), UserCategoryBean.class);
     }
+
 }

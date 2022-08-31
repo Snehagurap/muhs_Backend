@@ -17,8 +17,7 @@ public class UserCategoryController {
     private UserCategoryService userCategoryService;
 
     @GetMapping("list")
-    public @ResponseBody ResponseEntity<?> getList(@RequestHeader String userId) throws IllegalAccessException {
-        log.info("user id " + userId);
+    public @ResponseBody ResponseEntity<?> getList() throws IllegalAccessException {
         return ResponseHandler.generateOkResponse(
                 ComboUtility.generateComboData(userCategoryService.getAllUserCategories())
         );

@@ -29,8 +29,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public CustomUser loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("Checking the user: " + username);
-        String applicationType = username.split("##")[0];
-        username = username.split("##")[1];
+        String applicationType = "3";
+        if (username.contains("##")) {
+            applicationType = username.split("##")[0];
+            username = username.split("##")[1];
+        }
 
         CustomUser user = switch (applicationType) {
             case "1" ->
@@ -74,12 +77,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         UmmtUserMst user = userRepository.findUser(username, 1);
         if (user != null) {
             CustomUser customUser = new CustomUser();
-            customUser.setUserId(user.getId().getGnumUserId().toString());
-            customUser.setUsername(user.getGstrUsername());
+            customUser.setUserId(user.getGnumUserid().toString());
+            customUser.setUsername(user.getGstrUserName());
             customUser.setPassword(user.getGstrPassword());
             customUser.setUserType(user.getGnumUserTypeId());
             customUser.setUserFullName(user.getGstrUserFullName());
-            customUser.setUniversityId(user.getGnumUniversityId());
+            customUser.setUniversityId(user.getUniversityMst().getUnumUnivId());
             SimpleGrantedAuthority authority = new SimpleGrantedAuthority(user.getGnumRoleId().toString());
             customUser.setAuthorities(List.of(authority));
             return customUser;

@@ -11,6 +11,7 @@ public class UserDetail {
     private String username;
     private String password;
     private String token;
+    private String refresh_token;
     private Integer userId;
     private Integer userType;
     private Integer universityId;

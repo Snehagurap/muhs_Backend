@@ -1,15 +1,65 @@
 package in.cdac.university.usm.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import in.cdac.university.usm.bean.UserBean;
+import in.cdac.university.usm.service.UserService;
+import in.cdac.university.usm.util.ListPageUtility;
+import in.cdac.university.usm.util.RequestUtility;
+import in.cdac.university.usm.util.ResponseHandler;
+import in.cdac.university.usm.util.ServiceResponse;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.Date;
 
 @RestController
-@RequestMapping("/usm")
+@RequestMapping("/usm/user")
 public class UserController {
 
-    @GetMapping("status")
-    public String getStatus() {
-        return "User Management Service is running";
+    @Autowired
+    private UserService userService;
+
+    @GetMapping("listPage/{status}/{universityId}")
+    public @ResponseBody ResponseEntity<?> getListPage(@PathVariable("status") Integer status, @PathVariable("universityId") Integer universityId)
+            throws IllegalAccessException {
+        return ResponseHandler.generateOkResponse(
+                ListPageUtility.generateListPageData(userService.getAllUsersByUniversityId(universityId, status)));
+    }
+
+    @GetMapping("{userId}")
+    public @ResponseBody ResponseEntity<?> get(@PathVariable("userId") Integer userId) {
+        return ResponseHandler.generateResponse(userService.get(userId));
+    }
+
+    @PostMapping("save")
+    public @ResponseBody ResponseEntity<?> save(@Valid @RequestBody UserBean userBean) throws Exception {
+        userBean.setGnumEntryBy(RequestUtility.getUserId());
+        userBean.setGdtEntrydate(new Date());
+        userBean.setGnumIslock(0);
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        userBean.setGstrPassword(encoder.encode(userBean.getGstrPassword()));
+        return ResponseHandler.generateResponse(userService.save(userBean));
+    }
+
+    @PutMapping("update")
+    public @ResponseBody ResponseEntity<?> update(@Valid @RequestBody UserBean userBean) throws Exception {
+        userBean.setGnumLstmodBy(RequestUtility.getUserId());
+        userBean.setGdtLstmodDate(new Date());
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        userBean.setGstrPassword(encoder.encode(userBean.getGstrPassword()));
+        return ResponseHandler.generateResponse(userService.update(userBean));
+    }
+
+    @DeleteMapping("delete")
+    @ApiOperation(value = "Delete the users based on the ids passed.", response = ServiceResponse.class)
+    public @ResponseBody ResponseEntity<?> delete(@RequestBody String[] idsToDelete) throws Exception {
+        UserBean userBean = new UserBean();
+        userBean.setIdsToDelete(idsToDelete);
+        userBean.setGdtLstmodDate(new Date());
+        userBean.setGnumLstmodBy(RequestUtility.getUserId());
+        return ResponseHandler.generateResponse(userService.delete(userBean));
     }
 }
