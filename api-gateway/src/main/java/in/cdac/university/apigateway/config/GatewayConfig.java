@@ -16,9 +16,17 @@ public class GatewayConfig {
     public RouteLocator routes(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route("usm", r -> r.path("/usm/**")
-                                        .filters(f -> f.filter(authenticationFilter))
-                                        .uri("lb://user-management"))
-
+                        .filters(f -> f.filter(authenticationFilter))
+                        .uri("lb://user-management"))
+                .route("global", r -> r.path("/global/**")
+                        .filters(f-> f.filter(authenticationFilter))
+                        .uri("lb://global-service"))
+                .route("committee", r -> r.path("/committee/**")
+                        .filters(f-> f.filter(authenticationFilter))
+                        .uri("lb://committee"))
+                .route("planning-board", r -> r.path("/pb/**")
+                        .filters(f-> f.filter(authenticationFilter))
+                        .uri("lb://planning-board"))
                 .build();
     }
 }

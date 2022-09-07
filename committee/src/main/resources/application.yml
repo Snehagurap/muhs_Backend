@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: committee
+  config:
+    import: "optional:configserver:"
+  profiles:
+    active:
+      - dev
+
+server:
+  port: 8004

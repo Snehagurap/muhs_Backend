@@ -6,7 +6,7 @@ import lombok.Data;
 public class AccessTokenMapper {
     private String access_token;
     private String token_type;
-    private String expires_in;
+    private Integer expires_in;
     private String refresh_token;
     private String scope;
 

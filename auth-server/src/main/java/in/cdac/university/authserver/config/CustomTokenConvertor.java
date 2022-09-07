@@ -20,7 +20,6 @@ public class CustomTokenConvertor extends JwtAccessTokenConverter implements Jwt
     @Override
     public OAuth2Authentication extractAuthentication(Map<String, ?> map) {
         OAuth2Authentication authentication = super.extractAuthentication(map);
-        System.out.println(map);
         AccessTokenMapper details = new AccessTokenMapper();
         if (map.containsKey("userId"))
             details.setUserId(Integer.valueOf(map.get("userId").toString()));
@@ -46,11 +45,11 @@ public class CustomTokenConvertor extends JwtAccessTokenConverter implements Jwt
             info.put("universityId", customUser.getUniversityId());
         if (customUser.getApplicationType() != null)
             info.put("applicationType", customUser.getApplicationType());
-
         DefaultOAuth2AccessToken customAccessToken = new DefaultOAuth2AccessToken(accessToken);
         customAccessToken.setAdditionalInformation(info);
         // TODO
         // Log token details
+
         return super.enhance(customAccessToken, authentication);
     }
 }

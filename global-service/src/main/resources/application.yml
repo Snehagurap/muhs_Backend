@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: global-service
+  config:
+    import: "optional:configserver:"
+  profiles:
+    active:
+      - dev
+
+server:
+  port: 8004
+
+

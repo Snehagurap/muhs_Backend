@@ -1,12 +1,12 @@
 package in.cdac.university.usm.bean;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import in.cdac.university.usm.util.Constants;
 import in.cdac.university.usm.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.Range;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;
 import java.util.Date;
@@ -26,14 +26,14 @@ public class UserBean extends GlobalBean {
     @NotNull(message = "Status is mandatory")
     private Integer gnumIsvalid;
 
-    @JsonFormat(pattern = "dd-MMM-yyyy")
+    @DateTimeFormat(pattern = Constants.dateFormat)
     @NotNull(message = "Effective From Date is mandatory")
     @PastOrPresent(message = "Effective From date should be less than or equal to Current Date")
     private Date gdtEffectDate;
 
     private Date gdtEntrydate;
 
-    @JsonFormat(pattern = "dd-MMM-yyyy")
+    @DateTimeFormat(pattern = Constants.dateFormat)
     @ListColumn(order = 4, name = "Expiry Date")
     @FutureOrPresent(message = "Effective To date should be greater than or equal to Current Date")
     private Date gdtExpiryDate;

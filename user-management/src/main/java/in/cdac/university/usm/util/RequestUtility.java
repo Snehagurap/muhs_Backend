@@ -24,4 +24,12 @@ public class RequestUtility {
             throw new Exception ("Session not present");
         return Integer.valueOf(userId);
     }
+
+    public static Integer getApplicationType() throws Exception {
+        HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
+        String applicationType = request.getHeader("applicationType");
+        if (applicationType == null)
+            throw new Exception ("Session not present");
+        return Integer.valueOf(applicationType);
+    }
 }

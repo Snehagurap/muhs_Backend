@@ -1,4 +1,4 @@
-package bean;
+package in.cdac.university.apigateway.bean;
 
 import lombok.Data;
 

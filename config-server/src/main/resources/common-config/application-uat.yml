@@ -1,0 +1,28 @@
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://eureka-server:8002/eureka
+
+config:
+  oauth2:
+    clientId: client
+    clientSecret: secret
+    url: http://auth-server:8001
+
+jwt:
+  secret: BvPHGM8C0ia4uOuxxqPD5DTbWC9F9TWvPStp3pb7ARo0oK2mJ3pd3YG4lxA9i8bj6OTbadwezxgeEByY
+  expirationTime: 600
+
+spring:
+  datasource:
+    url: jdbc:postgresql://devmuhsnashik.dcservices.in:5432/muhs_nashik
+    username: muhsnashik
+    password: MuHs123NaShIk
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      ddl-auto: update

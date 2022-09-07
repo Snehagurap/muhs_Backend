@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface ModuleRepository extends JpaRepository<UmstModuleMst, Integer> {
 
-    List<UmstModuleMst> findAllByGblIsvalid(Integer gnumIsvalid);
+    List<UmstModuleMst> findAllByGblIsvalidOrderByGstrModuleName(Integer gnumIsvalid);
 }

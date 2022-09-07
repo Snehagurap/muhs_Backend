@@ -1,9 +1,11 @@
 package in.cdac.university.authserver.service;
 
 import in.cdac.university.authserver.bean.CustomUser;
+import in.cdac.university.authserver.entity.GmstUniversityMst;
 import in.cdac.university.authserver.entity.UmmtUserMst;
 import in.cdac.university.authserver.entity.UmstSystemUserMst;
 import in.cdac.university.authserver.repository.SystemUserRepository;
+import in.cdac.university.authserver.repository.UserManagementUserRepository;
 import in.cdac.university.authserver.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +13,14 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -26,16 +33,16 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private SystemUserRepository systemUserRepository;
 
+    @Autowired
+    private UserManagementUserRepository userManagementUserRepository;
+
     @Override
     public CustomUser loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("Checking the user: " + username);
-        String applicationType = "3";
-        if (username.contains("##")) {
-            applicationType = username.split("##")[0];
-            username = username.split("##")[1];
-        }
+        HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
+        String applicationType = request.getHeader("applicationType");
 
-        CustomUser user = switch (applicationType) {
+        return switch (applicationType) {
             case "1" ->
                 // Application user
                     findApplicationUser(username);
@@ -47,14 +54,12 @@ public class CustomUserDetailsService implements UserDetailsService {
                     findUserManagementSuperUser(username);
             default -> throw new UsernameNotFoundException("User not found");
         };
-        if (user != null)
-            user.setApplicationType(Integer.valueOf(applicationType));
-        return user;
     }
 
     private CustomUser findUserManagementSuperUser(String username) {
-        UmstSystemUserMst systemUser = systemUserRepository.findByGstrSysLoginIdAndGblIsvalid(username, 1);
-        if (systemUser != null) {
+        Optional<UmstSystemUserMst> systemUserOptional = systemUserRepository.findByGstrSysLoginIdAndGblIsvalid(username, 1);
+        if (systemUserOptional.isPresent()) {
+            UmstSystemUserMst systemUser = systemUserOptional.get();
             CustomUser customUser = new CustomUser();
             customUser.setUserId(systemUser.getGnumSysUserId().toString());
             customUser.setUsername(systemUser.getGstrSysLoginId());
@@ -70,12 +75,27 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     private CustomUser findUserManagementUser(String username) {
-        return null;
+        Optional<GmstUniversityMst> universityMstOptional = userManagementUserRepository.findByGstrUserNameAndUnumIsvalid(username, 1);
+        if (universityMstOptional.isPresent()) {
+            GmstUniversityMst universityMst = universityMstOptional.get();
+            CustomUser customUser = new CustomUser();
+            customUser.setUserId(universityMst.getUnumUnivId().toString());
+            customUser.setUsername(universityMst.getGstrUserName());
+            customUser.setPassword(universityMst.getGstrPassword());
+            customUser.setUserType(2);
+            customUser.setUserFullName(universityMst.getUstrUnivFname());
+            SimpleGrantedAuthority authority = new SimpleGrantedAuthority("User");
+            customUser.setAuthorities(List.of(authority));
+            return customUser;
+        } else {
+            throw new UsernameNotFoundException("User not found");
+        }
     }
 
     private CustomUser findApplicationUser(String username) {
-        UmmtUserMst user = userRepository.findUser(username, 1);
-        if (user != null) {
+        Optional<UmmtUserMst> userOptional = userRepository.findUser(username, 1);
+        if (userOptional.isPresent()) {
+            UmmtUserMst user = userOptional.get();
             CustomUser customUser = new CustomUser();
             customUser.setUserId(user.getGnumUserid().toString());
             customUser.setUsername(user.getGstrUserName());

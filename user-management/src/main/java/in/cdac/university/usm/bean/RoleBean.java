@@ -1,16 +1,16 @@
 package in.cdac.university.usm.bean;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import in.cdac.university.usm.util.Constants;
 import in.cdac.university.usm.util.annotations.ComboKey;
 import in.cdac.university.usm.util.annotations.ComboValue;
 import in.cdac.university.usm.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PastOrPresent;
 import java.util.Date;
 
 @Getter
@@ -31,9 +31,8 @@ public class RoleBean extends GlobalBean {
 
     private Integer gnumEntryBy;
 
-    @JsonFormat(pattern = "dd-MMM-yyyy")
+    @DateTimeFormat(pattern = Constants.dateFormat)
     @NotNull(message = "Effective Date is mandatory")
-    @PastOrPresent(message = "Effective Date should be less than or equal to current date.")
     private Date gdtEffectDate;
 
     @NotNull(message = "Status is mandatory")

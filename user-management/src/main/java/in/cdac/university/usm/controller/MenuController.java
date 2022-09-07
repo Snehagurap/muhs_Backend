@@ -39,12 +39,12 @@ public class MenuController {
     }
 
     @GetMapping("/intermediate/{level}/{moduleId}")
-    public @ResponseBody ResponseEntity<?> getIntermediateMenu(@PathVariable("level") Integer level, @PathVariable("moduleId") Integer moduleId) throws IllegalAccessException {
+    public @ResponseBody ResponseEntity<?> getIntermediateMenu(@PathVariable("level") Integer level, @PathVariable("moduleId") Integer moduleId) {
         MenuBean menuBean = new MenuBean();
         menuBean.setGnumMenuLevel(level);
         menuBean.setGnumModuleId(moduleId);
         return ResponseHandler.generateOkResponse(
-                ComboUtility.generateComboData(menuService.getIntermediateMenu(menuBean))
+                menuService.getIntermediateMenu(menuBean)
         );
     }
 

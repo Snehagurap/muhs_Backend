@@ -3,8 +3,11 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/api-gateway/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/auth-server/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/committee/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/config-server/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/eureka-server/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/global-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/planning-board/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/user-management/src/main/java" charset="UTF-8" />
   </component>
 </project>

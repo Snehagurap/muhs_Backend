@@ -3,7 +3,6 @@ package in.cdac.university.usm.exception;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import in.cdac.university.usm.util.ResponseHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.json.JsonParseException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @Slf4j

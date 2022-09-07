@@ -24,11 +24,6 @@ spring:
             allowedHeaders:
               - Authorization
               - content-type
-#  cloud:
-#      routes:
-#    gateway:
-#        - id: user-management
-#          predicates:
-#          uri: lb://user-management
-#            - Path=/usm/**
+
+
 

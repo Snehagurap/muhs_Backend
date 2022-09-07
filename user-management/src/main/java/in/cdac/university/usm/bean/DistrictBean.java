@@ -1,10 +1,12 @@
 package in.cdac.university.usm.bean;
 
+import in.cdac.university.usm.util.Constants;
 import in.cdac.university.usm.util.annotations.ComboKey;
 import in.cdac.university.usm.util.annotations.ComboValue;
 import in.cdac.university.usm.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -22,7 +24,11 @@ public class DistrictBean extends GlobalBean {
     @ListColumn(order = 2, name = "Short Name", searchable = false)
     private String strDistStName;
     private Integer gnumSlno;
+
+    @DateTimeFormat(pattern = Constants.dateFormat)
     private Date gdtEffectiveFrm;
+
+    @DateTimeFormat(pattern = Constants.dateFormat)
     private Date gdtEffectiveTo;
     private Integer gnumIsvalid;
     private Integer gnumSeatId;

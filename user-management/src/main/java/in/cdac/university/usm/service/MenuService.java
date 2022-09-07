@@ -1,5 +1,6 @@
 package in.cdac.university.usm.service;
 
+import in.cdac.university.usm.bean.IntermediateMenuBean;
 import in.cdac.university.usm.bean.MenuBean;
 import in.cdac.university.usm.entity.UmmtMenuMst;
 import in.cdac.university.usm.repository.MenuRepository;
@@ -13,6 +14,7 @@ import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -153,8 +155,11 @@ public class MenuService {
                 .build();
     }
 
-    public List<MenuBean> getIntermediateMenu(MenuBean menuBean) {
+    public List<IntermediateMenuBean> getIntermediateMenu(MenuBean menuBean) {
         List<UmmtMenuMst> menuMsts = menuRepository.findByGnumMenuLevelAndGnumModuleIdAndGnumIsvalid(menuBean.getGnumMenuLevel(), menuBean.getGnumModuleId(), 1);
-        return BeanUtils.copyListProperties(menuMsts, MenuBean.class);
+
+        return menuMsts.stream()
+                .map(menu -> new IntermediateMenuBean(menu.getGnumMenuId().toString(), menu.getGstrMenuName(), menu.getGstrUrl()))
+                .collect(Collectors.toList());
     }
 }

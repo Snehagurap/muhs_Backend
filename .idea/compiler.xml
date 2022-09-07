@@ -7,11 +7,14 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="api-gateway" />
         <module name="config-server" />
-        <module name="eureka-server" />
+        <module name="committee" />
         <module name="user-management" />
         <module name="auth-server" />
+        <module name="api-gateway" />
+        <module name="global-service" />
+        <module name="eureka-server" />
+        <module name="planning-board" />
       </profile>
     </annotationProcessing>
   </component>
@@ -19,8 +22,11 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api-gateway" options="-parameters" />
       <module name="auth-server" options="-parameters" />
+      <module name="committee" options="-parameters" />
       <module name="config-server" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
+      <module name="global-service" options="-parameters" />
+      <module name="planning-board" options="-parameters" />
       <module name="user-management" options="-parameters" />
     </option>
   </component>

@@ -3,6 +3,7 @@ package in.cdac.university.authserver.config;
 import in.cdac.university.authserver.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +15,7 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 @Configuration
+@RefreshScope
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
@@ -25,7 +27,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Value("${jwt.secret}")
     private String signingKey;
 
-    @Value("${jwt.expirationTime:3600}")
+    @Value("${jwt.expirationTime}")
     private int expirationTime;
 
     @Value("${config.oauth2.clientId}")

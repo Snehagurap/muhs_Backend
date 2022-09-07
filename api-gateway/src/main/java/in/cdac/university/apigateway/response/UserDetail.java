@@ -15,6 +15,7 @@ public class UserDetail {
     private Integer userId;
     private Integer userType;
     private Integer universityId;
+    private Integer expires_in;
 
     @NotNull(message = "Application Type cannot be blank")
     @Min(1)

@@ -1,6 +1,6 @@
 package in.cdac.university.apigateway.controller;
 
-import bean.Token;
+import in.cdac.university.apigateway.bean.Token;
 import in.cdac.university.apigateway.config.AccessTokenMapper;
 import in.cdac.university.apigateway.config.JwtUtil;
 import in.cdac.university.apigateway.exception.ErrorResponse;
@@ -11,6 +11,7 @@ import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.*;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.util.LinkedMultiValueMap;
@@ -26,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/api")
 @Slf4j
 @CrossOrigin(origins = "*")
+@RefreshScope
 public class LoginController {
 
     @Value("${config.oauth2.url}")
@@ -57,11 +59,12 @@ public class LoginController {
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth(oauthClientId, oauthClientSecret);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.set("applicationType", userDetail.getApplicationType().toString());
 
         System.out.println("User Agent: " + userAgent);
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("username", userDetail.getApplicationType() + "##" + userDetail.getUsername());
+        body.add("username", userDetail.getUsername());
         body.add("password", userDetail.getPassword());
         body.add("grant_type", "password");
 
@@ -72,12 +75,7 @@ public class LoginController {
             );
             UserDetail userDetailResponse = new UserDetail();
             if (tokenResponse.getBody() != null) {
-                userDetailResponse.setToken(tokenResponse.getBody().getAccess_token());
-                userDetailResponse.setUserId(tokenResponse.getBody().getUserId());
-                userDetailResponse.setUserType(tokenResponse.getBody().getUserType());
-                userDetailResponse.setUniversityId(tokenResponse.getBody().getUniversityId());
-                userDetailResponse.setApplicationType(userDetail.getApplicationType());
-                userDetailResponse.setRefresh_token(tokenResponse.getBody().getRefresh_token());
+                setUserDetailFromToken(userDetailResponse, tokenResponse, userDetail.getApplicationType());
 
                 ResponseCookie responseCookie = ResponseCookie.from("refresh_token", tokenResponse.getBody().getRefresh_token())
                         .httpOnly(true)
@@ -100,6 +98,18 @@ public class LoginController {
         }
     }
 
+    private void setUserDetailFromToken(UserDetail userDetailResponse, ResponseEntity<AccessTokenMapper> tokenResponse, Integer applicationType) {
+        if (tokenResponse.getBody() != null) {
+            userDetailResponse.setToken(tokenResponse.getBody().getAccess_token());
+            userDetailResponse.setUserId(tokenResponse.getBody().getUserId());
+            userDetailResponse.setUserType(tokenResponse.getBody().getUserType());
+            userDetailResponse.setUniversityId(tokenResponse.getBody().getUniversityId());
+            userDetailResponse.setApplicationType(applicationType);
+            userDetailResponse.setRefresh_token(tokenResponse.getBody().getRefresh_token());
+            userDetailResponse.setExpires_in(tokenResponse.getBody().getExpires_in());
+        }
+    }
+
     @PostMapping(value = "/refreshToken")
     public ResponseEntity<?> refreshToken(@Valid @RequestBody Token token) {
         log.info("Checking Token " + token.getToken());
@@ -118,12 +128,7 @@ public class LoginController {
             );
             UserDetail userDetailResponse = new UserDetail();
             if (tokenResponse.getBody() != null) {
-                userDetailResponse.setToken(tokenResponse.getBody().getAccess_token());
-                userDetailResponse.setUserId(tokenResponse.getBody().getUserId());
-                userDetailResponse.setUserType(tokenResponse.getBody().getUserType());
-                userDetailResponse.setUniversityId(tokenResponse.getBody().getUniversityId());
-                userDetailResponse.setApplicationType(tokenResponse.getBody().getApplicationType());
-                userDetailResponse.setRefresh_token(tokenResponse.getBody().getRefresh_token());
+                setUserDetailFromToken(userDetailResponse, tokenResponse, tokenResponse.getBody().getApplicationType());
             }
 
             return ResponseHandler.generateResponse(userDetailResponse);

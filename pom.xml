@@ -20,6 +20,9 @@
         <module>api-gateway</module>
         <module>auth-server</module>
         <module>user-management</module>
+        <module>global-service</module>
+        <module>committee</module>
+        <module>planning-board</module>
     </modules>
     <dependencies>
         <dependency>
