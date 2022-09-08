@@ -20,7 +20,7 @@ public class UmmtUserTypeMst implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ummt_user_type_mst")
-	@SequenceGenerator(name="ummt_user_type_mst", sequenceName = "seq_ummt_user_type_mst", allocationSize = 1)
+	@SequenceGenerator(name="ummt_user_type_mst", sequenceName = "usm.seq_ummt_user_type_mst", allocationSize = 1)
 	@Column(name="gnum_user_type_id")
 	private Integer gnumUserTypeId;
 

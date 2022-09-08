@@ -27,7 +27,7 @@ public class MenuBean extends GlobalBean {
     private Integer rootMenuId;
 
     @ComboValue
-    @NotBlank(message = "Menu Name is mandatory")
+    //@NotBlank(message = "Menu Name is mandatory")
     @Length(max = 500, message = "Menu Name can contain maximum of 500 characters")
     @ListColumn(order = 2, name = "Menu Name")
     private String gstrMenuName;

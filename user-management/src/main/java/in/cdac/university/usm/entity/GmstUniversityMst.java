@@ -15,7 +15,7 @@ public class GmstUniversityMst implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gmst_university_mst")
-	@SequenceGenerator(name = "gmst_university_mst", sequenceName = "seq_gmst_university_mst", allocationSize = 1)
+	@SequenceGenerator(name = "gmst_university_mst", sequenceName = "usm.seq_gmst_university_mst", allocationSize = 1)
 	@Column(name="unum_univ_id")
 	private Integer unumUnivId;
 

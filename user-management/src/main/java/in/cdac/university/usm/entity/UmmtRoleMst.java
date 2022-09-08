@@ -14,7 +14,7 @@ public class UmmtRoleMst implements java.io.Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="ummt_role_mst")
-	@SequenceGenerator(name="ummt_role_mst", sequenceName = "seq_ummt_role_mst", allocationSize = 1)
+	@SequenceGenerator(name="ummt_role_mst", sequenceName = "usm.seq_ummt_role_mst", allocationSize = 1)
 	@Column(name = "gnum_role_id")
 	private Integer gnumRoleId;
  

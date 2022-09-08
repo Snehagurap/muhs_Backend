@@ -14,7 +14,7 @@ public class GbltDistrictMstImsc implements java.io.Serializable {
 
 	@Id
 	@GeneratedValue(strategy= GenerationType.SEQUENCE, generator="gblt_district_mst_imsc")
-	@SequenceGenerator(name="gblt_district_mst_imsc", sequenceName = "seq_gblt_district_mst_imsc", allocationSize = 1)
+	@SequenceGenerator(name="gblt_district_mst_imsc", sequenceName = "usm.seq_gblt_district_mst_imsc", allocationSize = 1)
 	@Column(name = "num_dist_id", nullable = false, precision = 5)
 	private Integer numDistId;
 	

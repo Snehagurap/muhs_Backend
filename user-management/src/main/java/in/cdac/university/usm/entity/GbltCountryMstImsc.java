@@ -16,7 +16,7 @@ public class GbltCountryMstImsc implements java.io.Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="gblt_country_mst_imsc")
-	@SequenceGenerator(name="gblt_country_mst_imsc", sequenceName = "seq_gblt_country_mst_imsc", allocationSize = 1)
+	@SequenceGenerator(name="gblt_country_mst_imsc", sequenceName = "usm.seq_gblt_country_mst_imsc", allocationSize = 1)
 	@Column(name = "gnum_countrycode", nullable = false, precision = 3)
 	private Integer gnumCountrycode;
 	

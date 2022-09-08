@@ -15,7 +15,7 @@ public class UmmtMenuMst implements java.io.Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ummt_menu_mst")
-	@SequenceGenerator(name = "ummt_menu_mst", sequenceName = "seq_ummt_menu_mst", allocationSize = 1)
+	@SequenceGenerator(name = "ummt_menu_mst", sequenceName = "usm.seq_ummt_menu_mst", allocationSize = 1)
 	@Column(name = "gnum_menu_id", nullable = false)
 	private Integer gnumMenuId;
 	
@@ -43,6 +43,9 @@ public class UmmtMenuMst implements java.io.Serializable {
 
 	@Column(name = "gnum_module_id", nullable = false)
 	private Integer gnumModuleId;
+
+	@Column(name = "root_menu_id")
+	private Integer rootMenuId;
 
 	@Formula("(select m.gstr_module_name from usm.UMST_MODULE_MST m where m.gbl_isvalid=1 and m.gnum_module_id=gnum_module_id)")
 	private String gstrModuleName;

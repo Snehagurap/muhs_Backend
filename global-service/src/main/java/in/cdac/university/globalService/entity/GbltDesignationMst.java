@@ -1,14 +1,10 @@
-package in.cdac.university.usm.entity;
-
-import java.util.Date;
-
-import javax.persistence.*;
+package in.cdac.university.globalService.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 
-import lombok.Data;
+import javax.persistence.*;
+import java.util.Date;
 
 @Getter
 @Setter

@@ -14,7 +14,7 @@ public class UmmtDatasetMst implements java.io.Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ummt_dataset_mst")
-	@SequenceGenerator(name = "ummt_dataset_mst", sequenceName = "seq_ummt_dataset_mst", allocationSize = 1)
+	@SequenceGenerator(name = "ummt_dataset_mst", sequenceName = "usm.seq_ummt_dataset_mst", allocationSize = 1)
 	@Column(name = "gnum_dataset_id", unique = true, nullable = false)
 	private Integer gnumDatasetId;
 	 

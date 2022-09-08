@@ -36,7 +36,7 @@ public class MenuService {
 
     public ServiceResponse getMenu(Integer menuId) {
         if (menuId == null) {
-            return ServiceResponse.errorResponse(language.mandatory("Menu Id is mandatory"));
+            return ServiceResponse.errorResponse(language.mandatory("Menu Id"));
         }
 
         Optional<UmmtMenuMst> menuMstOptional = menuRepository.findByGnumMenuIdAndGnumIsvalidIn(
@@ -68,6 +68,9 @@ public class MenuService {
             );
         } else if (menuBean.getGnumMenuLevel() == 2) {
             menuBean.setGnumParentId(menuBean.getRootMenuId());
+        }
+        if (menuBean.getGstrMenuName() == null || menuBean.getGstrMenuName().isBlank()) {
+            return ServiceResponse.errorResponse(language.mandatory("Menu Name"));
         }
 
         // Duplicate check
