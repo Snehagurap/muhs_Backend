@@ -1,13 +1,8 @@
 package in.cdac.university.usm.service;
 
 import in.cdac.university.usm.bean.UserBean;
-import in.cdac.university.usm.entity.GmstUniversityMst;
-import in.cdac.university.usm.entity.UmmtRoleMst;
-import in.cdac.university.usm.entity.UmmtUserMst;
-import in.cdac.university.usm.entity.UmmtUserMstPK;
-import in.cdac.university.usm.repository.RoleRepository;
-import in.cdac.university.usm.repository.UniversityRepository;
-import in.cdac.university.usm.repository.UserRepository;
+import in.cdac.university.usm.entity.*;
+import in.cdac.university.usm.repository.*;
 import in.cdac.university.usm.util.BeanUtils;
 import in.cdac.university.usm.util.Language;
 import in.cdac.university.usm.util.ServiceResponse;
@@ -18,7 +13,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -35,13 +32,33 @@ public class UserService {
     private RoleRepository roleRepository;
 
     @Autowired
+    private DatasetRepository datasetRepository;
+
+    @Autowired
+    private UserTypeRepository userTypeRepository;
+
+    @Autowired
+    private UserRoleRepository userRoleRepository;
+
+    @Autowired
     private Language language;
 
     public List<UserBean> getAllUsersByUniversityId(Integer universityId, Integer isValid) {
-        return BeanUtils.copyListProperties(
-                userRepository.findAllByUniversityMstUnumUnivIdAndGnumIsvalidOrderByGstrUserName(universityId, isValid),
-                UserBean.class
-        );
+        Map<Integer, String> userTypeMap = userTypeRepository.findAll()
+                .stream()
+                .collect(Collectors.toMap(
+                        UmmtUserTypeMst::getGnumUserTypeId,
+                        UmmtUserTypeMst::getGstrUserTypeName
+                ));
+
+        return userRepository.findAllByUniversityMstUnumUnivIdAndGnumIsvalidOrderByGstrUserName(universityId, isValid)
+                .stream()
+                .map(ummtUserMst -> {
+                    UserBean userBean = BeanUtils.copyProperties(ummtUserMst, UserBean.class);
+                    userBean.setUserTypeName(userTypeMap.getOrDefault(ummtUserMst.getGnumUserTypeId(), ""));
+                    return userBean;
+                })
+                .toList();
     }
 
     public ServiceResponse get(Integer userId) {
@@ -56,6 +73,18 @@ public class UserService {
 
         UserBean userBean = BeanUtils.copyProperties(userMst.get(), UserBean.class);
         userBean.setUnumUnivId(userMst.get().getUniversityMst().getUnumUnivId());
+
+        // GetDataSetName
+        String dataSetName = datasetRepository.findById(userBean.getGnumDatasetId())
+                .map(UmmtDatasetMst::getGstrDatasetName)
+                .orElse("");
+        userBean.setDefaultDataSetName(dataSetName);
+
+        // Get Role Name
+        String roleName = roleRepository.findById(userBean.getGnumRoleId())
+                .map(UmmtRoleMst::getGstrRoleName)
+                .orElse("");
+        userBean.setDefaultRoleName(roleName);
 
         return ServiceResponse.builder()
                 .status(1)
@@ -79,7 +108,7 @@ public class UserService {
         }
 
         // Check for duplicate username
-        Optional<UmmtUserMst> userMstOptional = userRepository.findByGstrUserNameIgnoreCaseAndGnumIsvalidIn(userBean.getGstrUserName(), List.of(1, 2));
+        Optional<UmmtUserMst> userMstOptional = userRepository.findByGstrUserNameIgnoreCase(userBean.getGstrUserName());
         if (userMstOptional.isPresent()) {
             return ServiceResponse.errorResponse(language.duplicate("Username", userBean.getGstrUserName()));
         }
@@ -98,6 +127,16 @@ public class UserService {
         String message;
         if (userMst.getGnumUserid() != null) {
             status = 1;
+            // Save default role
+            if (userMst.getGnumRoleId() != null) {
+                UmmtUserRoleMst userRoleMst = new UmmtUserRoleMst();
+                userRoleMst.setGnumRoleId(userMst.getGnumRoleId());
+                userRoleMst.setGnumUserId(userMst.getGnumUserid());
+                userRoleMst.setGnumIsDefault(1);
+                userRoleMst.setGblIsvalid(1);
+                userRoleRepository.save(userRoleMst);
+            }
+
             message = language.saveSuccess("User");
         } else {
             message = language.saveError("User");
@@ -134,8 +173,8 @@ public class UserService {
         }
 
         // Check for duplicate username
-        Optional<UmmtUserMst> duplicateUser = userRepository.findByGstrUserNameIgnoreCaseAndGnumUseridNotAndGnumIsvalidIn(
-                userBean.getGstrUserName(), userBean.getGnumUserid(), List.of(1, 2));
+        Optional<UmmtUserMst> duplicateUser = userRepository.findByGstrUserNameIgnoreCaseAndGnumUseridNot(
+                userBean.getGstrUserName(), userBean.getGnumUserid());
         if (duplicateUser.isPresent()) {
             return ServiceResponse.errorResponse(language.duplicate("Username", userBean.getGstrUserName()));
         }
@@ -161,6 +200,21 @@ public class UserService {
         String message;
         if (userMst.getGnumUserid() != null) {
             status = 1;
+            // Save default role
+            if (userMst.getGnumRoleId() != null) {
+                List<UmmtUserRoleMst> mappedRoles = userRoleRepository.findMappedRoles(
+                        userMst.getGnumUserid(), 1, 1, userMst.getGnumRoleId());
+                if (!mappedRoles.isEmpty())
+                    userRoleRepository.deleteAllInBatch(mappedRoles);
+
+                UmmtUserRoleMst userRoleMst = new UmmtUserRoleMst();
+                userRoleMst.setGnumRoleId(userMst.getGnumRoleId());
+                userRoleMst.setGnumUserId(userMst.getGnumUserid());
+                userRoleMst.setGnumIsDefault(1);
+                userRoleMst.setGblIsvalid(1);
+                userRoleRepository.save(userRoleMst);
+            }
+
             message = language.updateSuccess("User");
         } else {
             message = language.updateError("User");
@@ -204,4 +258,10 @@ public class UserService {
                 .build();
     }
 
+    public List<UserBean> getUsersForCategory(Integer categoryId) {
+        return BeanUtils.copyListProperties(
+                userRepository.findByGnumUserCatIdAndGnumIsvalid(categoryId, 1),
+                UserBean.class
+        );
+    }
 }

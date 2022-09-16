@@ -3,7 +3,11 @@ package in.cdac.university.usm.service;
 import in.cdac.university.usm.bean.IntermediateMenuBean;
 import in.cdac.university.usm.bean.MenuBean;
 import in.cdac.university.usm.entity.UmmtMenuMst;
+import in.cdac.university.usm.entity.UmmtRoleMenuMst;
+import in.cdac.university.usm.entity.UmmtUserRoleMst;
 import in.cdac.university.usm.repository.MenuRepository;
+import in.cdac.university.usm.repository.RoleMenuRepository;
+import in.cdac.university.usm.repository.UserRoleRepository;
 import in.cdac.university.usm.util.BeanUtils;
 import in.cdac.university.usm.util.Language;
 import in.cdac.university.usm.util.ServiceResponse;
@@ -11,9 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,6 +29,12 @@ public class MenuService {
 
     @Autowired
     private Language language;
+
+    @Autowired
+    private RoleMenuRepository roleMenuRepository;
+
+    @Autowired
+    private UserRoleRepository userRoleRepository;
 
     public List<MenuBean> getList(Integer moduleId, Integer status) {
         return BeanUtils.copyListProperties(
@@ -67,14 +76,21 @@ public class MenuService {
                     }
             );
         } else if (menuBean.getGnumMenuLevel() == 2) {
-            menuBean.setGnumParentId(menuBean.getRootMenuId());
+            Optional<UmmtMenuMst> menuMstOptional = menuRepository.findByGnumModuleIdAndRootMenuIdAndGnumIsvalidAndGnumParentId(menuBean.getGnumModuleId(), menuBean.getRootMenuId(), 1, 0);
+            if (menuMstOptional.isEmpty()) {
+                return ServiceResponse.errorResponse(language.mandatory("Parent Menu"));
+            }
+            Integer parentId = menuMstOptional.get().getGnumMenuId();
+
+            menuBean.setGnumParentId(parentId);
         }
         if (menuBean.getGstrMenuName() == null || menuBean.getGstrMenuName().isBlank()) {
             return ServiceResponse.errorResponse(language.mandatory("Menu Name"));
         }
 
         // Duplicate check
-        Optional<UmmtMenuMst> menuMstOptional = menuRepository.findByGstrMenuNameIgnoreCaseAndGnumIsvalidIn(menuBean.getGstrMenuName(), List.of(1, 2));
+        Optional<UmmtMenuMst> menuMstOptional = menuRepository.findByGstrMenuNameIgnoreCaseAndGnumModuleIdAndGnumIsvalidIn(
+                menuBean.getGstrMenuName(), menuBean.getGnumModuleId(), List.of(1, 2));
         if (menuMstOptional.isPresent()) {
             return ServiceResponse.errorResponse(language.duplicate("Menu Name", menuBean.getGstrMenuName()));
         }
@@ -152,6 +168,12 @@ public class MenuService {
         );
         menuRepository.saveAll(menuMst);
 
+        // Delete Role Menu Mapping
+        List<UmmtRoleMenuMst> roleMenuMstList = roleMenuRepository.findByGnumMenuIdIn(idsToDelete);
+        if (!roleMenuMstList.isEmpty()) {
+            roleMenuRepository.deleteAllInBatch(roleMenuMstList);
+        }
+
         return ServiceResponse.builder()
                 .status(1)
                 .message(language.deleteSuccess("Menu(s)"))
@@ -159,10 +181,90 @@ public class MenuService {
     }
 
     public List<IntermediateMenuBean> getIntermediateMenu(MenuBean menuBean) {
-        List<UmmtMenuMst> menuMsts = menuRepository.findByGnumMenuLevelAndGnumModuleIdAndGnumIsvalid(menuBean.getGnumMenuLevel(), menuBean.getGnumModuleId(), 1);
+
+        List<UmmtMenuMst> menuMsts = menuRepository.findByGnumMenuLevelAndGnumModuleIdAndGnumIsvalidAndRootMenuId(
+                menuBean.getGnumMenuLevel(), menuBean.getGnumModuleId(), 1, menuBean.getRootMenuId());
 
         return menuMsts.stream()
                 .map(menu -> new IntermediateMenuBean(menu.getGnumMenuId().toString(), menu.getGstrMenuName(), menu.getGstrUrl()))
                 .collect(Collectors.toList());
+    }
+
+    private Set<Integer> getMenusMappedWithRole(MenuBean menuBean, Integer roleId) {
+        return roleMenuRepository.findByGnumRoleIdAndGnumModuleId(roleId, menuBean.getGnumModuleId())
+                .stream()
+                .map(UmmtRoleMenuMst::getGnumMenuId)
+                .collect(Collectors.toSet());
+    }
+
+    private List<IntermediateMenuBean> getMenusWithPredicate(MenuBean menuBean, Predicate<UmmtMenuMst> menuMstPredicate) {
+
+        List<UmmtMenuMst> menuMsts = menuRepository.findByGnumMenuLevelAndGnumModuleIdAndGnumIsvalidAndRootMenuId(
+                menuBean.getGnumMenuLevel(), menuBean.getGnumModuleId(), 1, menuBean.getRootMenuId());
+
+        return menuMsts.stream()
+                .filter(menuMstPredicate)
+                .map(menu -> new IntermediateMenuBean(menu.getGnumMenuId().toString(), menu.getGstrMenuName(), menu.getGstrUrl()))
+                .collect(Collectors.toList());
+    }
+
+    public List<IntermediateMenuBean> getIntermediateMenu(MenuBean menuBean, Integer roleId) {
+        // Already Mapped Menus
+        Set<Integer> mappedMenus = getMenusMappedWithRole(menuBean, roleId);
+        Predicate<UmmtMenuMst> menuMstPredicate = menu -> (menu.getGstrUrl() == null || menu.getGstrUrl().isBlank()) ||  !mappedMenus.contains(menu.getGnumMenuId());
+        return getMenusWithPredicate(menuBean, menuMstPredicate);
+    }
+
+    public List<IntermediateMenuBean> getIntermediateMappedMenu(MenuBean menuBean, Integer roleId) {
+        // Already Mapped Menus
+        Set<Integer> mappedMenus = getMenusMappedWithRole(menuBean, roleId);
+        Predicate<UmmtMenuMst> menuMstPredicate = menu -> (menu.getGstrUrl() != null || !menu.getGstrUrl().isBlank()) &&  mappedMenus.contains(menu.getGnumMenuId());
+        return getMenusWithPredicate(menuBean, menuMstPredicate);
+    }
+
+    private List<IntermediateMenuBean> getIntermediateMenuBeans(MenuBean menuBean, Predicate<UmmtMenuMst> menuMstPredicate) {
+        List<UmmtMenuMst> menuMsts = menuRepository.findByGnumMenuLevelAndGnumModuleIdAndGnumIsvalidAndRootMenuIdAndGnumParentId(
+                menuBean.getGnumMenuLevel(), menuBean.getGnumModuleId(), 1, menuBean.getRootMenuId(), menuBean.getGnumParentId());
+
+        return menuMsts.stream()
+                .filter(menuMstPredicate)
+                .map(menu -> new IntermediateMenuBean(menu.getGnumMenuId().toString(), menu.getGstrMenuName(), menu.getGstrUrl()))
+                .collect(Collectors.toList());
+    }
+
+    public List<IntermediateMenuBean> getIntermediateMenuWithParent(MenuBean menuBean, Integer roleId) {
+        // Already Mapped Menus
+        Set<Integer> mappedMenus = getMenusMappedWithRole(menuBean, roleId);
+        Predicate<UmmtMenuMst> menuMstPredicate = menu -> (menu.getGstrUrl() == null || menu.getGstrUrl().isBlank()) || !mappedMenus.contains(menu.getGnumMenuId());
+        return getIntermediateMenuBeans(menuBean, menuMstPredicate);
+    }
+
+    public List<IntermediateMenuBean> getMappedMenus(MenuBean menuBean, Integer roleId) {
+        // Already Mapped Menus
+        Set<Integer> mappedMenus = getMenusMappedWithRole(menuBean, roleId);
+        Predicate<UmmtMenuMst> menuMstPredicate = menu -> (menu.getGstrUrl() == null || menu.getGstrUrl().isBlank()) || mappedMenus.contains(menu.getGnumMenuId());
+        return getIntermediateMenuBeans(menuBean, menuMstPredicate);
+    }
+
+    public ServiceResponse getMenusMappedWithUser(Integer userId) {
+        // Get Roles Mapped with User
+        List<UmmtUserRoleMst> mappedRoles = userRoleRepository.findByGnumUserIdAndGblIsvalid(userId, 1);
+        List<UmmtMenuMst> mappedMenus = new ArrayList<>();
+        if (!mappedRoles.isEmpty()) {
+            List<UmmtRoleMenuMst> mappedMenusWithRole = roleMenuRepository.findByGnumRoleIdInAndGnumIsvalidOrderByGnumDisplayOrder(
+                    mappedRoles.stream().map(UmmtUserRoleMst::getGnumRoleId).toList(),
+                    1
+            );
+
+            mappedMenus = menuRepository.findByGnumMenuIdInAndGnumIsvalid(
+                    mappedMenusWithRole.stream().map(UmmtRoleMenuMst::getGnumMenuId).toList(),
+                    1
+            );
+        }
+
+        return ServiceResponse.builder()
+                .status(1)
+                .responeObject(mappedMenus)
+                .build();
     }
 }

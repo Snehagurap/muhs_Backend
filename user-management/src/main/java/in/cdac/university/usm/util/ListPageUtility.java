@@ -4,6 +4,7 @@ import in.cdac.university.usm.util.annotations.ListColumn;
 import in.cdac.university.usm.util.annotations.ListColumnBean;
 
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class ListPageUtility {
@@ -34,14 +35,25 @@ public class ListPageUtility {
         Objects.requireNonNull(dataList, "List is empty");
 
         List<Map<String, String>> list = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         for (Object obj : dataList) {
             Class<?> clazz = obj.getClass();
             Map<String, String> map = new LinkedHashMap<>();
             for (Field field: clazz.getDeclaredFields()) {
                 field.setAccessible(true);
                 if (field.isAnnotationPresent(ListColumn.class)) {
-                    Object fieldValue = field.get(obj);
-                    map.put(field.getName(), String.valueOf(fieldValue == null ? "" : fieldValue));
+                    String value;
+                    if (field.getType() == Date.class) {
+                        Object fieldValue = field.get(obj);
+                        if (fieldValue != null)
+                            value = sdf.format((Date) fieldValue);
+                        else
+                            value = "";
+                    } else {
+                        Object fieldValue = field.get(obj);
+                        value = String.valueOf(fieldValue == null ? "" : fieldValue);
+                    }
+                    map.put(field.getName(), value);
                 }
             }
             list.add(map);

@@ -3,6 +3,7 @@ package in.cdac.university.usm.entity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -107,5 +108,10 @@ public class UmmtUserMst implements java.io.Serializable {
 	@JoinColumn(name = "unum_univ_id")
 	@ToString.Exclude
 	private GmstUniversityMst universityMst;
+
+	@Formula("(select (case gnum_islock " +
+			"when 0 then 'Unlocked' " +
+			"else 'Locked' end))")
+	private String lockStatus;
 
 }

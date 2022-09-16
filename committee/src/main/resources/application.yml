@@ -6,6 +6,11 @@ spring:
   profiles:
     active:
       - dev
+  sql:
+    init:
+      mode: always
+  jpa:
+    defer-datasource-initialization: true
 
 server:
   port: 8005

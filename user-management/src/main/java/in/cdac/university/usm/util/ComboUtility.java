@@ -24,14 +24,15 @@ public class ComboUtility {
                     key.put(comboKey.index(), String.valueOf(field.get(obj)));
                 }
                 if (field.isAnnotationPresent(ComboValue.class)) {
-                    value.add(String.valueOf(field.get(obj)));
+                    ComboValue comboValue = field.getAnnotation(ComboValue.class);
+                    value.add(comboValue.startSeparator() + field.get(obj) + comboValue.endSeparator());
                 }
             }
             if (key.isEmpty() || value.isEmpty()) {
                 throw new IllegalArgumentException("Objects in the list does not have @ComboKey or @ComboValue annotations");
             }
             String comboKey = String.join("^", key.values());
-            String comboValue = String.join(", ", value);
+            String comboValue = String.join(" ", value);
             comboData.add(new ComboBean(comboKey, comboValue));
         }
         return comboData;

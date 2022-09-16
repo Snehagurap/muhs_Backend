@@ -1,6 +1,8 @@
 package in.cdac.university.usm.bean;
 
 import in.cdac.university.usm.util.Constants;
+import in.cdac.university.usm.util.annotations.ComboKey;
+import in.cdac.university.usm.util.annotations.ComboValue;
 import in.cdac.university.usm.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +22,7 @@ public class UserBean extends GlobalBean {
     private Integer unumUnivId;
 
     @ListColumn(omit = true)
+    @ComboKey
     private Integer gnumUserid;
 
     @ListColumn(omit = true)
@@ -33,7 +36,7 @@ public class UserBean extends GlobalBean {
 
     private Date gdtEntrydate;
 
-    @DateTimeFormat(pattern = Constants.dateFormat)
+    @DateTimeFormat
     @ListColumn(order = 4, name = "Expiry Date")
     @FutureOrPresent(message = "Effective To date should be greater than or equal to Current Date")
     private Date gdtExpiryDate;
@@ -51,8 +54,10 @@ public class UserBean extends GlobalBean {
 
     private Integer gnumEntryBy;
 
-    @ListColumn(order = 5, name = "Lock Status")
     private Integer gnumIslock;
+
+    @ListColumn(order = 5, name = "Lock Status")
+    private String lockStatus;
 
     @NotBlank(message = "Mobile No. is mandatory")
     @Length(min = 10, max = 10, message = "Mobile No. should be of 10 digits")
@@ -68,8 +73,10 @@ public class UserBean extends GlobalBean {
     private Integer gnumUserCatId;
 
     @NotNull(message = "User Type is mandatory")
-    @ListColumn(order = 3, name = "User Type")
     private Integer gnumUserTypeId;
+
+    @ListColumn(order = 3, name = "User Type")
+    private String userTypeName;
 
     private String gstrAadharNumber;
 
@@ -81,11 +88,13 @@ public class UserBean extends GlobalBean {
 
     @NotBlank(message = "User/Employee Name is mandatory")
     @ListColumn(order = 2, name = "Full Name")
+    @ComboValue
     private String gstrUserFullName;
 
     @NotBlank(message = "Login id is mandatory")
-    @ListColumn(order = 1, name = "Username")
+    @ListColumn(order = 1, name = "UserName")
     @Pattern(regexp = "\\w{3,}", message = "Login id can contain alphabets, numbers and underscore only")
+    @ComboValue(startSeparator = " [", endSeparator = "]")
     private String gstrUserName;
 
     @NotNull(message = "District Name is mandatory")
@@ -94,6 +103,9 @@ public class UserBean extends GlobalBean {
     @Email(message = "Please enter valid Email id")
     @NotBlank(message = "Email Id is mandatory")
     private String gstrEmailId;
+
+    private String defaultDataSetName;
+    private String defaultRoleName;
 
     private Date gdtChangepasswordDate;
     private Date gdtLstmodDate;

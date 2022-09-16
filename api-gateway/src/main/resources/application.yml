@@ -24,6 +24,3 @@ spring:
             allowedHeaders:
               - Authorization
               - content-type
-
-
-

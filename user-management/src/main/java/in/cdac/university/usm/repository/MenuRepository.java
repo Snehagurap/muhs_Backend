@@ -12,11 +12,17 @@ public interface MenuRepository extends JpaRepository<UmmtMenuMst, Integer> {
 
     List<UmmtMenuMst> findByGnumModuleIdAndGnumIsvalid(Integer moduleId, Integer isValid);
 
-    List<UmmtMenuMst> findByGnumMenuLevelAndGnumModuleIdAndGnumIsvalid(Integer level, Integer moduleId, Integer isValid);
+    Optional<UmmtMenuMst> findByGnumModuleIdAndRootMenuIdAndGnumIsvalidAndGnumParentId(Integer moduleId, Integer rootMenuId, Integer isValid, Integer parentId);
+
+    List<UmmtMenuMst> findByGnumMenuLevelAndGnumModuleIdAndGnumIsvalidAndRootMenuId(Integer level, Integer moduleId, Integer isValid, Integer rootMenuId);
+
+    List<UmmtMenuMst> findByGnumMenuLevelAndGnumModuleIdAndGnumIsvalidAndRootMenuIdAndGnumParentId(Integer level, Integer moduleId, Integer isValid, Integer rootMenuId, Integer parentMenuId);
 
     Optional<UmmtMenuMst> findByGnumMenuIdAndGnumIsvalidIn(Integer menuId, List<Integer> isValid);
 
-    Optional<UmmtMenuMst> findByGstrMenuNameIgnoreCaseAndGnumIsvalidIn(String menuName, List<Integer> isValid);
+    List<UmmtMenuMst> findByGnumMenuIdInAndGnumIsvalid(List<Integer> menuId, Integer isValid);
+
+    Optional<UmmtMenuMst> findByGstrMenuNameIgnoreCaseAndGnumModuleIdAndGnumIsvalidIn(String menuName, Integer moduleId, List<Integer> isValid);
 
     Optional<UmmtMenuMst> findByGstrMenuNameIgnoreCaseAndGnumMenuIdNotAndGnumIsvalidIn(String menuName, Integer menuId, List<Integer> isValid);
 

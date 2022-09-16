@@ -1,5 +1,7 @@
 package in.cdac.university.planningBoard.util;
 
+import com.google.gson.Gson;
+import in.cdac.university.planningBoard.bean.UserDetail;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -17,19 +19,27 @@ public class RequestUtility {
         return new Locale(language);
     }
 
-    public static Integer getUserId() throws Exception {
+    public static Long getUserId() throws Exception {
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
         String userId = request.getHeader("userId");
-        if (userId == null)
+        if (userId == null || Long.parseLong(userId) <= 0)
             throw new Exception ("Session not present");
-        return Integer.valueOf(userId);
+        return Long.parseLong(userId);
     }
 
-    public static Integer getApplicationType() throws Exception {
+    public static UserDetail getUserDetail() throws Exception {
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
-        String applicationType = request.getHeader("applicationType");
-        if (applicationType == null)
+        String userDetail = request.getHeader("userDetail");
+        if (userDetail == null)
             throw new Exception ("Session not present");
-        return Integer.valueOf(applicationType);
+        Gson gson = new Gson();
+        return gson.fromJson(userDetail, UserDetail.class);
+    }
+
+    public static Integer getUniversityId() throws Exception {
+        int universityId = getUserDetail().getUniversityId();
+        if (universityId <= 0)
+            throw new Exception("Session not present");
+        return universityId;
     }
 }

@@ -17,7 +17,7 @@ public interface UserRepository extends JpaRepository<UmmtUserMst, UmmtUserMstPK
 
     List<UmmtUserMst> findAllByGnumUseridInAndGnumIsvalidIn(List<Integer> userIds, List<Integer> isValid);
 
-    Optional<UmmtUserMst> findByGstrUserNameIgnoreCaseAndGnumIsvalidIn(String username, List<Integer> isValid);
+    Optional<UmmtUserMst> findByGstrUserNameIgnoreCase(String username);
 
     @Modifying
     @Query("update UmmtUserMst a set a.gnumIsvalid = 0, " +
@@ -32,11 +32,15 @@ public interface UserRepository extends JpaRepository<UmmtUserMst, UmmtUserMstPK
             "where u.gnumUserid in (?1) and u.gnumIsvalid in (1, 2) ")
     Integer createLog(Integer userId);
 
-    Optional<UmmtUserMst> findByGstrUserNameIgnoreCaseAndGnumUseridNotAndGnumIsvalidIn(String username, Integer userId, List<Integer> isValid);
+    Optional<UmmtUserMst> findByGstrUserNameIgnoreCaseAndGnumUseridNot(String username, Integer userId);
 
     @Query("select coalesce(max(a.gnumIsvalid), 2) + 1 from UmmtUserMst a where a.gnumUserid = ?1 and a.gnumIsvalid > 2")
     Integer getIsValidLogId(Integer userId);
 
     @Query("select max(a.gnumUserid) + 1 from UmmtUserMst a")
     Integer generateUserId();
+
+    List<UmmtUserMst> findByGnumUserCatIdAndGnumIsvalid(Integer gnumUserCatId, Integer gnumIsvalid);
+
+
 }

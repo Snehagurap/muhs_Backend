@@ -1,6 +1,7 @@
 package in.cdac.university.committee.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,11 @@ public class Language {
     private  ResourceBundleMessageSource messageSource;
 
     public String message(String message, Object... arguments) {
-        return messageSource.getMessage(message, arguments, RequestUtility.getRequestLocale());
+        try {
+            return messageSource.getMessage(message, arguments, RequestUtility.getRequestLocale());
+        } catch (NoSuchMessageException noSuchMessageException) {
+            return message;
+        }
     }
 
     public String duplicate(String objectName, String duplicateValue) {

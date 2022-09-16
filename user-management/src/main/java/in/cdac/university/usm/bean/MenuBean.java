@@ -33,7 +33,7 @@ public class MenuBean extends GlobalBean {
     private String gstrMenuName;
 
     @NotNull(message = "Menu Level is mandatory")
-    @ListColumn(order = 3)
+    @ListColumn(order = 3, name = "Menu Level")
     private Integer gnumMenuLevel;
 
     private Integer gnumEntryBy;

@@ -19,12 +19,12 @@ public class RequestUtility {
         return new Locale(language);
     }
 
-    public static Integer getUserId() throws Exception {
+    public static Long getUserId() throws Exception {
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
         String userId = request.getHeader("userId");
-        if (userId == null)
+        if (userId == null || Long.parseLong(userId) <= 0)
             throw new Exception ("Session not present");
-        return Integer.valueOf(userId);
+        return Long.parseLong(userId);
     }
 
     public static UserDetail getUserDetail() throws Exception {
@@ -37,6 +37,9 @@ public class RequestUtility {
     }
 
     public static Integer getUniversityId() throws Exception {
-        return getUserDetail().getUniversityId();
+        int universityId = getUserDetail().getUniversityId();
+        if (universityId <= 0)
+            throw new Exception("Session not present");
+        return universityId;
     }
 }

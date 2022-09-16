@@ -38,22 +38,83 @@ public class MenuController {
         );
     }
 
-    @GetMapping("/intermediate/{level}/{moduleId}")
-    public @ResponseBody ResponseEntity<?> getIntermediateMenu(@PathVariable("level") Integer level, @PathVariable("moduleId") Integer moduleId) {
+    @GetMapping("/intermediate/{level}/{moduleId}/{rootMenu}")
+    public @ResponseBody ResponseEntity<?> getIntermediateMenu(@PathVariable("level") Integer level, @PathVariable("moduleId") Integer moduleId, @PathVariable("rootMenu") Integer rootMenuId) {
         MenuBean menuBean = new MenuBean();
-        menuBean.setGnumMenuLevel(level);
+        menuBean.setGnumMenuLevel(level - 1);
         menuBean.setGnumModuleId(moduleId);
+        menuBean.setRootMenuId(rootMenuId);
         return ResponseHandler.generateOkResponse(
                 menuService.getIntermediateMenu(menuBean)
+        );
+    }
+
+    @GetMapping("/mapping/{moduleId}/{rootMenu}/{level}/{roleId}")
+    public @ResponseBody ResponseEntity<?> getMenuForMapping(@PathVariable("moduleId") Integer moduleId,
+                                                             @PathVariable("rootMenu") Integer rootMenuId,
+                                                             @PathVariable("level") Integer level,
+                                                             @PathVariable("roleId") Integer roleId) {
+        MenuBean menuBean = new MenuBean();
+        menuBean.setGnumModuleId(moduleId);
+        menuBean.setRootMenuId(rootMenuId);
+        menuBean.setGnumMenuLevel(level + 1);
+        return ResponseHandler.generateOkResponse(
+                menuService.getIntermediateMenu(menuBean, roleId)
+        );
+    }
+
+    @GetMapping("/mapped/{moduleId}/{rootMenu}/{level}/{roleId}")
+    public @ResponseBody ResponseEntity<?> getMappedMenu(@PathVariable("moduleId") Integer moduleId,
+                                                             @PathVariable("rootMenu") Integer rootMenuId,
+                                                             @PathVariable("level") Integer level,
+                                                             @PathVariable("roleId") Integer roleId) {
+        MenuBean menuBean = new MenuBean();
+        menuBean.setGnumModuleId(moduleId);
+        menuBean.setRootMenuId(rootMenuId);
+        menuBean.setGnumMenuLevel(level + 1);
+        return ResponseHandler.generateOkResponse(
+                menuService.getIntermediateMappedMenu(menuBean, roleId)
+        );
+    }
+
+    @GetMapping("/mapping/{moduleId}/{rootMenu}/{level}/{parentMenuId}/{roleId}")
+    public @ResponseBody ResponseEntity<?> getMenuForMapping(@PathVariable("moduleId") Integer moduleId,
+                                                             @PathVariable("rootMenu") Integer rootMenuId,
+                                                             @PathVariable("level") Integer level,
+                                                             @PathVariable("parentMenuId") Integer parentMenuId,
+                                                             @PathVariable("roleId") Integer roleId) {
+        MenuBean menuBean = new MenuBean();
+        menuBean.setGnumModuleId(moduleId);
+        menuBean.setRootMenuId(rootMenuId);
+        menuBean.setGnumMenuLevel(level + 1);
+        menuBean.setGnumParentId(parentMenuId);
+        return ResponseHandler.generateOkResponse(
+                menuService.getIntermediateMenuWithParent(menuBean, roleId)
+        );
+    }
+
+    @GetMapping("/mapped/{moduleId}/{rootMenu}/{level}/{parentMenuId}/{roleId}")
+    public @ResponseBody ResponseEntity<?> getAlreadyMappedMenu(@PathVariable("moduleId") Integer moduleId,
+                                                             @PathVariable("rootMenu") Integer rootMenuId,
+                                                             @PathVariable("level") Integer level,
+                                                             @PathVariable("parentMenuId") Integer parentMenuId,
+                                                             @PathVariable("roleId") Integer roleId) {
+        MenuBean menuBean = new MenuBean();
+        menuBean.setGnumModuleId(moduleId);
+        menuBean.setRootMenuId(rootMenuId);
+        menuBean.setGnumMenuLevel(level + 1);
+        menuBean.setGnumParentId(parentMenuId);
+        return ResponseHandler.generateOkResponse(
+                menuService.getMappedMenus(menuBean, roleId)
         );
     }
 
     @GetMapping("root")
     public @ResponseBody ResponseEntity<?> getRootMenuCombo() throws IllegalAccessException {
         List<ComboBean> comboList = new ArrayList<>();
-        comboList.add(new ComboBean("1", "Admin"));
-        comboList.add(new ComboBean("2", "Reports"));
         comboList.add(new ComboBean("3", "Services"));
+        comboList.add(new ComboBean("2", "Reports"));
+        comboList.add(new ComboBean("1", "Admin"));
         return ResponseHandler.generateOkResponse(
                 ComboUtility.generateComboData(comboList)
         );
@@ -82,5 +143,13 @@ public class MenuController {
         MenuBean menuBean = new MenuBean();
         menuBean.setIdsToDelete(idsToDelete);
         return ResponseHandler.generateResponse(menuService.delete(menuBean));
+    }
+
+    @GetMapping("mapped/user")
+    public @ResponseBody ResponseEntity<?> getMenusMappedWithUser() throws Exception {
+        Integer userId = RequestUtility.getUserId();
+        return ResponseHandler.generateResponse(
+                menuService.getMenusMappedWithUser(userId)
+        );
     }
 }

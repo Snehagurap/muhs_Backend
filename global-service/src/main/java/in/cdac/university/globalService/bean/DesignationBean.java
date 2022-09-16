@@ -6,16 +6,27 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import java.util.Date;
+
 @Getter
 @Setter
 @ToString
 public class DesignationBean {
     @ComboKey
-    private Integer gnumDesigCode;
+    private Integer unumPostId;
+    private Integer unumIsvalid;
+    private Date udtEffFrm;
+    private Date udtEffTo;
+    private Date udtEntryDate;
+    private Integer unumParentPostId;
+    private Integer unumUnivId;
+    private String ustrDescription;
+
     @ComboValue
-    private String gstrDesignationName;
-    private String gstrDesignationShortName;
-    private Integer gnumSeatid;
-    private Integer gnumIsvalid;
-    private String gstrRemarks;
+    private String ustrPostFname;
+    private String ustrPostSname;
 }

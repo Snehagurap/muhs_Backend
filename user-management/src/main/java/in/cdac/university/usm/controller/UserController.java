@@ -2,10 +2,7 @@ package in.cdac.university.usm.controller;
 
 import in.cdac.university.usm.bean.UserBean;
 import in.cdac.university.usm.service.UserService;
-import in.cdac.university.usm.util.ListPageUtility;
-import in.cdac.university.usm.util.RequestUtility;
-import in.cdac.university.usm.util.ResponseHandler;
-import in.cdac.university.usm.util.ServiceResponse;
+import in.cdac.university.usm.util.*;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +31,12 @@ public class UserController {
         return ResponseHandler.generateResponse(userService.get(userId));
     }
 
+    @GetMapping("category/{categoryId}")
+    public @ResponseBody ResponseEntity<?> getUsersForCategory(@PathVariable("categoryId") Integer categoryId) throws IllegalAccessException {
+        return ResponseHandler.generateOkResponse(
+                ComboUtility.generateComboData(userService.getUsersForCategory(categoryId))
+        );
+    }
     @PostMapping("save")
     public @ResponseBody ResponseEntity<?> save(@Valid @RequestBody UserBean userBean) throws Exception {
         userBean.setGnumEntryBy(RequestUtility.getUserId());

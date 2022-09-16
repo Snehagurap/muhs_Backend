@@ -18,7 +18,7 @@ public class DesignationController {
     private DesignationService designationService;
 
     @GetMapping("combo")
-    public @ResponseBody ResponseEntity<?> getDesignationCombo() throws IllegalAccessException {
+    public @ResponseBody ResponseEntity<?> getDesignationCombo() throws Exception {
         return ResponseHandler.generateOkResponse(
                 ComboUtility.generateComboData(designationService.getAllDesignations())
         );

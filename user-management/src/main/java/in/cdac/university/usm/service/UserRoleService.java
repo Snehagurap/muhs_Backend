@@ -65,7 +65,7 @@ public class UserRoleService {
             mappedUserRoles.clear();
             for (int i=0;i<userRoleBean.getMappedRoles().length;++i) {
                 UmmtUserRoleMst userRole = new UmmtUserRoleMst();
-                userRole.setGnumUserId(userRole.getGnumUserId());
+                userRole.setGnumUserId(userRoleBean.getGnumUserId());
                 userRole.setGnumRoleId(userRoleBean.getMappedRoles()[i]);
                 userRole.setGblIsvalid(1);
                 userRole.setGnumIsDefault(0);
