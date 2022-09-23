@@ -1,0 +1,96 @@
+package in.cdac.university.committee.util;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.sisyphsu.dateparser.DateParserUtils;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+
+import java.lang.reflect.Field;
+import java.util.Date;
+import java.util.Map;
+
+@Component
+@RefreshScope
+@Getter
+@Slf4j
+public class RestUtility {
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private static String serviceGlobalUrl;
+
+    @Value("${config.service.global.url}")
+    public void setServiceGlobalUrl(String url) {
+        serviceGlobalUrl = url;
+    }
+
+    public enum SERVICE_TYPE {
+        GLOBAL(serviceGlobalUrl);
+
+        public final String url;
+        SERVICE_TYPE(String url) {
+            this.url = url;
+        }
+    }
+
+    public <T> T get(SERVICE_TYPE serviceType, String url, Class<T> returnType) {
+        try {
+            RestResponse<?> restResponse = restTemplate.getForObject(serviceType.url + "/" + url,
+                    RestResponse.class);
+
+            if (restResponse == null) {
+                return null;
+            }
+
+            if (restResponse.getStatus() != 0) {
+                T data = returnType.getDeclaredConstructor().newInstance();
+                Map<String, String> objectMap = restResponse.getData();
+                for (Field field : data.getClass().getDeclaredFields()) {
+                    field.setAccessible(true);
+                    if (objectMap.containsKey(field.getName())) {
+                        Object obj = toObject(field.getType(), objectMap.get(field.getName()));
+                        field.set(data, obj);
+                    }
+                }
+                return data;
+            }
+            log.info("Error Message: {}", restResponse.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private Object toObject(Class<?> clazz, String value) {
+        if (value == null || value.equals("null"))
+            return null;
+        if (Boolean.class == clazz)
+            return Boolean.parseBoolean(value);
+        if (Byte.class == clazz)
+            return Byte.parseByte(value);
+        if (Short.class == clazz)
+            return Short.parseShort(value);
+        if (Integer.class == clazz)
+            return Integer.parseInt(value);
+        if (Long.class == clazz)
+            return Long.parseLong(value);
+        if (Float.class == clazz)
+            return Float.parseFloat(value);
+        if (Double.class == clazz)
+            return Double.parseDouble(value);
+        if (Date.class == clazz) {
+            return DateParserUtils.parseDate(value);
+        }
+        return value;
+    }
+}

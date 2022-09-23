@@ -6,6 +6,17 @@ spring:
   profiles:
     active:
       - dev
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 5MB
+      max-request-size: 200MB
+
+ftp:
+  url: ftp://10.10.10.54
+  username: dvdms_odisha
+  password: odisha$987
 
 server:
   port: 8004

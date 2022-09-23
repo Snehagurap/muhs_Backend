@@ -1,15 +1,15 @@
 package in.cdac.university.committee.util;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 public class ServiceResponse {
 
-    private final Integer status;
+    private Integer status;
     private String message;
     private Object responseObject;
 

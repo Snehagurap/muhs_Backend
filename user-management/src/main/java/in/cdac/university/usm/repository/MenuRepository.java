@@ -2,6 +2,7 @@ package in.cdac.university.usm.repository;
 
 import in.cdac.university.usm.entity.UmmtMenuMst;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,4 +27,8 @@ public interface MenuRepository extends JpaRepository<UmmtMenuMst, Integer> {
 
     Optional<UmmtMenuMst> findByGstrMenuNameIgnoreCaseAndGnumMenuIdNotAndGnumIsvalidIn(String menuName, Integer menuId, List<Integer> isValid);
 
+    @Query("select m from UmmtMenuMst m " +
+            "where m.gnumIsvalid = 1 " +
+            "and (m.gstrUrl = null or trim(m.gstrUrl) = '') ")
+    List<UmmtMenuMst> findAllRootMenus();
 }

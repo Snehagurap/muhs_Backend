@@ -1,13 +1,15 @@
 package in.cdac.university.globalService.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import javax.persistence.*;
 
 @Getter
 @Setter
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 public class GmstCollegeMstPK implements Serializable {
 
 	@Column(name="unum_college_id")

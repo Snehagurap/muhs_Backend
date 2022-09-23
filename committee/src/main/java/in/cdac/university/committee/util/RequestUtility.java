@@ -2,6 +2,7 @@ package in.cdac.university.committee.util;
 
 import com.google.gson.Gson;
 import in.cdac.university.committee.bean.UserDetail;
+import in.cdac.university.committee.exception.SessionNotFoundException;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -19,27 +20,27 @@ public class RequestUtility {
         return new Locale(language);
     }
 
-    public static Long getUserId() throws Exception {
+    public static Long getUserId() throws SessionNotFoundException {
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
         String userId = request.getHeader("userId");
         if (userId == null || Long.parseLong(userId) <= 0)
-            throw new Exception ("Session not present");
+            throw new SessionNotFoundException ("Session not present");
         return Long.parseLong(userId);
     }
 
-    public static UserDetail getUserDetail() throws Exception {
+    public static UserDetail getUserDetail() throws SessionNotFoundException {
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
         String userDetail = request.getHeader("userDetail");
         if (userDetail == null)
-            throw new Exception ("Session not present");
+            throw new SessionNotFoundException ("Session not present");
         Gson gson = new Gson();
         return gson.fromJson(userDetail, UserDetail.class);
     }
 
-    public static Integer getUniversityId() throws Exception {
+    public static Integer getUniversityId() throws SessionNotFoundException {
         int universityId = getUserDetail().getUniversityId();
         if (universityId <= 0)
-            throw new Exception("Session not present");
+            throw new SessionNotFoundException("Session not present");
         return universityId;
     }
 }

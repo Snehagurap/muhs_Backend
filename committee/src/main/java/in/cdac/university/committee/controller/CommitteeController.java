@@ -3,6 +3,7 @@ package in.cdac.university.committee.controller;
 import in.cdac.university.committee.bean.CommitteeBean;
 import in.cdac.university.committee.service.CommitteeService;
 import in.cdac.university.committee.util.ComboUtility;
+import in.cdac.university.committee.util.ListPageUtility;
 import in.cdac.university.committee.util.RequestUtility;
 import in.cdac.university.committee.util.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +38,15 @@ public class CommitteeController {
     public ResponseEntity<?> getCommitteeCombo() throws Exception {
         return ResponseHandler.generateOkResponse(
                 ComboUtility.generateComboData(
-                        committeeService.getCommitteeList()
+                        committeeService.getCommitteeCombo()
                 )
+        );
+    }
+
+    @GetMapping("creator/listPage")
+    public ResponseEntity<?> getListPage() throws Exception {
+        return ResponseHandler.generateOkResponse(
+                ListPageUtility.generateListPageData(committeeService.getCommitteeList())
         );
     }
 }

@@ -11,7 +11,7 @@ public class ServiceResponse {
 
     private final Integer status;
     private String message;
-    private Object responeObject;
+    private Object responseObject;
 
     public static ServiceResponse errorResponse(String message) {
         return ServiceResponse.builder()

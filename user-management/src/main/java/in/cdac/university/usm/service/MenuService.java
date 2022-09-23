@@ -2,6 +2,7 @@ package in.cdac.university.usm.service;
 
 import in.cdac.university.usm.bean.IntermediateMenuBean;
 import in.cdac.university.usm.bean.MenuBean;
+import in.cdac.university.usm.bean.MenuToDisplay;
 import in.cdac.university.usm.entity.UmmtMenuMst;
 import in.cdac.university.usm.entity.UmmtRoleMenuMst;
 import in.cdac.university.usm.entity.UmmtUserRoleMst;
@@ -262,9 +263,85 @@ public class MenuService {
             );
         }
 
+        List<MenuToDisplay> menusToDisplays = processMenus(BeanUtils.copyListProperties(mappedMenus, MenuToDisplay.class));
+        if (menusToDisplays.size() == 1) {
+            menusToDisplays = menusToDisplays.get(0).getSubMenuList();
+        }
+
         return ServiceResponse.builder()
                 .status(1)
-                .responeObject(mappedMenus)
+                .responeObject(menusToDisplays)
+                .build();
+    }
+
+    private List<MenuToDisplay> processMenus(List<MenuToDisplay> menus) {
+        List<MenuToDisplay> rootMenus = BeanUtils.copyListProperties(
+                menuRepository.findAllRootMenus(), MenuToDisplay.class
+        );
+
+        boolean isSubMenuProcessRequired;
+        int counter = 0;
+        Set<Integer> rootMenusToProcess = rootMenus.stream().map(MenuToDisplay::getGnumMenuId).collect(Collectors.toSet());
+        do {
+            isSubMenuProcessRequired = processSubMenus(rootMenusToProcess, rootMenus, menus, counter);
+            menus = filterMenusWithoutSubMenus(rootMenus);
+            rootMenusToProcess = rootMenus
+                    .stream()
+                    .filter(menu -> menu.getSubMenuList() == null || menu.getSubMenuList().size() == 0)
+                    .map(MenuToDisplay::getGnumMenuId)
+                    .collect(Collectors.toSet());
+
+            counter++;
+        } while (isSubMenuProcessRequired);
+
+        rootMenus.removeIf(menu -> menu.getGnumParentId() != 0 || menu.getSubMenuList() == null || menu.getSubMenuList().isEmpty());
+        return rootMenus;
+    }
+
+    private boolean processSubMenus(Set<Integer> rootMenusToProcess, List<MenuToDisplay> rootMenuList, List<MenuToDisplay> menusList, int counter) {
+        if (counter >= 4)
+            return false;
+        boolean isSubMenuProcessed = false;
+        for (MenuToDisplay menu : menusList) {
+            for (MenuToDisplay rootMenu: rootMenuList) {
+                if (rootMenusToProcess.contains(rootMenu.getGnumMenuId())) {
+                    if (menu.getGnumParentId().equals(rootMenu.getGnumMenuId())) {
+                        List<MenuToDisplay> subMenuList = rootMenu.getSubMenuList();
+                        if (subMenuList == null)
+                            subMenuList = new ArrayList<>();
+                        subMenuList.add(menu);
+                        rootMenu.setSubMenuList(subMenuList);
+                        isSubMenuProcessed = true;
+                    }
+                }
+            }
+        }
+        return isSubMenuProcessed;
+    }
+
+    private List<MenuToDisplay> filterMenusWithoutSubMenus(List<MenuToDisplay> menus) {
+        return menus.stream()
+                .filter(menu -> menu.getSubMenuList() != null)
+                .toList();
+    }
+
+    public ServiceResponse getMenusUrlsMappedWithUser(Integer userId) {
+        List<UmmtUserRoleMst> mappedRoles = userRoleRepository.findByGnumUserIdAndGblIsvalid(userId, 1);
+        List<UmmtMenuMst> mappedMenus = new ArrayList<>();
+        if (!mappedRoles.isEmpty()) {
+            List<UmmtRoleMenuMst> mappedMenusWithRole = roleMenuRepository.findByGnumRoleIdInAndGnumIsvalidOrderByGnumDisplayOrder(
+                    mappedRoles.stream().map(UmmtUserRoleMst::getGnumRoleId).toList(),
+                    1
+            );
+
+            mappedMenus = menuRepository.findByGnumMenuIdInAndGnumIsvalid(
+                    mappedMenusWithRole.stream().map(UmmtRoleMenuMst::getGnumMenuId).toList(),
+                    1
+            );
+        }
+        return ServiceResponse.builder()
+                .status(1)
+                .responeObject(BeanUtils.copyListProperties(mappedMenus, MenuToDisplay.class))
                 .build();
     }
 }

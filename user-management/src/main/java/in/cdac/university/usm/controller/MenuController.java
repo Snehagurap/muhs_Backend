@@ -152,4 +152,12 @@ public class MenuController {
                 menuService.getMenusMappedWithUser(userId)
         );
     }
+
+    @GetMapping("mapped/url/user")
+    public @ResponseBody ResponseEntity<?> getMenusUrlsMappedWithUser() throws Exception {
+        Integer userId = RequestUtility.getUserId();
+        return ResponseHandler.generateResponse(
+                menuService.getMenusUrlsMappedWithUser(userId)
+        );
+    }
 }

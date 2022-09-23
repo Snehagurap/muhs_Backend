@@ -1,5 +1,6 @@
 package in.cdac.university.globalService.controller;
 
+import in.cdac.university.globalService.bean.ComboBean;
 import in.cdac.university.globalService.service.GlobalService;
 import in.cdac.university.globalService.util.ComboUtility;
 import in.cdac.university.globalService.util.ResponseHandler;
@@ -24,9 +25,11 @@ public class GlobalController {
     public ResponseEntity<?> getAcademicYearCombo() {
         Calendar cal = Calendar.getInstance();
         int currentYear = cal.get(Calendar.YEAR);
-        List<Integer> academicYears = IntStream.range(-1, 3)
+        List<ComboBean> academicYears = IntStream.range(-1, 3)
                 .map(value -> currentYear + value)
                 .boxed()
+                .map(String::valueOf)
+                .map(year -> new ComboBean(year, year))
                 .toList();
 
         return ResponseHandler.generateOkResponse(

@@ -11,10 +11,10 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
-@ToString
 public class MenuBean extends GlobalBean {
 
     @ComboKey
@@ -52,4 +52,11 @@ public class MenuBean extends GlobalBean {
 
     @ListColumn(order = 4, name = "Parent")
     private String gstrParentName;
+
+    private List<MenuBean> subMenuList;
+
+    @Override
+    public String toString() {
+        return this.getGnumMenuId() + ": " + this.getGstrMenuName();
+    }
 }

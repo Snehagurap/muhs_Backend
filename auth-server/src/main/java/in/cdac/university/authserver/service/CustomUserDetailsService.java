@@ -19,7 +19,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -39,8 +38,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public CustomUser loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("Checking the user: " + username);
-        HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
-        String applicationType = request.getHeader("applicationType");
+        String applicationType = "1";
+        try {
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            applicationType = request.getHeader("applicationType");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return switch (applicationType) {
             case "1" ->

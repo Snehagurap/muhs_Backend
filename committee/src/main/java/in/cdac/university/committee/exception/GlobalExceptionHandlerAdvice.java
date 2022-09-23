@@ -51,4 +51,12 @@ public class GlobalExceptionHandlerAdvice {
         }
         return ResponseHandler.generateResponse(0, "Parameter types mismatch: Bad Request", message);
     }
+
+    @ExceptionHandler(SessionNotFoundException.class)
+    public ResponseEntity<Object> handleSessionNotFoundException(SessionNotFoundException e) {
+        log.error("Handling SessionNotFoundException: " + e.getClass().getCanonicalName());
+        e.printStackTrace();
+        String message = e.getMessage();
+        return ResponseHandler.generateResponse(0, "Session not present", message);
+    }
 }

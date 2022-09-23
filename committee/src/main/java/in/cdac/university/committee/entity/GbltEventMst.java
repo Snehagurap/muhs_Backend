@@ -2,6 +2,7 @@ package in.cdac.university.committee.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -33,7 +34,7 @@ public class GbltEventMst implements Serializable {
 	private Date udtEventTodt;
 
 	@Column(name="unum_college_id")
-	private Integer unumCollegeId;
+	private Long unumCollegeId;
 
 	@Column(name="unum_comid")
 	private Long unumComid;
@@ -58,5 +59,9 @@ public class GbltEventMst implements Serializable {
 
 	@Column(name="ustr_event_name")
 	private String ustrEventName;
+
+	@Formula("(select c.ustr_event_typename from ucom.gblt_eventtype_mst c " +
+			"where c.unum_event_typeid = unum_event_typeid )")
+	private String eventTypeName;
 
 }

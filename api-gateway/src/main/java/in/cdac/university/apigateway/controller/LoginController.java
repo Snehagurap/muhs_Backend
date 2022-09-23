@@ -112,11 +112,12 @@ public class LoginController {
 
     @PostMapping(value = "/refreshToken")
     public ResponseEntity<?> refreshToken(@Valid @RequestBody Token token) {
-        log.info("Checking Token " + token.getToken());
+        log.debug("Checking Token {} ", token.getToken());
         final String url = oauthUrl + "/oauth/token";
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth(oauthClientId, oauthClientSecret);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.set("applicationType", token.getApplicationType());
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("refresh_token", token.getToken());

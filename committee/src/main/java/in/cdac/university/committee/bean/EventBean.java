@@ -1,0 +1,58 @@
+package in.cdac.university.committee.bean;
+
+import in.cdac.university.committee.util.annotations.ComboKey;
+import in.cdac.university.committee.util.annotations.ComboValue;
+import in.cdac.university.committee.util.annotations.ListColumn;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
+
+@Getter
+@Setter
+@ToString
+public class EventBean {
+
+    @ListColumn(omit = true)
+    @ComboKey
+    private Long unumEventid;
+    private Integer unumIsvalid;
+    private Date udtEntryDate;
+
+    @ListColumn(order = 4, name = "From Date")
+    @NotNull(message = "Event From Date is mandatory")
+    private Date udtEventFromdt;
+
+    @ListColumn(order = 5, name = "To Date")
+    @NotNull(message = "Event To Date is mandatory")
+    private Date udtEventTodt;
+
+    @NotNull(message = "College Name is mandatory")
+    private Integer unumCollegeId;
+
+    @NotNull(message = "Committee Name is mandatory")
+    private Long unumComid;
+    private Long unumEntryUid;
+
+    @NotNull(message = "Event Days is mandatory")
+    private Integer unumEventDurationDays;
+
+    @NotNull(message = "Event Type is mandatory")
+    private Integer unumEventTypeid;
+
+    private Integer unumUnivId;
+    private String ustrCollegeName;
+    private String ustrEventDescription;
+
+    @ListColumn(order = 3, name = "Event name")
+    @ComboValue
+    @NotBlank(message = "Event Name is mandatory")
+    private String ustrEventName;
+
+    @ListColumn(order = 2, name = "Event Type")
+    private String eventTypeName;
+
+}

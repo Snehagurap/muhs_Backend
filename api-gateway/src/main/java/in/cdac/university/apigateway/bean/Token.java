@@ -9,4 +9,6 @@ public class Token {
 
     @NotNull(message = "Token is mandatory")
     private String token;
+
+    private String applicationType;
 }

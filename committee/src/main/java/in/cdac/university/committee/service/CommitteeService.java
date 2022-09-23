@@ -11,8 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Transactional
@@ -31,6 +30,14 @@ public class CommitteeService {
         int noOfMembers = committeeBean.getUnumNoOfMembers();
         if (noOfMembers != committeeBean.getCommitteeDetail().size()) {
             return ServiceResponse.errorResponse(language.message("Not all members details defined"));
+        }
+
+        // Check for duplicate
+        Optional<GbltCommitteeMst> committeeMstOptional = committeeMasterRepository.duplicateCheck(committeeBean.getUstrComName(),
+                committeeBean.getUnumUnivId(), committeeBean.getUdtComStartDate(), committeeBean.getUdtComEndDate());
+
+        if (committeeMstOptional.isPresent()) {
+            return ServiceResponse.errorResponse(language.message("Committee name [" + committeeBean.getUstrComName() + "] already exists for the selected period."));
         }
 
         GbltCommitteeMst committeeMst = BeanUtils.copyProperties(committeeBean, GbltCommitteeMst.class);
@@ -65,11 +72,24 @@ public class CommitteeService {
                 .build();
     }
 
-    public List<CommitteeBean> getCommitteeList() throws Exception {
+    public List<CommitteeBean> getCommitteeList() {
         Integer universityId = RequestUtility.getUniversityId();
 
         return BeanUtils.copyListProperties(
                 committeeMasterRepository.findByUnumUnivIdAndUnumIsvalidOrderByUstrComNameAsc(universityId, 1),
+                CommitteeBean.class
+        );
+    }
+
+    public List<CommitteeBean> getCommitteeCombo() {
+        Calendar cal = Calendar.getInstance();
+        int currentYear = cal.get(Calendar.YEAR);
+        cal.set(Calendar.DATE, 1);
+        cal.set(Calendar.MONTH, 0);
+        cal.set(Calendar.YEAR, currentYear - 1);
+
+        return BeanUtils.copyListProperties(
+                committeeMasterRepository.activeCommitteeList(cal.getTime(), RequestUtility.getUniversityId()),
                 CommitteeBean.class
         );
     }

@@ -78,6 +78,13 @@
 			<scope>compile</scope>
 		</dependency>
 
+		<!-- Date Parser-->
+		<dependency>
+			<groupId>com.github.sisyphsu</groupId>
+			<artifactId>dateparser</artifactId>
+			<version>1.0.11</version>
+		</dependency>
+
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
