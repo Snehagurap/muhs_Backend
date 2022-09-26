@@ -8,14 +8,21 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class UserDetail {
+    @NotNull(message = "Username is mandatory")
     private String username;
+
+    @NotNull(message = "Password is mandatory")
     private String password;
+
     private String token;
     private String refresh_token;
     private Integer userId;
     private Integer userType;
     private Integer universityId;
     private Integer expires_in;
+    private String captchaId;
+    private String captcha;
+    private Integer isPostman;
 
     @NotNull(message = "Application Type cannot be blank")
     @Min(1)

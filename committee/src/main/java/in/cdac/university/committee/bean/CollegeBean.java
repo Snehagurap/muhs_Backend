@@ -1,4 +1,4 @@
-package in.cdac.university.committee.controller;
+package in.cdac.university.committee.bean;
 
 import in.cdac.university.committee.util.annotations.ComboKey;
 import in.cdac.university.committee.util.annotations.ComboValue;

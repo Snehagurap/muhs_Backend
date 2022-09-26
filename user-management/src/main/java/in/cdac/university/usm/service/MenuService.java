@@ -257,22 +257,42 @@ public class MenuService {
                     1
             );
 
-            mappedMenus = menuRepository.findByGnumMenuIdInAndGnumIsvalid(
-                    mappedMenusWithRole.stream().map(UmmtRoleMenuMst::getGnumMenuId).toList(),
-                    1
-            );
+            Map<Integer, Integer> menuOrder = new HashMap<>();
+            List<Integer> menuIds = new ArrayList<>();
+            for (UmmtRoleMenuMst roleMenuMst: mappedMenusWithRole) {
+                menuOrder.put(roleMenuMst.getGnumMenuId(), roleMenuMst.getGnumDisplayOrder());
+                menuIds.add(roleMenuMst.getGnumMenuId());
+
+            }
+
+            mappedMenus = menuRepository.findByGnumMenuIdInAndGnumIsvalid(menuIds, 1);
         }
 
-        List<MenuToDisplay> menusToDisplays = processMenus(BeanUtils.copyListProperties(mappedMenus, MenuToDisplay.class));
-        if (menusToDisplays.size() == 1) {
-            menusToDisplays = menusToDisplays.get(0).getSubMenuList();
+        List<MenuToDisplay> menusToDisplay = processMenus(BeanUtils.copyListProperties(mappedMenus, MenuToDisplay.class));
+        if (menusToDisplay.size() == 1) {
+            menusToDisplay = menusToDisplay.get(0).getSubMenuList();
         }
+
+        //sortMenus(menusToDisplay);
 
         return ServiceResponse.builder()
                 .status(1)
-                .responeObject(menusToDisplays)
+                .responeObject(menusToDisplay)
                 .build();
     }
+
+//    private void sortMenus(List<MenuToDisplay> menusToDisplay) {
+//        System.out.println("Menuts to sort " + menusToDisplay);
+//        for (MenuToDisplay menuToDisplay: menusToDisplay) {
+//            List<MenuToDisplay> subMenuList = menuToDisplay.getSubMenuList();
+//            if (subMenuList == null || subMenuList.size() == 0) {
+//                return;
+//            } else {
+//                subMenuList.stream().sorted(MenuToDisplay::);
+//            }
+//            sortMenus(subMenuList);
+//        }
+//    }
 
     private List<MenuToDisplay> processMenus(List<MenuToDisplay> menus) {
         List<MenuToDisplay> rootMenus = BeanUtils.copyListProperties(

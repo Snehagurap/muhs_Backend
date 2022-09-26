@@ -1,7 +1,7 @@
 package in.cdac.university.committee.service;
 
 import in.cdac.university.committee.bean.EventBean;
-import in.cdac.university.committee.controller.CollegeBean;
+import in.cdac.university.committee.bean.CollegeBean;
 import in.cdac.university.committee.entity.GbltEventMst;
 import in.cdac.university.committee.repository.EventRepository;
 import in.cdac.university.committee.util.*;

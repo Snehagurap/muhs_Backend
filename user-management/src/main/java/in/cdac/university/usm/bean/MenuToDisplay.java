@@ -28,6 +28,9 @@ public class MenuToDisplay {
     @JsonIgnore
     private String gstrModuleName;
 
+    @JsonIgnore
+    private Integer gnumDisplayOrder;
+
     private String icon;
 
     @JsonProperty("children")

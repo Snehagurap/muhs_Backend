@@ -1,11 +1,14 @@
 package in.cdac.university.apigateway.controller;
 
+import cn.apiclub.captcha.Captcha;
+import in.cdac.university.apigateway.bean.CaptchaBean;
 import in.cdac.university.apigateway.bean.Token;
 import in.cdac.university.apigateway.config.AccessTokenMapper;
 import in.cdac.university.apigateway.config.JwtUtil;
 import in.cdac.university.apigateway.exception.ErrorResponse;
 import in.cdac.university.apigateway.response.ResponseHandler;
 import in.cdac.university.apigateway.response.UserDetail;
+import in.cdac.university.apigateway.util.CaptchaUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
@@ -21,6 +24,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -51,17 +55,36 @@ public class LoginController {
             .expirationPolicy(ExpirationPolicy.CREATED)
             .build();
 
+    public final static ExpiringMap<UUID, String> captchaStore = ExpiringMap.builder()
+            .maxSize(50000)
+            .variableExpiration()
+            .expirationPolicy(ExpirationPolicy.CREATED)
+            .build();
+
     @PostMapping(value = "/login")
     public ResponseEntity<?> login(@Valid @RequestBody UserDetail userDetail,
                                    @RequestHeader(HttpHeaders.USER_AGENT) String userAgent,
                                    ServerHttpResponse httpResponse) {
+        if (userDetail.getIsPostman() == null && userDetail.getApplicationType() == 1) {
+            // Check for captcha
+            String captchaId = userDetail.getCaptchaId();
+            if (captchaId == null) {
+                return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, "Invalid Captcha");
+            }
+
+            UUID captchaUUID = UUID.fromString(captchaId);
+            String sessionCaptcha = captchaStore.get(captchaUUID);
+            String userCaptcha = userDetail.getCaptcha();
+            if (!captchaStore.containsKey(captchaUUID) || !userCaptcha.equals(sessionCaptcha)) {
+                return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, "Invalid Captcha");
+            }
+        }
+
         final String url = oauthUrl + "/oauth/token";
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth(oauthClientId, oauthClientSecret);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.set("applicationType", userDetail.getApplicationType().toString());
-
-        System.out.println("User Agent: " + userAgent);
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("username", userDetail.getUsername());
@@ -94,7 +117,7 @@ public class LoginController {
             response.setDetailMessage(e.getMessage());
             response.setResponseStatus(e.getStatusCode());
             response.setResponseCode(e.getRawStatusCode());
-            return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, "Invalid username/password",response);
+            return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, "Invalid username/password", response);
         }
     }
 
@@ -139,7 +162,7 @@ public class LoginController {
             response.setDetailMessage(e.getMessage());
             response.setResponseStatus(e.getStatusCode());
             response.setResponseCode(e.getRawStatusCode());
-            return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, "Invalid username/password",response);
+            return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, "Invalid username/password", response);
         }
     }
 
@@ -167,5 +190,21 @@ public class LoginController {
         }
         log.info("BlackListed Tokens: " + blackListedTokens);
         return ResponseHandler.generateResponse(HttpStatus.OK, "Logout Successful");
+    }
+
+    @GetMapping(value = "/captcha/{captchaId}")
+    public ResponseEntity<?> captcha(@PathVariable("captchaId") String captchaId) {
+        Captcha captcha = CaptchaUtil.createCaptcha(150, 70);
+        String answer = captcha.getAnswer();
+        String captchaImage = CaptchaUtil.encodeCaptcha(captcha);
+        UUID generatedCaptchaId;
+        if ("0".equals(captchaId)) {
+            generatedCaptchaId = UUID.randomUUID();
+        } else {
+            generatedCaptchaId = UUID.fromString(captchaId);
+        }
+        CaptchaBean captchaBean = new CaptchaBean(generatedCaptchaId, captchaImage);
+        captchaStore.put(generatedCaptchaId, answer, 30, TimeUnit.MINUTES);
+        return ResponseHandler.generateResponse(HttpStatus.OK, captchaBean);
     }
 }

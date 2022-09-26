@@ -2,6 +2,7 @@ package in.cdac.university.globalService.controller;
 
 import in.cdac.university.globalService.service.CollegeService;
 import in.cdac.university.globalService.util.ComboUtility;
+import in.cdac.university.globalService.util.ListPageUtility;
 import in.cdac.university.globalService.util.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,13 @@ public class CollegeController {
 
     @Autowired
     private CollegeService collegeService;
+
+    @GetMapping("listPage/{status}")
+    public ResponseEntity<?> getListPageData(@PathVariable("status") Integer status) throws Exception {
+        return ResponseHandler.generateOkResponse(
+                ListPageUtility.generateListPageData(collegeService.listPageData(status))
+        );
+    }
 
     @GetMapping("combo")
     public ResponseEntity<?> getCollegeCombo () throws Exception {

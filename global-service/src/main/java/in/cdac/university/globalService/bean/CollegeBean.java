@@ -2,6 +2,7 @@ package in.cdac.university.globalService.bean;
 
 import in.cdac.university.globalService.util.annotations.ComboKey;
 import in.cdac.university.globalService.util.annotations.ComboValue;
+import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -13,6 +14,7 @@ import java.util.Date;
 @ToString
 public class CollegeBean {
 
+    @ListColumn(omit = true)
     @ComboKey
     private Long unumCollegeId;
 
@@ -49,8 +51,11 @@ public class CollegeBean {
     private String ustrAddress3Marathi;
     private String ustrAntiRaggingcellContactno;
     private String ustrAntiRaggingcellEmailid;
+
+    @ListColumn(order = 3, name = "College Code")
     private String ustrColCode;
 
+    @ListColumn(order = 2, name = "College Name")
     @ComboValue
     private String ustrColFname;
     private String ustrColFnameMarathi;

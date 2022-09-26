@@ -37,20 +37,20 @@ public class AuthenticationFilter implements GatewayFilter {
         ServerHttpRequest request = exchange.getRequest();
         if (routerValidator.isSecured.test(request)) {
             if (this.isAuthMissing(request)) {
-                log.info("Authorization header is missing in the request.");
+                log.debug("Authorization header is missing in the request.");
                 return this.onError(exchange, "Authorization header is missing in the request");
             }
 
             final String token = this.getAuthHeader(request).substring(7);
 
             if (jwtUtil.isInvalid(token)) {
-                log.info("Token expired");
+                log.debug("Token expired");
                 return this.onError(exchange, "Token expired");
             }
 
             // Check for blacklisted tokens
             if (LoginController.blackListedTokens.containsKey(token)) {
-                log.info("User already logged out");
+                log.debug("User already logged out");
                 return this.onError(exchange, "User already logged out");
             }
 
@@ -78,7 +78,7 @@ public class AuthenticationFilter implements GatewayFilter {
 
     @SuppressWarnings("unchecked")
     private Mono<Void> onError(ServerWebExchange exchange, String error) {
-        log.info("Error in validating Token: " + error);
+        log.error("Error in validating Token: {}", error);
         ServerHttpResponse response = exchange.getResponse();
         ResponseEntity<Object> responseEntity = ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, error);
         error = new JSONObject((Map<String, Object>) Objects.requireNonNull(responseEntity.getBody())).toString();
@@ -88,7 +88,7 @@ public class AuthenticationFilter implements GatewayFilter {
     }
 
     private boolean isAuthMissing(ServerHttpRequest request) {
-        log.info("Request Headers: " + request.getHeaders());
+        log.debug("Request Headers: {}", request.getHeaders());
         return !request.getHeaders().containsKey("Authorization");
     }
 

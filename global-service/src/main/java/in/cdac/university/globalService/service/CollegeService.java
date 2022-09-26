@@ -23,6 +23,14 @@ public class CollegeService {
     @Autowired
     private Language language;
 
+    public List<CollegeBean> listPageData(int isValid) throws Exception {
+        int universityId = RequestUtility.getUniversityId();
+        return BeanUtils.copyListProperties(
+                collegeRepository.listPageData(isValid, universityId),
+                CollegeBean.class
+        );
+    }
+
     public List<CollegeBean> getColleges() throws Exception {
         int universityId = RequestUtility.getUniversityId();
         return BeanUtils.copyListProperties(
