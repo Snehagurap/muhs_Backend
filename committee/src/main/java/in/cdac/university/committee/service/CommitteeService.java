@@ -4,14 +4,17 @@ import in.cdac.university.committee.bean.CommitteeBean;
 import in.cdac.university.committee.bean.CommitteeDetailBean;
 import in.cdac.university.committee.entity.GbltCommitteeDtl;
 import in.cdac.university.committee.entity.GbltCommitteeMst;
+import in.cdac.university.committee.entity.GmstCommitteeRoleMst;
 import in.cdac.university.committee.repository.CommitteeDetailRepository;
 import in.cdac.university.committee.repository.CommitteeMasterRepository;
+import in.cdac.university.committee.repository.CommitteeRoleRepository;
 import in.cdac.university.committee.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -22,6 +25,9 @@ public class CommitteeService {
 
     @Autowired
     private CommitteeDetailRepository committeeDetailRepository;
+
+    @Autowired
+    private CommitteeRoleRepository committeeRoleRepository;
 
     @Autowired
     private Language language;
@@ -92,5 +98,40 @@ public class CommitteeService {
                 committeeMasterRepository.activeCommitteeList(cal.getTime(), RequestUtility.getUniversityId()),
                 CommitteeBean.class
         );
+    }
+
+    public ServiceResponse getCommittee(Long committeeId) {
+        if (committeeId == null) {
+            return ServiceResponse.errorResponse(language.mandatory("Committee Id"));
+        }
+
+        Optional<GbltCommitteeMst> committeeMstOptional = committeeMasterRepository.findByUnumIsvalidAndUnumComidAndUnumUnivId(1, committeeId, RequestUtility.getUniversityId());
+
+        if (committeeMstOptional.isEmpty()) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Committee", committeeId));
+        }
+
+        CommitteeBean committeeBean = BeanUtils.copyProperties(committeeMstOptional.get(), CommitteeBean.class);
+
+        List<GbltCommitteeDtl> committeeDtlList = committeeDetailRepository.findByUnumIsvalidAndUnumComidAndUnumUnivId(1, committeeId, RequestUtility.getUniversityId());
+        if (!committeeDtlList.isEmpty()) {
+            Map<Integer, String> committeeRoles = committeeRoleRepository.findAll().stream()
+                            .collect(Collectors.toMap(GmstCommitteeRoleMst::getUnumRoleId, GmstCommitteeRoleMst::getUstrRoleFname));
+
+            List<CommitteeDetailBean> committeeDetailBeans = committeeDtlList.stream().map(
+                    committeeDetail -> {
+                        CommitteeDetailBean committeeDetailBean = BeanUtils.copyProperties(committeeDetail, CommitteeDetailBean.class);
+                        committeeDetailBean.setRoleName(committeeRoles.getOrDefault(committeeDetail.getUnumRoleId(), ""));
+                        return committeeDetailBean;
+                    }
+            ).toList();
+
+            committeeBean.setCommitteeDetail(committeeDetailBeans);
+        }
+
+        return ServiceResponse.builder()
+                .status(1)
+                .responseObject(committeeBean)
+                .build();
     }
 }

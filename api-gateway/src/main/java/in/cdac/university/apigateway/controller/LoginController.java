@@ -69,14 +69,14 @@ public class LoginController {
             // Check for captcha
             String captchaId = userDetail.getCaptchaId();
             if (captchaId == null) {
-                return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, "Invalid Captcha");
+                return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, "Invalid Captcha", "1");
             }
 
             UUID captchaUUID = UUID.fromString(captchaId);
             String sessionCaptcha = captchaStore.get(captchaUUID);
             String userCaptcha = userDetail.getCaptcha();
             if (!captchaStore.containsKey(captchaUUID) || !userCaptcha.equals(sessionCaptcha)) {
-                return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, "Invalid Captcha");
+                return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, "Invalid Captcha", "1");
             }
         }
 

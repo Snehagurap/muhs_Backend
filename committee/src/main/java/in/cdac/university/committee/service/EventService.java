@@ -69,4 +69,21 @@ public class EventService {
                 EventBean.class
         );
     }
+
+    public ServiceResponse getEvent(Long eventId) {
+        if (eventId == null) {
+            return ServiceResponse.errorResponse(language.mandatory("Event Id"));
+        }
+
+        Optional<GbltEventMst> eventMst = eventRepository.findByUnumEventidAndUnumUnivIdAndUnumIsvalid(eventId, RequestUtility.getUniversityId(), 1);
+
+        if (eventMst.isEmpty()) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Event", eventId));
+        }
+
+        return ServiceResponse.builder()
+                .status(1)
+                .responseObject(BeanUtils.copyProperties(eventMst.get(), EventBean.class))
+                .build();
+    }
 }

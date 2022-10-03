@@ -1,4 +1,4 @@
-package in.cdac.university.committee.util;
+package in.cdac.university.globalService.util;
 
 import lombok.*;
 

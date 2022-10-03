@@ -44,5 +44,7 @@ public interface CommitteeMasterRepository extends JpaRepository<GbltCommitteeMs
 
     List<GbltCommitteeMst> findByUnumUnivIdAndUnumIsvalidOrderByUstrComNameAsc(Integer unumUnivId, Integer unumIsvalid);
 
+    Optional<GbltCommitteeMst> findByUnumIsvalidAndUnumComidAndUnumUnivId(Integer unumIsvalid, Long unumComid, Integer unumUnivId);
+
 
 }

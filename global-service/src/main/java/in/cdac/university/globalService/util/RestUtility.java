@@ -1,4 +1,4 @@
-package in.cdac.university.committee.util;
+package in.cdac.university.globalService.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.sisyphsu.dateparser.DateParserUtils;
@@ -34,15 +34,15 @@ public class RestUtility {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private static String serviceGlobalUrl;
+    private static String serviceCommiteeUrl;
 
-    @Value("${config.service.global.url}")
-    public void setServiceGlobalUrl(String url) {
-        serviceGlobalUrl = url;
+    @Value("${config.service.committee.url}")
+    public void setServiceCommiteeUrl(String url) {
+        serviceCommiteeUrl = url;
     }
 
     public enum SERVICE_TYPE {
-        GLOBAL(serviceGlobalUrl);
+        COMMITTEE(serviceCommiteeUrl);
 
         public final String url;
         SERVICE_TYPE(String url) {
@@ -52,6 +52,7 @@ public class RestUtility {
 
     public <T> T get(SERVICE_TYPE serviceType, String url, Class<T> returnType) {
         try {
+            // Get Session Details
             HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
             String userDetail = request.getHeader("userDetail");
 

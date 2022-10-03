@@ -43,4 +43,7 @@ public interface EventRepository extends JpaRepository<GbltEventMst, GbltEventMs
             "order by c.ustrEventName ")
     List<GbltEventMst> listPageData(@Param("universityId") Integer universityId, @Param("committeeId") Long committeeId);
 
+    Optional<GbltEventMst> findByUnumEventidAndUnumUnivIdAndUnumIsvalid(Long unumEventid, Integer unumUnivId, Integer unumIsvalid);
+
+
 }

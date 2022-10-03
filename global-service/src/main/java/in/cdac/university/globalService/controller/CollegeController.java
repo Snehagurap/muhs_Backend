@@ -1,15 +1,17 @@
 package in.cdac.university.globalService.controller;
 
+import in.cdac.university.globalService.bean.CollegeBean;
 import in.cdac.university.globalService.service.CollegeService;
 import in.cdac.university.globalService.util.ComboUtility;
 import in.cdac.university.globalService.util.ListPageUtility;
+import in.cdac.university.globalService.util.RequestUtility;
 import in.cdac.university.globalService.util.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/global/college")
@@ -35,9 +37,40 @@ public class CollegeController {
     }
 
     @GetMapping("{collegeId}")
-    public ResponseEntity<?> getCollegeById (@PathVariable("collegeId") Long collegeId) {
+    public ResponseEntity<?> getCollegeById (@PathVariable("collegeId") Long collegeId) throws Exception {
         return ResponseHandler.generateResponse(
                 collegeService.getCollegeById(collegeId)
+        );
+    }
+
+    @PostMapping("save")
+    public ResponseEntity<?> save(@Valid @RequestBody CollegeBean collegeBean) throws Exception {
+        collegeBean.setUdtEntryDate(new Date());
+        collegeBean.setUnumUnivId(RequestUtility.getUniversityId());
+        collegeBean.setUnumEntryUid(RequestUtility.getUserId());
+        return ResponseHandler.generateResponse(
+                collegeService.save(collegeBean)
+        );
+    }
+
+    @PutMapping("update")
+    public ResponseEntity<?> update(@Valid @RequestBody CollegeBean collegeBean) throws Exception {
+        collegeBean.setUdtEntryDate(new Date());
+        collegeBean.setUnumUnivId(RequestUtility.getUniversityId());
+        collegeBean.setUnumEntryUid(RequestUtility.getUserId());
+        return ResponseHandler.generateResponse(
+                collegeService.update(collegeBean)
+        );
+    }
+
+    @DeleteMapping("delete")
+    public ResponseEntity<?> delete(@RequestBody Long[] idsToDelete) throws Exception {
+        CollegeBean collegeBean = new CollegeBean();
+        collegeBean.setUdtEntryDate(new Date());
+        collegeBean.setUnumUnivId(RequestUtility.getUniversityId());
+        collegeBean.setUnumEntryUid(RequestUtility.getUserId());
+        return ResponseHandler.generateResponse(
+                collegeService.delete(collegeBean, idsToDelete)
         );
     }
 }

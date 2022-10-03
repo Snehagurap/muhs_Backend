@@ -49,4 +49,11 @@ public class CommitteeController {
                 ListPageUtility.generateListPageData(committeeService.getCommitteeList())
         );
     }
+
+    @GetMapping("{committeeId}")
+    public ResponseEntity<?> getCommittee(@PathVariable("committeeId") Long committeeId) throws Exception {
+        return ResponseHandler.generateResponse(
+                committeeService.getCommittee(committeeId)
+        );
+    }
 }

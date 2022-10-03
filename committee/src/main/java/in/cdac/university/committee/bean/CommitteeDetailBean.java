@@ -41,4 +41,6 @@ public class CommitteeDetailBean {
     private Integer unumRoleMaxExpYears;
     private Integer unumUnivId;
     private String ustrComroleDescription;
+
+    private String roleName;
 }

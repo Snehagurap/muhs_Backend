@@ -45,4 +45,11 @@ public class EventController {
                 )
         );
     }
+
+    @GetMapping("{eventId}")
+    public ResponseEntity<?> getEvent(@PathVariable("eventId") Long eventId) {
+        return ResponseHandler.generateResponse(
+                eventService.getEvent(eventId)
+        );
+    }
 }

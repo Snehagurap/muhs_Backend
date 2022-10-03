@@ -1,15 +1,13 @@
 package in.cdac.university.globalService.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.Column;
 import java.io.Serializable;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 public class GmstRegionMstPK implements Serializable {

@@ -1,15 +1,13 @@
 package in.cdac.university.globalService.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import javax.persistence.*;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 public class GmstAffiliationstatusMstPK implements Serializable {

@@ -11,6 +11,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +25,11 @@ public class GlobalExceptionHandlerAdvice {
     public ResponseEntity<Object> handleException(Exception e) {
         e.printStackTrace();
         log.error("Handling Exception: " + e.getClass().getCanonicalName());
-        return ResponseHandler.generateErrorResponse("Unable to process request at this time. Please try again");
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        return ResponseHandler.generateResponse(0, "Unable to process request at this time. Please try again",
+                sw.toString());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -58,5 +64,11 @@ public class GlobalExceptionHandlerAdvice {
         e.printStackTrace();
         String message = e.getMessage();
         return ResponseHandler.generateResponse(0, "Session not present", message);
+    }
+
+    @ExceptionHandler(ApplicationException.class)
+    public ResponseEntity<Object> handleApplicationException(ApplicationException e) {
+        e.printStackTrace();
+        return ResponseHandler.generateErrorResponse(e.getMessage());
     }
 }

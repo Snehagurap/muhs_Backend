@@ -41,7 +41,10 @@ public class SequenceRestartScheduler {
 
     final List<String> sequenceList = List.of(
             "ucom.seq_gblt_committee_mst",
-            "ucom.seq_gblt_event_mst"
+            "ucom.seq_gblt_event_mst",
+            "university.seq_gmst_subject_mst",
+            "university.seq_gmst_college_mst",
+            "university.seq_gmst_course_mst"
     );
 
     @Autowired
