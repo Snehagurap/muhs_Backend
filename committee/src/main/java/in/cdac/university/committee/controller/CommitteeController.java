@@ -1,6 +1,7 @@
 package in.cdac.university.committee.controller;
 
 import in.cdac.university.committee.bean.CommitteeBean;
+import in.cdac.university.committee.bean.CommitteeMemberBean;
 import in.cdac.university.committee.service.CommitteeService;
 import in.cdac.university.committee.util.ComboUtility;
 import in.cdac.university.committee.util.ListPageUtility;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Calendar;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/committee")
@@ -54,6 +56,24 @@ public class CommitteeController {
     public ResponseEntity<?> getCommittee(@PathVariable("committeeId") Long committeeId) throws Exception {
         return ResponseHandler.generateResponse(
                 committeeService.getCommittee(committeeId)
+        );
+    }
+
+    @GetMapping("withMembers/{eventId}")
+    public ResponseEntity<?> getCommitteeByEventIdWithMembers(@PathVariable("eventId") Long eventId) throws Exception {
+        return ResponseHandler.generateResponse(
+                committeeService.getCommitteeByEventIdWithMembers(eventId)
+        );
+    }
+
+    @PostMapping("memberMapping/save")
+    public ResponseEntity<?> saveMemberMapping(@Valid @RequestBody CommitteeMemberBean committeeMemberBean) {
+        committeeMemberBean.setUnumEntryUid(RequestUtility.getUserId());
+        committeeMemberBean.setUdtEntryDate(new Date());
+        committeeMemberBean.setUnumUnivId(RequestUtility.getUniversityId());
+        committeeMemberBean.setUnumIsvalid(1);
+        return ResponseHandler.generateResponse(
+                committeeService.saveMemberMapping(committeeMemberBean)
         );
     }
 }

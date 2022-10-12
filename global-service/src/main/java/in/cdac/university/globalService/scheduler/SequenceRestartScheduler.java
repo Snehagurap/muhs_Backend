@@ -1,4 +1,4 @@
-package in.cdac.university.committee.scheduler;
+package in.cdac.university.globalService.scheduler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,11 +40,21 @@ public class SequenceRestartScheduler {
     // but I don't care what day of the week that happens to be, I would put "10" in the day-of-month field and "?" in the day-of-week field.
 
     final List<String> sequenceList = List.of(
+            // Committee
             "ucom.seq_gblt_committee_mst",
             "ucom.seq_gblt_event_mst",
+            "ucom.seq_gblt_committee_member_dtl",
+
+            // University
             "university.seq_gmst_subject_mst",
             "university.seq_gmst_college_mst",
-            "university.seq_gmst_course_mst"
+            "university.seq_gmst_course_mst",
+            "university.seq_gmst_config_template_item_mst",
+            "university.seq_cmst_college_faculty_mst",
+            "university.seq_cmst_college_course_mst",
+
+            // Planning Board
+            "upb.seq_gblt_notification_master"
     );
 
     @Autowired

@@ -38,6 +38,14 @@ public interface EventRepository extends JpaRepository<GbltEventMst, GbltEventMs
 
     @Query("select c from GbltEventMst c " +
             "where c.unumIsvalid = 1 " +
+            "and c.udtEventTodt >= current_date " +
+            "and c.unumUnivId = :universityId " +
+            "and c.unumComid = :committeeId " +
+            "order by c.ustrEventName ")
+    List<GbltEventMst> activeEventListByCommitteeId(@Param("universityId") Integer universityId, @Param("committeeId") Long committeeId);
+
+    @Query("select c from GbltEventMst c " +
+            "where c.unumIsvalid = 1 " +
             "and c.unumComid = :committeeId " +
             "and c.unumUnivId = :universityId " +
             "order by c.ustrEventName ")

@@ -4,6 +4,7 @@ import in.cdac.university.globalService.entity.GmstNotificationTypeMst;
 import in.cdac.university.globalService.entity.GmstNotificationTypeMstPK;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,6 +15,8 @@ public interface NotificationTypeRepository extends JpaRepository<GmstNotificati
     @Query("select n from GmstNotificationTypeMst n " +
             "where n.unumIsvalid = 1 " +
             "and n.udtEffFrm <= current_date " +
-            "and coalesce(n.udtEffTo, current_date) >= current_date ")
-    List<GmstNotificationTypeMst> getAllNotificationTypes();
+            "and coalesce(n.udtEffTo, current_date) >= current_date " +
+            "and n.unumUnivId = :universityId " +
+            "order by ustrNtypeFname")
+    List<GmstNotificationTypeMst> getAllNotificationTypes(@Param("universityId") int universityId);
 }

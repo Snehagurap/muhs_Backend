@@ -5,13 +5,14 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 public class CommitteeDetailBean {
 
     private Long unumComroleid;
-    private Long unumIsvalid;
+    private Integer unumIsvalid;
     private Date udtEntryDate;
     private Long unumComid;
     private Integer unumComrolsno;
@@ -41,6 +42,11 @@ public class CommitteeDetailBean {
     private Integer unumRoleMaxExpYears;
     private Integer unumUnivId;
     private String ustrComroleDescription;
+    private String departmentName;
+    private String designationName;
 
     private String roleName;
+    private String facultyName;
+
+    private List<ComboBean> teachersCombo;
 }

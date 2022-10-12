@@ -31,7 +31,7 @@ public class EventBean {
     private Date udtEventTodt;
 
     @NotNull(message = "College Name is mandatory")
-    private Integer unumCollegeId;
+    private Long unumCollegeId;
 
     @NotNull(message = "Committee Name is mandatory")
     private Long unumComid;
@@ -55,4 +55,6 @@ public class EventBean {
     @ListColumn(order = 2, name = "Event Type")
     private String eventTypeName;
 
+    @ComboKey(index = 2)
+    private int isEventStarted;
 }

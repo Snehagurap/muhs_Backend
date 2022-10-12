@@ -17,7 +17,7 @@ public class NotificationTypeController {
     private NotificationTypeService notificationTypeService;
 
     @GetMapping("combo")
-    public ResponseEntity<?> getNotificationTypeCombo() throws IllegalAccessException {
+    public ResponseEntity<?> getNotificationTypeCombo() throws Exception {
         return ResponseHandler.generateOkResponse(
                 ComboUtility.generateComboData(notificationTypeService.getAllNotificationTypes())
         );

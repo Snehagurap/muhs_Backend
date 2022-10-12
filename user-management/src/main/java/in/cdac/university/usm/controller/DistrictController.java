@@ -22,6 +22,13 @@ public class DistrictController {
         );
     }
 
+    @GetMapping("/all")
+    public @ResponseBody ResponseEntity<?> getAllDistricts() throws IllegalAccessException {
+        return ResponseHandler.generateOkResponse(
+                districtService.getAllDistricts()
+        );
+    }
+
     @GetMapping("/listPage/{stateCode}")
     public @ResponseBody ResponseEntity<?> getListPage(@PathVariable("stateCode") Integer stateCode) throws IllegalAccessException {
         return ResponseHandler.generateOkResponse(

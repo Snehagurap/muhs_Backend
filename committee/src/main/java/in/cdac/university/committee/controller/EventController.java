@@ -37,6 +37,13 @@ public class EventController {
         );
     }
 
+    @GetMapping("combo/{committeeId}")
+    public ResponseEntity<?> getEventComboByCommitteeId(@PathVariable("committeeId") Long committeeId) throws Exception {
+        return ResponseHandler.generateOkResponse(
+                ComboUtility.generateComboData(eventService.getEventCombo(committeeId))
+        );
+    }
+
     @GetMapping("listPage/{committeeId}")
     public ResponseEntity<?> listPage(@PathVariable("committeeId") Long committeeId) throws IllegalAccessException {
         return ResponseHandler.generateOkResponse(

@@ -10,9 +10,9 @@ import java.util.Date;
 public class NotificationTypeBean {
 
     @ComboKey
-    private long unumNtypeId;
+    private Integer unumNtypeId;
 
-    private long unumIsvalid;
+    private Integer unumIsvalid;
     private Date udtEffFrm;
     private Date udtEffTo;
     private Date udtEntryDate;

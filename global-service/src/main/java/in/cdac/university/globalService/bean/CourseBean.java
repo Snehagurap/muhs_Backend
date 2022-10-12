@@ -62,19 +62,19 @@ public class CourseBean {
     private Integer unumIntranetcourseid;
 
     @Range(min = 0, max = 1, message = "Is Academic Department can be 0 or 1")
-    private Integer unumIsacaddept;
+    private Integer unumIsacaddept = 0;
 
     @Range(min = 0, max = 1, message = "Is Carry Forward can be 0 or 1")
-    private Integer unumIscarryforward;
+    private Integer unumIscarryforward = 0;
 
     @Range(min = 0, max = 1, message = "Is Eligibility Department can be 0 or 1")
-    private Integer unumIselegdept;
+    private Integer unumIselegdept = 0;
 
     @Range(min = 0, max = 1, message = "Is Examination Department can be 0 or 1")
-    private Integer unumIsexamdept;
+    private Integer unumIsexamdept = 0;
 
     @Range(min = 0, max = 1, message = "Is Scale Down can be 0 or 1")
-    private Integer unumIsscaledown;
+    private Integer unumIsscaledown = 0;
     private Integer unumUnivId;
 
     @ListColumn(order = 3, name = "Course Code")

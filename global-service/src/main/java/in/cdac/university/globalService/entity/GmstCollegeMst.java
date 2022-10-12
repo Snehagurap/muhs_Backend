@@ -2,6 +2,7 @@ package in.cdac.university.globalService.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -218,4 +219,6 @@ public class GmstCollegeMst implements Serializable {
 	@Column(name="ustr_website3")
 	private String ustrWebsite3;
 
+	@Formula("(select t.ustr_region_fname from university.gmst_region_mst t where t.unum_region_id = unum_regionid)")
+	private String regionName;
 }

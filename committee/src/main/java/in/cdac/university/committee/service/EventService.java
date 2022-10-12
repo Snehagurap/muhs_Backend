@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,11 +57,22 @@ public class EventService {
                 .build();
     }
 
-    public List<EventBean> getEventCombo() throws Exception {
+    public List<EventBean> getEventCombo() {
         return BeanUtils.copyListProperties(
                 eventRepository.activeEventList(RequestUtility.getUniversityId()),
                 EventBean.class
         );
+    }
+
+    public List<EventBean> getEventCombo(Long committeeId) {
+        return eventRepository.activeEventListByCommitteeId(RequestUtility.getUniversityId(), committeeId)
+                .stream()
+                .map(event -> {
+                    EventBean eventBean = BeanUtils.copyProperties(event, EventBean.class);
+                    eventBean.setIsEventStarted(event.getUdtEventFromdt().before(new Date()) ? 1 : 0);
+                    return eventBean;
+                })
+                .toList();
     }
 
     public List<EventBean> getListPageData(Long committeeId) {

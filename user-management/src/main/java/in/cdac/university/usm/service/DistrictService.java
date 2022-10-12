@@ -16,6 +16,14 @@ public class DistrictService {
     private DistrictRepository districtRepository;
 
     public List<DistrictBean> getAllDistricts(Integer stateCode) {
-        return BeanUtils.copyListProperties(districtRepository.findAllByGnumIsvalidAndGnumStatecodeOrderByStrDistNameAsc(1, stateCode), DistrictBean.class);
+        return BeanUtils.copyListProperties(
+                districtRepository.findAllByGnumIsvalidAndGnumStatecodeOrderByStrDistNameAsc(1, stateCode),
+                DistrictBean.class);
+    }
+
+    public List<DistrictBean> getAllDistricts() {
+        return BeanUtils.copyListProperties(
+                districtRepository.findAll(),
+                DistrictBean.class);
     }
 }

@@ -15,6 +15,8 @@ config:
       url: http://localhost:8004
     committee:
       url: http://localhost:8005
+    usm:
+      url: http://localhost:8003
 
 jwt:
   secret: BvPHGM8C0ia4uOuxxqPD5DTbWC9F9TWvPStp3pb7ARo0oK2mJ3pd3YG4lxA9i8bj6OTbadwezxgeEByY
@@ -31,6 +33,18 @@ spring:
     hibernate:
       dialect: org.hibernate.dialect.PostgreSQLDialect
       ddl-auto: none
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 5MB
+      max-request-size: 200MB
+
+ftp:
+  url: 10.226.80.24
+  username: devftpmso
+  password: mso_123
+
 
 logging:
   level:

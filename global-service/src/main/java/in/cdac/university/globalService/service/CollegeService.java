@@ -1,20 +1,18 @@
 package in.cdac.university.globalService.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import in.cdac.university.globalService.bean.CollegeBean;
+import in.cdac.university.globalService.bean.DistrictBean;
 import in.cdac.university.globalService.entity.GmstCollegeMst;
 import in.cdac.university.globalService.exception.ApplicationException;
 import in.cdac.university.globalService.repository.CollegeRepository;
-import in.cdac.university.globalService.util.BeanUtils;
-import in.cdac.university.globalService.util.Language;
-import in.cdac.university.globalService.util.RequestUtility;
-import in.cdac.university.globalService.util.ServiceResponse;
+import in.cdac.university.globalService.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CollegeService {
@@ -25,12 +23,31 @@ public class CollegeService {
     @Autowired
     private Language language;
 
+    @Autowired
+    private RestUtility restUtility;
+
+    @Autowired
+    private ObjectMapper mapper;
+
     public List<CollegeBean> listPageData(int isValid) throws Exception {
         int universityId = RequestUtility.getUniversityId();
-        return BeanUtils.copyListProperties(
-                collegeRepository.listPageData(isValid, universityId),
-                CollegeBean.class
-        );
+
+        // Get District List
+        DistrictBean[] districts = restUtility.get(RestUtility.SERVICE_TYPE.USM, Constants.URL_GET_ALL_DISTRICTS, DistrictBean[].class);
+        if (districts == null)
+            return new ArrayList<>();
+
+        Map<Integer, String> districtMap = Arrays.stream(districts)
+                .collect(Collectors.toMap(DistrictBean::getNumDistId, DistrictBean::getStrDistName));
+
+        return collegeRepository.listPageData(isValid, universityId)
+                .stream()
+                .map(college -> {
+                    CollegeBean collegeBean = BeanUtils.copyProperties(college, CollegeBean.class);
+                    collegeBean.setDistrictName(districtMap.getOrDefault(college.getUnumDistrictId(), ""));
+                    return collegeBean;
+                })
+                .toList();
     }
 
     public List<CollegeBean> getColleges() throws Exception {

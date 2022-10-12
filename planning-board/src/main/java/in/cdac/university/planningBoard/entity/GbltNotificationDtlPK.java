@@ -1,4 +1,4 @@
-package in.cdac.university.globalService.entity;
+package in.cdac.university.planningBoard.entity;
 
 import lombok.*;
 
@@ -7,13 +7,15 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class GmstTeacherMstPK implements Serializable {
-	@Column(name="unum_teacher_id")
-	private Long unumTeacherId;
+@EqualsAndHashCode
+public class GbltNotificationDtlPK implements Serializable {
+
+	@Column(name="unum_ndtl_id")
+	private Long unumNdtlId;
 
 	@Column(name="unum_isvalid")
 	private Integer unumIsvalid;
+
 }

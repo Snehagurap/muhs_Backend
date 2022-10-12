@@ -10,12 +10,12 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-@Table(name="gmst_teacher_mst", schema = "university")
-@IdClass(GmstTeacherMstPK.class)
-public class GmstTeacherMst implements Serializable {
+@Table(name="gmst_emp_mst", schema = "university")
+@IdClass(GmstEmpMstPK.class)
+public class GmstEmpMst implements Serializable {
 
 	@Id
-	private Long unumTeacherId;
+	private Long unumEmpId;
 
 	@Id
 	private Integer unumIsvalid;
@@ -90,10 +90,18 @@ public class GmstTeacherMst implements Serializable {
 	@Column(name="ustr_t_pan_no")
 	private String ustrTPanNo;
 
-	@Column(name="ustr_teacher_name")
-	private String ustrTeacherName;
+	@Column(name="ustr_emp_name")
+	private String ustrEmpName;
 
 	@Column(name="willingness_to_work_on_lic")
 	private String willingnessToWorkOnLic;
 
+	@Column(name="unum_dept_id")
+	private Integer unumDeptId;
+
+	@Column(name="ustr_emp_id")
+	private String ustrEmpId;
+
+	@Column(name="unum_is_teacher")
+	private Integer unumIsTeacher;
 }

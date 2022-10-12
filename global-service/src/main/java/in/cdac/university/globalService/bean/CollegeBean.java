@@ -148,4 +148,10 @@ public class CollegeBean {
     private String ustrWebsite1;
     private String ustrWebsite2;
     private String ustrWebsite3;
+
+    @ListColumn(order = 4, name = "District Name")
+    private String districtName;
+
+    @ListColumn(order = 5, name = "Region Name")
+    private String regionName;
 }

@@ -2,6 +2,8 @@ package in.cdac.university.globalService.bean;
 
 import lombok.*;
 
+import javax.validation.constraints.NotEmpty;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -9,5 +11,6 @@ import lombok.*;
 @ToString
 public class FtpBean {
 
+    @NotEmpty(message = "Filename is mandatory")
     private String fileName;
 }

@@ -251,13 +251,13 @@ public class MenuService {
         // Get Roles Mapped with User
         List<UmmtUserRoleMst> mappedRoles = userRoleRepository.findByGnumUserIdAndGblIsvalid(userId, 1);
         List<UmmtMenuMst> mappedMenus = new ArrayList<>();
+        Map<Integer, Integer> menuOrder = new HashMap<>();
         if (!mappedRoles.isEmpty()) {
             List<UmmtRoleMenuMst> mappedMenusWithRole = roleMenuRepository.findByGnumRoleIdInAndGnumIsvalidOrderByGnumDisplayOrder(
                     mappedRoles.stream().map(UmmtUserRoleMst::getGnumRoleId).toList(),
                     1
             );
 
-            Map<Integer, Integer> menuOrder = new HashMap<>();
             List<Integer> menuIds = new ArrayList<>();
             for (UmmtRoleMenuMst roleMenuMst: mappedMenusWithRole) {
                 menuOrder.put(roleMenuMst.getGnumMenuId(), roleMenuMst.getGnumDisplayOrder());
@@ -273,7 +273,7 @@ public class MenuService {
             menusToDisplay = menusToDisplay.get(0).getSubMenuList();
         }
 
-        //sortMenus(menusToDisplay);
+        sortMenus(menusToDisplay, menuOrder);
 
         return ServiceResponse.builder()
                 .status(1)
@@ -281,18 +281,17 @@ public class MenuService {
                 .build();
     }
 
-//    private void sortMenus(List<MenuToDisplay> menusToDisplay) {
-//        System.out.println("Menuts to sort " + menusToDisplay);
-//        for (MenuToDisplay menuToDisplay: menusToDisplay) {
-//            List<MenuToDisplay> subMenuList = menuToDisplay.getSubMenuList();
-//            if (subMenuList == null || subMenuList.size() == 0) {
-//                return;
-//            } else {
-//                subMenuList.stream().sorted(MenuToDisplay::);
-//            }
-//            sortMenus(subMenuList);
-//        }
-//    }
+    private void sortMenus(List<MenuToDisplay> menusToDisplay, Map<Integer, Integer> menuOrder) {
+        for (MenuToDisplay menuToDisplay: menusToDisplay) {
+            List<MenuToDisplay> subMenuList = menuToDisplay.getSubMenuList();
+            if (subMenuList == null || subMenuList.size() == 0) {
+                return;
+            } else {
+                subMenuList.sort(Comparator.comparing(o -> menuOrder.getOrDefault(o.getGnumMenuId(), 0)));
+            }
+            sortMenus(subMenuList, menuOrder);
+        }
+    }
 
     private List<MenuToDisplay> processMenus(List<MenuToDisplay> menus) {
         List<MenuToDisplay> rootMenus = BeanUtils.copyListProperties(

@@ -2,6 +2,7 @@ package in.cdac.university.committee.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
+@ToString
 @Table(name="gblt_event_mst", schema = "ucom")
 @IdClass(GbltEventMstPK.class)
 public class GbltEventMst implements Serializable {

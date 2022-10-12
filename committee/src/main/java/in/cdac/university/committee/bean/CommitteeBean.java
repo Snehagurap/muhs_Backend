@@ -61,6 +61,8 @@ public class CommitteeBean {
     private String ustrComDescription;
     private Integer ustrComFormonth;
     private Long unumEntryUid;
+    private String committeeTypeName;
+    private String facultyName;
 
     @NotNull(message = "Committee details are mandatory")
     @Valid

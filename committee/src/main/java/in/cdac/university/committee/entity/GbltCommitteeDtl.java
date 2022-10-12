@@ -3,6 +3,7 @@ package in.cdac.university.committee.entity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -67,4 +68,13 @@ public class GbltCommitteeDtl implements Serializable {
 
 	@Column(name = "unum_entry_uid")
 	private Long unumEntryUid;
+
+	@Formula("(select t.ustr_cfaculty_fname from university.gmst_coursefaculty_mst t where t.unum_cfaculty_id = unum_role_cfaculty_id)")
+	private String facultyName;
+
+	@Formula("(select t.ustr_post_fname from university.gmst_post_mst t where t.unum_post_id = unum_role_post_id)")
+	private String departmentName;
+
+	@Formula("(select t.ustr_dept_fname from university.gmst_department_mst t where t.unum_dept_id = unum_role_department_id)")
+	private String designationName;
 }
