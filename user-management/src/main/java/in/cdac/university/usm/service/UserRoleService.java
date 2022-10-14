@@ -50,10 +50,7 @@ public class UserRoleService {
         );
         MappedComboBean mappedComboBean = new MappedComboBean(mappedRoleCombo, notMappedRoleCombo);
 
-        return ServiceResponse.builder()
-                .status(1)
-                .responeObject(mappedComboBean)
-                .build();
+        return ServiceResponse.successObject(mappedComboBean);
     }
 
     public ServiceResponse save(UserRoleBean userRoleBean) {

@@ -37,11 +37,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public CustomUser loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("Checking the user: " + username);
+        log.debug("Checking the user: " + username);
         String applicationType = "1";
         try {
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
             applicationType = request.getHeader("applicationType");
+            log.debug("Application Type {}", applicationType);
         } catch (Exception e) {
             e.printStackTrace();
         }

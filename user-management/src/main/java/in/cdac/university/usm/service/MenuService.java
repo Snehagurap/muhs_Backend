@@ -59,10 +59,7 @@ public class MenuService {
 
         MenuBean menuBean = BeanUtils.copyProperties(menuMstOptional.get(), MenuBean.class);
 
-        return ServiceResponse.builder()
-                .status(1)
-                .responeObject(menuBean)
-                .build();
+        return ServiceResponse.successObject(menuBean);
     }
 
     public ServiceResponse save(MenuBean menuBean) {
@@ -275,10 +272,7 @@ public class MenuService {
 
         sortMenus(menusToDisplay, menuOrder);
 
-        return ServiceResponse.builder()
-                .status(1)
-                .responeObject(menusToDisplay)
-                .build();
+        return ServiceResponse.successObject(menusToDisplay);
     }
 
     private void sortMenus(List<MenuToDisplay> menusToDisplay, Map<Integer, Integer> menuOrder) {
@@ -358,9 +352,6 @@ public class MenuService {
                     1
             );
         }
-        return ServiceResponse.builder()
-                .status(1)
-                .responeObject(BeanUtils.copyListProperties(mappedMenus, MenuToDisplay.class))
-                .build();
+        return ServiceResponse.successObject(BeanUtils.copyListProperties(mappedMenus, MenuToDisplay.class));
     }
 }

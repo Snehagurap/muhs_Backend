@@ -4,6 +4,7 @@ import in.cdac.university.planningBoard.util.annotations.ListColumn;
 import in.cdac.university.planningBoard.util.annotations.ListColumnBean;
 
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class ListPageUtility {
@@ -34,6 +35,7 @@ public class ListPageUtility {
         Objects.requireNonNull(dataList, "List is empty");
 
         List<Map<String, String>> list = new ArrayList<>();
+        SimpleDateFormat sdf = null;
         for (Object obj : dataList) {
             Class<?> clazz = obj.getClass();
             Map<String, String> map = new LinkedHashMap<>();
@@ -41,7 +43,13 @@ public class ListPageUtility {
                 field.setAccessible(true);
                 if (field.isAnnotationPresent(ListColumn.class)) {
                     Object fieldValue = field.get(obj);
-                    map.put(field.getName(), String.valueOf(fieldValue == null ? "" : fieldValue));
+                    if (field.getType() == Date.class) {
+                        if (sdf == null)
+                            sdf = new SimpleDateFormat(Constants.dateFormat);
+                        map.put(field.getName(), sdf.format(fieldValue));
+                    } else {
+                        map.put(field.getName(), String.valueOf(fieldValue == null ? "" : fieldValue));
+                    }
                 }
             }
             list.add(map);

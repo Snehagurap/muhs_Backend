@@ -12,6 +12,12 @@ import java.util.Date;
 @ToString
 public class DocumentTypeBean {
 
+    private Long key;
+
+    public Long getKey() {
+        return unumDocId;
+    }
+
     private Long unumDocId;
 
     @JsonIgnore

@@ -11,7 +11,10 @@ public class RouterValidator {
 
     public static final List<String> apiWithoutAuthentication = List.of(
             "/api/login",
-            "/api/register"
+            "/api/register",
+            "/usm/state/",
+            "/usm/district/",
+            "/global/applicant/draft/"
     );
 
     public Predicate<ServerHttpRequest> isSecured = request -> apiWithoutAuthentication.stream()

@@ -1,0 +1,44 @@
+package in.cdac.university.globalService.controller;
+
+import in.cdac.university.globalService.bean.DraftApplicantBean;
+import in.cdac.university.globalService.service.DraftApplicantService;
+import in.cdac.university.globalService.util.ResponseHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.Date;
+
+@RestController
+@RequestMapping("/global/applicant")
+public class ApplicantController {
+
+    @Autowired
+    private DraftApplicantService draftApplicantService;
+
+    @PostMapping("draft/save")
+    public ResponseEntity<?> saveDraftApplicant(@Valid @RequestBody DraftApplicantBean draftApplicantBean) {
+        draftApplicantBean.setUnumEntryUid(0L);
+        draftApplicantBean.setUdtEffFrom(new Date());
+        draftApplicantBean.setUdtEntryDate(new Date());
+        draftApplicantBean.setUnumIsvalid(2);
+        return ResponseHandler.generateResponse(
+                draftApplicantService.save(draftApplicantBean)
+        );
+    }
+
+    @PostMapping("draft/validateOtp")
+    public ResponseEntity<?> validateOtp(@RequestBody DraftApplicantBean draftApplicantBean) {
+        return ResponseHandler.generateResponse(
+                draftApplicantService.validateOtp(draftApplicantBean)
+        );
+    }
+
+    @PostMapping("draft/{applicantId}")
+    public ResponseEntity<?> getDraftApplicantById(@PathVariable("applicantId") Long applicantId) {
+        return ResponseHandler.generateResponse(
+                draftApplicantService.getApplicantById(applicantId)
+        );
+    }
+}

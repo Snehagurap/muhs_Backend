@@ -168,7 +168,7 @@ public class LoginController {
 
     @PostMapping(value = "/checkToken")
     public ResponseEntity<?> checkToken(@Valid @RequestBody Token token) {
-        log.info("Checking Token " + token.getToken());
+        log.debug("Checking Token: {}", token.getToken());
         // Checking token validity
         if (jwtUtil.isInvalid(token.getToken())) {
             return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, "Invalid Token");
@@ -178,17 +178,17 @@ public class LoginController {
 
     @PostMapping(value = "/logout")
     public ResponseEntity<?> logout(@Valid @RequestBody Token token) {
-        log.info("Log out Token: " + token.getToken());
+        log.debug("Log out Token: {}", token.getToken());
         // Checking token validity
         if (!jwtUtil.isInvalid(token.getToken())) {
             long ttlForToken = jwtUtil.getTTLForToken(token.getToken());
-            log.info("TTL for token on logout " + ttlForToken);
+            log.debug("TTL for token on logout: {}", ttlForToken);
             if (ttlForToken > 0) {
-                log.info("Adding token to blacklist");
+                log.debug("Adding token to blacklist");
                 blackListedTokens.put(token.getToken(), "1", ttlForToken, TimeUnit.MILLISECONDS);
             }
         }
-        log.info("BlackListed Tokens: " + blackListedTokens);
+        log.debug("BlackListed Tokens: {}", blackListedTokens);
         return ResponseHandler.generateResponse(HttpStatus.OK, "Logout Successful");
     }
 

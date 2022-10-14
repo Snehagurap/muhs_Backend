@@ -161,9 +161,6 @@ public class UserTypeService {
         userTypeBean.setGnumUserCatId(ummtUserTypeMst.getUserCategoryMst().getGnumUserCatId());
         userTypeBean.setGnumRoleId(ummtUserTypeMst.getRoleMst().getGnumRoleId());
 
-        return ServiceResponse.builder()
-                .status(1)
-                .responeObject(userTypeBean)
-                .build();
+        return ServiceResponse.successObject(userTypeBean);
     }
 }

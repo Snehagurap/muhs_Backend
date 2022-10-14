@@ -2,14 +2,12 @@ package in.cdac.university.planningBoard.controller;
 
 import in.cdac.university.planningBoard.bean.NotificationBean;
 import in.cdac.university.planningBoard.service.NotificationService;
+import in.cdac.university.planningBoard.util.ListPageUtility;
 import in.cdac.university.planningBoard.util.RequestUtility;
 import in.cdac.university.planningBoard.util.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Date;
@@ -29,6 +27,20 @@ public class NotificationController {
         notificationBean.setUnumUnivId(RequestUtility.getUniversityId());
         return ResponseHandler.generateResponse(
                 notificationService.save(notificationBean)
+        );
+    }
+
+    @GetMapping("listPage/{year}")
+    public ResponseEntity<?> listPage(@PathVariable("year") String year) throws IllegalAccessException {
+        return ResponseHandler.generateOkResponse(
+                ListPageUtility.generateListPageData(notificationService.getListPageData(year))
+        );
+    }
+
+    @GetMapping("{notificationId}")
+    public ResponseEntity<?> getNotificationById(@PathVariable("notificationId") Long notificationId) throws Exception {
+        return ResponseHandler.generateResponse(
+                notificationService.getNotificationById(notificationId)
         );
     }
 }

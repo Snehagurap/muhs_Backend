@@ -1,26 +1,22 @@
 package in.cdac.university.planningBoard.service;
 
-import in.cdac.university.planningBoard.bean.FtpBean;
-import in.cdac.university.planningBoard.bean.NotificationBean;
-import in.cdac.university.planningBoard.bean.NotificationDocumentBean;
+import in.cdac.university.planningBoard.bean.*;
 import in.cdac.university.planningBoard.entity.GbltNotificationDocDtl;
 import in.cdac.university.planningBoard.entity.GbltNotificationDtl;
 import in.cdac.university.planningBoard.entity.GbltNotificationMaster;
+import in.cdac.university.planningBoard.entity.GbltNotificationMasterPK;
 import in.cdac.university.planningBoard.exception.ApplicationException;
 import in.cdac.university.planningBoard.repository.NotificationDetailRepository;
 import in.cdac.university.planningBoard.repository.NotificationDocumentRepository;
 import in.cdac.university.planningBoard.repository.NotificationMasterRepository;
-import in.cdac.university.planningBoard.util.BeanUtils;
-import in.cdac.university.planningBoard.util.Language;
-import in.cdac.university.planningBoard.util.RestUtility;
-import in.cdac.university.planningBoard.util.ServiceResponse;
+import in.cdac.university.planningBoard.util.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class NotificationService {
@@ -48,7 +44,7 @@ public class NotificationService {
             if (notificationDocumentBean.getUstrFilePath() != null && !notificationDocumentBean.getUstrFilePath().isBlank()) {
                 // Save the file to permanent location on FTP
                 FtpBean ftpBean = new FtpBean(notificationDocumentBean.getUstrFilePath());
-                String response = restUtility.post(RestUtility.SERVICE_TYPE.GLOBAL, "file/moveToFinal", ftpBean, String.class);
+                String response = restUtility.postForMessage(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_MOVE_FILE, ftpBean, String.class);
                 if (response == null) {
                     throw new ApplicationException("Unable to upload file");
                 }
@@ -81,6 +77,7 @@ public class NotificationService {
         }
 
         List<GbltNotificationDocDtl> gbltNotificationDocDtls = new ArrayList<>();
+        int noOfDocumentsUploaded = 0;
         for (int i = 0; i < notificationBean.getDocuments().size(); i++) {
             NotificationDocumentBean notificationDocumentBean = notificationBean.getDocuments().get(i);
             if (notificationDocumentBean.getUstrFilePath() != null && !notificationDocumentBean.getUstrFilePath().isBlank()) {
@@ -94,8 +91,12 @@ public class NotificationService {
                 gbltNotificationDocDtl.setUnumNdocid(Long.valueOf(gbltNotificationMaster.getUnumNid() + StringUtils.leftPad(Integer.toString(i+1), 5, '0')));
                 gbltNotificationDocDtl.setUnumSNo(i+1);
                 gbltNotificationDocDtls.add(gbltNotificationDocDtl);
+                noOfDocumentsUploaded++;
             }
         }
+        if (noOfDocumentsUploaded == 0)
+            throw new ApplicationException("No Document uploaded");
+
         if (!gbltNotificationDocDtls.isEmpty()) {
             documentRepository.saveAll(gbltNotificationDocDtls);
         }
@@ -104,5 +105,52 @@ public class NotificationService {
                 .status(1)
                 .message(language.saveSuccess("Notification"))
                 .build();
+    }
+
+    public List<NotificationBean> getListPageData(String year) {
+        NotificationTypeBean[] notificationTypes = restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_NOTIFICATION_TYPE, NotificationTypeBean[].class);
+        Map<Integer, String> mapNotificationType = Arrays.stream(notificationTypes)
+                .collect(Collectors.toMap(NotificationTypeBean::getUnumNtypeId, NotificationTypeBean::getUstrNtypeFname));
+
+        return masterRepository.findByUnumIsvalidAndUstrAcademicYearOrderByUdtNDtDesc(1, year)
+                .stream()
+                .map(gbltNotificationMaster -> {
+                    NotificationBean notificationBean = BeanUtils.copyProperties(gbltNotificationMaster, NotificationBean.class);
+                    notificationBean.setNotificationTypeName(mapNotificationType.getOrDefault(notificationBean.getUnumNtypeId(), ""));
+                    return notificationBean;
+                })
+                .toList();
+    }
+
+    public ServiceResponse getNotificationById(Long notificationId) throws Exception {
+        Optional<GbltNotificationMaster> gbltNotificationMasterOptional = masterRepository.findById(new GbltNotificationMasterPK(notificationId, 1));
+        if (gbltNotificationMasterOptional.isEmpty())
+            return ServiceResponse.errorResponse(language.notFoundForId("Notification", notificationId));
+
+        GbltNotificationMaster gbltNotificationMaster = gbltNotificationMasterOptional.get();
+
+        // Get Notification Type
+        NotificationTypeBean notificationTypeBean = restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_NOTIFICATION_TYPE_BY_ID + gbltNotificationMaster.getUnumNtypeId(), NotificationTypeBean.class);
+        if (notificationTypeBean == null)
+            return ServiceResponse.errorResponse(language.notFoundForId("Notification Type", gbltNotificationMaster.getUnumNtypeId()));
+
+        NotificationBean notificationBean = BeanUtils.copyProperties(gbltNotificationMaster, NotificationBean.class);
+        notificationBean.setNotificationTypeName(notificationTypeBean.getUstrNtypeFname());
+
+        // Get Notification Details
+        List<GbltNotificationDtl> gbltNotificationDtls = detailRepository.findByUnumIsvalidAndUnumUnivIdAndUnumNidOrderByUnumSnoDisplayorderAsc(
+                1, RequestUtility.getUniversityId(), notificationId
+        );
+
+        notificationBean.setNotificationDetails(BeanUtils.copyListProperties(gbltNotificationDtls, NotificationDetailBean.class));
+
+        // Get Documents Details
+        List<GbltNotificationDocDtl> gbltNotificationDocDtls = documentRepository.findByUnumIsvalidAndUnumUnivIdAndUnumNidOrderByUnumSnoDisplayorderAsc(
+                1, RequestUtility.getUniversityId(), notificationId
+        );
+
+        notificationBean.setDocuments(BeanUtils.copyListProperties(gbltNotificationDocDtls, NotificationDocumentBean.class));
+
+        return ServiceResponse.successObject(notificationBean);
     }
 }

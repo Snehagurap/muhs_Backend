@@ -1,5 +1,6 @@
 package in.cdac.university.planningBoard.bean;
 
+import in.cdac.university.planningBoard.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -15,10 +16,12 @@ import java.util.List;
 @Setter
 @ToString
 public class NotificationBean {
+    @ListColumn(omit = true)
     private Long unumNid;
     private Integer unumIsvalid;
     private Date udtEntryDate;
 
+    @ListColumn(name = "Notification Date")
     @NotNull(message = "Notification Date is mandatory")
     private Date udtNDt;
 
@@ -69,9 +72,11 @@ public class NotificationBean {
     private String ustrApprovingUsername;
     private String ustrDescription;
 
+    @ListColumn(order = 4, name = "Notification Title")
     @NotNull(message = "Notification Title is mandatory")
     private String ustrNMainHeading;
 
+    @ListColumn(order = 2, name = "Notification No.")
     @NotNull(message = "Notification No. is mandatory")
     private String ustrNNo;
 
@@ -87,4 +92,7 @@ public class NotificationBean {
     @Size(min = 1, message = "Document details are mandatory")
     @NotNull(message = "Document details are mandatory")
     private List<NotificationDocumentBean> documents;
+
+    @ListColumn(order = 3, name = "Notification Type")
+    private String notificationTypeName;
 }

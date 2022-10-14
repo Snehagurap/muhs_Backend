@@ -86,10 +86,7 @@ public class UserService {
                 .orElse("");
         userBean.setDefaultRoleName(roleName);
 
-        return ServiceResponse.builder()
-                .status(1)
-                .responeObject(userBean)
-                .build();
+        return ServiceResponse.successObject(userBean);
     }
 
     public ServiceResponse save(UserBean userBean) {

@@ -26,6 +26,6 @@ public class ResponseHandler {
     }
 
     public static ResponseEntity<Object> generateResponse(ServiceResponse serviceResponse) {
-        return generateResponse(serviceResponse.getStatus(), serviceResponse.getMessage(), serviceResponse.getResponeObject());
+        return generateResponse(serviceResponse.getStatus(), serviceResponse.getMessage(), serviceResponse.getResponseObject());
     }
 }

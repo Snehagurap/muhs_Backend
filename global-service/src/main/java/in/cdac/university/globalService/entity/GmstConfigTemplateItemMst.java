@@ -2,11 +2,11 @@ package in.cdac.university.globalService.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-
 
 @Entity
 @Table(name="gmst_config_template_item_mst", schema = "university")
@@ -99,4 +99,6 @@ public class GmstConfigTemplateItemMst implements Serializable {
 	@Column(name="ustr_value_text")
 	private String ustrValueText;
 
+	@Formula("(select c.ustr_uict_desc from university.gmst_config_uicontrol_type_mst c where c.unum_uict_id = unum_ui_control_id and c.unum_isvalid = 1)")
+	private String controlTypeName;
 }

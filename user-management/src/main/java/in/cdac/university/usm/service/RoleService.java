@@ -158,10 +158,7 @@ public class RoleService {
         RoleBean roleBean = BeanUtils.copyProperties(roleMstOptional.get(), RoleBean.class);
         roleBean.setGnumModuleId(roleMstOptional.get().getModule().getGnumModuleId());
 
-        return ServiceResponse.builder()
-                .status(1)
-                .responeObject(roleBean)
-                .build();
+        return ServiceResponse.successObject(roleBean);
     }
 
     public List<RoleBean> getRoleComboForModule(Integer moduleId) {

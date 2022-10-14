@@ -19,7 +19,7 @@ public class MenuToDisplay {
     @JsonIgnore
     private Integer gnumParentId;
 
-    @JsonProperty("label")
+    @JsonProperty("gstrmenuname")
     private String gstrMenuName;
 
     @JsonProperty("to")
@@ -38,5 +38,12 @@ public class MenuToDisplay {
 
     public void setGstrUrl(String gstrUrl) {
         this.gstrUrl = gstrUrl == null ? "" : gstrUrl;
+    }
+
+    public String getLabel() {
+        if (this.gnumParentId == 0)
+            return gstrModuleName + " " + gstrMenuName;
+        else
+            return gstrMenuName;
     }
 }

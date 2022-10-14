@@ -18,5 +18,8 @@ public interface NotificationTypeRepository extends JpaRepository<GmstNotificati
             "and coalesce(n.udtEffTo, current_date) >= current_date " +
             "and n.unumUnivId = :universityId " +
             "order by ustrNtypeFname")
-    List<GmstNotificationTypeMst> getAllNotificationTypes(@Param("universityId") int universityId);
+    List<GmstNotificationTypeMst> getAllValidNotificationTypes(@Param("universityId") int universityId);
+
+    List<GmstNotificationTypeMst> findByUnumIsvalidInAndUnumUnivIdOrderByUstrNtypeFname(List<Integer> unumIsvalid, Integer unumUnivId);
+
 }
