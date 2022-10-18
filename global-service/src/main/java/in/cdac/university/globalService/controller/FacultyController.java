@@ -24,4 +24,11 @@ public class FacultyController {
                 )
         );
     }
+
+    @GetMapping("all")
+    public ResponseEntity<?> allFaculties() throws Exception {
+        return ResponseHandler.generateResponse(
+                facultyService.allFaculties()
+        );
+    }
 }

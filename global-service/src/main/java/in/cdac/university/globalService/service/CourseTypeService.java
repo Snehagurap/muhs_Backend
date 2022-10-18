@@ -1,9 +1,11 @@
 package in.cdac.university.globalService.service;
 
 import in.cdac.university.globalService.bean.CourseTypeBean;
+import in.cdac.university.globalService.controller.GmstCourseTypeMst;
 import in.cdac.university.globalService.repository.CourseTypeRepository;
 import in.cdac.university.globalService.util.BeanUtils;
 import in.cdac.university.globalService.util.RequestUtility;
+import in.cdac.university.globalService.util.ServiceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,13 @@ public class CourseTypeService {
         return BeanUtils.copyListProperties(
                 courseTypeRepository.getAllCourseTypes(RequestUtility.getUniversityId()),
                 CourseTypeBean.class
+        );
+    }
+
+    public ServiceResponse getAllCourseTypes(Integer universityId) {
+        List<GmstCourseTypeMst> courseTypeMsts = courseTypeRepository.findByUnumIsvalidAndUnumUnivId(1, universityId);
+        return ServiceResponse.successObject(
+                BeanUtils.copyListProperties(courseTypeMsts, CourseTypeBean.class)
         );
     }
 }

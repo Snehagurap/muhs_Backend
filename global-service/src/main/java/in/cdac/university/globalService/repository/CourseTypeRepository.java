@@ -18,4 +18,7 @@ public interface CourseTypeRepository extends JpaRepository<GmstCourseTypeMst, L
             "and c.unumUnivId = :universityId " +
             "order by ustrCtypeFname ")
     List<GmstCourseTypeMst> getAllCourseTypes(@Param("universityId") int universityId);
+
+    List<GmstCourseTypeMst> findByUnumIsvalidAndUnumUnivId(Integer unumIsvalid, Integer unumUnivId);
+
 }

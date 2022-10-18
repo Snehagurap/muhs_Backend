@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -319,5 +320,55 @@ public class NotificationService {
         }
 
         return ServiceResponse.successMessage(language.deleteSuccess("Notification"));
+    }
+
+    public ServiceResponse getActiveNotifications() throws Exception {
+        Integer universityId = RequestUtility.getUniversityId();
+        List<GbltNotificationMaster> activeNotifications = masterRepository.getActiveNotifications(universityId);
+
+        NotificationTypeBean[] notificationTypes = restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_NOTIFICATION_TYPE, NotificationTypeBean[].class);
+        Map<Integer, String> mapNotificationType = Arrays.stream(notificationTypes)
+                .collect(Collectors.toMap(NotificationTypeBean::getUnumNtypeId, NotificationTypeBean::getUstrNtypeFname));
+
+        CourseTypeBean[] courseTypeBeans = restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_ALL_COURSE_TYPES, CourseTypeBean[].class);
+        Map<Integer, String> mapCourseType = Arrays.stream(courseTypeBeans)
+                .collect(Collectors.toMap(CourseTypeBean::getUnumCtypeId, CourseTypeBean::getUstrCtypeFname));
+
+        FacultyBean[] facultyBeans = restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_ALL_FACULTIES, FacultyBean[].class);
+        Map<Integer, String> mapFaculty = Arrays.stream(facultyBeans)
+                .collect(Collectors.toMap(FacultyBean::getUnumCfacultyId, FacultyBean::getUstrCfacultyFname));
+
+        List<NotificationApplyBean> notificationApplyBeans = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat(Constants.dateFormat);
+        activeNotifications.forEach(activeNotification -> {
+            NotificationApplyBean notificationApplyBean = new NotificationApplyBean();
+            String notificationName = activeNotification.getUstrNMainHeading();
+            if (activeNotification.getUstrNSubHeading() != null && !activeNotification.getUstrNSubHeading().isBlank()) {
+                notificationName += ", " + activeNotification.getUstrNSubHeading();
+            }
+            notificationApplyBean.setNotificationName(notificationName);
+            notificationApplyBean.setNotificationDate(sdf.format(activeNotification.getUdtNDt()));
+            notificationApplyBean.setNotificationYear(Integer.valueOf(activeNotification.getUstrAcademicYear()));
+            notificationApplyBean.setNotificationId(activeNotification.getUnumNid());
+
+            // Get Notification Details
+            List<GbltNotificationDtl> notificationDtlList = detailRepository.findByUnumIsvalidAndUnumUnivIdAndUnumNidOrderByUnumSnoDisplayorderAsc(
+                    1, universityId, activeNotification.getUnumNid()
+            );
+            Map<String, Map<String, NotificationApplyDetailBean>> applyDetails = new HashMap<>();
+            for (GbltNotificationDtl notificationDtl: notificationDtlList) {
+                String courseTypeName = mapCourseType.getOrDefault(notificationDtl.getUnumCoursetypeId(), "");
+                Map<String, NotificationApplyDetailBean> notificationDetailBeanMap = applyDetails.computeIfAbsent(courseTypeName, k -> new HashMap<>());
+
+                String notificationTypeName = mapNotificationType.getOrDefault(notificationDtl.getUnumNotificationTypeId(), "");
+                NotificationApplyDetailBean applyDetailBean = notificationDetailBeanMap.computeIfAbsent(notificationTypeName, k -> new NotificationApplyDetailBean());
+                applyDetailBean.setFacultyName(mapFaculty.getOrDefault(notificationDtl.getUnumFacultyId(), ""));
+            }
+
+            notificationApplyBean.setNotificationDetails(applyDetails);
+            notificationApplyBeans.add(notificationApplyBean);
+        });
+
+        return ServiceResponse.successObject(notificationApplyBeans);
     }
 }

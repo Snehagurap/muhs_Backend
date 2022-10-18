@@ -253,7 +253,10 @@ public class CommitteeService {
     public ServiceResponse saveMemberMapping(CommitteeMemberBean committeeMemberBean) {
         int slNo = 1;
         for (CommitteeMember committeeMember: committeeMemberBean.getMembers()) {
-            if (committeeMember.getUnumPreference1Empid() == null && committeeMember.getUnumPreference2Empid() == null && committeeMember.getUnumPreference3Empid() == null) {
+            if (committeeMember.getUnumPreference1Empid() == null
+                    && committeeMember.getUnumPreference2Empid() == null
+                    && committeeMember.getUnumPreference3Empid() == null
+                    && committeeMember.getUnumPreference4Empid() == null) {
                 return ServiceResponse.errorResponse("No Employee select for S.No. " + slNo);
             }
             slNo++;
@@ -262,11 +265,18 @@ public class CommitteeService {
         slNo = 1;
         List<GbltCommitteeMemberDtl> membersToSave = new ArrayList<>();
         for (CommitteeMember committeeMember: committeeMemberBean.getMembers()) {
-            if (committeeMember.getUnumPreference1Empid() == null && committeeMember.getUnumPreference2Empid() == null && committeeMember.getUnumPreference3Empid() == null) {
-                return ServiceResponse.errorResponse("No Employee selected for S.No. " + slNo);
-            }
-
             GbltCommitteeMemberDtl committeeMemberDtl = BeanUtils.copyProperties(committeeMember, GbltCommitteeMemberDtl.class);
+            if (committeeMember.getUnumPreference1Empid() == null)
+                committeeMemberDtl.setUnumPreference1Empname(null);
+            if (committeeMember.getUnumPreference2Empid() == null)
+                committeeMemberDtl.setUnumPreference2Empname(null);
+            if (committeeMember.getUnumPreference3Empid() == null)
+                committeeMemberDtl.setUnumPreference3Empname(null);
+            if (committeeMember.getUnumPreference4Empid() == null)
+                committeeMemberDtl.setUnumPreference4Empname(null);
+            if (committeeMember.getUnumPreference5Empid() == null)
+                committeeMemberDtl.setUnumPreference5Empname(null);
+
             committeeMemberDtl.setUnumComMemberId(committeeMemberMappingRepository.getNextId());
             committeeMemberDtl.setUnumIsvalid(committeeMemberBean.getUnumIsvalid());
             committeeMemberDtl.setUdtEntryDate(committeeMemberBean.getUdtEntryDate());

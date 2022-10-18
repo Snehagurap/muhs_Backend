@@ -66,4 +66,11 @@ public class NotificationController {
                 notificationService.delete(notificationBean, idsToDelete)
         );
     }
+
+    @GetMapping("active")
+    public ResponseEntity<?> getActiveNotifications() throws Exception {
+        return ResponseHandler.generateResponse(
+                notificationService.getActiveNotifications()
+        );
+    }
 }

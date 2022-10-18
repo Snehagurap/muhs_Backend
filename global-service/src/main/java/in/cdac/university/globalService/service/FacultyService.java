@@ -4,6 +4,7 @@ import in.cdac.university.globalService.bean.FacultyBean;
 import in.cdac.university.globalService.repository.FacultyRepository;
 import in.cdac.university.globalService.util.BeanUtils;
 import in.cdac.university.globalService.util.RequestUtility;
+import in.cdac.university.globalService.util.ServiceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,15 @@ public class FacultyService {
         return BeanUtils.copyListProperties(
                 facultyRepository.getAllFaculty(universityId),
                 FacultyBean.class
+        );
+    }
+
+    public ServiceResponse allFaculties() throws Exception {
+        return ServiceResponse.successObject(
+                BeanUtils.copyListProperties(
+                        facultyRepository.findByUnumIsvalidAndUnumUnivId(1, RequestUtility.getUniversityId()),
+                        FacultyBean.class
+                )
         );
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -24,9 +25,11 @@ public interface NotificationMasterRepository extends JpaRepository<GbltNotifica
             "where u.unumNid in (:notificationId) and u.unumIsvalid = 1 ")
     Integer createLog(@Param("notificationId") List<Long> notificationId);
 
-    @Modifying(clearAutomatically = true)
-    @Query("update GbltNotificationMaster u set u.unumIsvalid = 0, " +
-            "unumEntryUid = :userId, udtEntryDate = now() " +
-            "where u.unumNid in (:notificationId) and u.unumIsvalid = 1 ")
-    Integer delete(@Param("notificationId") List<Long> notificationId, @Param("userId") Long userId);
+    @Query("select c from GbltNotificationMaster c " +
+            "where c.unumIsvalid = 1 " +
+            "and c.unumUnivId = :universityId " +
+            "and c.udtValidFrm <= current_date " +
+            "and coalesce(c.udtValidTo, current_date) >= current_date " +
+            "order by udtNDt desc ")
+    List<GbltNotificationMaster> getActiveNotifications(@PathVariable("universityId") Integer universityId);
 }
