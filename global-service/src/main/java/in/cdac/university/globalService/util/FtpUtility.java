@@ -3,6 +3,7 @@ package in.cdac.university.globalService.util;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
@@ -191,5 +192,29 @@ public class FtpUtility {
             }
         }
         return null;
+    }
+
+    public boolean isFileExists(String fileName) {
+        FTPClient ftpClient = connectToFtp();
+        if (ftpClient == null) {
+            log.error("Unable to establish a connection to FTP Server");
+            return false;
+        }
+        try {
+            log.debug("Checking if file [{}] exists", fileName);
+            log.debug("PWD: {}", ftpClient.printWorkingDirectory());
+            FTPFile[] ftpFile = ftpClient.listFiles(fileName);
+            return ftpFile.length > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                ftpClient.logout();
+                ftpClient.disconnect();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 }

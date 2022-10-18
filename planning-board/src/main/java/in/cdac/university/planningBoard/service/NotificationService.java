@@ -10,6 +10,7 @@ import in.cdac.university.planningBoard.repository.NotificationDetailRepository;
 import in.cdac.university.planningBoard.repository.NotificationDocumentRepository;
 import in.cdac.university.planningBoard.repository.NotificationMasterRepository;
 import in.cdac.university.planningBoard.util.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class NotificationService {
 
     @Autowired
@@ -152,5 +154,170 @@ public class NotificationService {
         notificationBean.setDocuments(BeanUtils.copyListProperties(gbltNotificationDocDtls, NotificationDocumentBean.class));
 
         return ServiceResponse.successObject(notificationBean);
+    }
+
+    @Transactional
+    public ServiceResponse update(NotificationBean notificationBean) {
+        // Check for Notification ID
+        Long notificationId = notificationBean.getUnumNid();
+        if (notificationId == null) {
+            return ServiceResponse.errorResponse(language.mandatory("Notification"));
+        }
+
+        Optional<GbltNotificationMaster> gbltNotificationMasterOptional = masterRepository.findById(
+                new GbltNotificationMasterPK(notificationId, 1));
+        if (gbltNotificationMasterOptional.isEmpty()) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Notification", notificationId));
+        }
+
+        // Upload Documents
+        for (int i = 0; i < notificationBean.getDocuments().size(); i++) {
+            NotificationDocumentBean notificationDocumentBean = notificationBean.getDocuments().get(i);
+            log.debug("File Path: {}", notificationDocumentBean.getUstrFilePath());
+            if (notificationDocumentBean.getUstrFilePath() != null && !notificationDocumentBean.getUstrFilePath().isBlank()) {
+                // Save the file to permanent location on FTP
+                FtpBean ftpBean = new FtpBean(notificationDocumentBean.getUstrFilePath());
+                // Check if file exists in final directory
+                String response = restUtility.postForMessage(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_IS_FILE_EXISTS, ftpBean, String.class);
+                log.debug("Is File exists {}", response);
+                if (response != null) {
+                    // File already exists in final directory no need to move
+                    continue;
+                }
+
+                log.debug("Moving file to final location");
+
+                response = restUtility.postForMessage(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_MOVE_FILE, ftpBean, String.class);
+                log.debug("File moved: {}", response);
+                if (response == null) {
+                    throw new ApplicationException("Unable to upload file");
+                }
+            }
+        }
+        // Create Log for Notification Master
+        List<Long> notificationList = List.of(notificationId);
+        int noOfRowsAffected = masterRepository.createLog(notificationList);
+        if (noOfRowsAffected == 0)
+            throw new ApplicationException(language.updateError("Notification"));
+
+        detailRepository.createLog(notificationList);
+        documentRepository.createLog(notificationList);
+
+        GbltNotificationMaster gbltNotificationMaster = BeanUtils.copyProperties(notificationBean, GbltNotificationMaster.class);
+        gbltNotificationMaster.setUnumNid(notificationId);
+        masterRepository.save(gbltNotificationMaster);
+
+        List<GbltNotificationDtl> gbltNotificationDtls = new ArrayList<>();
+        if (notificationBean.getNotificationDetails() != null && notificationBean.getNotificationDetails().size() > 0) {
+            for (int i = 0; i < notificationBean.getNotificationDetails().size(); i++) {
+                GbltNotificationDtl gbltNotificationDtl = BeanUtils.copyProperties(notificationBean.getNotificationDetails().get(i), GbltNotificationDtl.class);
+                gbltNotificationDtl.setUdtEntryDate(notificationBean.getUdtEntryDate());
+                gbltNotificationDtl.setUnumUnivId(notificationBean.getUnumUnivId());
+                gbltNotificationDtl.setUnumEntryUid(notificationBean.getUnumEntryUid());
+                gbltNotificationDtl.setUnumNid(notificationId);
+                gbltNotificationDtl.setUnumIsvalid(1);
+                gbltNotificationDtl.setUnumNid(gbltNotificationMaster.getUnumNid());
+                gbltNotificationDtl.setUnumNdtlId(Long.valueOf(gbltNotificationMaster.getUnumNid() + StringUtils.leftPad(Integer.toString(i+1), 5, '0')));
+                gbltNotificationDtl.setUnumSNo(i+1);
+                gbltNotificationDtls.add(gbltNotificationDtl);
+            }
+        }
+        if (!gbltNotificationDtls.isEmpty()) {
+            detailRepository.saveAll(gbltNotificationDtls);
+        }
+
+        List<GbltNotificationDocDtl> gbltNotificationDocDtls = new ArrayList<>();
+        int noOfDocumentsUploaded = 0;
+        for (int i = 0; i < notificationBean.getDocuments().size(); i++) {
+            NotificationDocumentBean notificationDocumentBean = notificationBean.getDocuments().get(i);
+            if (notificationDocumentBean.getUstrFilePath() != null && !notificationDocumentBean.getUstrFilePath().isBlank()) {
+                GbltNotificationDocDtl gbltNotificationDocDtl = BeanUtils.copyProperties(notificationDocumentBean, GbltNotificationDocDtl.class);
+                gbltNotificationDocDtl.setUdtEntryDate(notificationBean.getUdtEntryDate());
+                gbltNotificationDocDtl.setUnumUnivId(notificationBean.getUnumUnivId());
+                gbltNotificationDocDtl.setUnumEntryUid(notificationBean.getUnumEntryUid());
+                gbltNotificationDocDtl.setUnumNid(notificationId);
+                gbltNotificationDocDtl.setUnumIsvalid(1);
+                gbltNotificationDocDtl.setUnumNid(gbltNotificationMaster.getUnumNid());
+                gbltNotificationDocDtl.setUnumNdocid(Long.valueOf(gbltNotificationMaster.getUnumNid() + StringUtils.leftPad(Integer.toString(i+1), 5, '0')));
+                gbltNotificationDocDtl.setUnumSNo(i+1);
+                gbltNotificationDocDtls.add(gbltNotificationDocDtl);
+                noOfDocumentsUploaded++;
+            }
+        }
+        if (noOfDocumentsUploaded == 0)
+            throw new ApplicationException("No Document uploaded");
+
+        if (!gbltNotificationDocDtls.isEmpty()) {
+            documentRepository.saveAll(gbltNotificationDocDtls);
+        }
+
+        return ServiceResponse.builder()
+                .status(1)
+                .message(language.saveSuccess("Notification"))
+                .build();
+    }
+
+    @Transactional
+    public ServiceResponse delete(NotificationBean notificationBean, Long[] idsToDelete) {
+        // Check for Notification ID
+        if (idsToDelete == null || idsToDelete.length == 0) {
+            return ServiceResponse.errorResponse(language.mandatory("Notification Id"));
+        }
+        List<GbltNotificationMasterPK> notificationMasterPKs = Arrays.stream(idsToDelete)
+                .map(id -> new GbltNotificationMasterPK(id, 1))
+                .toList();
+
+        List<GbltNotificationMaster> gbltNotificationMasterList = masterRepository.findAllById(notificationMasterPKs);
+
+        if (gbltNotificationMasterList.size() != idsToDelete.length) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Notification", Arrays.toString(idsToDelete)));
+        }
+
+        // Create Log for Notification Master
+        List<Long> notificatonList = Arrays.asList(idsToDelete);
+        int noOfRowsAffected = masterRepository.createLog(notificatonList);
+        if (noOfRowsAffected == 0)
+            throw new ApplicationException(language.deleteError("Notification"));
+
+        List<GbltNotificationDtl> notificationDtls = detailRepository.findByUnumIsvalidAndUnumUnivIdAndUnumNidOrderByUnumSnoDisplayorderAsc(
+                1, notificationBean.getUnumUnivId(), notificationBean.getUnumNid()
+        );
+
+        List<GbltNotificationDocDtl> notificationDocDtls = documentRepository.findByUnumIsvalidAndUnumUnivIdAndUnumNidOrderByUnumSnoDisplayorderAsc(
+                1, notificationBean.getUnumUnivId(), notificationBean.getUnumNid()
+        );
+        detailRepository.createLog(notificatonList);
+        documentRepository.createLog(notificatonList);
+
+        // Delete
+        // Master
+        gbltNotificationMasterList.forEach(gbltNotificationMaster -> {
+            gbltNotificationMaster.setUnumIsvalid(0);
+            gbltNotificationMaster.setUdtEntryDate(notificationBean.getUdtEntryDate());
+            gbltNotificationMaster.setUnumEntryUid(notificationBean.getUnumEntryUid());
+        });
+        masterRepository.saveAll(gbltNotificationMasterList);
+
+        // Detail
+        if (!notificationDtls.isEmpty()) {
+            notificationDtls.forEach(notificationDtl -> {
+                notificationDtl.setUnumIsvalid(0);
+                notificationDtl.setUdtEntryDate(notificationBean.getUdtEntryDate());
+                notificationDtl.setUnumEntryUid(notificationBean.getUnumEntryUid());
+            });
+            detailRepository.saveAll(notificationDtls);
+        }
+
+        // Document
+        if (!notificationDocDtls.isEmpty()) {
+            notificationDocDtls.forEach(notificationDocDtl -> {
+                notificationDocDtl.setUnumIsvalid(1);
+                notificationDocDtl.setUdtEntryDate(notificationBean.getUdtEntryDate());
+                notificationDocDtl.setUnumEntryUid(notificationBean.getUnumEntryUid());
+            });
+            documentRepository.saveAll(notificationDocDtls);
+        }
+
+        return ServiceResponse.successMessage(language.deleteSuccess("Notification"));
     }
 }

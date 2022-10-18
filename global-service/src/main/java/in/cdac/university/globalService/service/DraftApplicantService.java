@@ -60,6 +60,7 @@ public class DraftApplicantService {
         return ServiceResponse.builder()
                 .status(1)
                 .message(successMessage)
+                .responseObject(applicantDraftMst)
                 .build();
     }
 

@@ -24,10 +24,10 @@ public class GbltNotificationDocDtl implements Serializable {
 	@Column(name="udt_entry_date")
 	private Date udtEntryDate;
 
-	@Column(name="unum_doctype_id")
+	@Column(name="unum_doc_id")
 	private Integer unumDoctypeId;
 
-	@Column(name="unum_doctype_name")
+	@Column(name="ustr_doc_fname")
 	private String unumDoctypeName;
 
 	@Column(name="unum_entry_uid")

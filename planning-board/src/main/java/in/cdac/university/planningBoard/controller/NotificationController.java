@@ -43,4 +43,27 @@ public class NotificationController {
                 notificationService.getNotificationById(notificationId)
         );
     }
+
+    @PutMapping("update")
+    public ResponseEntity<?> updateNotification(@Valid @RequestBody NotificationBean notificationBean) throws Exception {
+        notificationBean.setUnumIsvalid(1);
+        notificationBean.setUdtEntryDate(new Date());
+        notificationBean.setUnumEntryUid(RequestUtility.getUserId());
+        notificationBean.setUnumUnivId(RequestUtility.getUniversityId());
+        return ResponseHandler.generateResponse(
+                notificationService.update(notificationBean)
+        );
+    }
+
+    @DeleteMapping("delete")
+    public ResponseEntity<?> deleteNotification(@RequestBody Long[] idsToDelete) throws Exception {
+        NotificationBean notificationBean = new NotificationBean();
+        notificationBean.setUnumIsvalid(1);
+        notificationBean.setUdtEntryDate(new Date());
+        notificationBean.setUnumEntryUid(RequestUtility.getUserId());
+        notificationBean.setUnumUnivId(RequestUtility.getUniversityId());
+        return ResponseHandler.generateResponse(
+                notificationService.delete(notificationBean, idsToDelete)
+        );
+    }
 }

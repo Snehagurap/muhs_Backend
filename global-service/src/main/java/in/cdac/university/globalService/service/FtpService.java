@@ -76,10 +76,11 @@ public class FtpService {
         if (!detectedType.equals(contentType)) {
             return ServiceResponse.errorResponse("Invalid file.");
         }
-
-        String fileNameToSave = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-        if (fileNameToSave.length() > 50)
-            fileNameToSave = fileNameToSave.substring(0, 50);
+        String fileNameWithoutExtension = file.getOriginalFilename().substring(0, file.getOriginalFilename().lastIndexOf("."));
+        String fileNameToSave = System.currentTimeMillis() + "_" + fileNameWithoutExtension;
+        if (fileNameToSave.length() > 45)
+            fileNameToSave = fileNameToSave.substring(0, 45);
+        fileNameToSave += "." + fileExtension;
 
         boolean result = ftpUtility.uploadFileToTempDirectory(ftpDirectory, file, fileNameToSave);
         if (result) {
@@ -116,15 +117,11 @@ public class FtpService {
         if (fileName == null) {
             return ServiceResponse.errorResponse("No file found to delete");
         }
-        int status;
-        String message;
-        if (ftpUtility.deleteFileFromTempDirectory(fileName)) {
-            status = 1;
-            message = "File deleted successfully";
-        } else {
-            status = 0;
-            message = "Unable to delete file";
-        }
+
+        ftpUtility.deleteFileFromTempDirectory(fileName);
+        int status = 1;
+        String message = "File deleted successfully";
+
         return ServiceResponse.builder()
                 .status(status)
                 .message(message)
@@ -142,5 +139,24 @@ public class FtpService {
                 .contentLength(fileBytes.length)
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
+    }
+
+    public ServiceResponse isFileExists(String fileName) {
+        if (fileName == null) {
+            return ServiceResponse.errorResponse("No file found to check");
+        }
+        int status;
+        String message;
+        if (ftpUtility.isFileExists(fileName)) {
+            status = 1;
+            message = "File exists";
+        } else {
+            status = 0;
+            message = "File does not exists";
+        }
+        return ServiceResponse.builder()
+                .status(status)
+                .message(message)
+                .build();
     }
 }

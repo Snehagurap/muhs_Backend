@@ -49,4 +49,11 @@ public class FileUploadController {
     public ResponseEntity<?> downloadFile(@Valid @RequestBody FtpBean ftpBean) {
         return ftpService.downloadFile(ftpBean.getFileName());
     }
+
+    @PostMapping("file/exists")
+    public ResponseEntity<?> isFileExists(@Valid @RequestBody FtpBean ftpBean) {
+        return ResponseHandler.generateResponse(
+                ftpService.isFileExists(ftpBean.getFileName())
+        );
+    }
 }
