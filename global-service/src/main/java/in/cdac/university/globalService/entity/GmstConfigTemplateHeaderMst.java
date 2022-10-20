@@ -64,4 +64,7 @@ public class GmstConfigTemplateHeaderMst implements Serializable {
 
 	@Column(name="ustr_templ_head_code")
 	private String ustrTemplHeadCode;
+
+    @Column(name="unum_is_hidden")
+    private Integer unumIsHidden;
 }
