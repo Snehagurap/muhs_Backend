@@ -64,4 +64,15 @@ public class GmstConfigTemplateDtl implements Serializable {
 	@Column(name="ustr_templedtl_description")
 	private String ustrTempledtlDescription;
 
+	@Column(name="unum_display_order")
+	private Integer unumDisplayOrder;
+
+	@Column(name="unum_hide_component_txt")
+	private Integer unumHideComponentTxt;
+
+	@Column(name="unum_hide_header_txt")
+	private Integer unumHideHeaderTxt;
+
+	@Column(name="unum_hide_item_txt")
+	private Integer unumHideItemTxt;
 }

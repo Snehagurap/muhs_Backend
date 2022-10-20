@@ -47,4 +47,12 @@ public class TemplateDetailBean {
     private Integer unumUnivId;
 
     private String ustrTempledtlDescription;
+
+    private Integer unumDisplayOrder;
+
+    private Integer unumHideComponentTxt;
+
+    private Integer unumHideHeaderTxt;
+
+    private Integer unumHideItemTxt;
 }

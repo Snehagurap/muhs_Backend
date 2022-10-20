@@ -51,5 +51,7 @@ public class TemplateHeaderBean {
 
     private String ustrTemplHeadCode;
 
+    private Integer unumIsHidden;
+
     List<TemplateComponentBean> components;
 }

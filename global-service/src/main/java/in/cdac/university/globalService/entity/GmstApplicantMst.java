@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-@IdClass(GmstApplicantMst.class)
+@IdClass(GmstApplicantMstPK.class)
 @Entity
 @Table(name="gmst_applicant_mst", schema = "university")
 public class GmstApplicantMst implements Serializable {

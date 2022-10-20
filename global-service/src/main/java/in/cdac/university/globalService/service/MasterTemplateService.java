@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -84,13 +85,18 @@ public class MasterTemplateService {
             List<GmstConfigTemplateDtl> templateDetailByTemplateId = mapTemplateDetails.get(templateId);
 
             // Get all the headers for the given template
-            Set<Long> headerIds = templateDetailByTemplateId.stream()
-                    .map(GmstConfigTemplateDtl::getUnumTempleHeadId)
-                    .collect(Collectors.toSet());
+            Map<Long, GmstConfigTemplateDtl> headerIds = templateDetailByTemplateId.stream()
+                    .collect(Collectors.toMap(GmstConfigTemplateDtl::getUnumTempleHeadId, Function.identity(), (u1, u2) -> u1));
 
             List<TemplateHeaderBean> headerBeans = headersByTemplateId.stream()
-                    .filter(gmstConfigTemplateHeaderMst ->  headerIds.contains(gmstConfigTemplateHeaderMst.getUnumTemplHeadId()))
-                    .map(gmstConfigTemplateHeaderMst -> BeanUtils.copyProperties(gmstConfigTemplateHeaderMst, TemplateHeaderBean.class))
+                    .filter(gmstConfigTemplateHeaderMst ->  headerIds.containsKey(gmstConfigTemplateHeaderMst.getUnumTemplHeadId()))
+                    .map(gmstConfigTemplateHeaderMst -> {
+                        TemplateHeaderBean templateHeaderBean = BeanUtils.copyProperties(gmstConfigTemplateHeaderMst, TemplateHeaderBean.class);
+                        GmstConfigTemplateDtl configTemplateDtl = headerIds.get(gmstConfigTemplateHeaderMst.getUnumTemplHeadId());
+                        templateHeaderBean.setUnumHeadDisplayOrder(configTemplateDtl.getUnumDisplayOrder());
+                        templateHeaderBean.setUnumIsHidden(configTemplateDtl.getUnumHideHeaderTxt() == null ? 0 : configTemplateDtl.getUnumHideHeaderTxt());
+                        return templateHeaderBean;
+                    })
                     .sorted(Comparator.comparing(TemplateHeaderBean::getUnumHeadDisplayOrder, Comparator.nullsLast(Comparator.naturalOrder())))
                     .toList();
 
