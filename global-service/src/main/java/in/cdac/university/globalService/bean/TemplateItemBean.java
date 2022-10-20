@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -31,8 +32,18 @@ public class TemplateItemBean {
     @JsonIgnore
     private Date udtEntryDate;
 
+    private Integer unumAudiologyAndSpeechFlag;
+
+    private Integer unumAyurvedFlag;
+
+    private Integer unumDentalFlag;
+
     @JsonIgnore
     private Long unumEntryUid;
+
+    private Integer unumHomeopathyFlag;
+
+    private Integer unumIsHidden;
 
     private Integer unumIsMergeWithParent = 0;
 
@@ -41,7 +52,37 @@ public class TemplateItemBean {
 
     private Integer unumItemIsmandy = 0;
 
+    private Integer unumItemType;
+
+    private Long unumLinkvalTemplCompId;
+
+    private Long unumLinkvalTemplHeadId;
+
+    private Long unumLinkvalTemplId;
+
+    private Long unumLinkvalTemplItemId;
+
+    private Long unumLinkvalTemplSubheadId;
+
+    private Integer unumMedicalFlag;
+
+    private Integer unumNAndYsFlag;
+
+    private Integer unumNursingFlag;
+
+    private Integer unumOccupationalTherapyFlag;
+
     private Integer unumOptionValueType;
+
+    private Integer unumOptometryFlag;
+
+    private Integer unumPAndOFlag;
+
+    private String unumParentValueCheckFlag;
+
+    private Integer unumPhysiotherapyFlag;
+
+    private Integer unumPrintitemFlag;
 
     private Long unumTemplParentItemId;
 
@@ -79,6 +120,8 @@ public class TemplateItemBean {
     private String ustrOptionValueProcname;
 
     private String ustrOptionValueQuery;
+
+    private String ustrTableRowColId;
 
     @NotNull(message = "Item Code is mandatory")
     private String ustrTemplItemCode;

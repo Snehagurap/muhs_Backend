@@ -68,4 +68,6 @@ public class GmstConfigTemplateComponentMst implements Serializable {
 	@Column(name="ustr_templ_comp_code")
 	private String ustrTemplCompCode;
 
+	@Column(name="unum_is_hidden")
+	private Integer unumIsHidden;
 }
