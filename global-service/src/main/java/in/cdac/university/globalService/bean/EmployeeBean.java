@@ -42,6 +42,7 @@ public class EmployeeBean {
     private Long unumEntryUid;
 
     @ListColumn(order = 3, name = "Mobile No.")
+    @NotBlank(message = "Mobile number is mandatory")
     private Long unumMobileNo;
 
     private Integer unumTAppointtypeId;
@@ -61,6 +62,7 @@ public class EmployeeBean {
     private String ustrTAppointtype;
 
     @ListColumn(order = 4, name = "E-mail")
+    @NotBlank(message = "E-mail is mandatory")
     private String ustrTEmailid;
 
     private String ustrTPanNo;
