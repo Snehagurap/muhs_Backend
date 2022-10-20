@@ -323,7 +323,7 @@ public class NotificationService {
     }
 
     public ServiceResponse getActiveNotifications() throws Exception {
-        Integer universityId = RequestUtility.getUniversityId();
+        Integer universityId = 1; //RequestUtility.getUniversityId();
         List<GbltNotificationMaster> activeNotifications = masterRepository.getActiveNotifications(universityId);
 
         NotificationTypeBean[] notificationTypes = restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_NOTIFICATION_TYPE, NotificationTypeBean[].class);
@@ -355,15 +355,26 @@ public class NotificationService {
             List<GbltNotificationDtl> notificationDtlList = detailRepository.findByUnumIsvalidAndUnumUnivIdAndUnumNidOrderByUnumSnoDisplayorderAsc(
                     1, universityId, activeNotification.getUnumNid()
             );
-            Map<String, Map<String, NotificationApplyDetailBean>> applyDetails = new HashMap<>();
-            for (GbltNotificationDtl notificationDtl: notificationDtlList) {
-                String courseTypeName = mapCourseType.getOrDefault(notificationDtl.getUnumCoursetypeId(), "");
-                Map<String, NotificationApplyDetailBean> notificationDetailBeanMap = applyDetails.computeIfAbsent(courseTypeName, k -> new HashMap<>());
 
-                String notificationTypeName = mapNotificationType.getOrDefault(notificationDtl.getUnumNotificationTypeId(), "");
-                NotificationApplyDetailBean applyDetailBean = notificationDetailBeanMap.computeIfAbsent(notificationTypeName, k -> new NotificationApplyDetailBean());
-                applyDetailBean.setFacultyName(mapFaculty.getOrDefault(notificationDtl.getUnumFacultyId(), ""));
-            }
+            List<NotificationApplyDetailBean> applyDetails = notificationDtlList.stream()
+                    .map(notificationDtl -> {
+                        NotificationApplyDetailBean notificationApplyDetailBean = new NotificationApplyDetailBean();
+
+                        String courseTypeName = mapCourseType.getOrDefault(notificationDtl.getUnumCoursetypeId(), "");
+                        notificationApplyDetailBean.setCourseType(courseTypeName);
+
+                        String notificationTypeName = mapNotificationType.getOrDefault(notificationDtl.getUnumNotificationTypeId(), "");
+                        notificationApplyDetailBean.setNotificationType(notificationTypeName);
+
+                        String facultyName = mapFaculty.getOrDefault(notificationDtl.getUnumFacultyId(), "");
+                        notificationApplyDetailBean.setFaculty(facultyName);
+
+                        return notificationApplyDetailBean;
+                    })
+                    .sorted(Comparator.comparing(NotificationApplyDetailBean::getCourseType)
+                            .thenComparing(NotificationApplyDetailBean::getNotificationType)
+                            .thenComparing(NotificationApplyDetailBean::getFaculty))
+                    .toList();
 
             notificationApplyBean.setNotificationDetails(applyDetails);
             notificationApplyBeans.add(notificationApplyBean);

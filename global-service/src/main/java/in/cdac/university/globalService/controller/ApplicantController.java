@@ -35,7 +35,7 @@ public class ApplicantController {
         );
     }
 
-    @PostMapping("draft/{applicantId}")
+    @GetMapping("draft/{applicantId}")
     public ResponseEntity<?> getDraftApplicantById(@PathVariable("applicantId") Long applicantId) {
         return ResponseHandler.generateResponse(
                 draftApplicantService.getApplicantById(applicantId)

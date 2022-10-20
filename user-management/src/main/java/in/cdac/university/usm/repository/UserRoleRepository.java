@@ -13,7 +13,6 @@ public interface UserRoleRepository extends JpaRepository<UmmtUserRoleMst, Long>
 
     List<UmmtUserRoleMst> findByGnumUserIdAndGblIsvalid(Integer gnumUserId, Integer gblIsvalid);
 
-
     @Query("select c from UmmtUserRoleMst c " +
             "where c.gnumUserId = :gnumUserId " +
             "and c.gblIsvalid = :gblIsvalid " +

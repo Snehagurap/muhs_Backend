@@ -157,9 +157,11 @@ public class RestUtility {
         // Get Session Details
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
         String userDetail = request.getHeader("userDetail");
+        String userId = request.getHeader("userId");
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("userDetail", userDetail);
+        headers.set("userId", userId);
         return headers;
     }
 }

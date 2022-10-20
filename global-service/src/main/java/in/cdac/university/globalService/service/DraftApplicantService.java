@@ -1,5 +1,7 @@
 package in.cdac.university.globalService.service;
 
+import com.google.common.hash.Hashing;
+import in.cdac.university.globalService.bean.ApplicantBean;
 import in.cdac.university.globalService.bean.DraftApplicantBean;
 import in.cdac.university.globalService.entity.GmstApplicantDraftMst;
 import in.cdac.university.globalService.repository.DraftApplicantRepository;
@@ -12,7 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.DigestUtils;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
@@ -88,11 +94,17 @@ public class DraftApplicantService {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String password = RandomStringUtils.randomAlphanumeric(8);
         log.debug("Generated Password: {}", password);
-        String encodedPassword = encoder.encode(Base64.getEncoder().encodeToString(password.getBytes()));
+
+        String encodedPassword = Hashing.sha256()
+                .hashString(password, StandardCharsets.UTF_8)
+                .toString();
+        encodedPassword = encoder.encode(encodedPassword);
+
         String username = "applicant_" + applicant.getUnumApplicantDraftid();
         int noOfRowsAffected = draftApplicantRepository.updateDraftApplicantUsernameAndPassword(
                 username, password, encodedPassword, applicant.getUnumApplicantDraftid()
         );
+
         if (noOfRowsAffected == 0)
             return ServiceResponse.errorResponse(language.message("Unable to validate OTP."));
 
@@ -108,8 +120,8 @@ public class DraftApplicantService {
         if (applicantDraftMstOptional.isEmpty())
             return ServiceResponse.errorResponse(language.notFoundForId("Applicant", applicantId));
 
-
-
-        return null;
+        return ServiceResponse.successObject(
+                BeanUtils.copyProperties(applicantDraftMstOptional.get(), DraftApplicantBean.class)
+        );
     }
 }

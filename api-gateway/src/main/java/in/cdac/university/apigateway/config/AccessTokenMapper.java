@@ -16,4 +16,5 @@ public class AccessTokenMapper {
     private Integer applicationType;
     private String error;
     private String error_description;
+    private Integer userCategory;
 }

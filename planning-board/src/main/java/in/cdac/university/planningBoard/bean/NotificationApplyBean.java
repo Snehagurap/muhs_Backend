@@ -17,5 +17,5 @@ public class NotificationApplyBean {
     private String notificationDate;
     private Long notificationId;
 
-    Map<String, Map<String, NotificationApplyDetailBean>> notificationDetails;
+    List<NotificationApplyDetailBean> notificationDetails;
 }

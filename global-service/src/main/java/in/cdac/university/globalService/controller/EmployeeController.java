@@ -1,14 +1,18 @@
 package in.cdac.university.globalService.controller;
 
+import in.cdac.university.globalService.bean.EmployeeBean;
 import in.cdac.university.globalService.service.EmployeeCurrentDetailService;
 import in.cdac.university.globalService.service.EmployeeProfileService;
 import in.cdac.university.globalService.service.EmployeeService;
 import in.cdac.university.globalService.util.ComboUtility;
+import in.cdac.university.globalService.util.RequestUtility;
 import in.cdac.university.globalService.util.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -56,6 +60,17 @@ public class EmployeeController {
     public ResponseEntity<?> combo(@PathVariable("eventId") Long eventId) throws Exception {
         return ResponseHandler.generateOkResponse(
                 ComboUtility.generateComboData(employeeService.getCommitteeMembers(eventId))
+        );
+    }
+
+    @PostMapping("save")
+    public ResponseEntity<?> save(@Valid @RequestBody EmployeeBean employeeBean) throws Exception {
+        employeeBean.setUnumIsvalid(1);
+        employeeBean.setUdtEntryDate(new Date());
+        employeeBean.setUnumUnivId(RequestUtility.getUniversityId());
+        employeeBean.setUnumEntryUid(RequestUtility.getUserId());
+        return ResponseHandler.generateResponse(
+                employeeService.save(employeeBean)
         );
     }
 }

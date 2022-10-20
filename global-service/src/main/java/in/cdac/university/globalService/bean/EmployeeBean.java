@@ -6,6 +6,7 @@ import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 @Getter
@@ -66,6 +67,7 @@ public class EmployeeBean {
 
     @ListColumn(order = 2, name = "Teacher Name")
     @ComboValue
+    @NotBlank(message = "Teacher name is mandatory")
     private String ustrEmpName;
 
     private String willingnessToWorkOnLic;

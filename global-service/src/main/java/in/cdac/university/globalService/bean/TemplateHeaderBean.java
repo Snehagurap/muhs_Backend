@@ -1,25 +1,33 @@
 package in.cdac.university.globalService.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 @ToString
 public class TemplateHeaderBean {
+
     private Long unumTemplHeadId;
 
+    @JsonIgnore
     private Integer unumIsvalid;
 
+    @JsonIgnore
     private Date udtEffFrom;
 
+    @JsonIgnore
     private Date udtEffTo;
 
+    @JsonIgnore
     private Date udtEntryDate;
 
+    @JsonIgnore
     private Long unumEntryUid;
 
     private Integer unumHeadDisplayOrder;
@@ -30,6 +38,7 @@ public class TemplateHeaderBean {
 
     private Long unumTemplParentHeadId;
 
+    @JsonIgnore
     private Integer unumUnivId;
 
     private String ustrDescription;
@@ -41,4 +50,6 @@ public class TemplateHeaderBean {
     private String ustrHeadPrintText;
 
     private String ustrTemplHeadCode;
+
+    List<TemplateComponentBean> components;
 }

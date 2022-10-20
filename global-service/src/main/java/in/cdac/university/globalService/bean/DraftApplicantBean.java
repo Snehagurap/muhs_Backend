@@ -1,5 +1,6 @@
 package in.cdac.university.globalService.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -63,6 +64,7 @@ public class DraftApplicantBean {
 
     private String ustrGeneratedMotp;
 
+    @JsonIgnore
     private String ustrTempPass;
 
     private String ustrTempUid;

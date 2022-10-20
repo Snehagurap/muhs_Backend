@@ -20,6 +20,6 @@ public interface NotificationTypeRepository extends JpaRepository<GmstNotificati
             "order by ustrNtypeFname")
     List<GmstNotificationTypeMst> getAllValidNotificationTypes(@Param("universityId") int universityId);
 
-    List<GmstNotificationTypeMst> findByUnumIsvalidInAndUnumUnivIdOrderByUstrNtypeFname(List<Integer> unumIsvalid, Integer unumUnivId);
+    List<GmstNotificationTypeMst> findByUnumIsvalidInOrderByUstrNtypeFname(List<Integer> unumIsvalid);
 
 }

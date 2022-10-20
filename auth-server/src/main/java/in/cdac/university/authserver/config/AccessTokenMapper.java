@@ -8,4 +8,5 @@ public class AccessTokenMapper {
     private Integer userType;
     private Integer universityId;
     private Integer applicationType;
+    private Integer userCategory;
 }

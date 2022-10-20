@@ -259,16 +259,18 @@ public class MenuService {
             for (UmmtRoleMenuMst roleMenuMst: mappedMenusWithRole) {
                 menuOrder.put(roleMenuMst.getGnumMenuId(), roleMenuMst.getGnumDisplayOrder());
                 menuIds.add(roleMenuMst.getGnumMenuId());
-
             }
 
             mappedMenus = menuRepository.findByGnumMenuIdInAndGnumIsvalid(menuIds, 1);
         }
+        List<String> menuRoutes = mappedMenus.stream().map(UmmtMenuMst::getGstrUrl).toList();
 
         List<MenuToDisplay> menusToDisplay = processMenus(BeanUtils.copyListProperties(mappedMenus, MenuToDisplay.class));
         if (menusToDisplay.size() == 1) {
             menusToDisplay = menusToDisplay.get(0).getSubMenuList();
         }
+        if (!menusToDisplay.isEmpty())
+            menusToDisplay.get(0).setMenuRoutes(menuRoutes);
 
         sortMenus(menusToDisplay, menuOrder);
 

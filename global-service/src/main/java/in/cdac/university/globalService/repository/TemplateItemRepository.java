@@ -36,4 +36,13 @@ public interface TemplateItemRepository extends JpaRepository<GmstConfigTemplate
             "                 coalesce(ustrItemPrintPreText, ''), " +
             "                 coalesce(ustrItemPrintPostText, ''))) = upper(:text)")
     List<GmstConfigTemplateItemMst> duplicate(@Param("universityId") Integer universityId, @Param("text") String text);
+
+    @Query("select c from GmstConfigTemplateItemMst c " +
+            "where c.unumIsvalid = 1 " +
+            "and c.unumUnivId = :universityId " +
+            "and c.unumTemplItemId in (select t.unumTempleItemId from GmstConfigTemplateDtl t " +
+            "where t.unumIsvalid = 1 " +
+            "and t.unumUnivId = :universityId " +
+            "and t.unumTempleId in (:templateId) ) ")
+    List<GmstConfigTemplateItemMst> findItemsByTemplateId(@Param("universityId") Integer universityId, @Param("templateId") List<Long> templateId);
 }

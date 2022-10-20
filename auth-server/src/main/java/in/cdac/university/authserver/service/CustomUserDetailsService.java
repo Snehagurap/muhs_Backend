@@ -1,9 +1,11 @@
 package in.cdac.university.authserver.service;
 
 import in.cdac.university.authserver.bean.CustomUser;
+import in.cdac.university.authserver.entity.GmstApplicantDraftMst;
 import in.cdac.university.authserver.entity.GmstUniversityMst;
 import in.cdac.university.authserver.entity.UmmtUserMst;
 import in.cdac.university.authserver.entity.UmstSystemUserMst;
+import in.cdac.university.authserver.repository.DraftApplicantRepository;
 import in.cdac.university.authserver.repository.SystemUserRepository;
 import in.cdac.university.authserver.repository.UserManagementUserRepository;
 import in.cdac.university.authserver.repository.UserRepository;
@@ -35,30 +37,41 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private UserManagementUserRepository userManagementUserRepository;
 
+    @Autowired
+    private DraftApplicantRepository draftApplicantRepository;
+
     @Override
     public CustomUser loadUserByUsername(String username) throws UsernameNotFoundException {
         log.debug("Checking the user: " + username);
         String applicationType = "1";
+        String userCategory = "1";
         try {
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
             applicationType = request.getHeader("applicationType");
-            log.debug("Application Type {}", applicationType);
+            userCategory = request.getHeader("userCategory");
+            log.debug("Application Type: {}", applicationType);
+            log.debug("User Category: {}", userCategory);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return switch (applicationType) {
-            case "1" ->
-                // Application user
-                    findApplicationUser(username);
-            case "2" ->
+        switch (applicationType) {
+            case "1":
+                if (userCategory != null && userCategory.equals("2")) {
+                    return findDraftApplicant(username);
+                } else {
+                    // Application user
+                    return findApplicationUser(username);
+                }
+            case "2":
                 // User Management User
-                    findUserManagementUser(username);
-            case "3" ->
+                return findUserManagementUser(username);
+            case "3":
                 // User Management Super User
-                    findUserManagementSuperUser(username);
-            default -> throw new UsernameNotFoundException("User not found");
-        };
+                return findUserManagementSuperUser(username);
+        }
+
+        throw new UsernameNotFoundException("User not found");
     }
 
     private CustomUser findUserManagementSuperUser(String username) {
@@ -70,6 +83,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             customUser.setUsername(systemUser.getGstrSysLoginId());
             customUser.setPassword(systemUser.getGstrSysPassword());
             customUser.setUserType(1);
+            customUser.setUserCategory(0);
             customUser.setUserFullName(systemUser.getGstrSysUserName());
             SimpleGrantedAuthority authority = new SimpleGrantedAuthority("Super");
             customUser.setAuthorities(List.of(authority));
@@ -88,6 +102,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             customUser.setUsername(universityMst.getGstrUserName());
             customUser.setPassword(universityMst.getGstrPassword());
             customUser.setUserType(2);
+            customUser.setUserCategory(0);
             customUser.setUserFullName(universityMst.getUstrUnivFname());
             SimpleGrantedAuthority authority = new SimpleGrantedAuthority("User");
             customUser.setAuthorities(List.of(authority));
@@ -107,11 +122,35 @@ public class CustomUserDetailsService implements UserDetailsService {
             customUser.setPassword(user.getGstrPassword());
             customUser.setUserType(user.getGnumUserTypeId());
             customUser.setUserFullName(user.getGstrUserFullName());
+            customUser.setUserCategory(1);
             customUser.setUniversityId(user.getUniversityMst().getUnumUnivId());
             SimpleGrantedAuthority authority = new SimpleGrantedAuthority(user.getGnumRoleId().toString());
             customUser.setAuthorities(List.of(authority));
             return customUser;
         } else {
+            throw new UsernameNotFoundException("User not found");
+        }
+    }
+
+    private CustomUser findDraftApplicant(String username) {
+        log.debug("Applicant Username: {}", username);
+        Optional<GmstApplicantDraftMst> userOptional = draftApplicantRepository.findUser(username, 1);
+        if (userOptional.isPresent()) {
+            GmstApplicantDraftMst user = userOptional.get();
+            log.debug("Applicant: {}", user);
+            CustomUser customUser = new CustomUser();
+            customUser.setUserId(user.getUnumApplicantDraftid().toString());
+            customUser.setUsername(user.getUstrTempUid());
+            customUser.setPassword(user.getUstrTempPass());
+            customUser.setUserType(5);
+            customUser.setUserFullName(user.getUstrApplicantName());
+            customUser.setUniversityId(1);
+            SimpleGrantedAuthority authority = new SimpleGrantedAuthority("1");
+            customUser.setAuthorities(List.of(authority));
+            customUser.setUserCategory(5);
+            return customUser;
+        } else {
+            log.debug("No applicant Found");
             throw new UsernameNotFoundException("User not found");
         }
     }

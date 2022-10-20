@@ -23,6 +23,7 @@ public class UserDetail {
     private String captchaId;
     private String captcha;
     private Integer isPostman;
+    private Integer userCategory;      /* 1: University, 5: Applicant */
 
     @NotNull(message = "Application Type cannot be blank")
     @Min(1)

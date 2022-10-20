@@ -34,7 +34,7 @@ public class NotificationTypeService {
 
     public List<NotificationTypeBean> getAllNotificationTypes() throws Exception {
         return BeanUtils.copyListProperties(
-                notificationTypeRepository.findByUnumIsvalidInAndUnumUnivIdOrderByUstrNtypeFname(List.of(0, 1), RequestUtility.getUniversityId()),
+                notificationTypeRepository.findByUnumIsvalidInOrderByUstrNtypeFname(List.of(0, 1)),
                 NotificationTypeBean.class
         );
     }

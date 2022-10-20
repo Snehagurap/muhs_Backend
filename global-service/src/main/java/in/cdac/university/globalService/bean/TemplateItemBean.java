@@ -1,5 +1,6 @@
 package in.cdac.university.globalService.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +9,7 @@ import lombok.ToString;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,14 +19,19 @@ public class TemplateItemBean {
     @ListColumn(omit = true)
     private Long unumTemplItemId;
 
+    @JsonIgnore
     private Integer unumIsvalid;
 
+    @JsonIgnore
     private Date udtEffFrom;
 
+    @JsonIgnore
     private Date udtEffTo;
 
+    @JsonIgnore
     private Date udtEntryDate;
 
+    @JsonIgnore
     private Long unumEntryUid;
 
     private Integer unumIsMergeWithParent = 0;
@@ -41,6 +48,7 @@ public class TemplateItemBean {
     @NotNull(message = "Item Control ID is mandatory")
     private Integer unumUiControlId;
 
+    @JsonIgnore
     private Integer unumUnivId;
 
     private String ustrDescription;
@@ -79,4 +87,6 @@ public class TemplateItemBean {
 
     @ListColumn(order = 5, name = "Control Type")
     private String controlTypeName;
+
+    List<TemplateItemBean> children;
 }

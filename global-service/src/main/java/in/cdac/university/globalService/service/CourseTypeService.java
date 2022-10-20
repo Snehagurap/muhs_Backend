@@ -24,8 +24,8 @@ public class CourseTypeService {
         );
     }
 
-    public ServiceResponse getAllCourseTypes(Integer universityId) {
-        List<GmstCourseTypeMst> courseTypeMsts = courseTypeRepository.findByUnumIsvalidAndUnumUnivId(1, universityId);
+    public ServiceResponse getAllCourseTypes() {
+        List<GmstCourseTypeMst> courseTypeMsts = courseTypeRepository.findByUnumIsvalid(1);
         return ServiceResponse.successObject(
                 BeanUtils.copyListProperties(courseTypeMsts, CourseTypeBean.class)
         );

@@ -1,13 +1,8 @@
 package in.cdac.university.globalService.service;
 
-import in.cdac.university.globalService.bean.MasterTemplateBean;
-import in.cdac.university.globalService.entity.GmstConfigMastertemplateMst;
-import in.cdac.university.globalService.entity.GmstConfigMastertemplateMstPK;
-import in.cdac.university.globalService.entity.GmstConfigMastertemplateTemplatedtl;
-import in.cdac.university.globalService.entity.GmstConfigTemplateMst;
-import in.cdac.university.globalService.repository.MasterTemplateDetailRepository;
-import in.cdac.university.globalService.repository.MasterTemplateRepository;
-import in.cdac.university.globalService.repository.TemplateRepository;
+import in.cdac.university.globalService.bean.*;
+import in.cdac.university.globalService.entity.*;
+import in.cdac.university.globalService.repository.*;
 import in.cdac.university.globalService.util.BeanUtils;
 import in.cdac.university.globalService.util.Language;
 import in.cdac.university.globalService.util.RequestUtility;
@@ -15,8 +10,8 @@ import in.cdac.university.globalService.util.ServiceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class MasterTemplateService {
@@ -31,12 +26,24 @@ public class MasterTemplateService {
     private TemplateRepository templateRepository;
 
     @Autowired
+    private TemplateDetailRepository templateDetailRepository;
+
+    @Autowired
+    private TemplateItemRepository templateItemRepository;
+
+    @Autowired
+    private TemplateHeaderRepository templateHeaderRepository;
+
+    @Autowired
+    private TemplateComponentRepository templateComponentRepository;
+
+    @Autowired
     private Language language;
 
-    public ServiceResponse getTemplate(Long templateId) throws Exception {
-        Optional<GmstConfigMastertemplateMst> templateByIdOptional = masterTemplateRepository.findById(new GmstConfigMastertemplateMstPK(templateId, 1));
+    public ServiceResponse getTemplate(Long masterTemplateId) throws Exception {
+        Optional<GmstConfigMastertemplateMst> templateByIdOptional = masterTemplateRepository.findById(new GmstConfigMastertemplateMstPK(masterTemplateId, 1));
         if (templateByIdOptional.isEmpty()) {
-            return ServiceResponse.errorResponse(language.notFoundForId("Master Template", templateId));
+            return ServiceResponse.errorResponse(language.notFoundForId("Master Template", masterTemplateId));
         }
 
         MasterTemplateBean masterTemplateBean = BeanUtils.copyProperties(templateByIdOptional.get(), MasterTemplateBean.class);
@@ -45,12 +52,114 @@ public class MasterTemplateService {
 
         List<GmstConfigMastertemplateTemplatedtl> masterTemplateDetails = masterTemplateDetailRepository.findByUnumIsvalidAndUnumUnivIdAndUnumMtempleId(1, universityId, masterTemplateBean.getUnumMtempleId());
 
+        // Template ids for the given Master template
         List<Long> templateIds = masterTemplateDetails.stream()
                 .map(GmstConfigMastertemplateTemplatedtl::getUnumTempleId)
                 .toList();
 
+        // Get the template on the basis of master template
         List<GmstConfigTemplateMst> templates = templateRepository.findByUnumIsvalidAndUnumUnivIdAndUnumTempleIdIn(1, universityId, templateIds);
 
+        // Get Template details
+        List<GmstConfigTemplateDtl> templateDetailList = templateDetailRepository.findByUnumIsvalidAndUnumUnivIdAndUnumTempleIdIn(1, universityId, templateIds);
+        Map<Long, List<GmstConfigTemplateDtl>> mapTemplateDetails = templateDetailList
+                            .stream()
+                            .collect(Collectors.groupingBy(GmstConfigTemplateDtl::getUnumTempleId));
+
+        // Set template in master template
+        List<TemplateBean> templateBeans = BeanUtils.copyListProperties(templates, TemplateBean.class);
+        masterTemplateBean.setTemplateList(templateBeans);
+
+        // Get Headers by Template id
+        List<GmstConfigTemplateHeaderMst> headersByTemplateId = templateHeaderRepository.findHeadersByTemplateId(universityId, templateIds);
+
+        // Get component by template id
+        List<GmstConfigTemplateComponentMst> componentsByTemplateId = templateComponentRepository.findComponentsByTemplateId(universityId, templateIds);
+
+        // Get items by template id
+        List<GmstConfigTemplateItemMst> itemsByTemplateId = templateItemRepository.findItemsByTemplateId(universityId, templateIds);
+
+        for (TemplateBean templateBean: templateBeans) {
+            Long templateId = templateBean.getUnumTempleId();
+            List<GmstConfigTemplateDtl> templateDetailByTemplateId = mapTemplateDetails.get(templateId);
+
+            // Get all the headers for the given template
+            Set<Long> headerIds = templateDetailByTemplateId.stream()
+                    .map(GmstConfigTemplateDtl::getUnumTempleHeadId)
+                    .collect(Collectors.toSet());
+
+            List<TemplateHeaderBean> headerBeans = headersByTemplateId.stream()
+                    .filter(gmstConfigTemplateHeaderMst ->  headerIds.contains(gmstConfigTemplateHeaderMst.getUnumTemplHeadId()))
+                    .map(gmstConfigTemplateHeaderMst -> BeanUtils.copyProperties(gmstConfigTemplateHeaderMst, TemplateHeaderBean.class))
+                    .sorted(Comparator.comparing(TemplateHeaderBean::getUnumHeadDisplayOrder, Comparator.nullsLast(Comparator.naturalOrder())))
+                    .toList();
+
+            templateBean.setHeaders(headerBeans);
+
+            // Get Component Detail for each header
+            for (TemplateHeaderBean templateHeaderBean: headerBeans) {
+                Long headerId = templateHeaderBean.getUnumTemplHeadId();
+
+                Set<Long> componentsInTemplate = templateDetailByTemplateId.stream()
+                        .filter(gmstConfigTemplateDtl -> gmstConfigTemplateDtl.getUnumTempleHeadId().equals(headerId))
+                        .map(GmstConfigTemplateDtl::getUnumTempleCompId)
+                        .collect(Collectors.toSet());
+
+                List<TemplateComponentBean> templateComponentBeans = componentsByTemplateId.stream()
+                        .filter(gmstConfigTemplateComponentMst -> gmstConfigTemplateComponentMst.getUnumTemplCompId() != null &&
+                                componentsInTemplate.contains(gmstConfigTemplateComponentMst.getUnumTemplCompId()))
+                        .map(gmstConfigTemplateComponentMst -> BeanUtils.copyProperties(gmstConfigTemplateComponentMst, TemplateComponentBean.class))
+                        .sorted(Comparator.comparing(TemplateComponentBean::getUnumCompDisplayOrder, Comparator.nullsLast(Comparator.naturalOrder())))
+                        .toList();
+
+                templateHeaderBean.setComponents(templateComponentBeans);
+
+                // Get Item for each Component
+                for (TemplateComponentBean templateComponentBean: templateComponentBeans) {
+                    Long componentId = templateComponentBean.getUnumTemplCompId();
+
+                    Set<Long> itemsInTemplate = templateDetailByTemplateId.stream()
+                            .filter(gmstConfigTemplateDtl -> gmstConfigTemplateDtl.getUnumTempleCompId() != null
+                                    && gmstConfigTemplateDtl.getUnumTempleCompId().equals(componentId))
+                            .map(GmstConfigTemplateDtl::getUnumTempleItemId)
+                            .collect(Collectors.toSet());
+
+                    List<TemplateItemBean> templateItemBeans = itemsByTemplateId.stream()
+                            .filter(gmstConfigTemplateItemMst -> gmstConfigTemplateItemMst.getUnumTemplItemId() != null &&
+                                    itemsInTemplate.contains(gmstConfigTemplateItemMst.getUnumTemplItemId()))
+                            .filter(gmstConfigTemplateItemMst -> gmstConfigTemplateItemMst.getUnumTemplParentItemId() == null ||
+                                    gmstConfigTemplateItemMst.getUnumTemplParentItemId().equals(0L))
+                            .map(gmstConfigTemplateItemMst -> BeanUtils.copyProperties(gmstConfigTemplateItemMst, TemplateItemBean.class))
+                            .sorted(Comparator.comparing(TemplateItemBean::getUnumItemDisplayOrder, Comparator.nullsLast(Comparator.naturalOrder())))
+                            .toList();
+
+                    templateComponentBean.setItems(templateItemBeans);
+
+                    for (TemplateItemBean templateItemBean: templateItemBeans) {
+                        fetchSubItems(templateItemBean, itemsByTemplateId);
+                    }
+                }
+            }
+        }
+
         return ServiceResponse.successObject(masterTemplateBean);
+    }
+
+    private void fetchSubItems(TemplateItemBean templateItemBean, List<GmstConfigTemplateItemMst> itemsByTemplateId) {
+        List<TemplateItemBean> childItems = itemsByTemplateId.stream()
+                .filter(gmstConfigTemplateItemMst -> gmstConfigTemplateItemMst.getUnumTemplParentItemId() != null &&
+                        gmstConfigTemplateItemMst.getUnumTemplParentItemId().equals(templateItemBean.getUnumTemplItemId()))
+                .map(gmstConfigTemplateItemMst -> BeanUtils.copyProperties(gmstConfigTemplateItemMst, TemplateItemBean.class))
+                .sorted(Comparator.comparing(TemplateItemBean::getUnumItemDisplayOrder, Comparator.nullsLast(Comparator.naturalOrder())))
+                .toList();
+
+        templateItemBean.setChildren(childItems);
+
+        if (childItems.isEmpty())
+            return;
+
+        for (TemplateItemBean childItem: childItems) {
+            fetchSubItems(childItem, itemsByTemplateId);
+        }
     }
 }

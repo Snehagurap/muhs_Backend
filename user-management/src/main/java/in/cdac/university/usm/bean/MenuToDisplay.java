@@ -36,6 +36,9 @@ public class MenuToDisplay {
     @JsonProperty("children")
     private List<MenuToDisplay> subMenuList;
 
+    @JsonProperty("menuroutes")
+    private List<String> menuRoutes;
+
     public void setGstrUrl(String gstrUrl) {
         this.gstrUrl = gstrUrl == null ? "" : gstrUrl;
     }

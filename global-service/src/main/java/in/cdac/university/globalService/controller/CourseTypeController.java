@@ -27,7 +27,7 @@ public class CourseTypeController {
     @GetMapping("all")
     public ResponseEntity<?> getAllCourseTypes() throws Exception {
         return ResponseHandler.generateResponse(
-                courseTypeService.getAllCourseTypes(RequestUtility.getUniversityId())
+                courseTypeService.getAllCourseTypes()
         );
     }
 

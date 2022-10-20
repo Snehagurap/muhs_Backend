@@ -10,6 +10,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,5 +51,13 @@ public class GlobalExceptionHandlerAdvice {
             message = "Invalid Request Field: " + ife.getPath().get(0).getFieldName();
         }
         return ResponseHandler.generateResponse(0, "Parameter types mismatch: Bad Request", message);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<Object> fileSizeExceededException(MaxUploadSizeExceededException e) {
+        log.error("Handling MaxUploadSizeExceededException: " + e.getClass().getCanonicalName());
+        e.printStackTrace();
+        String message = e.getMessage();
+        return ResponseHandler.generateResponse(0, "File size is too large. Max limit is 5MB.", message);
     }
 }

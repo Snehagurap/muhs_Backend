@@ -9,5 +9,7 @@ import lombok.ToString;
 @ToString
 public class NotificationApplyDetailBean {
 
-    private String facultyName;
+    private String courseType;
+    private String notificationType;
+    private String faculty;
 }

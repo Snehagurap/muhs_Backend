@@ -3,17 +3,15 @@ package in.cdac.university.globalService.bean;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
-@ToString
-public class MasterTemplateBean {
+public class TemplateBean {
 
-    private Long unumMtempleId;
+    private Long unumTempleId;
 
     @JsonIgnore
     private Integer unumIsvalid;
@@ -27,27 +25,19 @@ public class MasterTemplateBean {
     @JsonIgnore
     private Date udtEntryDate;
 
-    private Integer unumCtypeId;
-
     @JsonIgnore
     private Long unumEntryUid;
 
     private Integer unumFacultyId;
-
-    private Integer unumMtemplateForYyyy;
-
-    private Integer unumMtemplateForYyyymm;
-
-    private Integer unumMtemplateType;
+    private Integer unumTemplateForYyyy;
+    private Integer unumTemplateForYyyymm;
+    private Integer unumTemplateType;
 
     @JsonIgnore
     private Integer unumUnivId;
+    private String ustrTempDescription;
+    private String ustrTempleCode;
+    private String ustrTempleName;
 
-    private String ustrMtempDescription;
-
-    private String ustrMtempleCode;
-
-    private String ustrMtempleName;
-
-    private List<TemplateBean> templateList;
+    private List<TemplateHeaderBean> headers;
 }
