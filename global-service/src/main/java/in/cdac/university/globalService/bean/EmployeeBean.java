@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Getter
@@ -42,7 +43,7 @@ public class EmployeeBean {
     private Long unumEntryUid;
 
     @ListColumn(order = 3, name = "Mobile No.")
-    @NotBlank(message = "Mobile number is mandatory")
+    @NotNull(message = "Mobile number is mandatory")
     private Long unumMobileNo;
 
     private Integer unumTAppointtypeId;
