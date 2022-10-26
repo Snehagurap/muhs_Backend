@@ -20,14 +20,16 @@ public class FileUploadController {
     private FtpService ftpService;
 
     @PostMapping("file/upload")
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("folder") String folder) throws IOException {
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("folder") String folder,
+                                        @RequestHeader("fhttf") String clientFileToken,
+                                        @RequestHeader("f_code") String fileNameClientToken) throws IOException {
         FtpUtility.FTP_DIRECTORY fileDirectory = FtpUtility.FTP_DIRECTORY.getByValue(folder);
 
         if (fileDirectory == null)
             return ResponseHandler.generateErrorResponse("Folder with name " + folder + " not found.");
 
         return ResponseHandler.generateResponse(
-                ftpService.uploadFile(file, fileDirectory)
+                ftpService.uploadFile(file, fileDirectory, clientFileToken, fileNameClientToken)
         );
     }
 

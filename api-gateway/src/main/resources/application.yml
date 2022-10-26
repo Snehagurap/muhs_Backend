@@ -24,3 +24,7 @@ spring:
             allowedHeaders:
               - Authorization
               - content-type
+              - fhttf
+              - f_code
+  codec:
+    max-in-memory-size: 20MB

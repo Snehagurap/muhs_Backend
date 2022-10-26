@@ -1,6 +1,7 @@
 package in.cdac.university.apigateway.controller;
 
 import cn.apiclub.captcha.Captcha;
+import com.google.common.hash.Hashing;
 import in.cdac.university.apigateway.bean.CaptchaBean;
 import in.cdac.university.apigateway.bean.Token;
 import in.cdac.university.apigateway.config.AccessTokenMapper;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.*;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -24,6 +26,10 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -50,7 +56,7 @@ public class LoginController {
     private JwtUtil jwtUtil;
 
     public final static ExpiringMap<String, String> blackListedTokens = ExpiringMap.builder()
-            .maxSize(2000)
+            .maxSize(10000)
             .variableExpiration()
             .expirationPolicy(ExpirationPolicy.CREATED)
             .build();
@@ -64,7 +70,24 @@ public class LoginController {
     @PostMapping(value = "/login")
     public ResponseEntity<?> login(@Valid @RequestBody UserDetail userDetail,
                                    @RequestHeader(HttpHeaders.USER_AGENT) String userAgent,
-                                   ServerHttpResponse httpResponse) {
+                                   ServerHttpResponse httpResponse, ServerHttpRequest httpRequest) {
+
+        // Check for data tampering
+        if (httpRequest.getHeaders().containsKey("fhttf")) {
+            String clientToken = Optional.ofNullable(httpRequest.getHeaders().get("fhttf")).orElse(List.of("")).get(0);
+            if (!clientToken.isBlank()) {
+                String serverData = userDetail.getUsername() + userDetail.getPassword() + userDetail.getCaptchaId()
+                        + userDetail.getCaptcha() + userDetail.getUserCategory() + userDetail.getApplicationType();
+                String serverToken = Hashing.sha256().hashString(serverData, StandardCharsets.UTF_8).toString();
+                if (!clientToken.equals(serverToken)) {
+                    log.error("Server Data: {}", serverData);
+                    log.error("Server Token: {}", serverToken);
+                    log.error("Client Token: {}", clientToken);
+                    return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, "Form data tampered", "1");
+                }
+            }
+        }
+
         if (userDetail.getIsPostman() == null && userDetail.getApplicationType() == 1) {
             // Check for captcha
             String captchaId = userDetail.getCaptchaId();
@@ -79,6 +102,8 @@ public class LoginController {
                 return ResponseHandler.generateResponse(HttpStatus.UNAUTHORIZED, "Invalid Captcha", "1");
             }
         }
+
+        userDetail.setUsername(new String(Base64.getDecoder().decode(userDetail.getUsername().getBytes())));
 
         final String url = oauthUrl + "/oauth/token";
         HttpHeaders headers = new HttpHeaders();
@@ -100,6 +125,7 @@ public class LoginController {
                     url, HttpMethod.POST, httpEntity, AccessTokenMapper.class
             );
             UserDetail userDetailResponse = new UserDetail();
+
             if (tokenResponse.getBody() != null) {
                 setUserDetailFromToken(userDetailResponse, tokenResponse, userDetail.getApplicationType());
 
@@ -110,9 +136,7 @@ public class LoginController {
                         .maxAge(86400)        // One Day
                         .build();
                 httpResponse.addCookie(responseCookie);
-                httpResponse.setStatusCode(HttpStatus.BAD_REQUEST);
             }
-
             return ResponseHandler.generateResponse(userDetailResponse);
         } catch (HttpClientErrorException e) {
             e.printStackTrace();

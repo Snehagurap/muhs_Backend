@@ -152,7 +152,7 @@ public class MasterTemplateService {
                     templateComponentBean.setItems(templateItemBeans);
 
                     for (TemplateItemBean templateItemBean: templateItemBeans) {
-                        fetchSubItems(templateItemBean, itemsByTemplateId);
+                        fetchSubItems(templateItemBean, itemsByTemplateId, templateDetailByTemplateId);
                     }
                 }
             }
@@ -161,11 +161,22 @@ public class MasterTemplateService {
         return ServiceResponse.successObject(masterTemplateBean);
     }
 
-    private void fetchSubItems(TemplateItemBean templateItemBean, List<GmstConfigTemplateItemMst> itemsByTemplateId) {
+    private void fetchSubItems(TemplateItemBean templateItemBean, List<GmstConfigTemplateItemMst> itemsByTemplateId, List<GmstConfigTemplateDtl> templateDetailByTemplateId) {
+
         List<TemplateItemBean> childItems = itemsByTemplateId.stream()
                 .filter(gmstConfigTemplateItemMst -> gmstConfigTemplateItemMst.getUnumTemplParentItemId() != null &&
                         gmstConfigTemplateItemMst.getUnumTemplParentItemId().equals(templateItemBean.getUnumTemplItemId()))
-                .map(gmstConfigTemplateItemMst -> BeanUtils.copyProperties(gmstConfigTemplateItemMst, TemplateItemBean.class))
+                .map(gmstConfigTemplateItemMst -> {
+                    TemplateItemBean itemBean = BeanUtils.copyProperties(gmstConfigTemplateItemMst, TemplateItemBean.class);
+                    GmstConfigTemplateDtl gmstConfigTemplateDtl = templateDetailByTemplateId.stream().filter(
+                            gmstConfigTemplateDtl1 -> gmstConfigTemplateDtl1.getUnumTempleItemId().equals(itemBean.getUnumTemplItemId())
+                    ).findFirst().orElse(null);
+                    if (gmstConfigTemplateDtl != null) {
+                        itemBean.setUnumItemDisplayOrder(gmstConfigTemplateDtl.getUnumDisplayOrder());
+                        itemBean.setUnumIsHidden(gmstConfigTemplateDtl.getUnumHideItemTxt() == null ? 0 : gmstConfigTemplateDtl.getUnumHideItemTxt());
+                    }
+                    return itemBean;
+                })
                 .sorted(Comparator.comparing(TemplateItemBean::getUnumItemDisplayOrder, Comparator.nullsLast(Comparator.naturalOrder())))
                 .toList();
 
@@ -175,7 +186,7 @@ public class MasterTemplateService {
             return;
 
         for (TemplateItemBean childItem: childItems) {
-            fetchSubItems(childItem, itemsByTemplateId);
+            fetchSubItems(childItem, itemsByTemplateId, templateDetailByTemplateId);
         }
     }
 }

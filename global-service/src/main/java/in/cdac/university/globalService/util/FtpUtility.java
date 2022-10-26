@@ -175,8 +175,10 @@ public class FtpUtility {
         }
         try {
             InputStream inputStream = ftpClient.retrieveFileStream(fileName);
-            if (inputStream == null)
-                inputStream = ftpClient.retrieveFileStream("temp/" + fileName);
+            if (inputStream == null) {
+                fileName = "temp/" + fileName;
+                inputStream = ftpClient.retrieveFileStream(fileName);
+            }
             byte[] fileBytes = inputStream.readAllBytes();
             ftpClient.completePendingCommand();
             inputStream.close();

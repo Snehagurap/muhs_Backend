@@ -10,6 +10,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -24,7 +25,7 @@ public class GlobalExceptionHandlerAdvice {
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<Object> handleException(Exception e) {
         e.printStackTrace();
-        log.error("Handling Exception: " + e.getClass().getCanonicalName());
+        log.error("Handling Exception: {}", e.getClass().getCanonicalName());
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         e.printStackTrace(pw);
@@ -34,7 +35,7 @@ public class GlobalExceptionHandlerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        log.error("Handling MethodArgumentNotValidException: " + e.getClass().getCanonicalName());
+        log.error("Handling MethodArgumentNotValidException: {}", e.getClass().getCanonicalName());
         e.printStackTrace();
         BindingResult result = e.getBindingResult();
         Map<String, String> errorMap = new HashMap<>();
@@ -48,7 +49,7 @@ public class GlobalExceptionHandlerAdvice {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Object> handleBadRequestException(HttpMessageNotReadableException e) {
-        log.error("Handling HttpMessageNotReadableException: " + e.getClass().getCanonicalName());
+        log.error("Handling HttpMessageNotReadableException: {}", e.getClass().getCanonicalName());
         e.printStackTrace();
         String message = e.getMessage();
         Throwable cause = e.getCause();
@@ -70,5 +71,16 @@ public class GlobalExceptionHandlerAdvice {
     public ResponseEntity<Object> handleApplicationException(ApplicationException e) {
         e.printStackTrace();
         return ResponseHandler.generateErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<Object> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
+        e.printStackTrace();
+        var errorMessage = e.getMessage();
+        if (errorMessage == null)
+            errorMessage = "Unable to upload file";
+        errorMessage = errorMessage.substring(errorMessage.lastIndexOf(":") + 1);
+        log.error("File size error: {}", errorMessage);
+        return ResponseHandler.generateErrorResponse(errorMessage);
     }
 }

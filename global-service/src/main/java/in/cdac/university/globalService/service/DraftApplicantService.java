@@ -93,14 +93,15 @@ public class DraftApplicantService {
         // Generate new username and password
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String password = RandomStringUtils.randomAlphanumeric(8);
+        String username = "applicant_" + applicant.getUnumApplicantDraftid();
+
         log.debug("Generated Password: {}", password);
 
         String encodedPassword = Hashing.sha256()
-                .hashString(password, StandardCharsets.UTF_8)
+                .hashString(password + username, StandardCharsets.UTF_8)
                 .toString();
         encodedPassword = encoder.encode(encodedPassword);
 
-        String username = "applicant_" + applicant.getUnumApplicantDraftid();
         int noOfRowsAffected = draftApplicantRepository.updateDraftApplicantUsernameAndPassword(
                 username, password, encodedPassword, applicant.getUnumApplicantDraftid()
         );

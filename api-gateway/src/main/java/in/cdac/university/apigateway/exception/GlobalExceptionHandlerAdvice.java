@@ -21,7 +21,7 @@ public class GlobalExceptionHandlerAdvice {
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<Object> handleException(Exception e) {
         e.printStackTrace();
-        log.info("Handling Exception: " + e.getClass().getCanonicalName());
+        log.info("Handling Exception:, {} ", e.getClass().getCanonicalName());
         ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
         return ResponseHandler.generateResponse(HttpStatus.EXPECTATION_FAILED, "Unable to process request at this time. Please try again", errorResponse);
     }
@@ -37,4 +37,10 @@ public class GlobalExceptionHandlerAdvice {
         }
         return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, "Required parameters are missing", errorMap);
     }
+
+//    @ExceptionHandler(FormDataTamperedException.class)
+//    public ResponseEntity<Object> handleFormDataTamperedException(FormDataTamperedException e) {
+//        e.printStackTrace();
+//        return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, "Form data tampered");
+//    }
 }

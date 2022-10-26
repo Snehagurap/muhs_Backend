@@ -1,5 +1,6 @@
 package in.cdac.university.globalService.service;
 
+import com.google.common.hash.Hashing;
 import in.cdac.university.globalService.bean.FtpBean;
 import in.cdac.university.globalService.util.FtpUtility;
 import in.cdac.university.globalService.util.ServiceResponse;
@@ -15,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -38,9 +41,14 @@ public class FtpService {
 
     private final Pattern fileNameRegex = Pattern.compile("^[A-Za-z-_\\d\\s]+[.][A-Za-z]{3,4}$");
 
-    public ServiceResponse uploadFile(MultipartFile file, FtpUtility.FTP_DIRECTORY ftpDirectory) throws IOException {
+    public ServiceResponse uploadFile(MultipartFile file, FtpUtility.FTP_DIRECTORY ftpDirectory, String clientFileToken, String fileNameClientToken) throws IOException {
         if (file == null || file.isEmpty() || file.getOriginalFilename() == null) {
             return ServiceResponse.errorResponse("No file found to upload");
+        }
+
+        String fileNameServerToken = Hashing.sha256().hashString(file.getOriginalFilename(), StandardCharsets.UTF_8).toString();
+        if (fileNameClientToken != null && !fileNameClientToken.equals(fileNameServerToken)) {
+            return ServiceResponse.errorResponse("Form data tampered");
         }
 
         log.debug("File Name: {}", file.getOriginalFilename());
@@ -81,6 +89,18 @@ public class FtpService {
         if (fileNameToSave.length() > 45)
             fileNameToSave = fileNameToSave.substring(0, 45);
         fileNameToSave += "." + fileExtension;
+
+        // Read File data
+        String fileContent = Base64.getEncoder().encodeToString(file.getBytes());
+        String serverFileToken = Hashing.sha256().hashString(fileContent, StandardCharsets.UTF_8).toString();
+        log.debug("Server file token: {}", serverFileToken);
+        log.debug("Client file token: {}", clientFileToken);
+        if (clientFileToken != null && !clientFileToken.equals(serverFileToken)) {
+            log.error("File content: {}", fileContent);
+            log.error("Server file token: {}", serverFileToken);
+            log.error("Client file token: {}", clientFileToken);
+            return ServiceResponse.errorResponse("Form data tampered");
+        }
 
         boolean result = ftpUtility.uploadFileToTempDirectory(ftpDirectory, file, fileNameToSave);
         if (result) {
@@ -133,6 +153,11 @@ public class FtpService {
         if (fileBytes == null) {
             return null;
         }
+//        try(OutputStream os = new FileOutputStream("G:\\1.pdf")) {
+//            os.write(fileBytes);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
         InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(fileBytes));
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName)
