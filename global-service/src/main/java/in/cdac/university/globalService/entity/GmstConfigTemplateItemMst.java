@@ -165,6 +165,12 @@ public class GmstConfigTemplateItemMst implements Serializable {
 	@Column(name="ustr_value_text")
 	private String ustrValueText;
 
+	@Column(name="ustr_parent_val_childlist")
+	private String ustrParentValChildlist;
+
+	@Column(name="ustr_help_txt")
+	private String ustrHelpTxt;
+
 	@Formula("(select c.ustr_uict_desc from university.gmst_config_uicontrol_type_mst c where c.unum_uict_id = unum_ui_control_id and c.unum_isvalid = 1)")
 	private String controlTypeName;
 }

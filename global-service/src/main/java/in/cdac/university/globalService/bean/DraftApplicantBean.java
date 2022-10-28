@@ -35,7 +35,7 @@ public class DraftApplicantBean {
     private Long unumApplicantMobile;
 
     @NotNull(message = "Pincode is mandatory")
-    @Range(min = 111111, max = 999999, message = "Pincode must be of 6 digits.")
+    @Range(min = 100000, max = 999999, message = "Pincode must be of 6 digits.")
     private Long unumApplicantPincode;
 
     private Integer unumApplicantRegStatus;

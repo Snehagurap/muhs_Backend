@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -130,6 +129,10 @@ public class TemplateItemBean {
 
     @ListColumn(order = 5, name = "Control Type")
     private String controlTypeName;
+
+    private String ustrParentValChildlist;
+
+    private String ustrHelpTxt;
 
     List<TemplateItemBean> children;
 }
