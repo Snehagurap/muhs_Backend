@@ -1,17 +1,19 @@
 package in.cdac.university.globalService.service;
 
+
 import in.cdac.university.globalService.bean.CommitteeBean;
 import in.cdac.university.globalService.bean.EventBean;
 import in.cdac.university.globalService.bean.EmployeeBean;
 import in.cdac.university.globalService.entity.GmstEmpMst;
+import in.cdac.university.globalService.exception.ApplicationException;
 import in.cdac.university.globalService.repository.EmployeeRepository;
 import in.cdac.university.globalService.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 
 @Service
 public class EmployeeService {
@@ -64,5 +66,76 @@ public class EmployeeService {
         gmstEmpMst.setUnumEmpId(employeeRepository.getNextId());
         employeeRepository.save(gmstEmpMst);
         return ServiceResponse.successMessage(language.message("Teacher detail"));
+    }
+
+    public ServiceResponse getTeacherById(Long teacherId) throws Exception {
+        Optional<GmstEmpMst> gmstEmpMstOptional = employeeRepository.findByUnumEmpIdAndUnumIsvalidInAndUnumUnivId(
+                teacherId, List.of(1, 2), RequestUtility.getUniversityId()
+        );
+
+        if (gmstEmpMstOptional.isEmpty())
+            return ServiceResponse.errorResponse(language.notFoundForId("Teacher", teacherId));
+
+        EmployeeBean employeeBean = BeanUtils.copyProperties(gmstEmpMstOptional.get(), EmployeeBean.class);
+
+        return ServiceResponse.builder()
+                .status(1)
+                .responseObject(employeeBean)
+                .build();
+    }
+
+    @Transactional
+    public ServiceResponse update(EmployeeBean employeeBean) {
+        if(employeeBean.getUnumEmpId() == null){
+            return ServiceResponse.errorResponse(language.mandatory("Teacher Id"));
+        }
+
+        // Duplicate Check
+        int noOfRecordsAffected = employeeRepository.createLog(List.of(employeeBean.getUnumEmpId()));
+        if (noOfRecordsAffected == 0) {
+            throw new ApplicationException(language.notFoundForId("Teacher", employeeBean.getUnumEmpId()));
+        }
+
+        // save new Record
+        GmstEmpMst empMst = BeanUtils.copyProperties(employeeBean, GmstEmpMst.class);
+        employeeRepository.save(empMst);
+
+        return ServiceResponse.builder()
+                .status(1)
+                .message(language.updateSuccess("Teacher"))
+                .build();
+    }
+
+    @Transactional
+    public ServiceResponse delete(EmployeeBean employeeBean, Long[] idsToDelete) {
+        if (idsToDelete == null || idsToDelete.length == 0) {
+            return ServiceResponse.errorResponse(language.mandatory("Teacher Id"));
+        }
+
+        List<GmstEmpMst> empMstList = employeeRepository.findByUnumEmpIdInAndUnumIsvalidInAndUnumUnivId(
+                List.of(idsToDelete), List.of(1, 2), employeeBean.getUnumUnivId()
+        );
+
+        if(empMstList.size() != idsToDelete.length) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Teacher", Arrays.toString(idsToDelete)));
+        }
+
+        // Create Log
+        int noOfRowsAffected = employeeRepository.createLog(List.of(idsToDelete));
+        if (noOfRowsAffected != idsToDelete.length) {
+            throw new ApplicationException(language.deleteError("Teacher"));
+        }
+
+        empMstList.forEach(teacher -> {
+            teacher.setUnumIsvalid(0);
+            teacher.setUdtEntryDate(employeeBean.getUdtEntryDate());
+            teacher.setUnumEntryUid(employeeBean.getUnumEntryUid());
+        });
+
+        employeeRepository.saveAll(empMstList);
+        return ServiceResponse.builder()
+                .status(1)
+                .message(language.deleteSuccess("Teacher"))
+                .build();
     }
 }

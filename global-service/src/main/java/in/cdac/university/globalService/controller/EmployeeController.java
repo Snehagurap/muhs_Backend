@@ -1,5 +1,6 @@
 package in.cdac.university.globalService.controller;
 
+import in.cdac.university.globalService.bean.CollegeBean;
 import in.cdac.university.globalService.bean.EmployeeBean;
 import in.cdac.university.globalService.service.EmployeeCurrentDetailService;
 import in.cdac.university.globalService.service.EmployeeProfileService;
@@ -71,6 +72,34 @@ public class EmployeeController {
         employeeBean.setUnumEntryUid(RequestUtility.getUserId());
         return ResponseHandler.generateResponse(
                 employeeService.save(employeeBean)
+        );
+    }
+
+    @GetMapping("{teacherId}")
+    public ResponseEntity<?> getTeacherById(@PathVariable("teacherId") Long teacherId) throws Exception {
+        return ResponseHandler.generateOkResponse(
+                employeeService.getTeacherById(teacherId)
+        );
+    }
+
+    @PutMapping("update")
+    public ResponseEntity<?> update(@Valid @RequestBody EmployeeBean employeeBean) throws Exception {
+        employeeBean.setUdtEntryDate(new Date());
+        employeeBean.setUnumUnivId(RequestUtility.getUniversityId());
+        employeeBean.setUnumEntryUid(RequestUtility.getUserId());
+        return ResponseHandler.generateResponse(
+                employeeService.update(employeeBean)
+        );
+    }
+
+    @DeleteMapping("delete")
+    public ResponseEntity<?> delete(@RequestBody Long[] idsToDelete) throws Exception {
+        EmployeeBean employeeBean = new EmployeeBean();
+        employeeBean.setUdtEntryDate(new Date());
+        employeeBean.setUnumUnivId(RequestUtility.getUniversityId());
+        employeeBean.setUnumEntryUid(RequestUtility.getUserId());
+        return ResponseHandler.generateResponse(
+                employeeService.delete(employeeBean, idsToDelete)
         );
     }
 }
