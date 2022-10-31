@@ -18,4 +18,5 @@ public class NotificationApplyBean {
     private Long notificationId;
 
     List<NotificationApplyDetailBean> notificationDetails;
+    List<NotificationDocumentBean> notificationDocuments;
 }

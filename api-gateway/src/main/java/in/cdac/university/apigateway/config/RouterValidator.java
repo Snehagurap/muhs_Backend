@@ -15,7 +15,9 @@ public class RouterValidator {
             "/usm/state/",
             "/usm/district/",
             "/global/applicant/draft/",
-            "/pb/notification/active"
+            "/pb/notification/active",
+            "/global/documentType/notification",
+            "/global/file/download"
     );
 
     public Predicate<ServerHttpRequest> isSecured = request -> apiWithoutAuthentication.stream()

@@ -341,6 +341,10 @@ public class NotificationService {
         List<NotificationApplyBean> notificationApplyBeans = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat(Constants.dateFormat);
         activeNotifications.forEach(activeNotification -> {
+            // Get Documents Details
+            List<GbltNotificationDocDtl> gbltNotificationDocDtls = documentRepository.findByUnumIsvalidAndUnumUnivIdAndUnumNidOrderByUnumSnoDisplayorderAsc(
+                    1, universityId, activeNotification.getUnumNid()
+            );
             NotificationApplyBean notificationApplyBean = new NotificationApplyBean();
             String notificationName = activeNotification.getUstrNMainHeading();
             if (activeNotification.getUstrNSubHeading() != null && !activeNotification.getUstrNSubHeading().isBlank()) {
@@ -350,7 +354,7 @@ public class NotificationService {
             notificationApplyBean.setNotificationDate(sdf.format(activeNotification.getUdtNDt()));
             notificationApplyBean.setNotificationYear(Integer.valueOf(activeNotification.getUstrAcademicYear()));
             notificationApplyBean.setNotificationId(activeNotification.getUnumNid());
-
+            notificationApplyBean.setNotificationDocuments(BeanUtils.copyListProperties(gbltNotificationDocDtls, NotificationDocumentBean.class));
             // Get Notification Details
             List<GbltNotificationDtl> notificationDtlList = detailRepository.findByUnumIsvalidAndUnumUnivIdAndUnumNidOrderByUnumSnoDisplayorderAsc(
                     1, universityId, activeNotification.getUnumNid()
