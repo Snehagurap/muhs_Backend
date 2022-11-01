@@ -151,13 +151,13 @@ public class LoginController {
     private void setUserDetailFromToken(UserDetail userDetailResponse, ResponseEntity<AccessTokenMapper> tokenResponse, Integer applicationType) {
         if (tokenResponse.getBody() != null) {
             userDetailResponse.setToken(tokenResponse.getBody().getAccess_token());
-            userDetailResponse.setUserId(tokenResponse.getBody().getUserId());
-            userDetailResponse.setUserType(tokenResponse.getBody().getUserType());
-            userDetailResponse.setUniversityId(tokenResponse.getBody().getUniversityId());
+            //userDetailResponse.setUserId(tokenResponse.getBody().getUserId());
+            //userDetailResponse.setUserType(tokenResponse.getBody().getUserType());
+            //userDetailResponse.setUniversityId(tokenResponse.getBody().getUniversityId());
             userDetailResponse.setApplicationType(applicationType);
             userDetailResponse.setRefresh_token(tokenResponse.getBody().getRefresh_token());
             userDetailResponse.setExpires_in(tokenResponse.getBody().getExpires_in());
-            userDetailResponse.setUserCategory(tokenResponse.getBody().getUserCategory());
+            //userDetailResponse.setUserCategory(tokenResponse.getBody().getUserCategory());
         }
     }
 

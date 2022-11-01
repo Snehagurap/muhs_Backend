@@ -1,5 +1,6 @@
-FROM openjdk:17.0.2-jdk
-RUN microdnf install git
+FROM openjdk:17-alpine
+RUN apk update
+RUN apk add git
 RUN mkdir /opt/config-server-repo
 RUN git config --global user.email "test@test.com"
 RUN git config --global user.name "test"

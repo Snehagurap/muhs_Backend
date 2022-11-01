@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>in.cdac.university</groupId>
 	<artifactId>planning-board</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>planning-board</name>
 	<description>Planning Board Module</description>
 	<properties>

@@ -39,5 +39,7 @@ public class TemplateBean {
     private String ustrTempleCode;
     private String ustrTempleName;
 
+    private Long unumMtempledtlId;
+
     private List<TemplateHeaderBean> headers;
 }

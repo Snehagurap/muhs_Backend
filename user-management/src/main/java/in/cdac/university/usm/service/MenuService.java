@@ -11,6 +11,7 @@ import in.cdac.university.usm.repository.RoleMenuRepository;
 import in.cdac.university.usm.repository.UserRoleRepository;
 import in.cdac.university.usm.util.BeanUtils;
 import in.cdac.university.usm.util.Language;
+import in.cdac.university.usm.util.RequestUtility;
 import in.cdac.university.usm.util.ServiceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -244,9 +245,20 @@ public class MenuService {
         return getIntermediateMenuBeans(menuBean, menuMstPredicate);
     }
 
-    public ServiceResponse getMenusMappedWithUser(Integer userId) {
-        // Get Roles Mapped with User
-        List<UmmtUserRoleMst> mappedRoles = userRoleRepository.findByGnumUserIdAndGblIsvalid(userId, 1);
+    public ServiceResponse getMenusMappedWithUser(Integer userId) throws Exception {
+        // Get User Category
+        int userCategory = RequestUtility.getUserCategory();
+        List<UmmtUserRoleMst> mappedRoles;
+        if (userCategory == 5) {
+            mappedRoles = new ArrayList<>();
+            UmmtUserRoleMst ummtUserRoleMst = new UmmtUserRoleMst();
+            ummtUserRoleMst.setGnumRoleId(0);
+            mappedRoles.add(ummtUserRoleMst);
+        } else {
+            // Get Roles Mapped with User
+            mappedRoles = userRoleRepository.findByGnumUserIdAndGblIsvalid(userId, 1);
+        }
+
         List<UmmtMenuMst> mappedMenus = new ArrayList<>();
         Map<Integer, Integer> menuOrder = new HashMap<>();
         if (!mappedRoles.isEmpty()) {

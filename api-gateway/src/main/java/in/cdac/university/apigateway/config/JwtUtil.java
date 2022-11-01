@@ -6,6 +6,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
@@ -47,6 +48,7 @@ public class JwtUtil {
         UserDetail userDetail = new UserDetail();
         try {
             Claims allClaimsFromToken = this.getAllClaimsFromToken(token);
+
             int universityId = Optional.ofNullable(allClaimsFromToken.get("universityId"))
                                         .map(value -> Integer.valueOf(value.toString()))
                                         .orElse(-1);
@@ -61,6 +63,12 @@ public class JwtUtil {
                                         .map(value -> Integer.valueOf(value.toString()))
                                         .orElse(-1);
             userDetail.setApplicationType(applicationType);
+
+            int userCategory = Optional.ofNullable(allClaimsFromToken.get("userCategory"))
+                    .map(value -> Integer.valueOf(value.toString()))
+                    .orElse(-1);
+            userDetail.setUserCategory(userCategory);
+
         } catch (ExpiredJwtException e) {
             log.info("Token expired");
         } catch (Exception e) {

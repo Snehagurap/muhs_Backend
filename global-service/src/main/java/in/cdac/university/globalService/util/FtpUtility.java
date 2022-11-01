@@ -20,7 +20,8 @@ public class FtpUtility {
 
     public enum FTP_DIRECTORY {
         COMMITTEE ("com"),
-        NOTIFICATION ("notification"),;
+        NOTIFICATION ("notification"),
+        REGISTRATION ("registration");
 
         public final String folderName;
 

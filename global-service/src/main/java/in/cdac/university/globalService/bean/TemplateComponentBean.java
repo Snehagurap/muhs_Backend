@@ -52,5 +52,7 @@ public class TemplateComponentBean {
 
     private Integer unumIsHidden;
 
+    private Long unumTempledtlId;
+
     private List<TemplateItemBean> items;
 }
