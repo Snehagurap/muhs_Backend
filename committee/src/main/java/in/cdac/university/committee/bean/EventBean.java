@@ -10,6 +10,7 @@ import lombok.ToString;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -57,4 +58,6 @@ public class EventBean {
 
     @ComboKey(index = 2)
     private int isEventStarted;
+
+    private List<CommitteeMember> committeeMemberDetail;
 }

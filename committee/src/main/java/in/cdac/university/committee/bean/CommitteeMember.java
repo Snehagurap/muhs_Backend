@@ -32,4 +32,6 @@ public class CommitteeMember {
     private String unumPreference5Empname;
 
     private String ustrComMemberDescription;
+
+    private String ustrRolename;
 }

@@ -296,4 +296,48 @@ public class CommitteeService {
                 .message(language.saveSuccess("Committee Member Mapping"))
                 .build();
     }
+
+    public ServiceResponse getCommitteeMemberMappingByEventId(Long eventId) {
+        List<GbltCommitteeMemberDtl> gbltCommitteeMemberDtlList = committeeMemberMappingRepository.findByUnumEventidAndUnumIsvalidAndUnumUnivId(eventId,1,RequestUtility.getUniversityId());
+
+        if(gbltCommitteeMemberDtlList.isEmpty()) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Member" , eventId));
+        }
+
+     //   List<CommitteeMember> committeeMemberList = BeanUtils.copyListProperties(gbltCommitteeMemberDtlList, CommitteeMember.class);
+
+        Optional<GbltCommitteeMst> committeeMstOptional = committeeMasterRepository.findByUnumIsvalidAndUnumComidAndUnumUnivId(1,gbltCommitteeMemberDtlList.get(0).getUnumComId(), RequestUtility.getUniversityId());
+
+        if (committeeMstOptional.isEmpty()) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Committee", gbltCommitteeMemberDtlList.get(0).getUnumComId()));
+        }
+
+        Map<Integer, String> committeeRoles = committeeRoleRepository.findAll().stream()
+                .collect(Collectors.toMap(GmstCommitteeRoleMst::getUnumRoleId, GmstCommitteeRoleMst::getUstrRoleFname));
+
+        List<CommitteeMember> committeeMemberList = gbltCommitteeMemberDtlList.stream().map(
+                committeeMember -> {
+                    CommitteeMember committeeMember1 = BeanUtils.copyProperties(committeeMember, CommitteeMember.class);
+                    committeeMember1.setUstrRolename(committeeRoles.getOrDefault(committeeMember.getUnumRoleId(), ""));
+                    return committeeMember1;
+                }
+        ).toList();
+        CommitteeBean committeeBean = BeanUtils.copyProperties(committeeMstOptional.get(), CommitteeBean.class);
+
+        Optional<GbltEventMst> gbltEventMstOptional = eventRepository.findByUnumEventidAndUnumUnivIdAndUnumIsvalid(eventId, RequestUtility.getUniversityId(), 1);
+
+        if (gbltEventMstOptional.isEmpty()) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Event", eventId));
+        }
+
+        EventBean eventBean = BeanUtils.copyProperties(gbltEventMstOptional.get() , EventBean.class);
+
+        eventBean.setCommitteeMemberDetail(committeeMemberList);
+        committeeBean.setEventDetail(List.of(eventBean));
+
+        return ServiceResponse.builder()
+                .status(1)
+                .responseObject(committeeBean)
+                .build();
+    }
 }

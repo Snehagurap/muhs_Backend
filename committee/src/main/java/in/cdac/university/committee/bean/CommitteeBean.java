@@ -68,4 +68,6 @@ public class CommitteeBean {
     @Valid
     @Size(min = 1, message = "Committee details are mandatory")
     private List<CommitteeDetailBean> committeeDetail;
+
+    private List<EventBean> eventDetail;
 }

@@ -76,4 +76,11 @@ public class CommitteeController {
                 committeeService.saveMemberMapping(committeeMemberBean)
         );
     }
+
+    @GetMapping("memberMapping/view/{eventId}")
+    public ResponseEntity<?> getCommitteeMemberMappingByEventId(@PathVariable("eventId") Long eventId) {
+        return ResponseHandler.generateResponse(
+                committeeService.getCommitteeMemberMappingByEventId(eventId)
+        );
+    }
 }
