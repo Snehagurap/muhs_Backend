@@ -1,5 +1,7 @@
 package in.cdac.university.usm.util;
 
+import com.google.gson.Gson;
+import in.cdac.university.usm.bean.UserDetail;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -25,11 +27,19 @@ public class RequestUtility {
         return Integer.valueOf(userId);
     }
 
-    public static Integer getApplicationType() throws Exception {
+    public static UserDetail getUserDetail() throws Exception {
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
-        String applicationType = request.getHeader("applicationType");
-        if (applicationType == null)
+        String userDetail = request.getHeader("userDetail");
+        if (userDetail == null)
             throw new Exception ("Session not present");
-        return Integer.valueOf(applicationType);
+        Gson gson = new Gson();
+        return gson.fromJson(userDetail, UserDetail.class);
+    }
+
+    public static Integer getUserCategory() throws Exception {
+        int userCategory = getUserDetail().getUserCategory();
+        if (userCategory <= 0)
+            throw new Exception("Session not present");
+        return userCategory;
     }
 }

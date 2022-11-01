@@ -134,5 +134,7 @@ public class TemplateItemBean {
 
     private String ustrHelpTxt;
 
+    private Long unumTempledtlId;
+
     List<TemplateItemBean> children;
 }

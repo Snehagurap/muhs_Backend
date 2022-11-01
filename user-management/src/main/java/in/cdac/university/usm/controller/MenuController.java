@@ -132,7 +132,7 @@ public class MenuController {
 
     @PatchMapping("update")
     @ApiOperation("Update Menu name or Menu URL only")
-    public @ResponseBody ResponseEntity<?> update(@Valid @RequestBody MenuBean menuBean) throws Exception {
+    public @ResponseBody ResponseEntity<?> update(@RequestBody MenuBean menuBean) throws Exception {
         return ResponseHandler.generateResponse(
                 menuService.update(menuBean)
         );

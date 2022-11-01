@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Base64;
 
 @RequestMapping("/global")
 @RestController
@@ -50,6 +51,12 @@ public class FileUploadController {
     @PostMapping("file/download")
     public ResponseEntity<?> downloadFile(@Valid @RequestBody FtpBean ftpBean) {
         return ftpService.downloadFile(ftpBean.getFileName());
+    }
+
+    @GetMapping("file/download/{fileName}")
+    public ResponseEntity<?> downloadFileViaGet(@PathVariable("fileName") String fileName) {
+        String decodedFileName = new String(Base64.getDecoder().decode(fileName.getBytes()));
+        return ftpService.downloadFile(decodedFileName);
     }
 
     @PostMapping("file/exists")

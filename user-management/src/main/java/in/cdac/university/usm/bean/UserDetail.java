@@ -14,6 +14,7 @@ public class UserDetail {
     private Integer userId;
     private Integer userType;
     private Integer universityId;
+    private Integer userCategory;      /* 1: University, 5: Applicant */
 
     @NotNull(message = "Application Type cannot be blank")
     @Min(1)

@@ -24,8 +24,8 @@ public class RoleMenuService {
     public ServiceResponse save(RoleMenuBean roleMenuBean) {
         // Get already mapped menus, Delete if present
         List<UmmtRoleMenuMst> roleMenuMstList = roleMenuRepository.findByGnumRoleIdAndGnumModuleId(roleMenuBean.getGnumRoleId(), roleMenuBean.getGnumModuleId());
-        if (!roleMenuMstList.isEmpty())
-            roleMenuRepository.deleteAllInBatch(roleMenuMstList);
+//        if (!roleMenuMstList.isEmpty())
+//            roleMenuRepository.deleteAllInBatch(roleMenuMstList);
 
         // Map new Menus
         if (roleMenuBean.getGnumMenuId() != null && roleMenuBean.getGnumMenuId().length > 0) {

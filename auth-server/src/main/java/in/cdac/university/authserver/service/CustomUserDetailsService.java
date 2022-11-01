@@ -55,23 +55,29 @@ public class CustomUserDetailsService implements UserDetailsService {
             e.printStackTrace();
         }
 
+        CustomUser customUser = null;
         switch (applicationType) {
             case "1":
                 if (userCategory != null && userCategory.equals("2")) {
-                    return findDraftApplicant(username);
+                    customUser = findDraftApplicant(username);
                 } else {
                     // Application user
-                    return findApplicationUser(username);
+                    customUser = findApplicationUser(username);
                 }
+                break;
             case "2":
                 // User Management User
-                return findUserManagementUser(username);
+                customUser = findUserManagementUser(username);
+                break;
             case "3":
                 // User Management Super User
-                return findUserManagementSuperUser(username);
+                customUser = findUserManagementSuperUser(username);
         }
-
-        throw new UsernameNotFoundException("User not found");
+        if (customUser != null)
+            customUser.setApplicationType(Integer.parseInt(applicationType));
+        else
+            throw new UsernameNotFoundException("User not found");
+        return customUser;
     }
 
     private CustomUser findUserManagementSuperUser(String username) {

@@ -9,14 +9,14 @@ config:
   oauth2:
     clientId: client
     clientSecret: secret
-    url: http://auth-server
+    url: http://auth-server:8001
   service:
     global:
-      url: http://global-service
+      url: http://global-service:8004
     committee:
-      url: http://committee
+      url: http://committee:8005
     usm:
-      url: http://user-management
+      url: http://user-management:8003
 
 jwt:
   secret: BvPHGM8C0ia4uOuxxqPD5DTbWC9F9TWvPStp3pb7ARo0oK2mJ3pd3YG4lxA9i8bj6OTbadwezxgeEByY
@@ -24,7 +24,7 @@ jwt:
 
 spring:
   datasource:
-    url: jdbc:postgresql://devmuhsnashik.dcservices.in:5432/muhs_nashik
+    url: jdbc:postgresql://uatmuhsnashik01.dcservices.in:6432/muhs_nashik
     username: muhsnashik
     password: MuHs123NaShIk
     driver-class-name: org.postgresql.Driver
@@ -32,4 +32,21 @@ spring:
     show-sql: true
     hibernate:
       dialect: org.hibernate.dialect.PostgreSQLDialect
-      ddl-auto: update
+      ddl-auto: none
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 5MB
+      max-request-size: 200MB
+ftp:
+  url: 10.10.10.168
+  username: ftpuser1
+  password: ftpuser1!
+
+logging:
+  level:
+    root: "info"
+    org.springframework.web: "info"
+    org.springframework.security: "info"
+    org.hibernate: "info"
