@@ -77,7 +77,7 @@ public class EmployeeController {
 
     @GetMapping("{teacherId}")
     public ResponseEntity<?> getTeacherById(@PathVariable("teacherId") Long teacherId) throws Exception {
-        return ResponseHandler.generateOkResponse(
+        return ResponseHandler.generateResponse(
                 employeeService.getTeacherById(teacherId)
         );
     }

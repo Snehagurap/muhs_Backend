@@ -304,8 +304,6 @@ public class CommitteeService {
             return ServiceResponse.errorResponse(language.notFoundForId("Member" , eventId));
         }
 
-     //   List<CommitteeMember> committeeMemberList = BeanUtils.copyListProperties(gbltCommitteeMemberDtlList, CommitteeMember.class);
-
         Optional<GbltCommitteeMst> committeeMstOptional = committeeMasterRepository.findByUnumIsvalidAndUnumComidAndUnumUnivId(1,gbltCommitteeMemberDtlList.get(0).getUnumComId(), RequestUtility.getUniversityId());
 
         if (committeeMstOptional.isEmpty()) {
@@ -314,6 +312,9 @@ public class CommitteeService {
 
         Map<Integer, String> committeeRoles = committeeRoleRepository.findAll().stream()
                 .collect(Collectors.toMap(GmstCommitteeRoleMst::getUnumRoleId, GmstCommitteeRoleMst::getUstrRoleFname));
+
+//        committeeRoleRepository.findAll().stream()
+//                .collect(Collectors.toMap(GmstCommitteeRoleMst::getUnumRoleId, obj -> obj.getUstrRoleFname()));
 
         List<CommitteeMember> committeeMemberList = gbltCommitteeMemberDtlList.stream().map(
                 committeeMember -> {

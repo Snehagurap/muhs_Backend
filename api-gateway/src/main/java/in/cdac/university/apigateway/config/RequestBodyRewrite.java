@@ -2,6 +2,8 @@ package in.cdac.university.apigateway.config;
 
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.ToNumberPolicy;
 import in.cdac.university.apigateway.exception.FormDataTamperedException;
 import in.cdac.university.apigateway.exception.InvalidFormValuesException;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class RequestBodyRewrite implements RewriteFunction<String, String> {
@@ -44,6 +47,13 @@ public class RequestBodyRewrite implements RewriteFunction<String, String> {
                 }
             }
         }
+        else if(body instanceof ArrayList<?> bodyAsList){
+            String string = bodyAsList.stream()
+                    .map(String::valueOf)
+        //           .map(data -> String.valueOf(data))
+                    .collect(Collectors.joining());
+            result.append(string);
+        }
     }
 
     @Override
@@ -54,21 +64,39 @@ public class RequestBodyRewrite implements RewriteFunction<String, String> {
             // File upload
             return Mono.just(body);
         } else {
-            Gson gson = new Gson();
-            Map<String, Object> map = gson.fromJson(body, Map.class);
-            if (map != null && !map.isEmpty()) {
-                StringBuilder sb = new StringBuilder();
-                jsonToString(map, sb);
-                String values = sb.toString();
-                String serverRequestSecurityToken = Hashing.sha256().hashString(values, StandardCharsets.UTF_8).toString();
-                if (!this.clientRequestSecurityToken.equals(serverRequestSecurityToken)) {
-                    log.error("Value: {}", values);
-                    log.error("Server Token: {}", serverRequestSecurityToken);
-                    log.error("Client Token: {}", this.clientRequestSecurityToken);
-                    throw new FormDataTamperedException("Form data tampered");
+            Gson gson = new GsonBuilder().setObjectToNumberStrategy(ToNumberPolicy.LAZILY_PARSED_NUMBER).create();
+            if(body!=null && body.startsWith("[")){
+                ArrayList<Long> listbody = gson.fromJson(body, ArrayList.class);
+                if(listbody != null && !listbody.isEmpty()){
+                    StringBuilder sb = new StringBuilder();
+                    jsonToString(listbody, sb);
+                    String values = sb.toString();
+                    String serverRequestSecurityToken = Hashing.sha256().hashString(values, StandardCharsets.UTF_8).toString();
+                    if(!this.clientRequestSecurityToken.equals(serverRequestSecurityToken)) {
+                        log.error("Value: {}", values);
+                        log.error("Server Token : {}", serverRequestSecurityToken);
+                        log.error("Client Token : {}", this.clientRequestSecurityToken);
+                        throw new FormDataTamperedException("Form data tampered");
+                    }
                 }
+                return Mono.just(gson.toJson(listbody, ArrayList.class));
             }
-            return Mono.just(gson.toJson(map, Map.class));
+            else{
+                Map<String, Object> map = gson.fromJson(body, Map.class);
+                if (map != null && !map.isEmpty()) {
+                    StringBuilder sb = new StringBuilder();
+                    jsonToString(map, sb);
+                    String values = sb.toString();
+                    String serverRequestSecurityToken = Hashing.sha256().hashString(values, StandardCharsets.UTF_8).toString();
+                    if (!this.clientRequestSecurityToken.equals(serverRequestSecurityToken)) {
+                        log.error("Value: {}", values);
+                        log.error("Server Token: {}", serverRequestSecurityToken);
+                        log.error("Client Token: {}", this.clientRequestSecurityToken);
+                        throw new FormDataTamperedException("Form data tampered");
+                    }
+                }
+                return Mono.just(gson.toJson(map, Map.class));
+            }
         }
     }
 
