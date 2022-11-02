@@ -55,4 +55,6 @@ public class TemplateDetailBean {
     private Integer unumHideHeaderTxt;
 
     private Integer unumHideItemTxt;
+
+    private Integer unumPageColumns;
 }

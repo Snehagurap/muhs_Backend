@@ -55,5 +55,7 @@ public class TemplateHeaderBean {
 
     private Long unumTempledtlId;
 
+    private Integer unumPageColumns;
+
     List<TemplateComponentBean> components;
 }

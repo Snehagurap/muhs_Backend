@@ -75,4 +75,7 @@ public class GmstConfigTemplateDtl implements Serializable {
 
 	@Column(name="unum_hide_item_txt")
 	private Integer unumHideItemTxt;
+
+	@Column(name="unum_page_columns")
+	private Integer unumPageColumns;
 }

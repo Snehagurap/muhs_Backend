@@ -136,5 +136,7 @@ public class TemplateItemBean {
 
     private Long unumTempledtlId;
 
+    private Long unumTemplCompItemId;
+
     List<TemplateItemBean> children;
 }

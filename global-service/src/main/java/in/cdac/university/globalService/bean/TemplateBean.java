@@ -38,8 +38,9 @@ public class TemplateBean {
     private String ustrTempDescription;
     private String ustrTempleCode;
     private String ustrTempleName;
-
     private Long unumMtempledtlId;
+
+    private Integer noOfPages;
 
     private List<TemplateHeaderBean> headers;
 }
