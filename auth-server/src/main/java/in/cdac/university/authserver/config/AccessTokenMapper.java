@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class AccessTokenMapper {
-    private Integer userId;
+    private Long userId;
     private Integer userType;
     private Integer universityId;
     private Integer applicationType;

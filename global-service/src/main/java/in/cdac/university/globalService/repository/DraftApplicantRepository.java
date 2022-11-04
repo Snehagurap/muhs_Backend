@@ -35,4 +35,12 @@ public interface DraftApplicantRepository extends JpaRepository<GmstApplicantDra
                                                 @Param("plainPassword") String plainPassword,
                                                 @Param("password") String password,
                                                 @Param("draftApplicantId") Long draftApplicantId);
+
+    @Modifying(clearAutomatically = true)
+    @Query("update GmstApplicantDraftMst set " +
+            "unumIsvalid = :isValid " +
+            "where unumApplicantDraftid = :draftApplicantId " +
+            "and unumIsvalid = 1")
+    int updateDraftApplicantIsValid(@Param("draftApplicantId") Long draftApplicantId,
+                                    @Param("isValid") Integer isValid);
 }

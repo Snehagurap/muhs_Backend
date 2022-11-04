@@ -129,6 +129,11 @@ public class RoleService {
                 .map(Integer::valueOf)
                 .toList();
 
+        long noOfReservedRoles = roleIdsToDelete.stream().filter(roleid -> roleid <= 0).count();
+        if (noOfReservedRoles > 0L) {
+            return ServiceResponse.errorResponse("Reserved Roles cannot be deleted");
+        }
+
         // Check if Role exists
         List<UmmtRoleMst> roleMstList = roleRepository.findAllByGnumRoleIdInAndGblIsvalidNot(roleIdsToDelete, 0);
         if (roleMstList.isEmpty() || roleMstList.size() != roleBean.getIdsToDelete().length) {

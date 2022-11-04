@@ -1,7 +1,10 @@
 package in.cdac.university.globalService.controller;
 
+import in.cdac.university.globalService.bean.ApplicantBean;
 import in.cdac.university.globalService.bean.DraftApplicantBean;
+import in.cdac.university.globalService.service.ApplicantService;
 import in.cdac.university.globalService.service.DraftApplicantService;
+import in.cdac.university.globalService.util.RequestUtility;
 import in.cdac.university.globalService.util.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +19,9 @@ public class ApplicantController {
 
     @Autowired
     private DraftApplicantService draftApplicantService;
+
+    @Autowired
+    private ApplicantService applicantService;
 
     @PostMapping("draft/save")
     public ResponseEntity<?> saveDraftApplicant(@Valid @RequestBody DraftApplicantBean draftApplicantBean) {
@@ -39,6 +45,16 @@ public class ApplicantController {
     public ResponseEntity<?> getDraftApplicantById(@PathVariable("applicantId") Long applicantId) {
         return ResponseHandler.generateResponse(
                 draftApplicantService.getApplicantById(applicantId)
+        );
+    }
+
+    @PostMapping("details/save")
+    public ResponseEntity<?> saveApplicantDetails(@Valid @RequestBody ApplicantBean applicantBean) throws Exception {
+        applicantBean.setUnumIsvalid(1);
+        applicantBean.setUdtEntryDate(new Date());
+        applicantBean.setUnumEntryUid(RequestUtility.getUserId());
+        return ResponseHandler.generateResponse(
+                applicantService.saveApplicantDetails(applicantBean)
         );
     }
 }

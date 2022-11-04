@@ -10,7 +10,7 @@ public class AccessTokenMapper {
     private String refresh_token;
     private String scope;
 
-    private Integer userId;
+    private Long userId;
     private Integer userType;
     private Integer universityId;
     private Integer applicationType;

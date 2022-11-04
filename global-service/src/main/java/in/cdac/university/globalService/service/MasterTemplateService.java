@@ -90,24 +90,49 @@ public class MasterTemplateService {
             List<GmstConfigTemplateDtl> templateDetailByTemplateId = mapTemplateDetails.get(templateId);
 
             // Get all the headers for the given template
-            Map<Long, GmstConfigTemplateDtl> headerIds = templateDetailByTemplateId.stream()
-                    .collect(Collectors.toMap(GmstConfigTemplateDtl::getUnumTempleHeadId, Function.identity(), (u1, u2) -> u1));
+//            Map<Long, GmstConfigTemplateDtl> headerIds = templateDetailByTemplateId.stream()
+//                    .collect(Collectors.toMap(GmstConfigTemplateDtl::getUnumTempleHeadId, Function.identity(), (u1, u2) -> u1));
 
-            List<TemplateHeaderBean> headerBeans = headersByTemplateId.stream()
-                    .filter(gmstConfigTemplateHeaderMst ->  headerIds.containsKey(gmstConfigTemplateHeaderMst.getUnumTemplHeadId()))
-                    .map(gmstConfigTemplateHeaderMst -> {
-                        TemplateHeaderBean templateHeaderBean = BeanUtils.copyProperties(gmstConfigTemplateHeaderMst, TemplateHeaderBean.class);
-                        GmstConfigTemplateDtl configTemplateDtl = headerIds.get(gmstConfigTemplateHeaderMst.getUnumTemplHeadId());
-                        templateHeaderBean.setUnumHeadDisplayOrder(configTemplateDtl.getUnumDisplayOrder());
-                        templateHeaderBean.setUnumIsHidden(configTemplateDtl.getUnumHideHeaderTxt() == null ? 0 : configTemplateDtl.getUnumHideHeaderTxt());
-                        templateHeaderBean.setUnumTempledtlId(configTemplateDtl.getUnumTempledtlId());
-                        templateHeaderBean.setUnumPageColumns(configTemplateDtl.getUnumPageColumns() == null ? 2 : configTemplateDtl.getUnumPageColumns());
-                        templateHeaderBean.setUnumHeadIsmandy(gmstConfigTemplateHeaderMst.getUnumHeadIsmandy() == null ? 0 : gmstConfigTemplateHeaderMst.getUnumHeadIsmandy());
-                        templateHeaderBean.setUnumIsMergeWithParent(gmstConfigTemplateHeaderMst.getUnumIsMergeWithParent() == null ? 0 : gmstConfigTemplateHeaderMst.getUnumIsMergeWithParent());
-                        return templateHeaderBean;
-                    })
-                    .sorted(Comparator.comparing(TemplateHeaderBean::getUnumHeadDisplayOrder, Comparator.nullsLast(Comparator.naturalOrder())))
-                    .toList();
+            Set<Long> headerIdsAdded = new HashSet<>();
+            List<TemplateHeaderBean> headerBeans = new ArrayList<>();
+            for (GmstConfigTemplateDtl configTemplateDtl: templateDetailByTemplateId) {
+                if (configTemplateDtl.getUnumTempleHeadId() == 27 || !headerIdsAdded.contains(configTemplateDtl.getUnumTempleHeadId())) {
+                    headerIdsAdded.add(configTemplateDtl.getUnumTempleHeadId());
+                    GmstConfigTemplateHeaderMst gmstConfigTemplateHeaderMst = headersByTemplateId.stream()
+                            .filter(header -> header.getUnumTemplHeadId().equals(configTemplateDtl.getUnumTempleHeadId()))
+                            .findFirst()
+                            .orElse(null);
+                    if (gmstConfigTemplateHeaderMst == null)
+                        continue;
+
+                    TemplateHeaderBean templateHeaderBean = BeanUtils.copyProperties(gmstConfigTemplateHeaderMst, TemplateHeaderBean.class);
+                    //GmstConfigTemplateDtl configTemplateDtl = headerIds.get(gmstConfigTemplateHeaderMst.getUnumTemplHeadId());
+                    templateHeaderBean.setUnumHeadDisplayOrder(configTemplateDtl.getUnumDisplayOrder());
+                    templateHeaderBean.setUnumIsHidden(configTemplateDtl.getUnumHideHeaderTxt() == null ? 0 : configTemplateDtl.getUnumHideHeaderTxt());
+                    templateHeaderBean.setUnumTempledtlId(configTemplateDtl.getUnumTempledtlId());
+                    templateHeaderBean.setUnumPageColumns(configTemplateDtl.getUnumPageColumns() == null ? 2 : configTemplateDtl.getUnumPageColumns());
+                    templateHeaderBean.setUnumHeadIsmandy(gmstConfigTemplateHeaderMst.getUnumHeadIsmandy() == null ? 0 : gmstConfigTemplateHeaderMst.getUnumHeadIsmandy());
+                    templateHeaderBean.setUnumIsMergeWithParent(gmstConfigTemplateHeaderMst.getUnumIsMergeWithParent() == null ? 0 : gmstConfigTemplateHeaderMst.getUnumIsMergeWithParent());
+                    headerBeans.add(templateHeaderBean);
+                }
+            }
+            headerBeans.sort(Comparator.comparing(TemplateHeaderBean::getUnumHeadDisplayOrder, Comparator.nullsLast(Comparator.naturalOrder())));
+
+//            List<TemplateHeaderBean> headerBeans = headersByTemplateId.stream()
+//                    .filter(gmstConfigTemplateHeaderMst ->  headerIds.containsKey(gmstConfigTemplateHeaderMst.getUnumTemplHeadId()))
+//                    .map(gmstConfigTemplateHeaderMst -> {
+//                        TemplateHeaderBean templateHeaderBean = BeanUtils.copyProperties(gmstConfigTemplateHeaderMst, TemplateHeaderBean.class);
+//                        GmstConfigTemplateDtl configTemplateDtl = headerIds.get(gmstConfigTemplateHeaderMst.getUnumTemplHeadId());
+//                        templateHeaderBean.setUnumHeadDisplayOrder(configTemplateDtl.getUnumDisplayOrder());
+//                        templateHeaderBean.setUnumIsHidden(configTemplateDtl.getUnumHideHeaderTxt() == null ? 0 : configTemplateDtl.getUnumHideHeaderTxt());
+//                        templateHeaderBean.setUnumTempledtlId(configTemplateDtl.getUnumTempledtlId());
+//                        templateHeaderBean.setUnumPageColumns(configTemplateDtl.getUnumPageColumns() == null ? 2 : configTemplateDtl.getUnumPageColumns());
+//                        templateHeaderBean.setUnumHeadIsmandy(gmstConfigTemplateHeaderMst.getUnumHeadIsmandy() == null ? 0 : gmstConfigTemplateHeaderMst.getUnumHeadIsmandy());
+//                        templateHeaderBean.setUnumIsMergeWithParent(gmstConfigTemplateHeaderMst.getUnumIsMergeWithParent() == null ? 0 : gmstConfigTemplateHeaderMst.getUnumIsMergeWithParent());
+//                        return templateHeaderBean;
+//                    })
+//                    .sorted(Comparator.comparing(TemplateHeaderBean::getUnumHeadDisplayOrder, Comparator.nullsLast(Comparator.naturalOrder())))
+//                    .toList();
 
             templateBean.setHeaders(headerBeans);
 
