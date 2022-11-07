@@ -66,4 +66,8 @@ public class GbltEventMst implements Serializable {
 			"where c.unum_event_typeid = unum_event_typeid )")
 	private String eventTypeName;
 
+	@Formula("(select count(*) from ucom.gblt_committee_member_dtl c " +
+			"where c.unum_eventid = unum_eventid  and c.unum_com_id = unum_comid " +
+			"and c.unum_isvalid = 1 )")
+	private Integer unumMemberMapped;
 }

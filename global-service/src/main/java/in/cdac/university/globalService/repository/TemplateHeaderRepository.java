@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +35,10 @@ public interface TemplateHeaderRepository extends JpaRepository<GmstConfigTempla
 
     Optional<GmstConfigTemplateHeaderMst> findByUnumTemplHeadIdAndUnumIsvalidAndUnumUnivId(Long unumTemplHeadId, Integer unumIsvalid, Integer unumUnivId);
 
-    List<GmstConfigTemplateHeaderMst> findByUnumTemplHeadIdNotAndUstrHeadPrintTextAndUnumIsvalidAndUnumUnivId(Long unumTemplHeadId, String ustrHeadPrintText, Integer unumIsvalid, Integer unumUnivId);
+    List<GmstConfigTemplateHeaderMst> findByUnumTemplHeadIdNotAndUstrHeadPrintTextIgnoreCaseAndUnumIsvalidAndUnumUnivId(Long unumTemplHeadId, String ustrHeadPrintText, Integer unumIsvalid, Integer unumUnivId);
+
+    List<GmstConfigTemplateHeaderMst> findByUnumTemplHeadIdInAndUnumIsvalidAndUnumUnivId(Collection<Long> unumTemplHeadIds, Integer unumIsvalid, Integer unumUnivId);
+
 
     @Modifying(clearAutomatically = true)
     @Query("update GmstConfigTemplateHeaderMst u set u.unumIsvalid = (select coalesce(max(a.unumIsvalid), 2) + 1 " +

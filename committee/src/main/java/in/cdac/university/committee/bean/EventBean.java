@@ -59,5 +59,24 @@ public class EventBean {
     @ComboKey(index = 2)
     private int isEventStarted;
 
+    @ListColumn(omit = true)
+    private Integer unumMemberMapped;
+
+    public void setUnumMemberMapped(Integer unumMemberMapped) {
+        this.unumMemberMapped = unumMemberMapped;
+        this.setUstrMemberMappedStatus();
+    }
+
+    @ListColumn(order = 6, name = "Member mapped")
+    private String ustrMemberMappedStatus;
+
+    public void setUstrMemberMappedStatus() {
+        if(unumMemberMapped > 0) {
+            this.ustrMemberMappedStatus = "Yes";
+        } else {
+            this.ustrMemberMappedStatus = "No";
+        }
+    }
+
     private List<CommitteeMember> committeeMemberDetail;
 }

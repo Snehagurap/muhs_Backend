@@ -45,13 +45,24 @@ public class TemplateHeaderController {
         );
     }
 
-//    @PutMapping("update")
-//    public ResponseEntity<?> update(@Valid @RequestBody TemplateHeaderBean templateHeaderBean) throws Exception {
-//        templateHeaderBean.setUdtEntryDate(new Date());
-//        templateHeaderBean.setUnumUnivId(RequestUtility.getUniversityId());
-//        templateHeaderBean.setUnumEntryUid(RequestUtility.getUserId());
-//        return ResponseHandler.generateResponse(
-//                templateHeaderService.update(templateHeaderBean)
-//        );
-//    }
+    @PutMapping("update")
+    public ResponseEntity<?> update(@Valid @RequestBody TemplateHeaderBean templateHeaderBean) throws Exception {
+        templateHeaderBean.setUdtEntryDate(new Date());
+        templateHeaderBean.setUnumUnivId(RequestUtility.getUniversityId());
+        templateHeaderBean.setUnumEntryUid(RequestUtility.getUserId());
+        return ResponseHandler.generateResponse(
+                templateHeaderService.update(templateHeaderBean)
+        );
+    }
+
+    @DeleteMapping("delete")
+    public ResponseEntity<?> delete(@RequestBody Long[] idsToDelete) throws Exception {
+        TemplateHeaderBean templateHeaderBean = new TemplateHeaderBean();
+        templateHeaderBean.setUdtEntryDate(new Date());
+        templateHeaderBean.setUnumUnivId(RequestUtility.getUniversityId());
+        templateHeaderBean.setUnumEntryUid(RequestUtility.getUserId());
+        return ResponseHandler.generateResponse(
+          templateHeaderService.delete(templateHeaderBean, idsToDelete)
+        );
+    }
 }
