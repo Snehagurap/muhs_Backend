@@ -250,12 +250,19 @@ public class MenuService {
         int userCategory = RequestUtility.getUserCategory();
         List<UmmtUserRoleMst> mappedRoles;
         if (userCategory == 5) {
+            // Draft Applicant
             mappedRoles = new ArrayList<>();
             UmmtUserRoleMst ummtUserRoleMst = new UmmtUserRoleMst();
             ummtUserRoleMst.setGnumRoleId(0);
             mappedRoles.add(ummtUserRoleMst);
-        } else {
+        } else if (userCategory == 6) {
+            // Applicant
             // Get Roles Mapped with User
+            mappedRoles = new ArrayList<>();
+            UmmtUserRoleMst ummtUserRoleMst = new UmmtUserRoleMst();
+            ummtUserRoleMst.setGnumRoleId(-1);
+            mappedRoles.add(ummtUserRoleMst);
+        } else {
             mappedRoles = userRoleRepository.findByGnumUserIdAndGblIsvalid(userId, 1);
         }
 

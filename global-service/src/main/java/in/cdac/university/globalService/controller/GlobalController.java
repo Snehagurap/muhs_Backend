@@ -28,7 +28,7 @@ public class GlobalController {
         List<ComboBean> academicYears = IntStream.range(-1, 3)
                 .map(value -> currentYear + value)
                 .boxed()
-                .map(String::valueOf)
+                .map(value -> (value - 1) + " - " + value)
                 .map(year -> new ComboBean(year, year))
                 .toList();
 

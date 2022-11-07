@@ -218,6 +218,7 @@ public class CommitteeService {
         Integer facultyId = committeeDetailBean.getUnumRoleCfacultyId();
         Integer departmentId = committeeDetailBean.getUnumRoleDepartmentId();
         Integer designationId = committeeDetailBean.getUnumRolePostId();
+        Integer isExternal = committeeDetailBean.getUnumRoleIsExternal() == null ? 0 : committeeDetailBean.getUnumRoleIsExternal();
         List<Long> filteredTeacherIds = new ArrayList<>();
         if (facultyId != 0) {
             if (facultyWiseTeachers.containsKey(facultyId))

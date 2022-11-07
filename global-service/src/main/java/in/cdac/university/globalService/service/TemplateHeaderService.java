@@ -22,8 +22,6 @@ public class TemplateHeaderService {
     @Autowired
     private TemplateHeaderRepository templateHeaderRepository;
 
-    @Autowired
-    private RestUtility restUtility;
     public List<TemplateHeaderBean> listPageData() throws Exception {
         return BeanUtils.copyListProperties(
                 templateHeaderRepository.findByUnumIsvalidAndUnumUnivIdOrderByUstrTemplHeadCodeAsc(1, RequestUtility.getUniversityId()),

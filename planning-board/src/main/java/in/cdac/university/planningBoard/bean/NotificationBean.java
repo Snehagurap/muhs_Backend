@@ -61,7 +61,6 @@ public class NotificationBean {
 
     private Integer unumUnivId;
 
-    @Pattern(regexp = "[0-9]{4}", message = "Invalid Academic Year")
     @NotNull(message = "Academic Year is mandatory")
     private String ustrAcademicYear;
 

@@ -102,4 +102,9 @@ public class EmployeeController {
                 employeeService.delete(employeeBean, idsToDelete)
         );
     }
+
+//    @PostMapping("updateCommitteeDetails")
+//    public ResponseEntity<?> updateCommitteeDetails(@RequestBody EmployeeBean employeeBean) {
+//
+//    }
 }

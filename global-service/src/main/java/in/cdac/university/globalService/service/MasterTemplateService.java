@@ -194,7 +194,7 @@ public class MasterTemplateService {
                     }
                 }
             }
-            templateBean.setNoOfPages(noOfPages == 0 ? 0 : noOfPages + 1);
+            templateBean.setNoOfPages(noOfPages);
         }
 
         return ServiceResponse.successObject(masterTemplateBean);
