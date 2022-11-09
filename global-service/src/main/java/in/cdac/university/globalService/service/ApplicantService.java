@@ -110,9 +110,7 @@ public class ApplicantService {
 
         // Save Document Details
         if (!applicantDtls.isEmpty()) {
-            applicantDtls.forEach(gmstApplicantDtl -> {
-                gmstApplicantDtl.setUnumApplicantId(applicantId);
-            });
+            applicantDtls.forEach(gmstApplicantDtl -> gmstApplicantDtl.setUnumApplicantId(applicantId));
             applicantDetailRepository.saveAll(applicantDtls);
         }
 
