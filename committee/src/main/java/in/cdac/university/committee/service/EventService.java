@@ -36,6 +36,9 @@ public class EventService {
         }
 
         // Find College
+        String url = RestUtility.SERVICE_TYPE.GLOBAL +
+        Constants.URL_GET_COLLEGE + eventBean.getUnumCollegeId();
+        System.out.println("Service URL " + url);
         CollegeBean collegeBean = restUtility.get(
                 RestUtility.SERVICE_TYPE.GLOBAL,
                 Constants.URL_GET_COLLEGE + eventBean.getUnumCollegeId(),

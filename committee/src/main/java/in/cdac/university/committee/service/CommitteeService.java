@@ -188,13 +188,13 @@ public class CommitteeService {
                     .collect(Collectors.groupingByConcurrent(EmployeeCurrentDetailBean::getUnumEmpDesigid));
 
             // Get All Teachers
-            ComboBean[] teachers = restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_ALL_TEACHERS, ComboBean[].class);
+            EmployeeBean[] teachers = restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_ALL_TEACHERS, EmployeeBean[].class);
             if (teachers == null) {
                 return ServiceResponse.errorResponse("Unable to get Teachers data");
             }
 
-            Map<String, ComboBean> teacherMap = Arrays.stream(teachers)
-                        .collect(Collectors.toMap(ComboBean::getKey, Function.identity(), (v1, v2) -> v2));
+            Map<Long, EmployeeBean> teacherMap = Arrays.stream(teachers)
+                        .collect(Collectors.toMap(EmployeeBean::getUnumEmpId, Function.identity(), (v1, v2) -> v2));
 
             Map<Integer, String> committeeRoles = committeeRoleRepository.findAll().stream()
                     .collect(Collectors.toMap(GmstCommitteeRoleMst::getUnumRoleId, GmstCommitteeRoleMst::getUstrRoleFname));
@@ -212,7 +212,8 @@ public class CommitteeService {
                 .build();
     }
 
-    private CommitteeDetailBean getCommitteeDetailBean(Map<Integer, List<EmployeeProfileBean>> facultyWiseTeachers, Map<Integer, List<EmployeeCurrentDetailBean>> designationWiseTeachers, Map<String, ComboBean> teacherMap, Map<Integer, String> committeeRoles, GbltCommitteeDtl committeeDetail) {
+    private CommitteeDetailBean getCommitteeDetailBean(Map<Integer, List<EmployeeProfileBean>> facultyWiseTeachers, Map<Integer, List<EmployeeCurrentDetailBean>> designationWiseTeachers,
+                                                       Map<Long, EmployeeBean> teacherMap, Map<Integer, String> committeeRoles, GbltCommitteeDtl committeeDetail) {
         CommitteeDetailBean committeeDetailBean = BeanUtils.copyProperties(committeeDetail, CommitteeDetailBean.class);
         committeeDetailBean.setRoleName(committeeRoles.getOrDefault(committeeDetail.getUnumRoleId(), ""));
         Integer facultyId = committeeDetailBean.getUnumRoleCfacultyId();
@@ -243,8 +244,10 @@ public class CommitteeService {
         List<ComboBean> filteredTeachers = new ArrayList<>();
         if (!filteredTeacherIds.isEmpty()) {
             for (Long teacherId: filteredTeacherIds) {
-                if (teacherMap.containsKey(teacherId.toString()))
-                    filteredTeachers.add(teacherMap.get(teacherId.toString()));
+                if (teacherMap.containsKey(teacherId)) {
+                    EmployeeBean employeeBean = teacherMap.get(teacherId);
+                    filteredTeachers.add(new ComboBean(employeeBean.getUnumEmpId().toString(), employeeBean.getUstrEmpName()));
+                }
             }
         }
         committeeDetailBean.setTeachersCombo(filteredTeachers);

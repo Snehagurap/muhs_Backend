@@ -104,4 +104,25 @@ public class GmstEmpMst implements Serializable {
 
 	@Column(name="unum_is_teacher")
 	private Integer unumIsTeacher;
+
+	@Column(name="unum_is_selectedfor")
+	private Integer unumIsSelectedfor;
+
+	@Column(name="unum_tot_lic_chairman_count")
+	private Integer unumTotLicChairmanCount;
+
+	@Column(name="unum_tot_lic_member1_count")
+	private Integer unumTotLicMember1Count;
+
+	@Column(name="unum_tot_lic_member2_count")
+	private Integer unumTotLicMember2Count;
+
+	@Column(name="unum_ay_lic_chairman_count")
+	private Integer unumAyLicChairmanCount;
+
+	@Column(name="unum_ay_lic_member1_count")
+	private Integer unumAyLicMember1Count;
+
+	@Column(name="unum_ay_lic_member2_count")
+	private Integer unumAyLicMember2Count;
 }

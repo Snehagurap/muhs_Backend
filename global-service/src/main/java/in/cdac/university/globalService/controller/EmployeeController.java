@@ -8,6 +8,7 @@ import in.cdac.university.globalService.service.EmployeeService;
 import in.cdac.university.globalService.util.ComboUtility;
 import in.cdac.university.globalService.util.RequestUtility;
 import in.cdac.university.globalService.util.ResponseHandler;
+import in.cdac.university.globalService.util.ServiceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,10 +37,17 @@ public class EmployeeController {
         );
     }
 
-    @GetMapping("all")
+    @GetMapping("combo")
     public ResponseEntity<?> getAllTeachersCombo() throws Exception {
         return ResponseHandler.generateOkResponse(
                 ComboUtility.generateComboData(employeeService.getAllTeachers())
+        );
+    }
+
+    @GetMapping("all")
+    public ResponseEntity<?> getAllTeachers() throws Exception {
+        return ResponseHandler.generateResponse(
+            ServiceResponse.successObject(employeeService.getAllTeachers())
         );
     }
 
