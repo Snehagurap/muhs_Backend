@@ -57,7 +57,7 @@ public class GbltCommitteeMst implements Serializable {
 	private Integer ustrComFormonth;
 
 	@Column(name="ustr_com_foryear")
-	private Integer ustrComForyear;
+	private String ustrComForyear;
 
 	@Column(name="ustr_com_name")
 	private String ustrComName;

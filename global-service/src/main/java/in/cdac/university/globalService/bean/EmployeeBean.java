@@ -74,4 +74,14 @@ public class EmployeeBean {
     private String ustrEmpName;
 
     private String willingnessToWorkOnLic;
+    private Integer unumDeptId;
+    private String ustrEmpId;
+    private Integer unumIsTeacher;
+    private Integer unumIsSelectedfor;
+    private Integer unumTotLicChairmanCount;
+    private Integer unumTotLicMember1Count;
+    private Integer unumTotLicMember2Count;
+    private Integer unumAyLicChairmanCount;
+    private Integer unumAyLicMember1Count;
+    private Integer unumAyLicMember2Count;
 }

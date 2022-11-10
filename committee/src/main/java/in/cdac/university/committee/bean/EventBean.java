@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -35,6 +36,7 @@ public class EventBean {
     private Long unumCollegeId;
 
     @NotNull(message = "Committee Name is mandatory")
+    @Min(value = 1, message = "Committee Name is mandatory")
     private Long unumComid;
     private Long unumEntryUid;
 

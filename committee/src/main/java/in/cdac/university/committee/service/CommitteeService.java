@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -199,8 +200,21 @@ public class CommitteeService {
             Map<Integer, String> committeeRoles = committeeRoleRepository.findAll().stream()
                     .collect(Collectors.toMap(GmstCommitteeRoleMst::getUnumRoleId, GmstCommitteeRoleMst::getUstrRoleFname));
 
+            AtomicInteger sno = new AtomicInteger(0);
+            AtomicInteger memberCount = new AtomicInteger(1);
             List<CommitteeDetailBean> committeeDetailBeans = committeeDtlList.stream().map(
-                    committeeDetail -> getCommitteeDetailBean(facultyWiseTeachers, designationWiseTeachers, teacherMap, committeeRoles, committeeDetail)
+                    committeeDetail -> {
+                        if (committeeDetail.getUnumRoleId() == 10)
+                            sno.set(1);
+                        else if (committeeDetail.getUnumRoleId() == 11)
+                            sno.set(memberCount.getAndAdd(1));
+                        else
+                            sno.set(0);
+                        if (sno.get() == 0)
+                            return mapTeacherByRule(facultyWiseTeachers, designationWiseTeachers, teacherMap, committeeRoles, committeeDetail);
+                        else
+                            return mapTeacherManual(teachers, committeeRoles, committeeDetail, sno.get());
+                    }
             ).toList();
 
             committeeBean.setCommitteeDetail(committeeDetailBeans);
@@ -212,8 +226,21 @@ public class CommitteeService {
                 .build();
     }
 
-    private CommitteeDetailBean getCommitteeDetailBean(Map<Integer, List<EmployeeProfileBean>> facultyWiseTeachers, Map<Integer, List<EmployeeCurrentDetailBean>> designationWiseTeachers,
-                                                       Map<Long, EmployeeBean> teacherMap, Map<Integer, String> committeeRoles, GbltCommitteeDtl committeeDetail) {
+    private CommitteeDetailBean mapTeacherManual(EmployeeBean[] teachers, Map<Integer, String> committeeRoles, GbltCommitteeDtl committeeDetail, int sno) {
+        CommitteeDetailBean committeeDetailBean = BeanUtils.copyProperties(committeeDetail, CommitteeDetailBean.class);
+        committeeDetailBean.setRoleName(committeeRoles.getOrDefault(committeeDetail.getUnumRoleId(), ""));
+        List<ComboBean> filteredTeachers = Arrays.stream(teachers)
+                .peek(teacher -> System.out.println(sno + " " + teacher.getUnumIsSelectedfor()))
+                .filter(teacher -> teacher.getUnumIsSelectedfor() != null && teacher.getUnumIsSelectedfor() == sno)
+                .map(teacher -> new ComboBean(teacher.getUnumEmpId().toString(), teacher.getUstrEmpName()))
+                .collect(Collectors.toList());
+
+        committeeDetailBean.setTeachersCombo(filteredTeachers);
+        return committeeDetailBean;
+    }
+
+    private CommitteeDetailBean mapTeacherByRule(Map<Integer, List<EmployeeProfileBean>> facultyWiseTeachers, Map<Integer, List<EmployeeCurrentDetailBean>> designationWiseTeachers,
+                                                 Map<Long, EmployeeBean> teacherMap, Map<Integer, String> committeeRoles, GbltCommitteeDtl committeeDetail) {
         CommitteeDetailBean committeeDetailBean = BeanUtils.copyProperties(committeeDetail, CommitteeDetailBean.class);
         committeeDetailBean.setRoleName(committeeRoles.getOrDefault(committeeDetail.getUnumRoleId(), ""));
         Integer facultyId = committeeDetailBean.getUnumRoleCfacultyId();

@@ -73,4 +73,11 @@ public class CollegeController {
                 collegeService.delete(collegeBean, idsToDelete)
         );
     }
+
+    @GetMapping("count")
+    public ResponseEntity<?> totalNoOfColleges() {
+        return ResponseHandler.generateResponse(
+                collegeService.totalNoOfColleges()
+        );
+    }
 }

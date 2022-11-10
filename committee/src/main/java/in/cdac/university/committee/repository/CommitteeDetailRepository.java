@@ -11,5 +11,4 @@ import java.util.List;
 public interface CommitteeDetailRepository extends JpaRepository<GbltCommitteeDtl, GbltCommitteeDtlPK> {
     List<GbltCommitteeDtl> findByUnumIsvalidAndUnumComidAndUnumUnivId(Integer unumIsvalid, Long unumComid, Integer unumUnivId);
 
-
 }

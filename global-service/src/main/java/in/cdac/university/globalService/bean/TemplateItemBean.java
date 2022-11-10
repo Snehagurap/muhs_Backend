@@ -1,6 +1,8 @@
 package in.cdac.university.globalService.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import in.cdac.university.globalService.util.annotations.ComboKey;
+import in.cdac.university.globalService.util.annotations.ComboValue;
 import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +18,8 @@ import java.util.List;
 @ToString
 public class TemplateItemBean {
 
+    @ComboKey
+    @ComboValue(endSeparator = ": ")
     @ListColumn(omit = true)
     private Long unumTemplItemId;
 
@@ -105,14 +109,17 @@ public class TemplateItemBean {
 
     private String ustrItemMinval;
 
-    @ListColumn(order = 4, name = "Post Text")
-    private String ustrItemPrintPostText;
-
+    @ComboValue(order = 3)
     @ListColumn(order = 3, name = "Pre Text")
     private String ustrItemPrintPreText;
 
+    @ListColumn(order = 4, name = "Post Text")
+    private String ustrItemPrintPostText;
+
+    @ComboValue(order = 2)
     @ListColumn(order = 2, name = "Prefix Text")
     private String ustrItemPrintPrefixText;
+
 
     private String ustrOptionText;
 

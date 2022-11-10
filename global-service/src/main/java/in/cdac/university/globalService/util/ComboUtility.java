@@ -16,7 +16,7 @@ public class ComboUtility {
         for (Object obj : dataList) {
             Class<?> clazz = obj.getClass();
             Map<Integer, String> key = new TreeMap<>();
-            List<String> value = new ArrayList<>();
+            Map<Integer, String> value = new TreeMap<>();
             for (Field field: clazz.getDeclaredFields()) {
                 field.setAccessible(true);
                 if (field.isAnnotationPresent(ComboKey.class)) {
@@ -24,14 +24,15 @@ public class ComboUtility {
                     key.put(comboKey.index(), String.valueOf(field.get(obj)));
                 }
                 if (field.isAnnotationPresent(ComboValue.class)) {
-                    value.add(String.valueOf(field.get(obj)));
+                    ComboValue comboValue = field.getAnnotation(ComboValue.class);
+                    value.put(comboValue.order(), comboValue.startSeparator() + field.get(obj) + comboValue.endSeparator());
                 }
             }
             if (key.isEmpty() || value.isEmpty()) {
                 throw new IllegalArgumentException("Objects in the list does not have @ComboKey or @ComboValue annotations");
             }
             String comboKey = String.join("^", key.values());
-            String comboValue = String.join(", ", value);
+            String comboValue = String.join(" ", value.values());
             comboData.add(new ComboBean(comboKey, comboValue));
         }
         return comboData;

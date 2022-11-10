@@ -161,4 +161,9 @@ public class CollegeService {
                 .message(language.deleteSuccess("College"))
                 .build();
     }
+
+    public ServiceResponse totalNoOfColleges() {
+        Long totalNoOfColleges = collegeRepository.totalNoOfColleges();
+        return ServiceResponse.successMessage(totalNoOfColleges.toString());
+    }
 }

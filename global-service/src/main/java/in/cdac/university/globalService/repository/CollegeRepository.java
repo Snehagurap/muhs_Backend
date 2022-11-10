@@ -45,4 +45,8 @@ public interface CollegeRepository extends JpaRepository<GmstCollegeMst, GmstCol
             "from GmstCollegeMst a where a.unumCollegeId = u.unumCollegeId and a.unumIsvalid > 2) " +
             "where u.unumCollegeId in (:collegeId) and u.unumIsvalid in (1, 2) ")
     Integer createLog(@Param("collegeId") List<Long> collegeId);
+
+    @Query("select count(*) from GmstCollegeMst a " +
+            "where a.unumIsvalid = 1 ")
+    Long totalNoOfColleges();
 }

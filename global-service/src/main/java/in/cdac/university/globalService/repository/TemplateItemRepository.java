@@ -48,8 +48,8 @@ public interface TemplateItemRepository extends JpaRepository<GmstConfigTemplate
     List<GmstConfigTemplateItemMst> findItemsByTemplateId(@Param("universityId") Integer universityId, @Param("templateId") List<Long> templateId);
 
     @Modifying(clearAutomatically = true)
-    @Query("update GmstConfigTemplateItemMst u set u.unumIsValid = (select coalesce(max(a.unumIsvalid), 2) + 1 " +
+    @Query("update GmstConfigTemplateItemMst u set u.unumIsvalid = (select coalesce(max(a.unumIsvalid), 2) + 1 " +
             "from GmstConfigTemplateItemMst a where a.unumTemplItemId = u.unumTemplItemId and  a.unumIsvalid > 2) " +
             "where u.unumTemplItemId in (:templItemId) and u.unumIsvalid in (1, 2) ")
-    Integer createLog(List<Long> unumTemplItemId);
+    Integer createLog(@Param("templItemId") List<Long> unumTemplItemId);
 }

@@ -50,7 +50,7 @@ public class CommitteeBean {
 
     @ListColumn(order = 2, name = "Year")
     @NotNull(message = "For Year is mandatory")
-    private Integer ustrComForyear;
+    private String ustrComForyear;
 
     @ComboKey(index = 3)
     @ListColumn(order = 4, name = "End Date")
