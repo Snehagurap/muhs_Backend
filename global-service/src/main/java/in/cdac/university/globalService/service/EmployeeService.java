@@ -90,7 +90,7 @@ public class EmployeeService {
             return ServiceResponse.errorResponse(language.mandatory("Teacher Id"));
         }
 
-        // Duplicate Check
+        // Create Log
         int noOfRecordsAffected = employeeRepository.createLog(List.of(employeeBean.getUnumEmpId()));
         if (noOfRecordsAffected == 0) {
             throw new ApplicationException(language.notFoundForId("Teacher", employeeBean.getUnumEmpId()));

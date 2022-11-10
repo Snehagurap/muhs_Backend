@@ -3,6 +3,7 @@ package in.cdac.university.globalService.repository;
 import in.cdac.university.globalService.entity.GmstConfigTemplateItemMst;
 import in.cdac.university.globalService.entity.GmstConfigTemplateItemMstPK;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -45,4 +46,10 @@ public interface TemplateItemRepository extends JpaRepository<GmstConfigTemplate
             "and t.unumUnivId = :universityId " +
             "and t.unumTempleId in (:templateId) ) ")
     List<GmstConfigTemplateItemMst> findItemsByTemplateId(@Param("universityId") Integer universityId, @Param("templateId") List<Long> templateId);
+
+    @Modifying(clearAutomatically = true)
+    @Query("update GmstConfigTemplateItemMst u set u.unumIsValid = (select coalesce(max(a.unumIsvalid), 2) + 1 " +
+            "from GmstConfigTemplateItemMst a where a.unumTemplItemId = u.unumTemplItemId and  a.unumIsvalid > 2) " +
+            "where u.unumTemplItemId in (:templItemId) and u.unumIsvalid in (1, 2) ")
+    Integer createLog(List<Long> unumTemplItemId);
 }

@@ -3,6 +3,7 @@ package in.cdac.university.globalService.service;
 import in.cdac.university.globalService.bean.TemplateItemBean;
 import in.cdac.university.globalService.entity.GmstConfigTemplateItemMst;
 import in.cdac.university.globalService.entity.GmstConfigTemplateItemMstPK;
+import in.cdac.university.globalService.exception.ApplicationException;
 import in.cdac.university.globalService.repository.TemplateItemRepository;
 import in.cdac.university.globalService.util.BeanUtils;
 import in.cdac.university.globalService.util.Language;
@@ -78,10 +79,19 @@ public class TemplateItemService {
         if (templateItemBean.getUnumTemplItemId() == null)
             return ServiceResponse.errorResponse(language.mandatory("Template Item Id"));
 
-        Optional<GmstConfigTemplateItemMst> templateItemMst = templateItemRepository.findById(new GmstConfigTemplateItemMstPK(templateItemBean.getUnumTemplItemId(), 1));
-        if (templateItemMst.isEmpty())
-            return ServiceResponse.errorResponse(language.notFoundForId("Template Item", templateItemBean.getUnumTemplItemId()));
+        // Create Log
+        int noOfRecords = templateItemRepository.createLog(List.of(templateItemBean.getUnumTemplItemId()));
+        if(noOfRecords == 0) {
+            throw new ApplicationException(language.notFoundForId("TemplateItem", templateItemBean.getUnumTemplItemId()));
+        }
 
-        return null;
+        // Save new Record
+        GmstConfigTemplateItemMst gmstConfigTemplateItemMst = BeanUtils.copyProperties(templateItemBean, GmstConfigTemplateItemMst.class);
+        templateItemRepository.save(gmstConfigTemplateItemMst);
+
+        return ServiceResponse.builder()
+                .status(1)
+                .message(language.updateSuccess("Template Item"))
+                .build();
     }
 }
