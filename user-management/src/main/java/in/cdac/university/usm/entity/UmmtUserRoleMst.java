@@ -30,7 +30,7 @@ public class UmmtUserRoleMst implements java.io.Serializable {
 	private Integer gnumRoleId;
 
 	@Column(name = "gnum_userid", nullable = false)
-	private Integer gnumUserId;
+	private Long gnumUserId;
 	
 	@Column(name = "gnum_is_default",nullable = false)
 	private Integer gnumIsDefault;

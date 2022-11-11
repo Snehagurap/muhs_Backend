@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @GetMapping("{userId}")
-    public @ResponseBody ResponseEntity<?> get(@PathVariable("userId") Integer userId) {
+    public @ResponseBody ResponseEntity<?> get(@PathVariable("userId") Long userId) {
         return ResponseHandler.generateResponse(userService.get(userId));
     }
 

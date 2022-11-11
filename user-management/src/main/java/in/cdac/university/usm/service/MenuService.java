@@ -245,9 +245,11 @@ public class MenuService {
         return getIntermediateMenuBeans(menuBean, menuMstPredicate);
     }
 
-    public ServiceResponse getMenusMappedWithUser(Integer userId) throws Exception {
+    public ServiceResponse getMenusMappedWithUser(Long userId) throws Exception {
         // Get User Category
+        System.out.println("Getting Menu");
         int userCategory = RequestUtility.getUserCategory();
+        System.out.println("User Category: " + userCategory);
         List<UmmtUserRoleMst> mappedRoles;
         if (userCategory == 5) {
             // Draft Applicant
@@ -359,7 +361,7 @@ public class MenuService {
                 .toList();
     }
 
-    public ServiceResponse getMenusUrlsMappedWithUser(Integer userId) {
+    public ServiceResponse getMenusUrlsMappedWithUser(Long userId) {
         List<UmmtUserRoleMst> mappedRoles = userRoleRepository.findByGnumUserIdAndGblIsvalid(userId, 1);
         List<UmmtMenuMst> mappedMenus = new ArrayList<>();
         if (!mappedRoles.isEmpty()) {

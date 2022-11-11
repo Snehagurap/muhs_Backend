@@ -17,7 +17,7 @@ import java.util.Date;
 public class UmmtUserMst implements java.io.Serializable {
 
 	@Id
-	private Integer gnumUserid;
+	private Long gnumUserid;
 
 	@Id
 	private Integer gnumIsvalid;

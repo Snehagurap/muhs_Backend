@@ -26,5 +26,5 @@ public class RoleMenuBean {
     private Date gdtEntryDate;
     private Integer gnumIsvalid;
     private Integer gnumDisplayOrder;
-    private Integer gnumEntryBy;
+    private Long gnumEntryBy;
 }

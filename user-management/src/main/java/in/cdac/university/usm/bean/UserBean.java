@@ -23,7 +23,7 @@ public class UserBean extends GlobalBean {
 
     @ListColumn(omit = true)
     @ComboKey
-    private Integer gnumUserid;
+    private Long gnumUserid;
 
     @ListColumn(omit = true)
     @NotNull(message = "Status is mandatory")
@@ -52,7 +52,7 @@ public class UserBean extends GlobalBean {
     @NotNull(message = "Designation is mandatory")
     private Integer gnumDesignation;
 
-    private Integer gnumEntryBy;
+    private Long gnumEntryBy;
 
     private Integer gnumIslock;
 
@@ -109,6 +109,6 @@ public class UserBean extends GlobalBean {
 
     private Date gdtChangepasswordDate;
     private Date gdtLstmodDate;
-    private Integer gnumLstmodBy;
+    private Long gnumLstmodBy;
     private Date gnumLastLoginDate;
 }

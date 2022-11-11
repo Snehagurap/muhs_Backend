@@ -33,6 +33,13 @@ public class TemplateHeaderController {
         );
     }
 
+    @GetMapping("combo")
+    public ResponseEntity<?> getTemplateHeaderCombo() throws Exception {
+        return ResponseHandler.generateResponse(
+                templateHeaderService.getTemplateHeaderCombo()
+        );
+    }
+
     @PostMapping("save")
     public ResponseEntity<?> save(@Valid @RequestBody TemplateHeaderBean templateHeaderBean) throws Exception {
         templateHeaderBean.setUnumIsvalid(1);

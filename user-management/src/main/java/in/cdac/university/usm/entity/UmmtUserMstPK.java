@@ -14,7 +14,7 @@ import javax.persistence.*;
 public class UmmtUserMstPK implements Serializable {
 
 	@Column(name = "gnum_userid", nullable = false)
-	private Integer gnumUserid;
+	private Long gnumUserid;
 
 	@Column(name = "gnum_isvalid", nullable = false, precision = 1)
 	private Integer gnumIsvalid;

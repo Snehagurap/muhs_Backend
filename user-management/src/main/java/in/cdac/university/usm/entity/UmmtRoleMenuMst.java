@@ -39,5 +39,5 @@ public class UmmtRoleMenuMst implements java.io.Serializable {
 	private Integer gnumDisplayOrder;
 
 	@Column(name = "gnum_entry_by")
-	private Integer gnumEntryBy;
+	private Long gnumEntryBy;
 }

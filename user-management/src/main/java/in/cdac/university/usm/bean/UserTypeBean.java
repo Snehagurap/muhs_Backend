@@ -26,7 +26,7 @@ public class UserTypeBean extends GlobalBean{
     @ComboKey(index = 4)
     @NotNull(message = "Default Dataset is mandatory")
     private Integer gnumDatasetId;
-    private Integer gnumEntryBy;
+    private Long gnumEntryBy;
 
     @NotNull(message = "Status is mandatory")
     private Integer gnumIsvalid;

@@ -19,12 +19,12 @@ public class RequestUtility {
         return new Locale(language);
     }
 
-    public static Integer getUserId() throws Exception {
+    public static Long getUserId() throws Exception {
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
         String userId = request.getHeader("userId");
         if (userId == null)
             throw new Exception ("Session not present");
-        return Integer.valueOf(userId);
+        return Long.valueOf(userId);
     }
 
     public static UserDetail getUserDetail() throws Exception {
@@ -33,6 +33,7 @@ public class RequestUtility {
         if (userDetail == null)
             throw new Exception ("Session not present");
         Gson gson = new Gson();
+        System.out.println(gson.fromJson(userDetail, UserDetail.class));
         return gson.fromJson(userDetail, UserDetail.class);
     }
 

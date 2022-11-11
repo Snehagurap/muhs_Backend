@@ -54,9 +54,9 @@ public class JwtUtil {
                                         .orElse(-1);
             userDetail.setUniversityId(universityId);
 
-            int userId = Optional.ofNullable(allClaimsFromToken.get("userId"))
-                                .map(value -> Integer.valueOf(value.toString()))
-                                .orElse(-1);
+            long userId = Optional.ofNullable(allClaimsFromToken.get("userId"))
+                                .map(value -> Long.valueOf(value.toString()))
+                                .orElse(-1L);
             userDetail.setUserId(userId);
 
             int applicationType = Optional.ofNullable(allClaimsFromToken.get("applicationType"))

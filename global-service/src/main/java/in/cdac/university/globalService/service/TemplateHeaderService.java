@@ -131,4 +131,11 @@ public class TemplateHeaderService {
                 .message(language.deleteSuccess("Header"))
                 .build();
     }
+
+    public ServiceResponse getTemplateHeaderCombo() throws Exception {
+        List<GmstConfigTemplateHeaderMst> allHeaders = templateHeaderRepository.findAllHeaders(RequestUtility.getUniversityId());
+        return ServiceResponse.successObject(
+                ComboUtility.generateComboData(BeanUtils.copyListProperties(allHeaders, TemplateHeaderBean.class))
+        );
+    }
 }

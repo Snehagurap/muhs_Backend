@@ -29,7 +29,7 @@ public class RoleBean extends GlobalBean {
     @NotNull(message = "Module Id is mandatory")
     private Integer gnumModuleId;
 
-    private Integer gnumEntryBy;
+    private Long gnumEntryBy;
 
     @DateTimeFormat(pattern = Constants.dateFormat)
     @NotNull(message = "Effective Date is mandatory")

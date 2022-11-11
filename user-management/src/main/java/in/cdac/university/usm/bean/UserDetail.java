@@ -11,7 +11,7 @@ public class UserDetail {
     private String username;
     private String password;
     private String token;
-    private Integer userId;
+    private Long userId;
     private Integer userType;
     private Integer universityId;
     private Integer userCategory;      /* 1: University, 5: Applicant */

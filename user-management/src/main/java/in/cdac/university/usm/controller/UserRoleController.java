@@ -19,7 +19,7 @@ public class UserRoleController {
 
     @GetMapping("combo/{userId}")
     @ApiOperation(value = "Get the list of roles Mapped and Not Mapped to the User Id")
-    public ResponseEntity<?> getUserRoles(@PathVariable("userId") Integer userId) throws IllegalAccessException {
+    public ResponseEntity<?> getUserRoles(@PathVariable("userId") Long userId) throws IllegalAccessException {
         return ResponseHandler.generateResponse(
                 userRoleService.getRoles(userId)
         );

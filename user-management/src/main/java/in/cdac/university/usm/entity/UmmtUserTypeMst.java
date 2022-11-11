@@ -35,7 +35,7 @@ public class UmmtUserTypeMst implements Serializable {
 	private Integer gnumDatasetId;
 
 	@Column(name="gnum_entry_by", nullable = false)
-	private Integer gnumEntryBy;
+	private Long gnumEntryBy;
 
 	@Column(name="gnum_isvalid", nullable = false, columnDefinition = "numeric default 1")
 	private Integer gnumIsvalid;

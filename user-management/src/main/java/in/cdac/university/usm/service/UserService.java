@@ -61,7 +61,7 @@ public class UserService {
                 .toList();
     }
 
-    public ServiceResponse get(Integer userId) {
+    public ServiceResponse get(Long userId) {
         if (userId == null) {
             return ServiceResponse.errorResponse(language.mandatory("UserId"));
         }
@@ -111,9 +111,9 @@ public class UserService {
         }
 
         // Generate new User id
-        Integer userId = userRepository.generateUserId();
+        Long userId = userRepository.generateUserId();
         if (userId == null)
-            userId = 1;
+            userId = 1L;
         log.info("New User Id generated " + userId);
 
         UmmtUserMst userMst = BeanUtils.copyProperties(userBean, UmmtUserMst.class);
@@ -227,8 +227,8 @@ public class UserService {
         if (userBean.getIdsToDelete() == null || userBean.getIdsToDelete().length == 0) {
             return ServiceResponse.errorResponse(language.mandatory("User Id"));
         }
-        List<Integer> userIdsToDelete = Arrays.stream(userBean.getIdsToDelete())
-                .map(Integer::valueOf)
+        List<Long> userIdsToDelete = Arrays.stream(userBean.getIdsToDelete())
+                .map(Long::valueOf)
                 .toList();
 
         List<UmmtUserMst> userMstList = userRepository.findAllByGnumUseridInAndGnumIsvalidIn(

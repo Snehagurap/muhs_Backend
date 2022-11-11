@@ -33,7 +33,7 @@ public class UserRoleService {
     @Autowired
     private Language language;
 
-    public ServiceResponse getRoles(Integer userId) throws IllegalAccessException {
+    public ServiceResponse getRoles(Long userId) throws IllegalAccessException {
         List<UmmtRoleMst> allRoleList = roleRepository.findByGblIsvalidOrderByGstrRoleNameAsc(1);
         List<UmmtUserRoleMst> mappedRoles = userRoleRepository.findByGnumUserIdAndGblIsvalid(userId, 1);
 

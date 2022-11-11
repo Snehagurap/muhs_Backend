@@ -21,8 +21,8 @@ public class UmmtRoleMst implements java.io.Serializable {
 	@Column(name = "gstr_role_name", nullable = false, length = 100)
 	private String gstrRoleName;
 
-	@Column(name = "gnum_entry_by", nullable = false, precision = 8)
-	private Integer gnumEntryBy;
+	@Column(name = "gnum_entry_by", nullable = false)
+	private Long gnumEntryBy;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "gdt_effect_date", nullable = false, columnDefinition="timestamp without time zone default current_timestamp")

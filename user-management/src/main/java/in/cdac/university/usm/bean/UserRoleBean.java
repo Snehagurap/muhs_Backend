@@ -12,7 +12,7 @@ public class UserRoleBean {
     private Integer gnumRoleId;
 
     @NotNull(message = "User is mandatory")
-    private Integer gnumUserId;
+    private Long gnumUserId;
     private Integer gnumIsDefault;
     private Integer gblIsvalid;
 

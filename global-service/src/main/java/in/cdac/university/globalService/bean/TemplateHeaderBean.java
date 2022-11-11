@@ -1,6 +1,8 @@
 package in.cdac.university.globalService.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import in.cdac.university.globalService.util.annotations.ComboKey;
+import in.cdac.university.globalService.util.annotations.ComboValue;
 import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +18,7 @@ import java.util.List;
 @ToString
 public class TemplateHeaderBean {
 
+    @ComboKey
     @ListColumn(omit = true)
     private Long unumTemplHeadId;
 
@@ -53,6 +56,7 @@ public class TemplateHeaderBean {
     @ListColumn( order = 3, name = "Header Prefix Text")
     private String ustrHeadPrintPrefixText;
 
+    @ComboValue
     @ListColumn( order = 4, name = "Header Text")
     @NotNull(message="Header Text is mandatory")
     private String ustrHeadPrintText;

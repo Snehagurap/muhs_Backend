@@ -36,7 +36,7 @@ public class MenuBean extends GlobalBean {
     @ListColumn(order = 3, name = "Menu Level")
     private Integer gnumMenuLevel;
 
-    private Integer gnumEntryBy;
+    private Long gnumEntryBy;
     private Date gdtEntryDate;
 
     @Length(max = 500, message = "Menu URL can contain maximum of 500 characters")

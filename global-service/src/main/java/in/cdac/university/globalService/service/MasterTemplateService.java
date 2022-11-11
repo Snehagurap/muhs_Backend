@@ -39,6 +39,9 @@ public class MasterTemplateService {
     private TemplateComponentRepository templateComponentRepository;
 
     @Autowired
+    private ApplicantRepository applicantRepository;
+
+    @Autowired
     private Language language;
 
     public ServiceResponse getTemplate(Long masterTemplateId) throws Exception {
@@ -94,6 +97,7 @@ public class MasterTemplateService {
 //                    .collect(Collectors.toMap(GmstConfigTemplateDtl::getUnumTempleHeadId, Function.identity(), (u1, u2) -> u1));
 
             Set<Long> headerIdsAdded = new HashSet<>();
+            Set<Long> setNoOfPageColumns = new HashSet<>();
             List<TemplateHeaderBean> headerBeans = new ArrayList<>();
             for (GmstConfigTemplateDtl configTemplateDtl: templateDetailByTemplateId) {
                 if (configTemplateDtl.getUnumTempleHeadId() == 27 || !headerIdsAdded.contains(configTemplateDtl.getUnumTempleHeadId())) {
@@ -112,7 +116,11 @@ public class MasterTemplateService {
                     templateHeaderBean.setUnumHeadDisplayOrder(configTemplateDtl.getUnumDisplayOrder());
                     templateHeaderBean.setUnumIsHidden(configTemplateDtl.getUnumHideHeaderTxt() == null ? 0 : configTemplateDtl.getUnumHideHeaderTxt());
                     templateHeaderBean.setUnumTempledtlId(configTemplateDtl.getUnumTempledtlId());
-                    templateHeaderBean.setUnumPageColumns(configTemplateDtl.getUnumPageColumns() == null ? 2 : configTemplateDtl.getUnumPageColumns());
+                    int unumPageColumns = configTemplateDtl.getUnumPageColumns() == null ? 2 : configTemplateDtl.getUnumPageColumns();
+                    if (!setNoOfPageColumns.contains(configTemplateDtl.getUnumTempleHeadId())) {
+                        templateHeaderBean.setUnumPageColumns(unumPageColumns);
+                        setNoOfPageColumns.add(configTemplateDtl.getUnumTempleHeadId());
+                    }
                     templateHeaderBean.setUnumHeadIsmandy(gmstConfigTemplateHeaderMst.getUnumHeadIsmandy() == null ? 0 : gmstConfigTemplateHeaderMst.getUnumHeadIsmandy());
                     templateHeaderBean.setUnumIsMergeWithParent(gmstConfigTemplateHeaderMst.getUnumIsMergeWithParent() == null ? 0 : gmstConfigTemplateHeaderMst.getUnumIsMergeWithParent());
                     headerBeans.add(templateHeaderBean);
@@ -215,5 +223,19 @@ public class MasterTemplateService {
         for (TemplateItemBean childItem: childItems) {
             fetchSubItems(childItem, itemsByTemplateId, templateDetailByTemplateId);
         }
+    }
+
+    public ServiceResponse save(TemplateToSaveBean templateToSaveBean) throws Exception {
+        long applicantId = RequestUtility.getUserId();
+        Optional<GmstApplicantMst> applicantMstOptional = applicantRepository.findById(new GmstApplicantMstPK(applicantId, 1));
+        if (applicantMstOptional.isEmpty())
+            return ServiceResponse.errorResponse(language.message("You are not logged in as an Applicant. Please login with your Applicant credentials."));
+
+        GmstApplicantMst applicant = applicantMstOptional.get();
+        if (applicant.getUnumIsVerifiedApplicant() != 1)
+            return ServiceResponse.errorResponse(language.message("Applicant is not verified"));
+
+
+        return ServiceResponse.successMessage("Data saved successfully");
     }
 }

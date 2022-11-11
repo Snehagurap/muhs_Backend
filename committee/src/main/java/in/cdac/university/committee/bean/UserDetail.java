@@ -12,7 +12,7 @@ public class UserDetail {
     private String password;
     private String token;
     private String refresh_token;
-    private Integer userId;
+    private Long userId;
     private Integer userType;
     private Integer universityId;
     private Integer expires_in;

@@ -207,7 +207,7 @@ public class CommitteeService {
                         if (committeeDetail.getUnumRoleId() == 10)
                             sno.set(1);
                         else if (committeeDetail.getUnumRoleId() == 11)
-                            sno.set(memberCount.getAndAdd(1));
+                            sno.set(memberCount.addAndGet(1));
                         else
                             sno.set(0);
                         if (sno.get() == 0)

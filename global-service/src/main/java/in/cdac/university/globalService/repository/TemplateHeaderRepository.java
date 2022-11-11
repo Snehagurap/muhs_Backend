@@ -29,6 +29,11 @@ public interface TemplateHeaderRepository extends JpaRepository<GmstConfigTempla
             "and t.unumTempleId in (:templateId) ) ")
     List<GmstConfigTemplateHeaderMst> findHeadersByTemplateId(@Param("universityId") Integer universityId, @Param("templateId") List<Long> templateId);
 
+    @Query("select c from GmstConfigTemplateHeaderMst c " +
+            "where c.unumIsvalid = 1 " +
+            "and c.unumUnivId = :universityId ")
+    List<GmstConfigTemplateHeaderMst> findAllHeaders(@Param("universityId") Integer universityId);
+
     List<GmstConfigTemplateHeaderMst> findByUnumIsvalidAndUnumUnivIdOrderByUstrTemplHeadCodeAsc(Integer unumIsvalid, Integer unumUnivId);
 
     List<GmstConfigTemplateHeaderMst> findByUstrHeadPrintTextIgnoreCaseAndUnumIsvalidAndUnumUnivId(String ustrHeadPrintText, Integer unumIsvalid, Integer unumUnivId);
