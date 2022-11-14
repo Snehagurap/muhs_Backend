@@ -102,6 +102,9 @@ public class ApplicantBean {
 
     private String ustrUid;
 
+    private Long unumVerifiedBy;
+
+    private Date udtVerifiedDate;
     @Valid
     @JsonProperty("docDetails")
     private List<ApplicantDetailBean> applicantDetailBeans;

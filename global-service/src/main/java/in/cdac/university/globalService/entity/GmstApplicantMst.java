@@ -123,4 +123,9 @@ public class GmstApplicantMst implements Serializable {
 	@Column(name="ustr_uid")
 	private String ustrUid;
 
+	@Column(name="unum_verified_by")
+	private Long unumVerifiedBy;
+
+	@Column(name="udt_verified_date")
+	private Date udtVerifiedDate;
 }

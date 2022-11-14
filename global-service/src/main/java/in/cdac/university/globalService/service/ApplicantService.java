@@ -146,6 +146,9 @@ public class ApplicantService {
     }
 
     public ServiceResponse getApplicant(Long applicantId) {
+        if(applicantId == null) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Applicant id", applicantId));
+        }
         Optional<GmstApplicantMst> gmstApplicantMst = applicantRepository.findByUnumApplicantIdAndUnumIsvalid(applicantId, 1);
         if(gmstApplicantMst.isEmpty()) {
             return ServiceResponse.errorResponse(language.notFoundForId("Applicant id", applicantId));
@@ -163,5 +166,40 @@ public class ApplicantService {
         applicantBean.setApplicantDetailBeans(applicantDetailBeanList);
 
         return ServiceResponse.successObject(applicantBean);
+    }
+
+    @Transactional
+    public ServiceResponse verifyApplicant(ApplicantBean applicantBean) {
+        if(applicantBean.getUnumApplicantId() == null) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Applicant id", applicantBean.getUnumApplicantId()));
+        }
+        Long applicantId = applicantBean.getUnumApplicantId();
+
+        Optional<GmstApplicantMst> gmstApplicantMst = applicantRepository.findByUnumApplicantIdAndUnumIsvalid(applicantId, 1);
+        if(gmstApplicantMst.isEmpty()) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Applicant id", applicantId));
+        }
+        GmstApplicantMst gmstApplicantMst1 = gmstApplicantMst.get();
+        gmstApplicantMst1.setUnumVerifiedBy(applicantBean.getUnumVerifiedBy());
+        gmstApplicantMst1.setUdtVerifiedDate(applicantBean.getUdtVerifiedDate());
+        gmstApplicantMst1.setUnumIsVerifiedApplicant(applicantBean.getUnumIsVerifiedApplicant());
+
+        applicantRepository.save(gmstApplicantMst1);
+
+        List<GmstApplicantDtl> gmstApplicantDtlList = applicantDetailRepository.findByUnumApplicantIdAndUnumIsvalid(applicantId, 1);
+        if(gmstApplicantDtlList.isEmpty()) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Applicant Document Detail", applicantId));
+        }
+
+        gmstApplicantDtlList.forEach( applicantDetailBean -> {
+                    applicantDetailBean.setUnumDocIsVerified(applicantBean.getUnumIsVerifiedApplicant());
+        });
+
+        applicantDetailRepository.saveAll(gmstApplicantDtlList);
+
+        if(applicantBean.getUnumIsVerifiedApplicant() == -1) {
+            return ServiceResponse.successMessage(language.message("Applicant Rejected"));
+        }
+        return ServiceResponse.successMessage(language.message("Applicant Verified"));
     }
 }

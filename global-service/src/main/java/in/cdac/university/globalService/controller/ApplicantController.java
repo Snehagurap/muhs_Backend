@@ -75,4 +75,13 @@ public class ApplicantController {
           applicantService.getApplicant(applicantId)
         );
     }
+
+    @PutMapping("verify")
+    public ResponseEntity<?> verifyApplicant(@RequestBody ApplicantBean applicantBean) throws Exception {
+        applicantBean.setUnumVerifiedBy(RequestUtility.getUserId());
+        applicantBean.setUdtVerifiedDate(new Date());
+        return ResponseHandler.generateResponse(
+                applicantService.verifyApplicant(applicantBean)
+        );
+    }
 }
