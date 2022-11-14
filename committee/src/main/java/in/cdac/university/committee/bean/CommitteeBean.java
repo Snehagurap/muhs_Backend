@@ -5,6 +5,7 @@ import in.cdac.university.committee.util.annotations.ComboValue;
 import in.cdac.university.committee.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.Valid;
@@ -63,6 +64,12 @@ public class CommitteeBean {
     private Long unumEntryUid;
     private String committeeTypeName;
     private String facultyName;
+
+    @Range(min = 0, max = 1, message = "Is Formula Based can be 0 or 1")
+    private Integer unumIsFormulaBased = 0;
+
+    @Range(min = 0, max = 1, message = "Is Login Restricted can be 0 or 1")
+    private Integer unumIsLoginRestricted = 0;
 
     @NotNull(message = "Committee details are mandatory")
     @Valid
