@@ -51,6 +51,17 @@ public class TemplateItemController {
         );
     }
 
+    @DeleteMapping("delete")
+    public ResponseEntity<?> delete(@RequestBody Long[] idsToDelete) throws Exception {
+        TemplateItemBean templateItemBean = new TemplateItemBean();
+        templateItemBean.setUdtEntryDate(new Date());
+        templateItemBean.setUnumUnivId(RequestUtility.getUniversityId());
+        templateItemBean.setUnumEntryUid(RequestUtility.getUserId());
+        return ResponseHandler.generateResponse(
+                templateItemService.delete(templateItemBean, idsToDelete)
+        );
+    }
+
     @GetMapping("combo")
     public ResponseEntity<?> getItemCombo() throws Exception {
         return ResponseHandler.generateOkResponse(

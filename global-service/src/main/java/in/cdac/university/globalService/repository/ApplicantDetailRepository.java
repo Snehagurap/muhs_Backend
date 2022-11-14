@@ -7,10 +7,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ApplicantDetailRepository extends JpaRepository<GmstApplicantDtl, GmstApplicantDtlPK> {
 
     @Query ("select count(*) from GmstApplicantDtl " +
             "where unumApplicantId = :applicantId")
     Long getMaxApplicantDocId(@Param("applicantId") Long applicantId);
+
+    List<GmstApplicantDtl> findByUnumApplicantIdAndUnumIsvalid(Long unumApplicantId, Integer unumIsvalid);
+
+
 }

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -46,6 +47,10 @@ public interface TemplateItemRepository extends JpaRepository<GmstConfigTemplate
             "and t.unumUnivId = :universityId " +
             "and t.unumTempleId in (:templateId) ) ")
     List<GmstConfigTemplateItemMst> findItemsByTemplateId(@Param("universityId") Integer universityId, @Param("templateId") List<Long> templateId);
+
+    List<GmstConfigTemplateItemMst> findByUnumTemplItemIdInAndUnumIsvalidInAndUnumUnivId(Collection<Long> unumTemplItemIds, Collection<Integer> unumIsvalids, Integer unumUnivId);
+
+
 
     @Modifying(clearAutomatically = true)
     @Query("update GmstConfigTemplateItemMst u set u.unumIsvalid = (select coalesce(max(a.unumIsvalid), 2) + 1 " +
