@@ -10,10 +10,7 @@ import in.cdac.university.globalService.exception.ApplicationException;
 import in.cdac.university.globalService.repository.ApplicantDetailRepository;
 import in.cdac.university.globalService.repository.ApplicantRepository;
 import in.cdac.university.globalService.repository.DraftApplicantRepository;
-import in.cdac.university.globalService.util.BeanUtils;
-import in.cdac.university.globalService.util.FtpUtility;
-import in.cdac.university.globalService.util.Language;
-import in.cdac.university.globalService.util.ServiceResponse;
+import in.cdac.university.globalService.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +66,7 @@ public class ApplicantService {
         }
 
         // Get Draft application details
-        Optional<GmstApplicantDraftMst> draftApplicantOptional = draftApplicantRepository.findByUnumIsvalidAndUnumApplicantDraftid(1, applicantBean.getUnumApplicantDraftid());
+        Optional<GmstApplicantDraftMst> draftApplicantOptional = draftApplicantRepository.findByUnumIsvalidInAndUnumApplicantDraftid(List.of(1), applicantBean.getUnumApplicantDraftid());
         if (draftApplicantOptional.isEmpty())
             return ServiceResponse.errorResponse(language.notFoundForId("Applicant", applicantBean.getUnumApplicantDraftid()));
 
@@ -110,7 +107,14 @@ public class ApplicantService {
 
         // Save Document Details
         if (!applicantDtls.isEmpty()) {
-            applicantDtls.forEach(gmstApplicantDtl -> gmstApplicantDtl.setUnumApplicantId(applicantId));
+            // Get the maximum applicant document id
+            Long maxApplicantDocId = applicantDetailRepository.getMaxApplicantDocId(applicantId);
+
+            for (GmstApplicantDtl gmstApplicantDtl : applicantDtls) {
+                gmstApplicantDtl.setUnumApplicantId(applicantId);
+                maxApplicantDocId++;
+                gmstApplicantDtl.setUnumApplicantDocId(Long.valueOf(applicantId.toString() + "" + StringUtility.padLeftZeros(maxApplicantDocId.toString(), 5)));
+            }
             applicantDetailRepository.saveAll(applicantDtls);
         }
 

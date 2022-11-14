@@ -19,7 +19,7 @@ public interface DraftApplicantRepository extends JpaRepository<GmstApplicantDra
 
     List<GmstApplicantDraftMst> findByUnumIsvalidAndUnumApplicantMobileAndUstrApplicantEmail(Integer unumIsvalid, Long unumApplicantMobile, String ustrApplicantEmail);
 
-    Optional<GmstApplicantDraftMst> findByUnumIsvalidAndUnumApplicantDraftid(Integer unumIsvalid, Long unumApplicantDraftid);
+    Optional<GmstApplicantDraftMst> findByUnumIsvalidInAndUnumApplicantDraftid(List<Integer> unumIsvalid, Long unumApplicantDraftid);
 
     @Modifying(clearAutomatically = true)
     @Query("update GmstApplicantDraftMst set " +

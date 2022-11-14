@@ -1,7 +1,6 @@
 package in.cdac.university.globalService.service;
 
 import com.google.common.hash.Hashing;
-import in.cdac.university.globalService.bean.ApplicantBean;
 import in.cdac.university.globalService.bean.DraftApplicantBean;
 import in.cdac.university.globalService.entity.GmstApplicantDraftMst;
 import in.cdac.university.globalService.repository.DraftApplicantRepository;
@@ -14,12 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.DigestUtils;
 
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,7 +74,7 @@ public class DraftApplicantService {
         }
 
         // Validate Mobile and email OTP
-        Optional<GmstApplicantDraftMst> draftApplicant = draftApplicantRepository.findByUnumIsvalidAndUnumApplicantDraftid(2, draftApplicantBean.getUnumApplicantDraftid());
+        Optional<GmstApplicantDraftMst> draftApplicant = draftApplicantRepository.findByUnumIsvalidInAndUnumApplicantDraftid(List.of(2), draftApplicantBean.getUnumApplicantDraftid());
         if (draftApplicant.isEmpty()) {
             return ServiceResponse.errorResponse(language.notFoundForId("Applicant", draftApplicantBean.getUnumApplicantDraftid()));
         }
@@ -117,7 +112,7 @@ public class DraftApplicantService {
     }
 
     public ServiceResponse getApplicantById(Long applicantId) {
-        Optional<GmstApplicantDraftMst> applicantDraftMstOptional = draftApplicantRepository.findByUnumIsvalidAndUnumApplicantDraftid(1, applicantId);
+        Optional<GmstApplicantDraftMst> applicantDraftMstOptional = draftApplicantRepository.findByUnumIsvalidInAndUnumApplicantDraftid(List.of(1, 0), applicantId);
         if (applicantDraftMstOptional.isEmpty())
             return ServiceResponse.errorResponse(language.notFoundForId("Applicant", applicantId));
 
