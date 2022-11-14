@@ -6,14 +6,13 @@ import in.cdac.university.globalService.bean.ApplicantDetailBean;
 import in.cdac.university.globalService.entity.GmstApplicantDraftMst;
 import in.cdac.university.globalService.entity.GmstApplicantDtl;
 import in.cdac.university.globalService.entity.GmstApplicantMst;
+import in.cdac.university.globalService.entity.GmstApplicantTypeMst;
 import in.cdac.university.globalService.exception.ApplicationException;
 import in.cdac.university.globalService.repository.ApplicantDetailRepository;
 import in.cdac.university.globalService.repository.ApplicantRepository;
+import in.cdac.university.globalService.repository.ApplicantTypeRepository;
 import in.cdac.university.globalService.repository.DraftApplicantRepository;
-import in.cdac.university.globalService.util.BeanUtils;
-import in.cdac.university.globalService.util.FtpUtility;
-import in.cdac.university.globalService.util.Language;
-import in.cdac.university.globalService.util.ServiceResponse;
+import in.cdac.university.globalService.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -39,6 +36,9 @@ public class ApplicantService {
 
     @Autowired
     private ApplicantDetailRepository applicantDetailRepository;
+
+    @Autowired
+    private ApplicantTypeRepository applicantTypeRepository;
 
     @Autowired
     private Language language;
@@ -67,7 +67,6 @@ public class ApplicantService {
                 }
             }
         }
-
         // Get Draft application details
         Optional<GmstApplicantDraftMst> draftApplicantOptional = draftApplicantRepository.findByUnumIsvalidAndUnumApplicantDraftid(1, applicantBean.getUnumApplicantDraftid());
         if (draftApplicantOptional.isEmpty())
@@ -118,5 +117,44 @@ public class ApplicantService {
         message += ". Your username is " + username + ", and password is " + password + ".";
 
         return ServiceResponse.successMessage(message);
+    }
+
+    public List<ApplicantBean> getListPageVerification(Integer isVerifiedApplicant) throws Exception {
+        List<GmstApplicantMst> gmstApplicantMstList = applicantRepository.findByUnumIsVerifiedApplicantAndUnumIsvalid(isVerifiedApplicant, 1);
+        if(gmstApplicantMstList.isEmpty()){
+            return BeanUtils.copyListProperties(gmstApplicantMstList, ApplicantBean.class);
+        }
+
+        Map<Long, String> applicantTypes = applicantTypeRepository.findAll().stream()
+                .collect(Collectors.toMap(GmstApplicantTypeMst::getUnumApplicantTypeId, GmstApplicantTypeMst::getUstrApplicantTypeFname));
+
+        List<ApplicantBean> applicantBeanList = gmstApplicantMstList.stream().map(
+                applicant -> {
+                    ApplicantBean applicantBean = BeanUtils.copyProperties(applicant, ApplicantBean.class);
+                    applicantBean.setUstrApplicantTypeName(applicantTypes.getOrDefault(applicant.getUnumApplicantTypeId(), ""));
+                    return applicantBean;
+                }
+        ).toList();
+        return BeanUtils.copyListProperties(applicantBeanList, ApplicantBean.class);
+    }
+
+    public ServiceResponse getApplicant(Long applicantId) {
+        Optional<GmstApplicantMst> gmstApplicantMst = applicantRepository.findByUnumApplicantIdAndUnumIsvalid(applicantId, 1);
+        if(gmstApplicantMst.isEmpty()) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Applicant id", applicantId));
+        }
+
+        ApplicantBean applicantBean = BeanUtils.copyProperties(gmstApplicantMst.get(), ApplicantBean.class);
+
+        List<GmstApplicantDtl> gmstApplicantDtlList = applicantDetailRepository.findByUnumApplicantIdAndUnumIsvalid(applicantId, 1);
+        if(gmstApplicantDtlList.isEmpty()) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Applicant Document Detail", applicantId));
+        }
+
+        List<ApplicantDetailBean> applicantDetailBeanList = BeanUtils.copyListProperties(gmstApplicantDtlList, ApplicantDetailBean.class);
+
+        applicantBean.setApplicantDetailBeans(applicantDetailBeanList);
+
+        return ServiceResponse.successObject(applicantBean);
     }
 }

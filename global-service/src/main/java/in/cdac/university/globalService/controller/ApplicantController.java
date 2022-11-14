@@ -4,6 +4,7 @@ import in.cdac.university.globalService.bean.ApplicantBean;
 import in.cdac.university.globalService.bean.DraftApplicantBean;
 import in.cdac.university.globalService.service.ApplicantService;
 import in.cdac.university.globalService.service.DraftApplicantService;
+import in.cdac.university.globalService.util.ListPageUtility;
 import in.cdac.university.globalService.util.RequestUtility;
 import in.cdac.university.globalService.util.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +57,22 @@ public class ApplicantController {
         applicantBean.setUnumEntryUid(RequestUtility.getUserId());
         return ResponseHandler.generateResponse(
                 applicantService.saveApplicantDetails(applicantBean)
+        );
+    }
+
+    @GetMapping("verification/{isVerifiedApplicant}")
+    public ResponseEntity<?> getListPageVerification(@PathVariable("isVerifiedApplicant") Integer isVerifiedApplicant) throws Exception {
+        return ResponseHandler.generateOkResponse(
+                ListPageUtility.generateListPageData(
+                        applicantService.getListPageVerification(isVerifiedApplicant)
+                )
+        );
+    }
+
+    @GetMapping("verificationView/{applicantId}")
+    public ResponseEntity<?> getApplicant(@PathVariable("applicantId") Long applicantId) {
+        return ResponseHandler.generateResponse(
+          applicantService.getApplicant(applicantId)
         );
     }
 }

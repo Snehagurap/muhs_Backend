@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,5 +94,34 @@ public class TemplateItemService {
                 .status(1)
                 .message(language.updateSuccess("Template Item"))
                 .build();
+    }
+
+    public ServiceResponse delete(TemplateItemBean templateItemBean, Long[] idsToDelete) {
+        if (idsToDelete == null || idsToDelete.length == 0) {
+            return ServiceResponse.errorResponse(language.mandatory("Template Item Id"));
+        }
+
+        List<GmstConfigTemplateItemMst> templateItemMstList = templateItemRepository.findByUnumTemplItemIdInAndUnumIsvalidInAndUnumUnivId(
+                List.of(idsToDelete), List.of(1,2) , templateItemBean.getUnumUnivId()
+        );
+
+        if(templateItemMstList.size() != idsToDelete.length) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Template item", idsToDelete));
+        }
+
+        // Create Log
+        int noOfRowsAffected = templateItemRepository.createLog(List.of(idsToDelete));
+        if(noOfRowsAffected != idsToDelete.length) {
+            throw new ApplicationException(language.deleteError("Template item"));
+        }
+
+        templateItemMstList.forEach(templateItem -> {
+            templateItem.setUnumIsvalid(0);
+            templateItem.setUdtEntryDate(templateItemBean.getUdtEntryDate());
+            templateItem.setUnumEntryUid(templateItemBean.getUnumEntryUid());
+        });
+
+        templateItemRepository.saveAll(templateItemMstList);
+        return ServiceResponse.successMessage(language.deleteSuccess("Template item"));
     }
 }

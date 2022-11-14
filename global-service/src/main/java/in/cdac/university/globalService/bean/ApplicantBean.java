@@ -1,6 +1,7 @@
 package in.cdac.university.globalService.bean;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -16,6 +17,7 @@ import java.util.List;
 @ToString
 public class ApplicantBean {
 
+    @ListColumn(omit = true)
     private Long unumApplicantId;
 
     private Integer unumIsvalid;
@@ -30,6 +32,7 @@ public class ApplicantBean {
 
     private Integer unumApplicantDistrictid;
 
+    @ListColumn(order = 2, name = "Draft Id")
     @NotNull(message = "Draft Applicant Id is mandatory")
     private Long unumApplicantDraftid;
 
@@ -41,8 +44,12 @@ public class ApplicantBean {
 
     private Integer unumApplicantStateid;
 
+
     @NotNull(message = "Applicant Type is mandatory")
     private Long unumApplicantTypeId;
+
+    @ListColumn(order = 3, name = "Type")
+    private String ustrApplicantTypeName;
 
     private Long unumEntryUid;
 
@@ -67,6 +74,7 @@ public class ApplicantBean {
 
     private String ustrApplicantEmail;
 
+    @ListColumn(order = 4, name = "Name")
     private String ustrApplicantName;
 
     private String ustrDescription;
