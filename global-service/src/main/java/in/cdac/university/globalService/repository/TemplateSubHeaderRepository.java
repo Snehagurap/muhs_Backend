@@ -9,5 +9,7 @@ import java.util.List;
 
 @Repository
 public interface TemplateSubHeaderRepository extends JpaRepository<GmstConfigTemplateSubheaderMst, GmstConfigTemplateSubheaderMstPK> {
-    List<GmstConfigTemplateSubheaderMst> findByUnumIsvalidAndUnumUnivIdOrderByUnumSubheadDisplayOrderAsc(Integer unumIsvalid, Integer unumUnivId);
+
+    List<GmstConfigTemplateSubheaderMst> findByUnumIsvalidAndUnumUnivIdAndUnumTemplHeadIdOrderByUnumSubheadDisplayOrderAsc(Integer unumIsvalid, Integer unumUnivId, Long unumTemplHeadId);
+
 }

@@ -92,16 +92,11 @@ public class MasterTemplateService {
             Long templateId = templateBean.getUnumTempleId();
             List<GmstConfigTemplateDtl> templateDetailByTemplateId = mapTemplateDetails.get(templateId);
 
-            // Get all the headers for the given template
-//            Map<Long, GmstConfigTemplateDtl> headerIds = templateDetailByTemplateId.stream()
-//                    .collect(Collectors.toMap(GmstConfigTemplateDtl::getUnumTempleHeadId, Function.identity(), (u1, u2) -> u1));
-
-            Set<Long> headerIdsAdded = new HashSet<>();
-            Set<Long> setNoOfPageColumns = new HashSet<>();
+            Map<Long, TemplateHeaderBean> headerIdsAdded = new HashMap<>();
+            Map<Long, Integer> mapNoOfPageColumns = new HashMap<>();
             List<TemplateHeaderBean> headerBeans = new ArrayList<>();
             for (GmstConfigTemplateDtl configTemplateDtl: templateDetailByTemplateId) {
-                if (configTemplateDtl.getUnumTempleHeadId() == 27 || !headerIdsAdded.contains(configTemplateDtl.getUnumTempleHeadId())) {
-                    headerIdsAdded.add(configTemplateDtl.getUnumTempleHeadId());
+                if (configTemplateDtl.getUnumTempleHeadId() == 27 || !headerIdsAdded.containsKey(configTemplateDtl.getUnumTempleHeadId())) {
                     GmstConfigTemplateHeaderMst gmstConfigTemplateHeaderMst = headersByTemplateId.stream()
                             .filter(header -> header.getUnumTemplHeadId().equals(configTemplateDtl.getUnumTempleHeadId()))
                             .findFirst()
@@ -116,14 +111,21 @@ public class MasterTemplateService {
                     templateHeaderBean.setUnumHeadDisplayOrder(configTemplateDtl.getUnumDisplayOrder());
                     templateHeaderBean.setUnumIsHidden(configTemplateDtl.getUnumHideHeaderTxt() == null ? 0 : configTemplateDtl.getUnumHideHeaderTxt());
                     templateHeaderBean.setUnumTempledtlId(configTemplateDtl.getUnumTempledtlId());
-                    int unumPageColumns = configTemplateDtl.getUnumPageColumns() == null ? 2 : configTemplateDtl.getUnumPageColumns();
-                    if (!setNoOfPageColumns.contains(configTemplateDtl.getUnumTempleHeadId())) {
-                        templateHeaderBean.setUnumPageColumns(unumPageColumns);
-                        setNoOfPageColumns.add(configTemplateDtl.getUnumTempleHeadId());
+
+                    if (configTemplateDtl.getUnumPageColumns() != null) {
+                        int unumPageColumns = configTemplateDtl.getUnumPageColumns();
+                        mapNoOfPageColumns.put(configTemplateDtl.getUnumTempleHeadId(), unumPageColumns);
                     }
+                    templateHeaderBean.setUnumPageColumns(mapNoOfPageColumns.getOrDefault(configTemplateDtl.getUnumTempleHeadId(), 2));
                     templateHeaderBean.setUnumHeadIsmandy(gmstConfigTemplateHeaderMst.getUnumHeadIsmandy() == null ? 0 : gmstConfigTemplateHeaderMst.getUnumHeadIsmandy());
                     templateHeaderBean.setUnumIsMergeWithParent(gmstConfigTemplateHeaderMst.getUnumIsMergeWithParent() == null ? 0 : gmstConfigTemplateHeaderMst.getUnumIsMergeWithParent());
                     headerBeans.add(templateHeaderBean);
+                    headerIdsAdded.put(configTemplateDtl.getUnumTempleHeadId(), templateHeaderBean);
+                } else {
+                    TemplateHeaderBean templateHeaderBean = headerIdsAdded.get(configTemplateDtl.getUnumTempleHeadId());
+                    if (configTemplateDtl.getUnumPageColumns() != null) {
+                        templateHeaderBean.setUnumPageColumns(configTemplateDtl.getUnumPageColumns());
+                    }
                 }
             }
             headerBeans.sort(Comparator.comparing(TemplateHeaderBean::getUnumHeadDisplayOrder, Comparator.nullsLast(Comparator.naturalOrder())));

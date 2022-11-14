@@ -64,4 +64,7 @@ public class GmstConfigTemplateSubheaderMst implements Serializable {
 
 	@Column(name="ustr_templ_subhead_code")
 	private String ustrTemplSubheadCode;
+
+	@Column(name="unum_templ_head_id")
+	private Long unumTemplHeadId;
 }

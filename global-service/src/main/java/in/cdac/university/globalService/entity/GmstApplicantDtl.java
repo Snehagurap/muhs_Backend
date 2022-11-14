@@ -11,7 +11,7 @@ import java.util.Date;
 @Setter
 @IdClass(GmstApplicantDtlPK.class)
 @Entity
-@Table(name="gmst_applicant_dtl")
+@Table(name="gmst_applicant_dtl", schema = "university")
 public class GmstApplicantDtl implements Serializable {
 	@Id
 	private Long unumApplicantDocId;
