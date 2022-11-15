@@ -1,5 +1,6 @@
 package in.cdac.university.globalService.repository;
 
+import in.cdac.university.globalService.entity.GmstCollegeMst;
 import in.cdac.university.globalService.entity.GmstSubjectMst;
 import in.cdac.university.globalService.entity.GmstSubjectMstPK;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -44,4 +45,14 @@ public interface SubjectRepository extends JpaRepository<GmstSubjectMst, GmstSub
             "unumEntryUid = :userId " +
             "where a.unumSubId in (:subjectIds) and a.unumIsvalid in (1, 2) ")
     Integer deleteSubjects(@Param("userId") Long userId, @Param("subjectIds") List<Long> subjectIdsToDelete);
+
+    @Query("select c from GmstSubjectMst c " +
+            "where c.unumIsvalid = 1 " +
+            "and c.udtEffFrom <= current_date " +
+            "and coalesce(c.udtEffTo, current_date) >= current_date " +
+            "and c.unumUnivId = :universityId " +
+            "order by ustrSubFname")
+    List<GmstSubjectMst> findSubjects(@Param("universityId") Integer universityId);
+
+
 }

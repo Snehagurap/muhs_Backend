@@ -1,5 +1,7 @@
 package in.cdac.university.globalService.bean;
 
+import in.cdac.university.globalService.util.annotations.ComboKey;
+import in.cdac.university.globalService.util.annotations.ComboValue;
 import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +16,7 @@ import java.util.Date;
 @Setter
 public class SubjectBean extends GlobalBean {
 
+    @ComboKey
     @ListColumn(omit = true)
     private Long unumSubId;
 
@@ -49,6 +52,7 @@ public class SubjectBean extends GlobalBean {
     @Length(max = 300, message = "Subject Name must be 300 characters in length.")
     @NotBlank(message = "Subject Name is mandatory")
     @ListColumn(order = 2, name = "Subject Name")
+    @ComboValue
     private String ustrSubFname;
 
     @Length(max = 300, message = "Subject Short Name must be 300 characters in length.")

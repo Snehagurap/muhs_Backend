@@ -140,4 +140,10 @@ public class SubjectService {
                 .message(language.deleteSuccess("Subject"))
                 .build();
     }
+
+    public List<SubjectBean> getSubjects() throws Exception {
+        return BeanUtils.copyListProperties(
+                subjectRepository.findSubjects(RequestUtility.getUniversityId()), SubjectBean.class
+        );
+    }
 }
