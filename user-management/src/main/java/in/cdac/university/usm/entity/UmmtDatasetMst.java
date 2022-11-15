@@ -31,7 +31,7 @@ public class UmmtDatasetMst implements java.io.Serializable {
 	private Integer gblIsvalid;
 	
 	@Column(name = "gnum_entry_by", nullable = false, precision = 8)
-	private Integer gnumEntryBy;
+	private Long gnumEntryBy;
 	
 	@Column(name = "gstr_dataset_name", length = 500)
 	private String gstrDatasetName;

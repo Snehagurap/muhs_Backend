@@ -46,7 +46,7 @@ public class UmmtUserMst implements java.io.Serializable {
 	private Integer gnumDesignation;
 
 	@Column(name = "gnum_entry_by", nullable = false, precision = 9)
-	private Integer gnumEntryBy;
+	private Long gnumEntryBy;
 
 	@Column(name = "gnum_islock", nullable = false, precision = 1)
 	private Integer gnumIslock;

@@ -31,8 +31,8 @@ public class UmmtMenuMst implements java.io.Serializable {
 	private Integer gnumMenuLevel;
 
 	@Column(name = "gnum_entry_by", nullable = false)
-	private Integer gnumEntryBy;
-	
+	private Long gnumEntryBy;
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "gdt_entry_date", nullable = false, columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private Date gdtEntryDate;

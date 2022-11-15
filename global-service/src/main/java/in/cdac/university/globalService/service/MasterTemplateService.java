@@ -6,6 +6,7 @@ import in.cdac.university.globalService.repository.*;
 import in.cdac.university.globalService.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.function.Function;
@@ -49,6 +50,9 @@ public class MasterTemplateService {
 
     @Autowired
     private ConfigApplicationDataDetailRepository applicationDataDetailRepository;
+
+    @Autowired
+    private FtpUtility ftpUtility;
 
     public ServiceResponse getTemplate(Long masterTemplateId) throws Exception {
         Optional<GmstConfigMastertemplateMst> templateByIdOptional = masterTemplateRepository.findById(new GmstConfigMastertemplateMstPK(masterTemplateId, 1));
@@ -168,7 +172,7 @@ public class MasterTemplateService {
                 for (TemplateComponentBean templateComponentBean: templateComponentBeans) {
                     Long componentId = templateComponentBean.getUnumTemplCompId();
                     Map<Long, GmstConfigTemplateDtl> itemsInTemplate = templateDetailByTemplateId.stream()
-                            //.filter(gmstConfigTemplateDtl -> gmstConfigTemplateDtl.getUnumTempleItemId().equals(headerId))
+                            .filter(gmstConfigTemplateDtl -> gmstConfigTemplateDtl.getUnumTempleHeadId() != null && gmstConfigTemplateDtl.getUnumTempleHeadId().equals(headerId))
                             .filter(gmstConfigTemplateDtl -> gmstConfigTemplateDtl.getUnumTempleCompId() != null
                                     && gmstConfigTemplateDtl.getUnumTempleCompId().equals(componentId))
                             .collect(Collectors.toMap(GmstConfigTemplateDtl::getUnumTempleItemId, Function.identity(), (u1, u2) -> u1));
@@ -234,8 +238,10 @@ public class MasterTemplateService {
         }
     }
 
+    @Transactional
     public ServiceResponse save(TemplateToSaveBean templateToSaveBean) throws Exception {
-        long applicantId = RequestUtility.getUserId();
+        Long userId = RequestUtility.getUserId();
+        long applicantId = userId;
         Optional<GmstApplicantMst> applicantMstOptional = applicantRepository.findById(new GmstApplicantMstPK(applicantId, 1));
         if (applicantMstOptional.isEmpty())
             return ServiceResponse.errorResponse(language.message("You are not logged in as an Applicant. Please login with your Applicant credentials."));
@@ -262,15 +268,27 @@ public class MasterTemplateService {
         if (notificationDetailBean == null)
             return ServiceResponse.errorResponse(language.notFoundForId("Notification Detail", templateToSaveBean.getUnumNdtlId()));
 
+        // Upload all the file to main directory
+        for (TemplateToSaveDetailBean templateToSaveDetailBean: templateToSaveBean.getItemDetails()) {
+            if (templateToSaveDetailBean.getUnumUiControlId() == 9) {
+                if (templateToSaveDetailBean.getUstrItemValue() != null && !templateToSaveDetailBean.getUstrItemValue().isBlank()) {
+                    if (!ftpUtility.moveFileFromTempToFinalDirectory(templateToSaveDetailBean.getUstrTempleItemValue()))
+                        return ServiceResponse.errorResponse(language.message("Unable to upload file [" + templateToSaveDetailBean.getUstrTempleItemValue() + "]."));
+                }
+            }
+        }
+
         long applicationId = applicantDataMasterRepository.getNextId();
         GmstConfigMastertemplateMst mastertemplateMst = mastertemplateMstOptional.get();
+
         GbltConfigApplicationDataMst applicationDataMst = new GbltConfigApplicationDataMst();
         applicationDataMst.setUnumApplicationId(applicationId);
         applicationDataMst.setUnumApplicantId(applicantId);
-        applicationDataMst.setUdtApplicationDate(new Date());
-        applicationDataMst.setUdtApplicationEntryDate(new Date());
-        applicationDataMst.setUdtApplicationSubmitDate(new Date());
-        applicationDataMst.setUnumApplicationEntryStatus(1);
+        Date currentDate = new Date();
+        applicationDataMst.setUdtApplicationDate(currentDate);
+        applicationDataMst.setUdtApplicationEntryDate(currentDate);
+        applicationDataMst.setUdtApplicationSubmitDate(currentDate);
+        applicationDataMst.setUnumApplicationEntryStatus(templateToSaveBean.getUnumApplicationEntryStatus());
         applicationDataMst.setUnumMtemplateType(mastertemplateMst.getUnumMtemplateType());
         applicationDataMst.setUnumNid(notificationBean.getUnumNid());
         if (notificationBean.getUnumDeptId() != null)
@@ -280,13 +298,34 @@ public class MasterTemplateService {
             applicationDataMst.setUnumNdtlFacultyId(Long.valueOf(notificationDetailBean.getUnumFacultyId().toString()));
         if (notificationDetailBean.getUnumDepartmentId() != null)
             applicationDataMst.setUnumNdtlDepartmentId(Long.valueOf(notificationDetailBean.getUnumDepartmentId().toString()));
-        applicationDataMst.setUnumUnivId(RequestUtility.getUniversityId());
-        applicationDataMst.setUdtEffFrom(new Date());
+        Integer universityId = RequestUtility.getUniversityId();
+        applicationDataMst.setUnumUnivId(universityId);
+        applicationDataMst.setUdtEffFrom(currentDate);
         applicationDataMst.setUnumIsvalid(1);
-        applicationDataMst.setUnumEntryUid(RequestUtility.getUserId());
-        applicationDataMst.setUdtEntryDate(new Date());
+        applicationDataMst.setUnumEntryUid(userId);
+        applicationDataMst.setUdtEntryDate(currentDate);
         if (notificationDetailBean.getUnumCoursetypeId() != null)
             applicationDataMst.setUnumCtypeId(notificationDetailBean.getUnumCoursetypeId());
+
+        applicantDataMasterRepository.save(applicationDataMst);
+
+        List<GbltConfigApplicationDataDtl> itemDetailList = new ArrayList<>();
+        long index = 1L;
+        for (TemplateToSaveDetailBean templateToSaveDetailBean: templateToSaveBean.getItemDetails()) {
+            GbltConfigApplicationDataDtl applicationDataDtl = BeanUtils.copyProperties(templateToSaveDetailBean, GbltConfigApplicationDataDtl.class);
+            applicationDataDtl.setUnumApplicationdtlId(index++);
+            applicationDataDtl.setUnumApplicationId(applicationId);
+            applicationDataDtl.setUnumApplicantId(applicantId);
+            applicationDataDtl.setUnumNid(notificationBean.getUnumNid());
+            applicationDataDtl.setUnumNdtlId(notificationDetailBean.getUnumNdtlId());
+            applicationDataDtl.setUnumUnivId(universityId);
+            applicationDataDtl.setUdtEffFrom(currentDate);
+            applicationDataDtl.setUnumIsvalid(1);
+            applicationDataDtl.setUnumEntryUid(userId);
+            applicationDataDtl.setUdtEntryDate(currentDate);
+            itemDetailList.add(applicationDataDtl);
+        }
+        applicationDataDetailRepository.saveAll(itemDetailList);
 
         return ServiceResponse.successMessage("Data saved successfully");
     }

@@ -33,7 +33,6 @@ public class RequestUtility {
         if (userDetail == null)
             throw new Exception ("Session not present");
         Gson gson = new Gson();
-        System.out.println(gson.fromJson(userDetail, UserDetail.class));
         return gson.fromJson(userDetail, UserDetail.class);
     }
 

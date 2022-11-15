@@ -66,7 +66,7 @@ public class AuthenticationFilter implements GatewayFilter {
 
         exchange.getRequest()
                 .mutate()
-                .header("userId", Long.toString(userDetail.getUserId()))
+                .header("userId", userDetail.getUserId().toString())
                 .header("userDetail", userDetailObject.toString())
                 .header("Authorization", "Bearer " + token)
                 .build();
