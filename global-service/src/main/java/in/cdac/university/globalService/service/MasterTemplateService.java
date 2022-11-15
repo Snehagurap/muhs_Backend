@@ -3,10 +3,7 @@ package in.cdac.university.globalService.service;
 import in.cdac.university.globalService.bean.*;
 import in.cdac.university.globalService.entity.*;
 import in.cdac.university.globalService.repository.*;
-import in.cdac.university.globalService.util.BeanUtils;
-import in.cdac.university.globalService.util.Language;
-import in.cdac.university.globalService.util.RequestUtility;
-import in.cdac.university.globalService.util.ServiceResponse;
+import in.cdac.university.globalService.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +40,15 @@ public class MasterTemplateService {
 
     @Autowired
     private Language language;
+
+    @Autowired
+    private RestUtility restUtility;
+
+    @Autowired
+    private ConfigApplicantDataMasterRepository applicantDataMasterRepository;
+
+    @Autowired
+    private ConfigApplicationDataDetailRepository applicationDataDetailRepository;
 
     public ServiceResponse getTemplate(Long masterTemplateId) throws Exception {
         Optional<GmstConfigMastertemplateMst> templateByIdOptional = masterTemplateRepository.findById(new GmstConfigMastertemplateMstPK(masterTemplateId, 1));
@@ -162,6 +168,7 @@ public class MasterTemplateService {
                 for (TemplateComponentBean templateComponentBean: templateComponentBeans) {
                     Long componentId = templateComponentBean.getUnumTemplCompId();
                     Map<Long, GmstConfigTemplateDtl> itemsInTemplate = templateDetailByTemplateId.stream()
+                            //.filter(gmstConfigTemplateDtl -> gmstConfigTemplateDtl.getUnumTempleItemId().equals(headerId))
                             .filter(gmstConfigTemplateDtl -> gmstConfigTemplateDtl.getUnumTempleCompId() != null
                                     && gmstConfigTemplateDtl.getUnumTempleCompId().equals(componentId))
                             .collect(Collectors.toMap(GmstConfigTemplateDtl::getUnumTempleItemId, Function.identity(), (u1, u2) -> u1));
@@ -237,6 +244,49 @@ public class MasterTemplateService {
         if (applicant.getUnumIsVerifiedApplicant() != 1)
             return ServiceResponse.errorResponse(language.message("Applicant is not verified"));
 
+        // Get Master Template Data
+        Optional<GmstConfigMastertemplateMst> mastertemplateMstOptional = masterTemplateRepository.findById(new GmstConfigMastertemplateMstPK(templateToSaveBean.getUnumMtempleId(), 1));
+        if (mastertemplateMstOptional.isEmpty())
+            return ServiceResponse.errorResponse(language.notFoundForId("Master Template", templateToSaveBean.getUnumMtempleId()));
+
+        // Get Notification Detail
+        NotificationBean notificationBean = restUtility.get(RestUtility.SERVICE_TYPE.PLANNING_BOARD, Constants.URL_GET_NOTIFICATION_BY_ID + templateToSaveBean.getUnumNid(), NotificationBean.class);
+        if (notificationBean == null)
+            return ServiceResponse.errorResponse(language.notFoundForId("Notification", templateToSaveBean.getUnumNid()));
+
+        NotificationDetailBean notificationDetailBean = notificationBean.getNotificationDetails().stream()
+                .filter(bean -> bean.getUnumNdtlId().equals(templateToSaveBean.getUnumNdtlId()))
+                .findFirst()
+                .orElse(null);
+
+        if (notificationDetailBean == null)
+            return ServiceResponse.errorResponse(language.notFoundForId("Notification Detail", templateToSaveBean.getUnumNdtlId()));
+
+        long applicationId = applicantDataMasterRepository.getNextId();
+        GmstConfigMastertemplateMst mastertemplateMst = mastertemplateMstOptional.get();
+        GbltConfigApplicationDataMst applicationDataMst = new GbltConfigApplicationDataMst();
+        applicationDataMst.setUnumApplicationId(applicationId);
+        applicationDataMst.setUnumApplicantId(applicantId);
+        applicationDataMst.setUdtApplicationDate(new Date());
+        applicationDataMst.setUdtApplicationEntryDate(new Date());
+        applicationDataMst.setUdtApplicationSubmitDate(new Date());
+        applicationDataMst.setUnumApplicationEntryStatus(1);
+        applicationDataMst.setUnumMtemplateType(mastertemplateMst.getUnumMtemplateType());
+        applicationDataMst.setUnumNid(notificationBean.getUnumNid());
+        if (notificationBean.getUnumDeptId() != null)
+            applicationDataMst.setUnumNDeptId(Long.valueOf(notificationBean.getUnumDeptId().toString()));
+        applicationDataMst.setUnumNdtlId(notificationDetailBean.getUnumNdtlId());
+        if (notificationDetailBean.getUnumFacultyId() != null)
+            applicationDataMst.setUnumNdtlFacultyId(Long.valueOf(notificationDetailBean.getUnumFacultyId().toString()));
+        if (notificationDetailBean.getUnumDepartmentId() != null)
+            applicationDataMst.setUnumNdtlDepartmentId(Long.valueOf(notificationDetailBean.getUnumDepartmentId().toString()));
+        applicationDataMst.setUnumUnivId(RequestUtility.getUniversityId());
+        applicationDataMst.setUdtEffFrom(new Date());
+        applicationDataMst.setUnumIsvalid(1);
+        applicationDataMst.setUnumEntryUid(RequestUtility.getUserId());
+        applicationDataMst.setUdtEntryDate(new Date());
+        if (notificationDetailBean.getUnumCoursetypeId() != null)
+            applicationDataMst.setUnumCtypeId(notificationDetailBean.getUnumCoursetypeId());
 
         return ServiceResponse.successMessage("Data saved successfully");
     }

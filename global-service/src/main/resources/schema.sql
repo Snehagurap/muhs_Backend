@@ -12,6 +12,8 @@ CREATE SEQUENCE IF NOT EXISTS university.seq_gmst_applicant_draft_mst increment 
 CREATE SEQUENCE IF NOT EXISTS university.seq_gmst_config_template_item_mst increment by 1 minvalue 1 start 1 cache 1 no cycle;
 CREATE SEQUENCE IF NOT EXISTS university.seq_gmst_emp_mst increment by 1 minvalue 1 start 1 cache 1 no cycle;
 CREATE SEQUENCE IF NOT EXISTS university.seq_gmst_applicant_mst increment by 1 minvalue 1 start 1 cache 1 no cycle;
-CREATE SEQUENCE IF NOT EXISTS university.gmst_config_mastertemplate_mst increment by 1 minvalue 1 start 1 cache 1 no cycle;
+CREATE SEQUENCE IF NOT EXISTS university.seq_gmst_config_mastertemplate_mst increment by 1 minvalue 1 start 1 cache 1 no cycle;
 
 CREATE SEQUENCE IF NOT EXISTS upb.seq_gblt_notification_master increment by 1 minvalue 1 start 1 cache 1 no cycle;
+
+CREATE SEQUENCE IF NOT EXISTS templedata.seq_gblt_config_application_data_mst increment by 1 minvalue 1 start 1 cache 1 no cycle;

@@ -17,6 +17,8 @@ config:
       url: http://localhost:8005
     usm:
       url: http://localhost:8003
+    pb:
+      url: http://localhost:8006
 
 jwt:
   secret: BvPHGM8C0ia4uOuxxqPD5DTbWC9F9TWvPStp3pb7ARo0oK2mJ3pd3YG4lxA9i8bj6OTbadwezxgeEByY

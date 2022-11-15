@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/global/masterTemplate")
 public class MasterTemplateController {
@@ -22,7 +24,7 @@ public class MasterTemplateController {
     }
 
     @PostMapping("save")
-    public ResponseEntity<?> save(@RequestBody TemplateToSaveBean templateToSaveBean) throws Exception {
+    public ResponseEntity<?> save(@Valid @RequestBody TemplateToSaveBean templateToSaveBean) throws Exception {
         return ResponseHandler.generateResponse(
                 masterTemplateService.save(templateToSaveBean)
         );

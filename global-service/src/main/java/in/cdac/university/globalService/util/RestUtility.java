@@ -34,6 +34,7 @@ public class RestUtility {
 
     private static String serviceCommitteeUrl;
     private static String serviceUsmUrl;
+    private static String servicePlanningBoardUrl;
 
     @Value("${config.service.committee.url}")
     public void setServiceCommitteeUrl(String url) {
@@ -45,9 +46,15 @@ public class RestUtility {
         serviceUsmUrl = url;
     }
 
+    @Value("${config.service.pb.url}")
+    public void setServicePlanningBoardUrl(String url) {
+        servicePlanningBoardUrl = url;
+    }
+
     public enum SERVICE_TYPE {
         COMMITTEE(serviceCommitteeUrl),
-        USM(serviceUsmUrl);
+        USM(serviceUsmUrl),
+        PLANNING_BOARD(servicePlanningBoardUrl);
 
         public final String url;
         SERVICE_TYPE(String url) {

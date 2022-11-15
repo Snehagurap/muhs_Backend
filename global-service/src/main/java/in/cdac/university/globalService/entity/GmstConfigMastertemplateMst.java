@@ -48,7 +48,7 @@ public class GmstConfigMastertemplateMst implements Serializable {
 	private Integer unumMtemplateForYyyymm;
 
 	@Column(name="unum_mtemplate_type")
-	private Integer unumMtemplateType;
+	private Long unumMtemplateType;
 
 	@Column(name="unum_univ_id")
 	private Integer unumUnivId;
