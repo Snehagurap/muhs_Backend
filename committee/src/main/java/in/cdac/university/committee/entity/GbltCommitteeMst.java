@@ -65,6 +65,12 @@ public class GbltCommitteeMst implements Serializable {
 	@Column(name = "unum_entry_uid")
 	private Long unumEntryUid;
 
+	@Column(name = "unum_is_formula_based")
+	private Integer unumIsFormulaBased;
+
+	@Column(name = "unum_is_login_restricted")
+	private Integer unumIsLoginRestricted;
+
 	@Formula("(select t.ustr_comtype_fname from ucom.gblt_committee_type_mst t where t.unum_comtype_id = unum_comtype_id )")
 	private String committeeTypeName;
 
