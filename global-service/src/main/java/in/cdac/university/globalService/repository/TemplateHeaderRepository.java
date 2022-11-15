@@ -49,5 +49,5 @@ public interface TemplateHeaderRepository extends JpaRepository<GmstConfigTempla
     @Query("update GmstConfigTemplateHeaderMst u set u.unumIsvalid = (select coalesce(max(a.unumIsvalid), 2) + 1 " +
             "from GmstConfigTemplateHeaderMst a where a.unumTemplHeadId = u.unumTemplHeadId and a.unumIsvalid > 2) " +
             "where u.unumTemplHeadId in (:templHeadId) and u.unumIsvalid in (1,2) " )
-    Integer createLog(List<Long> templHeadId);
+    Integer createLog(@Param("templHeadId") List<Long> templHeadId);
 }
