@@ -31,6 +31,7 @@ public class TemplateSubHeaderController {
         templateSubHeaderBean.setUdtEntryDate(new Date());
         templateSubHeaderBean.setUnumUnivId(RequestUtility.getUniversityId());
         templateSubHeaderBean.setUnumEntryUid(RequestUtility.getUserId());
+        templateSubHeaderBean.setUdtEffFrom(new Date());
         return ResponseHandler.generateResponse(
                 templateSubHeaderService.save(templateSubHeaderBean)
         );

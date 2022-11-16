@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Getter
@@ -42,7 +44,11 @@ public class TemplateSubHeaderBean {
     private String ustrSubheadPrintPrefixText;
 
     @ListColumn(order = 3, name = "Text")
+    @NotBlank(message = "Sub Header text is mandatory")
     private String ustrSubheadPrintText;
 
     private String ustrTemplSubheadCode;
+
+    @NotNull(message = "Header Id is mandatory")
+    private Long unumTemplHeadId;
 }

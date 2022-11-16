@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Range;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
@@ -58,11 +59,11 @@ public class TemplateHeaderBean {
 
     @ComboValue
     @ListColumn( order = 4, name = "Header Text")
-    @NotNull(message="Header Text is mandatory")
+    @NotBlank(message="Header Text is mandatory")
     private String ustrHeadPrintText;
 
     @ListColumn( order = 2 , name = "Header Code")
-    @NotNull(message="Header Code is mandatory")
+    @NotBlank(message="Header Code is mandatory")
     private String ustrTemplHeadCode;
 
     @Range(min = 0, max = 1, message = "Is Hidden can be 0 or 1")
