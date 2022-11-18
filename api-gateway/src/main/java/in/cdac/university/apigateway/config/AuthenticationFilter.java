@@ -43,9 +43,11 @@ public class AuthenticationFilter implements GatewayFilter {
 
             final String token = this.getAuthHeader(request).substring(7);
 
-            if (jwtUtil.isInvalid(token)) {
-                log.debug("Token expired");
-                return this.onError(exchange, "Token expired");
+            if (!routerValidator.isLogoutRequest(request)) {
+                if (jwtUtil.isInvalid(token)) {
+                    log.debug("Token expired");
+                    return this.onError(exchange, "Token expired");
+                }
             }
 
             // Check for blacklisted tokens

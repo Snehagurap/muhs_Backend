@@ -5,9 +5,11 @@ import lombok.Data;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.Base64;
 
 @Data
 public class UserDetail {
+    private Long gnumLogId;
     @NotNull(message = "Username is mandatory")
     private String username;
 
@@ -29,4 +31,19 @@ public class UserDetail {
     @Min(1)
     @Max(3)
     private Integer applicationType;  // 1 for Application, 2 for User management, 3 for User management superuser
+    private String ipAddress;
+
+    public String getIpAddress() {
+        try {
+            if (this.ipAddress != null && !this.ipAddress.isBlank())
+                return new String(Base64.getDecoder().decode(this.ipAddress));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public String getIpAddressEncoded() {
+        return this.ipAddress;
+    }
 }

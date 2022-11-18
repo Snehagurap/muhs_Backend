@@ -24,6 +24,10 @@ public class RouterValidator {
     public Predicate<ServerHttpRequest> isSecured = request -> apiWithoutAuthentication.stream()
             .noneMatch(uri -> request.getURI().getPath().contains(uri));
 
+    public boolean isLogoutRequest(ServerHttpRequest request) {
+        return request.getURI().getPath().equals("/api/logout");
+    }
+
     public Predicate<ServerHttpRequest> isUsmPath = request -> request.getURI().getPath().contains("usm");
 
     public Predicate<ServerHttpRequest> isApplicationPath = isUsmPath.negate();

@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -53,4 +54,6 @@ public class EmployeeBean {
     private Integer unumAyLicChairmanCount;
     private Integer unumAyLicMember1Count;
     private Integer unumAyLicMember2Count;
+
+    private List<Long> employeesToFlag;
 }

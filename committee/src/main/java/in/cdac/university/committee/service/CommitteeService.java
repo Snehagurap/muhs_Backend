@@ -4,6 +4,7 @@ import in.cdac.university.committee.bean.*;
 import in.cdac.university.committee.entity.*;
 import in.cdac.university.committee.repository.*;
 import in.cdac.university.committee.util.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@Slf4j
 public class CommitteeService {
 
     @Autowired
@@ -230,7 +232,6 @@ public class CommitteeService {
         CommitteeDetailBean committeeDetailBean = BeanUtils.copyProperties(committeeDetail, CommitteeDetailBean.class);
         committeeDetailBean.setRoleName(committeeRoles.getOrDefault(committeeDetail.getUnumRoleId(), ""));
         List<ComboBean> filteredTeachers = Arrays.stream(teachers)
-                .peek(teacher -> System.out.println(sno + " " + teacher.getUnumIsSelectedfor()))
                 .filter(teacher -> teacher.getUnumIsSelectedfor() != null && teacher.getUnumIsSelectedfor() == sno)
                 .map(teacher -> new ComboBean(teacher.getUnumEmpId().toString(), teacher.getUstrEmpName()))
                 .collect(Collectors.toList());
@@ -281,20 +282,52 @@ public class CommitteeService {
         return committeeDetailBean;
     }
 
+    private boolean isDuplicateMember(Set<Long> memberIds, Long memberIdToCheck) {
+        if (memberIdToCheck == null)
+            return false;
+
+        if (memberIds.contains(memberIdToCheck))
+            return true;
+
+        memberIds.add(memberIdToCheck);
+        return false;
+    }
+
     public ServiceResponse saveMemberMapping(CommitteeMemberBean committeeMemberBean) {
         int slNo = 1;
+        Set<Long> members = new HashSet<>();
         for (CommitteeMember committeeMember: committeeMemberBean.getMembers()) {
             if (committeeMember.getUnumPreference1Empid() == null
                     && committeeMember.getUnumPreference2Empid() == null
                     && committeeMember.getUnumPreference3Empid() == null
-                    && committeeMember.getUnumPreference4Empid() == null) {
-                return ServiceResponse.errorResponse("No Employee select for S.No. " + slNo);
+                    && committeeMember.getUnumPreference4Empid() == null
+                    && committeeMember.getUnumPreference5Empid() == null) {
+                return ServiceResponse.errorResponse("No Employee selected for S.No. " + slNo);
             }
+            if (isDuplicateMember(members, committeeMember.getUnumPreference1Empid()))
+                return ServiceResponse.errorResponse(language.message("Duplicate Employee selected: " + committeeMember.getUnumPreference1Empname()));
+
+            if (isDuplicateMember(members, committeeMember.getUnumPreference2Empid()))
+                return ServiceResponse.errorResponse(language.message("Duplicate Employee selected: " + committeeMember.getUnumPreference2Empname()));
+
+            if (isDuplicateMember(members, committeeMember.getUnumPreference3Empid()))
+                return ServiceResponse.errorResponse(language.message("Duplicate Employee selected: " + committeeMember.getUnumPreference3Empname()));
+
+            if (isDuplicateMember(members, committeeMember.getUnumPreference4Empid()))
+                return ServiceResponse.errorResponse(language.message("Duplicate Employee selected: " + committeeMember.getUnumPreference4Empname()));
+
+            if (isDuplicateMember(members, committeeMember.getUnumPreference5Empid()))
+                return ServiceResponse.errorResponse(language.message("Duplicate Employee selected: " + committeeMember.getUnumPreference5Empname()));
+
             slNo++;
         }
 
         slNo = 1;
         List<GbltCommitteeMemberDtl> membersToSave = new ArrayList<>();
+        List<Long> chairmen = new ArrayList<>();
+        List<Long> member1 = new ArrayList<>();
+        List<Long> member2 = new ArrayList<>();
+        boolean isMember1 = true;
         for (CommitteeMember committeeMember: committeeMemberBean.getMembers()) {
             GbltCommitteeMemberDtl committeeMemberDtl = BeanUtils.copyProperties(committeeMember, GbltCommitteeMemberDtl.class);
             if (committeeMember.getUnumPreference1Empid() == null)
@@ -317,15 +350,68 @@ public class CommitteeService {
             committeeMemberDtl.setUnumMemberSno(slNo++);
             committeeMemberDtl.setUnumUnivId(committeeMemberBean.getUnumUnivId());
 
+            List<Long> employees = null;
+            if (committeeMember.getUnumRoleId().equals(10)) {
+                employees = chairmen;
+            } else if (committeeMember.getUnumRoleId().equals(11)) {
+                if (isMember1) {
+                    employees = member1;
+                    isMember1 = false;
+                } else {
+                    employees = member2;
+                }
+            }
+            if (employees != null) {
+                addMember(employees, committeeMember.getUnumPreference1Empid());
+                addMember(employees, committeeMember.getUnumPreference2Empid());
+                addMember(employees, committeeMember.getUnumPreference3Empid());
+                addMember(employees, committeeMember.getUnumPreference4Empid());
+                addMember(employees, committeeMember.getUnumPreference5Empid());
+            }
+
             membersToSave.add(committeeMemberDtl);
         }
 
         committeeMemberMappingRepository.saveAll(membersToSave);
 
+        // Update Committee Flag in Employee Master
+        System.out.println("Chairmen " + chairmen);
+        System.out.println("Member 1 " + member1);
+        System.out.println("Member 2 " + member2);
+        EmployeeBean empBean = new EmployeeBean();
+        if (!chairmen.isEmpty()) {
+            empBean.setEmployeesToFlag(chairmen);
+            String response = restUtility.post(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_UPDATE_CHAIRMEN_FLAG, empBean, String.class);
+            if (response == null) {
+                log.error("Unable to update Chairmen flag for members");
+            }
+        }
+
+        if (!member1.isEmpty()) {
+            empBean.setEmployeesToFlag(member1);
+            String response = restUtility.post(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_UPDATE_MEMBER1_FLAG, empBean, String.class);
+            if (response == null) {
+                log.error("Unable to update Member 1 flag for members");
+            }
+        }
+
+        if (!member2.isEmpty()) {
+            empBean.setEmployeesToFlag(member2);
+            String response = restUtility.post(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_UPDATE_MEMBER2_FLAG, empBean, String.class);
+            if (response == null) {
+                log.error("Unable to update Member 2 flag for members");
+            }
+        }
+
         return ServiceResponse.builder()
                 .status(1)
                 .message(language.saveSuccess("Committee Member Mapping"))
                 .build();
+    }
+
+    private void addMember(List<Long> members, Long employeeId) {
+        if (employeeId != null)
+            members.add(employeeId);
     }
 
     public ServiceResponse getCommitteeMemberMappingByEventId(Long eventId) {
@@ -343,9 +429,6 @@ public class CommitteeService {
 
         Map<Integer, String> committeeRoles = committeeRoleRepository.findAll().stream()
                 .collect(Collectors.toMap(GmstCommitteeRoleMst::getUnumRoleId, GmstCommitteeRoleMst::getUstrRoleFname));
-
-//        committeeRoleRepository.findAll().stream()
-//                .collect(Collectors.toMap(GmstCommitteeRoleMst::getUnumRoleId, obj -> obj.getUstrRoleFname()));
 
         List<CommitteeMember> committeeMemberList = gbltCommitteeMemberDtlList.stream().map(
                 committeeMember -> {

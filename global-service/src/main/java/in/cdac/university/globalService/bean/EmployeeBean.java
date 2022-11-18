@@ -9,6 +9,7 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -84,4 +85,6 @@ public class EmployeeBean {
     private Integer unumAyLicChairmanCount;
     private Integer unumAyLicMember1Count;
     private Integer unumAyLicMember2Count;
+
+    private List<Long> employeesToFlag;
 }

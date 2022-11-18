@@ -36,4 +36,25 @@ public interface EmployeeRepository extends JpaRepository<GmstEmpMst, GmstEmpMst
             "where u.unumEmpId in (:empId) and u.unumIsvalid in (1, 2) ")
     Integer createLog(@Param("empId") List<Long> empId);
 
+    @Modifying
+    @Query("update GmstEmpMst u set u.unumTotLicChairmanCount = coalesce(u.unumTotLicChairmanCount, 0) + 1, " +
+            "u.unumAyLicChairmanCount = coalesce(u.unumAyLicChairmanCount, 0) + 1 " +
+            "where u.unumIsvalid = 1 " +
+            "and u.unumEmpId in (:empList) ")
+    Integer updateChairmanFlag(@Param("empList") List<Long> employeeList);
+
+    @Modifying
+    @Query("update GmstEmpMst u set u.unumTotLicMember1Count = coalesce(u.unumTotLicMember1Count, 0) + 1, " +
+            "u.unumAyLicMember1Count = coalesce(u.unumAyLicMember1Count, 0) + 1 " +
+            "where u.unumIsvalid = 1 " +
+            "and u.unumEmpId in (:empList) ")
+    Integer updateMember1Flag(@Param("empList") List<Long> employeeList);
+
+    @Modifying
+    @Query("update GmstEmpMst u set u.unumTotLicMember2Count = coalesce(u.unumTotLicMember2Count, 0) + 1, " +
+            "u.unumAyLicMember2Count = coalesce(u.unumAyLicMember2Count, 0) + 1 " +
+            "where u.unumIsvalid = 1 " +
+            "and u.unumEmpId in (:empList) ")
+    Integer updateMember2Flag(@Param("empList") List<Long> employeeList);
+
 }

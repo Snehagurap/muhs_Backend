@@ -39,7 +39,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public CustomUser loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.debug("Checking the user: " + username);
+        log.debug("Checking the user: {}", username);
         String applicationType = "1";
         String userCategory = "1";
         try {
@@ -70,10 +70,11 @@ public class CustomUserDetailsService implements UserDetailsService {
                 // User Management Super User
                 customUser = findUserManagementSuperUser(username);
         }
-        if (customUser != null)
+        if (customUser != null) {
             customUser.setApplicationType(Integer.parseInt(applicationType));
-        else
+        } else {
             throw new UsernameNotFoundException("User not found");
+        }
         return customUser;
     }
 

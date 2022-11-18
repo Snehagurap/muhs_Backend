@@ -59,7 +59,6 @@ public class CollegeService {
     }
 
     public ServiceResponse getCollegeById(Long collegeId) throws Exception {
-        System.out.println("CollegeID: " + collegeId);
         Optional<GmstCollegeMst> collegeMstOptional = collegeRepository.findByUnumCollegeIdAndUnumIsvalidInAndUnumUnivId(
                 collegeId, List.of(1, 2), RequestUtility.getUniversityId()
         );

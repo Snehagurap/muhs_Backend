@@ -1,17 +1,17 @@
 package in.cdac.university.authserver.config;
 
 import in.cdac.university.authserver.bean.CustomUser;
-import in.cdac.university.authserver.entity.GbltUserLog;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.JwtAccessTokenConverterConfigurer;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class CustomTokenConvertor extends JwtAccessTokenConverter implements JwtAccessTokenConverterConfigurer {
 
     @Override
@@ -53,13 +53,6 @@ public class CustomTokenConvertor extends JwtAccessTokenConverter implements Jwt
             info.put("userCategory", customUser.getUserCategory());
         DefaultOAuth2AccessToken customAccessToken = new DefaultOAuth2AccessToken(accessToken);
         customAccessToken.setAdditionalInformation(info);
-        // TODO
-        // Log user login details
-        GbltUserLog gbltUserLog = new GbltUserLog();
-        gbltUserLog.setGnumUserid(Long.valueOf(customUser.getUserId()));
-        gbltUserLog.setUnumUnivId(customUser.getUniversityId());
-        gbltUserLog.setGdtLoginDate(new Date());
-        gbltUserLog.setGstrIpNumber("");
 
         return super.enhance(customAccessToken, authentication);
     }

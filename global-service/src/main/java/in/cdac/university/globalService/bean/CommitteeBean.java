@@ -20,7 +20,7 @@ public class CommitteeBean {
     private String ustrComName;
     private Integer unumNoOfMembers;
     private Integer unumComCfacultyId;
-    private Integer ustrComForyear;
+    private String ustrComForyear;
     private Date udtComEndDate;
     private Date udtEntryDate;
     private Integer unumUnivId;

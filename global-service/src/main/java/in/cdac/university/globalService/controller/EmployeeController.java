@@ -111,8 +111,24 @@ public class EmployeeController {
         );
     }
 
-//    @PostMapping("updateCommitteeDetails")
-//    public ResponseEntity<?> updateCommitteeDetails(@RequestBody EmployeeBean employeeBean) {
-//
-//    }
+    @PostMapping("updateChairmanFlag")
+    public ResponseEntity<?> updateChairmanFlag(@RequestBody EmployeeBean employeeBean) {
+        return ResponseHandler.generateResponse(
+                employeeService.updateChairmanFlag(employeeBean.getEmployeesToFlag())
+        );
+    }
+
+    @PostMapping("updateMember1Flag")
+    public ResponseEntity<?> updateMember1Flag(@RequestBody EmployeeBean employeeBean) {
+        return ResponseHandler.generateResponse(
+                employeeService.updateMember1Flag(employeeBean.getEmployeesToFlag())
+        );
+    }
+
+    @PostMapping("updateMember2Flag")
+    public ResponseEntity<?> updateMember2Flag(@RequestBody EmployeeBean employeeBean) {
+        return ResponseHandler.generateResponse(
+                employeeService.updateMember2Flag(employeeBean.getEmployeesToFlag())
+        );
+    }
 }

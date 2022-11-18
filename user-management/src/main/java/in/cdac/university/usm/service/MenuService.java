@@ -247,9 +247,7 @@ public class MenuService {
 
     public ServiceResponse getMenusMappedWithUser(Long userId) throws Exception {
         // Get User Category
-        System.out.println("Getting Menu");
         int userCategory = RequestUtility.getUserCategory();
-        System.out.println("User Category: " + userCategory);
         List<UmmtUserRoleMst> mappedRoles;
         if (userCategory == 5) {
             // Draft Applicant

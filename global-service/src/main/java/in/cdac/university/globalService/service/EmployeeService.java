@@ -2,8 +2,8 @@ package in.cdac.university.globalService.service;
 
 
 import in.cdac.university.globalService.bean.CommitteeBean;
-import in.cdac.university.globalService.bean.EventBean;
 import in.cdac.university.globalService.bean.EmployeeBean;
+import in.cdac.university.globalService.bean.EventBean;
 import in.cdac.university.globalService.entity.GmstEmpMst;
 import in.cdac.university.globalService.exception.ApplicationException;
 import in.cdac.university.globalService.repository.EmployeeRepository;
@@ -12,7 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -49,10 +52,8 @@ public class EmployeeService {
         if (eventBean == null) {
             return new ArrayList<>();
         }
-        System.out.println(eventBean);
 
-        CommitteeBean committeeBean = restUtility.get(RestUtility.SERVICE_TYPE.COMMITTEE, Constants.URL_GET_COMMITTEE_BY_ID + eventBean.getUnumComid(), CommitteeBean.class);
-        System.out.println(committeeBean);
+        restUtility.get(RestUtility.SERVICE_TYPE.COMMITTEE, Constants.URL_GET_COMMITTEE_BY_ID + eventBean.getUnumComid(), CommitteeBean.class);
 
         return BeanUtils.copyListProperties(
                 employeeRepository.listPageData(1, RequestUtility.getUniversityId()),
@@ -137,5 +138,23 @@ public class EmployeeService {
                 .status(1)
                 .message(language.deleteSuccess("Teacher"))
                 .build();
+    }
+
+    @Transactional
+    public ServiceResponse updateChairmanFlag(List<Long> employeesToFlag) {
+        employeeRepository.updateChairmanFlag(employeesToFlag);
+        return ServiceResponse.successMessage(language.message("Flag updated successfully"));
+    }
+
+    @Transactional
+    public ServiceResponse updateMember1Flag(List<Long> employeesToFlag) {
+        employeeRepository.updateMember1Flag(employeesToFlag);
+        return ServiceResponse.successMessage(language.message("Flag updated successfully"));
+    }
+
+    @Transactional
+    public ServiceResponse updateMember2Flag(List<Long> employeesToFlag) {
+        employeeRepository.updateMember2Flag(employeesToFlag);
+        return ServiceResponse.successMessage(language.message("Flag updated successfully"));
     }
 }

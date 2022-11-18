@@ -3,6 +3,7 @@ package in.cdac.university.apigateway.controller;
 import cn.apiclub.captcha.Captcha;
 import com.google.common.hash.Hashing;
 import in.cdac.university.apigateway.bean.CaptchaBean;
+import in.cdac.university.apigateway.bean.CustomUser;
 import in.cdac.university.apigateway.bean.Token;
 import in.cdac.university.apigateway.config.AccessTokenMapper;
 import in.cdac.university.apigateway.config.JwtUtil;
@@ -43,6 +44,9 @@ public class LoginController {
     @Value("${config.oauth2.url}")
     private String oauthUrl;
 
+    @Value("${config.service.usm.url}")
+    private String usmUrl;
+
     @Value("${config.oauth2.clientId}")
     private String oauthClientId;
 
@@ -71,13 +75,12 @@ public class LoginController {
     public ResponseEntity<?> login(@Valid @RequestBody UserDetail userDetail,
                                    @RequestHeader(HttpHeaders.USER_AGENT) String userAgent,
                                    ServerHttpResponse httpResponse, ServerHttpRequest httpRequest) {
-
         // Check for data tampering
         if (httpRequest.getHeaders().containsKey("fhttf")) {
             String clientToken = Optional.ofNullable(httpRequest.getHeaders().get("fhttf")).orElse(List.of("")).get(0);
             if (!clientToken.isBlank()) {
                 String serverData = userDetail.getUsername() + userDetail.getPassword() + userDetail.getCaptchaId()
-                        + userDetail.getCaptcha() + userDetail.getUserCategory() + userDetail.getApplicationType();
+                        + userDetail.getCaptcha() + userDetail.getUserCategory() + userDetail.getApplicationType() + userDetail.getIpAddressEncoded();
                 String serverToken = Hashing.sha256().hashString(serverData, StandardCharsets.UTF_8).toString();
                 if (!clientToken.equals(serverToken)) {
                     log.error("Server Data: {}", serverData);
@@ -105,7 +108,7 @@ public class LoginController {
 
         userDetail.setUsername(new String(Base64.getDecoder().decode(userDetail.getUsername().getBytes())));
 
-        final String url = oauthUrl + "/oauth/token";
+        String url = oauthUrl + "/oauth/token";
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth(oauthClientId, oauthClientSecret);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -124,19 +127,41 @@ public class LoginController {
             ResponseEntity<AccessTokenMapper> tokenResponse = restTemplate.exchange(
                     url, HttpMethod.POST, httpEntity, AccessTokenMapper.class
             );
-            UserDetail userDetailResponse = new UserDetail();
+            UserDetail userDetailResponse = setUserDetailFromToken(tokenResponse);
 
-            if (tokenResponse.getBody() != null) {
-                setUserDetailFromToken(userDetailResponse, tokenResponse, userDetail.getApplicationType());
+//            if (tokenResponse.getBody() != null) {
+//
+//
+////                ResponseCookie responseCookie = ResponseCookie.from("refresh_token", tokenResponse.getBody().getRefresh_token())
+////                        .httpOnly(true)
+////                        .sameSite("None")
+////                        .secure(true)
+////                        .maxAge(86400)        // One Day
+////                        .build();
+////                httpResponse.addCookie(responseCookie);
+//            }
+            // Log user Login Details
+            try {
+                if (tokenResponse.getBody() != null) {
+                    url = usmUrl + "/usm/log/login";
+                    headers = new HttpHeaders();
+                    headers.setContentType(MediaType.APPLICATION_JSON);
+                    CustomUser customUser = new CustomUser();
+                    customUser.setUserId(tokenResponse.getBody().getUserId().toString());
+                    customUser.setUniversityId(tokenResponse.getBody().getUniversityId());
+                    customUser.setIpAddress(userDetail.getIpAddress());
+                    httpEntity = new HttpEntity<>(customUser, headers);
 
-                ResponseCookie responseCookie = ResponseCookie.from("refresh_token", tokenResponse.getBody().getRefresh_token())
-                        .httpOnly(true)
-                        .sameSite("None")
-                        .secure(true)
-                        .maxAge(86400)        // One Day
-                        .build();
-                httpResponse.addCookie(responseCookie);
+                    ResponseEntity<CustomUser> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, CustomUser.class);
+                    log.debug("Response Status: {}", response.getStatusCode());
+                    if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                        userDetailResponse.setGnumLogId(response.getBody().getGnumLogId());
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
             return ResponseHandler.generateResponse(userDetailResponse);
         } catch (HttpClientErrorException e) {
             e.printStackTrace();
@@ -148,17 +173,19 @@ public class LoginController {
         }
     }
 
-    private void setUserDetailFromToken(UserDetail userDetailResponse, ResponseEntity<AccessTokenMapper> tokenResponse, Integer applicationType) {
+    private UserDetail setUserDetailFromToken(ResponseEntity<AccessTokenMapper> tokenResponse) {
+        UserDetail userDetailResponse = new UserDetail();
         if (tokenResponse.getBody() != null) {
             userDetailResponse.setToken(tokenResponse.getBody().getAccess_token());
             //userDetailResponse.setUserId(tokenResponse.getBody().getUserId());
             //userDetailResponse.setUserType(tokenResponse.getBody().getUserType());
             //userDetailResponse.setUniversityId(tokenResponse.getBody().getUniversityId());
-            userDetailResponse.setApplicationType(applicationType);
+            userDetailResponse.setApplicationType(tokenResponse.getBody().getApplicationType());
             userDetailResponse.setRefresh_token(tokenResponse.getBody().getRefresh_token());
             userDetailResponse.setExpires_in(tokenResponse.getBody().getExpires_in());
             //userDetailResponse.setUserCategory(tokenResponse.getBody().getUserCategory());
         }
+        return userDetailResponse;
     }
 
     @PostMapping(value = "/refreshToken")
@@ -178,10 +205,7 @@ public class LoginController {
             ResponseEntity<AccessTokenMapper> tokenResponse = restTemplate.exchange(
                     url, HttpMethod.POST, httpEntity, AccessTokenMapper.class
             );
-            UserDetail userDetailResponse = new UserDetail();
-            if (tokenResponse.getBody() != null) {
-                setUserDetailFromToken(userDetailResponse, tokenResponse, tokenResponse.getBody().getApplicationType());
-            }
+            UserDetail userDetailResponse = setUserDetailFromToken(tokenResponse);
 
             return ResponseHandler.generateResponse(userDetailResponse);
         } catch (HttpClientErrorException e) {
@@ -205,7 +229,8 @@ public class LoginController {
     }
 
     @PostMapping(value = "/logout")
-    public ResponseEntity<?> logout(@Valid @RequestBody Token token) {
+    public ResponseEntity<?> logout(@Valid @RequestBody Token token,
+                                    @RequestHeader(HttpHeaders.USER_AGENT) String userAgent) {
         log.debug("Log out Token: {}", token.getToken());
         // Checking token validity
         if (!jwtUtil.isInvalid(token.getToken())) {
@@ -215,6 +240,23 @@ public class LoginController {
                 log.debug("Adding token to blacklist");
                 blackListedTokens.put(token.getToken(), "1", ttlForToken, TimeUnit.MILLISECONDS);
             }
+        }
+        // Logout user form database
+        try {
+            final String url = usmUrl + "/usm/log/logout";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            CustomUser customUser = new CustomUser();
+            customUser.setUserId(token.getUserId().toString());
+            customUser.setIpAddress(token.getIpAddress());
+            customUser.setUniversityId(token.getUniversityId());
+            customUser.setGnumLogId(token.getGnumLogId());
+            HttpEntity<Object> httpEntity = new HttpEntity<>(customUser, headers);
+
+            ResponseEntity<CustomUser> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, CustomUser.class);
+            log.debug("Response Status: {}", response.getStatusCode());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         log.debug("BlackListed Tokens: {}", blackListedTokens);
         return ResponseHandler.generateResponse(HttpStatus.OK, "Logout Successful");

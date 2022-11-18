@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -23,14 +26,28 @@ public class RoleMenuService {
 
     public ServiceResponse save(RoleMenuBean roleMenuBean) {
         // Get already mapped menus, Delete if present
-        List<UmmtRoleMenuMst> roleMenuMstList = roleMenuRepository.findByGnumRoleIdAndGnumModuleId(roleMenuBean.getGnumRoleId(), roleMenuBean.getGnumModuleId());
-//        if (!roleMenuMstList.isEmpty())
-//            roleMenuRepository.deleteAllInBatch(roleMenuMstList);
+        Set<Integer> menuIds = Set.of(roleMenuBean.getGnumMenuId());
+        List<UmmtRoleMenuMst> alreadySavedMenus = roleMenuRepository.findByGnumRoleIdAndGnumModuleId(roleMenuBean.getGnumRoleId(), roleMenuBean.getGnumModuleId());
+
+        List<UmmtRoleMenuMst> menusToDelete = new ArrayList<>();
+        Set<Integer> setAlreadySavedMenus = new HashSet<>();
+        for (UmmtRoleMenuMst menu: alreadySavedMenus) {
+            if (!menuIds.contains(menu.getGnumMenuId())) {
+                menusToDelete.add(menu);
+            }
+            setAlreadySavedMenus.add(menu.getGnumMenuId());
+        }
+
+        if (!menusToDelete.isEmpty())
+            roleMenuRepository.deleteAllInBatch(menusToDelete);
+
+        List<UmmtRoleMenuMst> menusToAdd = new ArrayList<>();
 
         // Map new Menus
         if (roleMenuBean.getGnumMenuId() != null && roleMenuBean.getGnumMenuId().length > 0) {
-            roleMenuMstList.clear();
             for (int i=0;i<roleMenuBean.getGnumMenuId().length;++i) {
+                if (setAlreadySavedMenus.contains(roleMenuBean.getGnumMenuId()[i]))
+                    continue;
                 UmmtRoleMenuMst roleMenuMst = new UmmtRoleMenuMst();
                 roleMenuMst.setGnumRoleId(roleMenuBean.getGnumRoleId());
                 roleMenuMst.setGnumMenuId(roleMenuBean.getGnumMenuId()[i]);
@@ -39,10 +56,11 @@ public class RoleMenuService {
                 roleMenuMst.setGnumIsvalid(1);
                 roleMenuMst.setGnumDisplayOrder(i);
                 roleMenuMst.setGnumEntryBy(roleMenuBean.getGnumEntryBy());
-                roleMenuMstList.add(roleMenuMst);
+                menusToAdd.add(roleMenuMst);
             }
 
-            roleMenuRepository.saveAll(roleMenuMstList);
+            if (!menusToAdd.isEmpty())
+                roleMenuRepository.saveAll(menusToAdd);
         }
 
         return ServiceResponse.builder()

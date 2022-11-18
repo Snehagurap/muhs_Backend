@@ -1,6 +1,7 @@
 package in.cdac.university.globalService.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 public class TemplateComponentBean {
+    @ListColumn(omit = true)
     private Long unumTemplCompId;
 
     @JsonIgnore
@@ -42,8 +44,10 @@ public class TemplateComponentBean {
 
     private String ustrCompAllignment;
 
+    @ListColumn(name = "Prefix Text")
     private String ustrCompPrintPrefixText;
 
+    @ListColumn(name = "Print Text")
     private String ustrCompPrintText;
 
     private String ustrDescription;
