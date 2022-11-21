@@ -54,6 +54,8 @@ public class TemplateHeaderController {
 
     @PutMapping("update")
     public ResponseEntity<?> update(@Valid @RequestBody TemplateHeaderBean templateHeaderBean) throws Exception {
+        templateHeaderBean.setUnumIsvalid(1);
+        templateHeaderBean.setUdtEffFrom(new Date());
         templateHeaderBean.setUdtEntryDate(new Date());
         templateHeaderBean.setUnumUnivId(RequestUtility.getUniversityId());
         templateHeaderBean.setUnumEntryUid(RequestUtility.getUserId());

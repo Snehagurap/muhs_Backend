@@ -69,7 +69,7 @@ public class TemplateSubHeaderService {
         GmstConfigTemplateSubheaderMst gmstConfigTemplateSubheaderMst = BeanUtils.copyProperties(templateSubHeaderBean, GmstConfigTemplateSubheaderMst.class);
         templateSubHeaderRepository.save(gmstConfigTemplateSubheaderMst);
 
-        return ServiceResponse.successMessage("Sub Header");
+        return ServiceResponse.successMessage(language.updateSuccess("Sub Header"));
     }
 
     @Transactional

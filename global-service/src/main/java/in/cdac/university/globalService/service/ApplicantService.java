@@ -202,4 +202,27 @@ public class ApplicantService {
         }
         return ServiceResponse.successMessage(language.message("Applicant Verified"));
     }
+
+    public ServiceResponse getApplicantToModify(Long applicantId) {
+        if(applicantId == null) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Applicant id", applicantId));
+        }
+        Optional<GmstApplicantMst> gmstApplicantMst = applicantRepository.findByUnumApplicantIdAndUnumIsvalid(applicantId, 0);
+        if(gmstApplicantMst.isEmpty()) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Applicant id", applicantId));
+        }
+
+        ApplicantBean applicantBean = BeanUtils.copyProperties(gmstApplicantMst.get(), ApplicantBean.class);
+
+        List<GmstApplicantDtl> gmstApplicantDtlList = applicantDetailRepository.findByUnumApplicantIdAndUnumIsvalid(applicantId, 1);
+        if(gmstApplicantDtlList.isEmpty()) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Applicant Document Detail", applicantId));
+        }
+
+        List<ApplicantDetailBean> applicantDetailBeanList = BeanUtils.copyListProperties(gmstApplicantDtlList, ApplicantDetailBean.class);
+
+        applicantBean.setApplicantDetailBeans(applicantDetailBeanList);
+
+        return ServiceResponse.successObject(applicantBean);
+    }
 }

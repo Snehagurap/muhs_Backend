@@ -76,6 +76,13 @@ public class ApplicantController {
         );
     }
 
+    @GetMapping("modify/{applicantId}")
+    public ResponseEntity<?> getApplicantToModify(@PathVariable("applicantId") Long applicantId) {
+        return ResponseHandler.generateResponse(
+                applicantService.getApplicantToModify(applicantId)
+        );
+    }
+
     @PutMapping("verify")
     public ResponseEntity<?> verifyApplicant(@RequestBody ApplicantBean applicantBean) throws Exception {
         applicantBean.setUnumVerifiedBy(RequestUtility.getUserId());
