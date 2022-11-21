@@ -21,4 +21,8 @@ public interface TemplateComponentRepository extends JpaRepository<GmstConfigTem
             "and t.unumUnivId = :universityId " +
             "and t.unumTempleId in (:templateId) ) ")
     List<GmstConfigTemplateComponentMst> findComponentsByTemplateId(@Param("universityId") Integer universityId, @Param("templateId") List<Long> templateId);
+
+    List<GmstConfigTemplateComponentMst> findByUnumIsvalidAndUnumUnivIdOrderByUnumCompDisplayOrderAsc(Integer unumIsvalid, Integer unumUnivId);
+
+
 }

@@ -18,7 +18,7 @@ public class TemplateComponentController {
     private TemplateComponentService templateComponentService;
 
     @GetMapping("listPage")
-    public ResponseEntity<?> listPage() throws IllegalAccessException {
+    public ResponseEntity<?> listPage() throws Exception {
         return ResponseHandler.generateOkResponse(
                 ListPageUtility.generateListPageData(templateComponentService.listPage())
         );

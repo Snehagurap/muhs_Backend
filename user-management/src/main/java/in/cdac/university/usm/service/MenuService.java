@@ -13,6 +13,7 @@ import in.cdac.university.usm.util.BeanUtils;
 import in.cdac.university.usm.util.Language;
 import in.cdac.university.usm.util.RequestUtility;
 import in.cdac.university.usm.util.ServiceResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
+@Slf4j
 @Transactional
 public class MenuService {
 
@@ -248,6 +250,7 @@ public class MenuService {
     public ServiceResponse getMenusMappedWithUser(Long userId) throws Exception {
         // Get User Category
         int userCategory = RequestUtility.getUserCategory();
+        log.debug("User Category: {}", userCategory);
         List<UmmtUserRoleMst> mappedRoles;
         if (userCategory == 5) {
             // Draft Applicant

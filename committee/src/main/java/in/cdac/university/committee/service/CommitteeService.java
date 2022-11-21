@@ -418,7 +418,7 @@ public class CommitteeService {
         List<GbltCommitteeMemberDtl> gbltCommitteeMemberDtlList = committeeMemberMappingRepository.findByUnumEventidAndUnumIsvalidAndUnumUnivId(eventId,1,RequestUtility.getUniversityId());
 
         if(gbltCommitteeMemberDtlList.isEmpty()) {
-            return ServiceResponse.errorResponse(language.notFoundForId("Member" , eventId));
+            return ServiceResponse.errorResponse(language.message("Member Mapping not done"));
         }
 
         Optional<GbltCommitteeMst> committeeMstOptional = committeeMasterRepository.findByUnumIsvalidAndUnumComidAndUnumUnivId(1,gbltCommitteeMemberDtlList.get(0).getUnumComId(), RequestUtility.getUniversityId());
