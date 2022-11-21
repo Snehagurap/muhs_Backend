@@ -28,10 +28,11 @@ public class TemplateSubHeaderController {
 
     @PostMapping("save")
     public ResponseEntity<?> save(@Valid @RequestBody TemplateSubHeaderBean templateSubHeaderBean) throws Exception {
+        templateSubHeaderBean.setUnumIsvalid(1);
+        templateSubHeaderBean.setUdtEffFrom(new Date());
         templateSubHeaderBean.setUdtEntryDate(new Date());
         templateSubHeaderBean.setUnumUnivId(RequestUtility.getUniversityId());
         templateSubHeaderBean.setUnumEntryUid(RequestUtility.getUserId());
-        templateSubHeaderBean.setUdtEffFrom(new Date());
         return ResponseHandler.generateResponse(
                 templateSubHeaderService.save(templateSubHeaderBean)
         );
@@ -46,6 +47,8 @@ public class TemplateSubHeaderController {
 
     @PutMapping("update")
     public ResponseEntity<?> update(@Valid @RequestBody TemplateSubHeaderBean templateSubHeaderBean) throws Exception {
+        templateSubHeaderBean.setUnumIsvalid(1);
+        templateSubHeaderBean.setUdtEffFrom(new Date());
         templateSubHeaderBean.setUdtEntryDate(new Date());
         templateSubHeaderBean.setUnumUnivId(RequestUtility.getUniversityId());
         templateSubHeaderBean.setUnumEntryUid(RequestUtility.getUserId());
