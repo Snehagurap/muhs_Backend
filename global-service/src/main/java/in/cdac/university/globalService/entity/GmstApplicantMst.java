@@ -2,6 +2,7 @@ package in.cdac.university.globalService.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -128,4 +129,7 @@ public class GmstApplicantMst implements Serializable {
 
 	@Column(name="udt_verified_date")
 	private Date udtVerifiedDate;
+
+	@Formula("(select t.gstr_statename from usm.gblt_state_mst_imsc t where t.gnum_statecode = unum_registered_stateid)")
+	private String ustrRegisteredStateName;
 }

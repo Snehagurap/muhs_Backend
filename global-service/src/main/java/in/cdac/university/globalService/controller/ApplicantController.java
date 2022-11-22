@@ -60,7 +60,7 @@ public class ApplicantController {
         );
     }
 
-    @GetMapping("verification/{isVerifiedApplicant}")
+    @GetMapping("listPageVerification/{isVerifiedApplicant}")
     public ResponseEntity<?> getListPageVerification(@PathVariable("isVerifiedApplicant") Integer isVerifiedApplicant) throws Exception {
         return ResponseHandler.generateOkResponse(
                 ListPageUtility.generateListPageData(
@@ -69,19 +69,13 @@ public class ApplicantController {
         );
     }
 
-    @GetMapping("verificationView/{applicantId}")
+    @GetMapping("getApplicant/{applicantId}")
     public ResponseEntity<?> getApplicant(@PathVariable("applicantId") Long applicantId) {
         return ResponseHandler.generateResponse(
           applicantService.getApplicant(applicantId)
         );
     }
 
-    @GetMapping("modify/{applicantId}")
-    public ResponseEntity<?> getApplicantToModify(@PathVariable("applicantId") Long applicantId) {
-        return ResponseHandler.generateResponse(
-                applicantService.getApplicantToModify(applicantId)
-        );
-    }
 
     @PutMapping("verify")
     public ResponseEntity<?> verifyApplicant(@RequestBody ApplicantBean applicantBean) throws Exception {
@@ -89,6 +83,15 @@ public class ApplicantController {
         applicantBean.setUdtVerifiedDate(new Date());
         return ResponseHandler.generateResponse(
                 applicantService.verifyApplicant(applicantBean)
+        );
+    }
+
+    @PutMapping("update")
+    public ResponseEntity<?> update(@Valid @RequestBody ApplicantBean applicantBean) throws Exception {
+        applicantBean.setUdtEntryDate(new Date());
+        applicantBean.setUnumEntryUid(RequestUtility.getUserId());
+        return ResponseHandler.generateResponse(
+                applicantService.updateApplicant(applicantBean)
         );
     }
 }
