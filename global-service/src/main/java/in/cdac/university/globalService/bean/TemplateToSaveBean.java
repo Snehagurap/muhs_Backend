@@ -10,6 +10,8 @@ import java.util.List;
 @Data
 public class TemplateToSaveBean {
 
+    private Long unumApplicationId;
+
     @NotNull(message = "Master Template Id is mandatory")
     private Long unumMtempleId;
 

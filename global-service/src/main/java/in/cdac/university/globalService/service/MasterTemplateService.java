@@ -278,36 +278,44 @@ public class MasterTemplateService {
             }
         }
 
-        long applicationId = applicantDataMasterRepository.getNextId();
-        GmstConfigMastertemplateMst mastertemplateMst = mastertemplateMstOptional.get();
-
-        GbltConfigApplicationDataMst applicationDataMst = new GbltConfigApplicationDataMst();
-        applicationDataMst.setUnumApplicationId(applicationId);
-        applicationDataMst.setUnumApplicantId(applicantId);
-        Date currentDate = new Date();
-        applicationDataMst.setUdtApplicationDate(currentDate);
-        applicationDataMst.setUdtApplicationEntryDate(currentDate);
-        applicationDataMst.setUdtApplicationSubmitDate(currentDate);
-        applicationDataMst.setUnumApplicationEntryStatus(templateToSaveBean.getUnumApplicationEntryStatus());
-        applicationDataMst.setUnumMtemplateType(mastertemplateMst.getUnumMtemplateType());
-        applicationDataMst.setUnumNid(notificationBean.getUnumNid());
-        if (notificationBean.getUnumDeptId() != null)
-            applicationDataMst.setUnumNDeptId(Long.valueOf(notificationBean.getUnumDeptId().toString()));
-        applicationDataMst.setUnumNdtlId(notificationDetailBean.getUnumNdtlId());
-        if (notificationDetailBean.getUnumFacultyId() != null)
-            applicationDataMst.setUnumNdtlFacultyId(Long.valueOf(notificationDetailBean.getUnumFacultyId().toString()));
-        if (notificationDetailBean.getUnumDepartmentId() != null)
-            applicationDataMst.setUnumNdtlDepartmentId(Long.valueOf(notificationDetailBean.getUnumDepartmentId().toString()));
         Integer universityId = RequestUtility.getUniversityId();
-        applicationDataMst.setUnumUnivId(universityId);
-        applicationDataMst.setUdtEffFrom(currentDate);
-        applicationDataMst.setUnumIsvalid(1);
-        applicationDataMst.setUnumEntryUid(userId);
-        applicationDataMst.setUdtEntryDate(currentDate);
-        if (notificationDetailBean.getUnumCoursetypeId() != null)
-            applicationDataMst.setUnumCtypeId(notificationDetailBean.getUnumCoursetypeId());
+        Date currentDate = new Date();
+        Long applicationId = templateToSaveBean.getUnumApplicationId();
+        if (applicationId == null || applicationId == 0L) {
+            applicationId = applicantDataMasterRepository.getNextId();
 
-        applicantDataMasterRepository.save(applicationDataMst);
+            GmstConfigMastertemplateMst mastertemplateMst = mastertemplateMstOptional.get();
+
+            GbltConfigApplicationDataMst applicationDataMst = new GbltConfigApplicationDataMst();
+            applicationDataMst.setUnumApplicationId(applicationId);
+            applicationDataMst.setUnumApplicantId(applicantId);
+            applicationDataMst.setUdtApplicationDate(currentDate);
+            applicationDataMst.setUdtApplicationEntryDate(currentDate);
+            applicationDataMst.setUdtApplicationSubmitDate(currentDate);
+            applicationDataMst.setUnumApplicationEntryStatus(templateToSaveBean.getUnumApplicationEntryStatus());
+            applicationDataMst.setUnumMtemplateType(mastertemplateMst.getUnumMtemplateType());
+            applicationDataMst.setUnumNid(notificationBean.getUnumNid());
+            if (notificationBean.getUnumDeptId() != null)
+                applicationDataMst.setUnumNDeptId(Long.valueOf(notificationBean.getUnumDeptId().toString()));
+            applicationDataMst.setUnumNdtlId(notificationDetailBean.getUnumNdtlId());
+            if (notificationDetailBean.getUnumFacultyId() != null)
+                applicationDataMst.setUnumNdtlFacultyId(Long.valueOf(notificationDetailBean.getUnumFacultyId().toString()));
+            if (notificationDetailBean.getUnumDepartmentId() != null)
+                applicationDataMst.setUnumNdtlDepartmentId(Long.valueOf(notificationDetailBean.getUnumDepartmentId().toString()));
+
+            applicationDataMst.setUnumUnivId(universityId);
+            applicationDataMst.setUdtEffFrom(currentDate);
+            applicationDataMst.setUnumIsvalid(1);
+            applicationDataMst.setUnumEntryUid(userId);
+            applicationDataMst.setUdtEntryDate(currentDate);
+            if (notificationDetailBean.getUnumCoursetypeId() != null)
+                applicationDataMst.setUnumCtypeId(notificationDetailBean.getUnumCoursetypeId());
+
+            applicantDataMasterRepository.save(applicationDataMst);
+        } else {
+            // Delete all entries
+            applicationDataDetailRepository.delete(1, universityId, applicationId);
+        }
 
         List<GbltConfigApplicationDataDtl> itemDetailList = new ArrayList<>();
         long index = 1L;
@@ -327,6 +335,8 @@ public class MasterTemplateService {
         }
         applicationDataDetailRepository.saveAll(itemDetailList);
 
-        return ServiceResponse.successMessage("Data saved successfully");
+        TemplateToSaveBean responseObject = new TemplateToSaveBean();
+        responseObject.setUnumApplicationId(applicationId);
+        return ServiceResponse.successObject(responseObject);
     }
 }
