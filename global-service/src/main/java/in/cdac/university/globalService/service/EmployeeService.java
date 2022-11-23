@@ -1,21 +1,21 @@
 package in.cdac.university.globalService.service;
 
 
-import in.cdac.university.globalService.bean.CommitteeBean;
-import in.cdac.university.globalService.bean.EmployeeBean;
-import in.cdac.university.globalService.bean.EventBean;
+import com.netflix.discovery.converters.Auto;
+import in.cdac.university.globalService.bean.*;
+import in.cdac.university.globalService.entity.GmstEmpCurDtl;
 import in.cdac.university.globalService.entity.GmstEmpMst;
+import in.cdac.university.globalService.entity.GmstEmpProfileDtl;
 import in.cdac.university.globalService.exception.ApplicationException;
+import in.cdac.university.globalService.repository.EmployeeCurrentDetailRepository;
+import in.cdac.university.globalService.repository.EmployeeProfileRepository;
 import in.cdac.university.globalService.repository.EmployeeRepository;
 import in.cdac.university.globalService.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -23,6 +23,12 @@ public class EmployeeService {
 
     @Autowired
     private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private EmployeeProfileRepository employeeProfileRepository;
+
+    @Autowired
+    private EmployeeCurrentDetailRepository employeeCurrentDetailRepository;
 
     @Autowired
     private RestUtility restUtility;
@@ -64,7 +70,46 @@ public class EmployeeService {
     @Transactional
     public ServiceResponse save(EmployeeBean employeeBean) {
         GmstEmpMst gmstEmpMst = BeanUtils.copyProperties(employeeBean, GmstEmpMst.class);
-        gmstEmpMst.setUnumEmpId(employeeRepository.getNextId());
+        Long empID = employeeRepository.getNextId();
+        gmstEmpMst.setUnumEmpId(empID);
+
+        List<GmstEmpProfileDtl> gmstEmpProfileDtlList = new ArrayList<>();
+        List<EmployeeProfileBean> employeeProfileBeanList = employeeBean.getEmployeeProfileList();
+        if(employeeProfileBeanList != null && employeeProfileBeanList.size()>0){
+            employeeProfileBeanList.forEach(employeeProfileBean -> {
+                GmstEmpProfileDtl gmstEmpProfileDtl = BeanUtils.copyProperties(employeeProfileBean, GmstEmpProfileDtl.class);
+                Long maxEmpProfileId = employeeProfileRepository.getMaxEmpProfileId(empID);
+                gmstEmpProfileDtl.setUnumProfileId(Long.valueOf(empID.toString() + "" + StringUtility.padLeftZeros(maxEmpProfileId.toString(), 5)));
+                gmstEmpProfileDtl.setUnumCollegeId(employeeBean.getUnumCollegeId());
+                gmstEmpProfileDtl.setUnumIsvalid(1);
+                gmstEmpProfileDtl.setUdtEntryDate(employeeBean.getUdtEntryDate());
+                gmstEmpProfileDtl.setUnumUnivId(employeeBean.getUnumUnivId());
+                gmstEmpProfileDtl.setUnumEntryUid(employeeBean.getUnumEntryUid());
+                gmstEmpProfileDtlList.add(gmstEmpProfileDtl);
+            });
+
+            employeeProfileRepository.saveAll(gmstEmpProfileDtlList);
+        }
+
+
+        EmployeeCurrentDetailBean employeeCurrentDetail = new EmployeeCurrentDetailBean();
+        employeeCurrentDetail.setUnumEmpDesigid(employeeBean.getUnumEmpDesigid());
+        employeeCurrentDetail.setUstrTAadharNo(employeeBean.getUstrTAadharNo());
+        employeeCurrentDetail.setUdtUgJoiningDate(employeeBean.getUdtUgJoiningDate());
+        employeeCurrentDetail.setUdtPgJoiningDate(employeeBean.getUdtPgJoiningDate());
+        employeeCurrentDetail.setUnumIsvalid(1);
+        employeeCurrentDetail.setUdtEntryDate(employeeBean.getUdtEntryDate());
+        employeeCurrentDetail.setUnumUnivId(employeeBean.getUnumUnivId());
+        employeeCurrentDetail.setUnumEntryUid(employeeBean.getUnumEntryUid());
+
+        if(employeeCurrentDetail != null) {
+            GmstEmpCurDtl gmstEmpCurDtl = BeanUtils.copyProperties(employeeCurrentDetail, GmstEmpCurDtl.class);
+            Long maxEmpCurrDetailId = employeeCurrentDetailRepository.getMaxEmpCurrDetailId(empID);
+            gmstEmpCurDtl.setUnumEmpCurId(Long.valueOf(empID.toString() + "" + StringUtility.padLeftZeros(maxEmpCurrDetailId.toString(), 5)));
+
+            employeeCurrentDetailRepository.save(gmstEmpCurDtl);
+        }
+
         employeeRepository.save(gmstEmpMst);
         return ServiceResponse.successMessage(language.message("Teacher detail"));
     }

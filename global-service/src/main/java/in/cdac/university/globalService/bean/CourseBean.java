@@ -1,5 +1,7 @@
 package in.cdac.university.globalService.bean;
 
+import in.cdac.university.globalService.util.annotations.ComboKey;
+import in.cdac.university.globalService.util.annotations.ComboValue;
 import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +14,7 @@ import java.util.Date;
 @Setter
 public class CourseBean {
 
+    @ComboKey
     @ListColumn(omit = true)
     private Long unumCourseId;
 
@@ -80,6 +83,7 @@ public class CourseBean {
     @ListColumn(order = 3, name = "Course Code")
     private String ustrCourseCode;
 
+    @ComboValue
     @NotNull(message = "Course Full name is mandatory")
     @ListColumn(order = 2, name = "Course Name")
     private String ustrCourseFname;

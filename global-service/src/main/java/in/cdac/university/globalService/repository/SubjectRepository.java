@@ -55,4 +55,12 @@ public interface SubjectRepository extends JpaRepository<GmstSubjectMst, GmstSub
     List<GmstSubjectMst> findSubjects(@Param("universityId") Integer universityId);
 
 
+    @Query("select c from GmstSubjectMst c " +
+           "where c.unumIsvalid = 1 " +
+            "and c.unumUnivId = :universityId " +
+            "and c.unumSubId in (select d.unumSubId from GmstCollegeSubjectDtl d " +
+            "where d.unumIsvalid = 1 " +
+            "and d.unumUnivId = :universityId " +
+            "and d.unumCourseId = :courseId) " )
+    List<GmstSubjectMst> findSubjectByCourseId(@Param("courseId") Integer courseId, @Param("universityId") Integer universityId);
 }

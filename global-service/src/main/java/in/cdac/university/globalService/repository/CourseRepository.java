@@ -45,4 +45,6 @@ public interface CourseRepository extends JpaRepository<GmstCourseMst, GmstCours
             "from GmstCourseMst a where a.unumCourseId = u.unumCourseId and a.unumIsvalid > 2) " +
             "where u.unumCourseId in (:courseId) and u.unumIsvalid in (1, 2) ")
     Integer createLog(@Param("courseId") List<Long> courseId);
+
+    List<GmstCourseMst> findByUnumCfacultyIdAndUnumIsvalidAndUnumUnivId(Integer unumCfacultyId, Integer unumIsvalid, Integer unumUnivId);
 }

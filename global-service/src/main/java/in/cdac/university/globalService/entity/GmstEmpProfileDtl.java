@@ -44,6 +44,9 @@ public class GmstEmpProfileDtl implements Serializable {
 	@Column(name="unum_sub_id")
 	private Long unumSubId;
 
+	@Column(name="unum_course_id")
+	private Long unumCourseId;
+
 	@Column(name="unum_emp_id")
 	private Long unumEmpId;
 
