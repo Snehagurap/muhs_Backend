@@ -30,7 +30,7 @@ public class CourseController {
     }
 
     @GetMapping("combo/{facultyId}")
-    public ResponseEntity<?> getCommitteeTypeCombo(@PathVariable("facultyId") Integer facultyId) throws Exception {
+    public ResponseEntity<?> getCousreByFacultyId(@PathVariable("facultyId") Integer facultyId) throws Exception {
         return ResponseHandler.generateOkResponse(
                 ComboUtility.generateComboData(courseService.getCousreByFacultyId(facultyId))
         );

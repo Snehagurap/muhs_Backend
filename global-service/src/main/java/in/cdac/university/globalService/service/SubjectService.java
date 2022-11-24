@@ -148,7 +148,7 @@ public class SubjectService {
         );
     }
 
-    public List<SubjectBean> getSubjectByCousreId(Integer courseId) throws Exception {
+    public List<SubjectBean> getSubjectByCousreId(Long courseId) throws Exception {
         return BeanUtils.copyListProperties(
                 subjectRepository.findSubjectByCourseId(
                         courseId, RequestUtility.getUniversityId()), SubjectBean.class

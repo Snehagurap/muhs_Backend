@@ -88,7 +88,9 @@ public class ApplicantController {
 
     @PutMapping("update")
     public ResponseEntity<?> update(@Valid @RequestBody ApplicantBean applicantBean) throws Exception {
+        applicantBean.setUnumIsvalid(1);
         applicantBean.setUdtEntryDate(new Date());
+        applicantBean.setUdtEffFrom(new Date());
         applicantBean.setUnumEntryUid(RequestUtility.getUserId());
         return ResponseHandler.generateResponse(
                 applicantService.updateApplicant(applicantBean)

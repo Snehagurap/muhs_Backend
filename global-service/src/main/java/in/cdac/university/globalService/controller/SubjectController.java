@@ -28,7 +28,7 @@ public class SubjectController {
     }
 
     @GetMapping("comboByCourseId/{courseId}")
-    public ResponseEntity<?> getSubjectByCousreId(@PathVariable("courseId") Integer courseId) throws Exception {
+    public ResponseEntity<?> getSubjectByCousreId(@PathVariable("courseId") Long courseId) throws Exception {
         return ResponseHandler.generateOkResponse(
                 ComboUtility.generateComboData(subjectService.getSubjectByCousreId(courseId))
         );

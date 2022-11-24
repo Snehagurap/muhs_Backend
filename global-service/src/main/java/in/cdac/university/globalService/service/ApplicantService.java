@@ -229,9 +229,31 @@ public class ApplicantService {
             }
         }
 
+        Long applicantIdToUpdate = applicantBean.getUnumApplicantId();
+        Optional<GmstApplicantMst> gmstApplicantMst = applicantRepository.findByUnumApplicantIdAndUnumIsvalid(applicantIdToUpdate,1);
+        if(gmstApplicantMst.isEmpty()){
+            return ServiceResponse.errorResponse(language.notFoundForId("Applicant Id", applicantIdToUpdate));
+        }
+        ApplicantBean applicantBean1 = BeanUtils.copyProperties(gmstApplicantMst.get(), ApplicantBean.class);
+        Long newApplicantId = applicantRepository.getNextId();
+        applicantBean.setUnumApplicantId(newApplicantId);
+        applicantBean.setUdtEffFrom(new Date());
+        applicantBean.setUnumApplicantDistrictid(applicantBean1.getUnumApplicantDistrictid());
+        applicantBean.setUnumApplicantMobile(applicantBean1.getUnumApplicantMobile());
+        applicantBean.setUnumApplicantPincode(applicantBean1.getUnumApplicantPincode());
+        applicantBean.setUnumApplicantStateid(applicantBean1.getUnumApplicantStateid());
+        applicantBean.setUnumIsVerifiedApplicant(0);
+        applicantBean.setUstrApplicantAddress(applicantBean1.getUstrApplicantAddress());
+        applicantBean.setUstrApplicantCity(applicantBean1.getUstrApplicantCity());
+        applicantBean.setUstrApplicantEmail(applicantBean1.getUstrApplicantEmail());
+        applicantBean.setUstrApplicantName(applicantBean1.getUstrApplicantName());
+        applicantBean.setUstrUid(applicantBean1.getUstrUid());
+        applicantBean.setUstrPass(applicantBean1.getUstrPass());
+        applicantBean.setUstrTempPass(applicantBean1.getUstrTempPass());
+
         // Create Log
-        List<Long> applicantIdList = List.of(applicantBean.getUnumApplicantId());
-        int noOfRecordsAffected = applicantRepository.createLog(List.of(applicantBean.getUnumApplicantId()));
+        List<Long> applicantIdList = List.of(applicantIdToUpdate);
+        int noOfRecordsAffected = applicantRepository.createLog(applicantIdList);
         if (noOfRecordsAffected == 0) {
             throw new ApplicationException(language.updateError("Applicant"));
         }
@@ -244,16 +266,15 @@ public class ApplicantService {
 
         List<GmstApplicantDtl> applicantDtls = new ArrayList<>();
         for (ApplicantDetailBean applicantDetailBean: applicantDetailBeans) {
-            GmstApplicantDtl gmstApplicantDtl = BeanUtils.copyProperties(applicantDetailBean, GmstApplicantDtl.class);
-            gmstApplicantDtl.setUnumIsvalid(applicantBean.getUnumIsvalid());
-            gmstApplicantDtl.setUdtEffFrom(applicantBean.getUdtEffFrom());
-            gmstApplicantDtl.setUdtEntryDate(applicantBean.getUdtEntryDate());
-            gmstApplicantDtl.setUnumDocIsVerified(0);
-            applicantDtls.add(gmstApplicantDtl);
-        }
+            if (applicantDetailBean.getUstrDocPath() != null && !applicantDetailBean.getUstrDocPath().isBlank()) {
+                GmstApplicantDtl gmstApplicantDtl = BeanUtils.copyProperties(applicantDetailBean, GmstApplicantDtl.class);
+                gmstApplicantDtl.setUnumIsvalid(applicantBean.getUnumIsvalid());
+                gmstApplicantDtl.setUdtEffFrom(applicantBean.getUdtEffFrom());
+                gmstApplicantDtl.setUdtEntryDate(applicantBean.getUdtEntryDate());
+                gmstApplicantDtl.setUnumDocIsVerified(0);
+                applicantDtls.add(gmstApplicantDtl);
+            }
 
-        if (!applicantDtls.isEmpty()) {
-            applicantDetailRepository.saveAll(applicantDtls);
         }
 
         // Save Document Details

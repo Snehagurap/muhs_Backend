@@ -1,6 +1,5 @@
 package in.cdac.university.globalService.repository;
 
-import in.cdac.university.globalService.entity.GmstCollegeMst;
 import in.cdac.university.globalService.entity.GmstSubjectMst;
 import in.cdac.university.globalService.entity.GmstSubjectMstPK;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -58,9 +57,19 @@ public interface SubjectRepository extends JpaRepository<GmstSubjectMst, GmstSub
     @Query("select c from GmstSubjectMst c " +
            "where c.unumIsvalid = 1 " +
             "and c.unumUnivId = :universityId " +
-            "and c.unumSubId in (select d.unumSubId from GmstCollegeSubjectDtl d " +
+            "and c.unumSubId in (select d.unumSubId from GmstCourseSubjectDtl d " +
             "where d.unumIsvalid = 1 " +
             "and d.unumUnivId = :universityId " +
             "and d.unumCourseId = :courseId) " )
-    List<GmstSubjectMst> findSubjectByCourseId(@Param("courseId") Integer courseId, @Param("universityId") Integer universityId);
+    List<GmstSubjectMst> findSubjectByCourseId(@Param("courseId") Long courseId, @Param("universityId") Integer universityId);
+
+
+
+    @Query("select c from GmstSubjectMst c " +
+            "where c.unumIsvalid = 1 " +
+            "and c.udtEffFrom <= current_date " +
+            "and coalesce(c.udtEffTo, current_date) >= current_date " +
+            "and c.unumUnivId = :universityId " +
+            "order by c.ustrSubFname ")
+    List<GmstSubjectMst> getAllSubjects(@Param("universityId") Integer universityId);
 }
