@@ -57,4 +57,10 @@ public interface EmployeeRepository extends JpaRepository<GmstEmpMst, GmstEmpMst
             "and u.unumEmpId in (:empList) ")
     Integer updateMember2Flag(@Param("empList") List<Long> employeeList);
 
+
+    @Modifying
+    @Query("update GmstEmpMst u set u.unumIsSelected = 1 " +
+            "where u.unumIsvalid = 1 " +
+            "and u.unumEmpId in (:empList) ")
+    Integer updateCommitteeSelectionFlag(@Param("empList") List<Long> employeeList);
 }

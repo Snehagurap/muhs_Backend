@@ -15,4 +15,8 @@ public class Constants {
 
     public static final String URL_UPDATE_MEMBER2_FLAG = "global/teacher/updateMember2Flag";
 
+    public static final String URL_UPDATE_COMMITTEE_SELECTION_FLAG = "global/teacher/updateCommitteeSelectionFlag";
+
+    public static final String HeaderEnglish = "Maharashtra University of Health Sciences, Nashik";
+    public static final String HeaderHindi = "महाराष्ट्र आरोग्य विज्ञान विद्यापीठ, नाशिक";
 }

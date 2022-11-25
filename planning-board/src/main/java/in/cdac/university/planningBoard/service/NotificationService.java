@@ -322,7 +322,7 @@ public class NotificationService {
         return ServiceResponse.successMessage(language.deleteSuccess("Notification"));
     }
 
-    public ServiceResponse getActiveNotifications() throws Exception {
+    public ServiceResponse getActiveNotifications() {
         Integer universityId = 1; //RequestUtility.getUniversityId();
         List<GbltNotificationMaster> activeNotifications = masterRepository.getActiveNotifications(universityId);
 
@@ -352,7 +352,7 @@ public class NotificationService {
             }
             notificationApplyBean.setNotificationName(notificationName);
             notificationApplyBean.setNotificationDate(sdf.format(activeNotification.getUdtNDt()));
-            notificationApplyBean.setNotificationYear(Integer.valueOf(activeNotification.getUstrAcademicYear()));
+            notificationApplyBean.setNotificationYear(activeNotification.getUstrAcademicYear());
             notificationApplyBean.setNotificationId(activeNotification.getUnumNid());
             notificationApplyBean.setNotificationDocuments(BeanUtils.copyListProperties(gbltNotificationDocDtls, NotificationDocumentBean.class));
             // Get Notification Details
@@ -362,7 +362,7 @@ public class NotificationService {
 
             List<NotificationApplyDetailBean> applyDetails = notificationDtlList.stream()
                     .map(notificationDtl -> {
-                        NotificationApplyDetailBean notificationApplyDetailBean = new NotificationApplyDetailBean();
+                        NotificationApplyDetailBean notificationApplyDetailBean = BeanUtils.copyProperties(notificationDtl, NotificationApplyDetailBean.class);
 
                         String courseTypeName = mapCourseType.getOrDefault(notificationDtl.getUnumCoursetypeId(), "");
                         notificationApplyDetailBean.setCourseType(courseTypeName);

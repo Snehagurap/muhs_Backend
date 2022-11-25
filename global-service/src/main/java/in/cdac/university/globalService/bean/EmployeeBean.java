@@ -74,6 +74,7 @@ public class EmployeeBean {
     @NotBlank(message = "Teacher name is mandatory")
     private String ustrEmpName;
 
+    private Integer unumIsexternal;
     private String willingnessToWorkOnLic;
     private Integer unumDeptId;
     private String ustrEmpId;
@@ -86,5 +87,6 @@ public class EmployeeBean {
     private Integer unumAyLicMember1Count;
     private Integer unumAyLicMember2Count;
 
+    private Integer unumIsSelected;
     private List<Long> employeesToFlag;
 }

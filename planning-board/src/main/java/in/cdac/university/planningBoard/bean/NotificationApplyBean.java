@@ -13,7 +13,7 @@ import java.util.Map;
 public class NotificationApplyBean {
 
     private String notificationName;
-    private Integer notificationYear;
+    private String notificationYear;
     private String notificationDate;
     private Long notificationId;
 

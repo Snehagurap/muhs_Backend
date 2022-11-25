@@ -41,6 +41,7 @@ public class EmployeeBean {
     private String ustrTEmailid;
     private String ustrTPanNo;
 
+    private Integer unumIsexternal;
     @ComboValue
     private String ustrEmpName;
     private String willingnessToWorkOnLic;
@@ -55,5 +56,6 @@ public class EmployeeBean {
     private Integer unumAyLicMember1Count;
     private Integer unumAyLicMember2Count;
 
+    private Integer unumIsSelected;
     private List<Long> employeesToFlag;
 }

@@ -1,5 +1,6 @@
 package in.cdac.university.committee.controller;
 
+import com.itextpdf.text.DocumentException;
 import in.cdac.university.committee.bean.CommitteeBean;
 import in.cdac.university.committee.bean.CommitteeMemberBean;
 import in.cdac.university.committee.service.CommitteeService;
@@ -8,6 +9,8 @@ import in.cdac.university.committee.util.ListPageUtility;
 import in.cdac.university.committee.util.RequestUtility;
 import in.cdac.university.committee.util.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -82,5 +85,14 @@ public class CommitteeController {
         return ResponseHandler.generateResponse(
                 committeeService.getCommitteeMemberMappingByEventId(eventId)
         );
+    }
+
+    @PostMapping("memberMapping/print")
+    public ResponseEntity<?> generateCommitteeReport(@Valid @RequestBody CommitteeMemberBean committeeMemberBean) throws Exception {
+        byte[] pdfBytes = committeeService.generateCommitteeReport(committeeMemberBean);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment: committee_report.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdfBytes);
     }
 }

@@ -27,4 +27,5 @@ public class NotificationDetailBean {
     private String ustrDescription;
     private String ustrFilePath;
     private String ustrNdtlSnoDescription;
+    private Long unumMtempleId;
 }

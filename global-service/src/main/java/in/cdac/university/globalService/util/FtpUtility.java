@@ -93,7 +93,7 @@ public class FtpUtility {
                 log.error("Unable to create directory");
                 return false;
             }
-
+            System.out.println("PWD " + ftpClient.printWorkingDirectory());
             return ftpClient.storeFile(fileNameToSave, file.getInputStream());
         } catch (Exception e) {
             e.printStackTrace();
@@ -178,6 +178,7 @@ public class FtpUtility {
         try {
             InputStream inputStream = ftpClient.retrieveFileStream(fileName);
             if (inputStream == null) {
+                log.info("File: {} not found in Main directory check in Temp directory", fileName);
                 fileName = "temp/" + fileName;
                 inputStream = ftpClient.retrieveFileStream(fileName);
             }

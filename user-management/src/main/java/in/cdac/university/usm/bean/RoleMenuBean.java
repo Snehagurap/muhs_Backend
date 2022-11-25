@@ -23,6 +23,7 @@ public class RoleMenuBean {
     private Integer gnumModuleId;
 
     private Integer[] gnumMenuId;
+    private Integer[] initialRightOptions;
     private Date gdtEntryDate;
     private Integer gnumIsvalid;
     private Integer gnumDisplayOrder;
