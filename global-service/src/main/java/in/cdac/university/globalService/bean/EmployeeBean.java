@@ -59,8 +59,6 @@ public class EmployeeBean {
 
     private String ustrDescription;
 
-    private String ustrTAadharNo;
-
     private String ustrTAppointtype;
 
     @ListColumn(order = 4, name = "E-mail")
@@ -89,4 +87,13 @@ public class EmployeeBean {
 
     private Integer unumIsSelected;
     private List<Long> employeesToFlag;
+
+
+    private String ustrTAadharNo;
+    private Integer unumEmpDesigid;
+    private Date udtUgJoiningDate;
+    private Date udtPgJoiningDate;
+
+    private Long unumCollegeId;
+    private List<EmployeeProfileBean> employeeProfileList;
 }

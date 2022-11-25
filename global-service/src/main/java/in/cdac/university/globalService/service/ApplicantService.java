@@ -3,10 +3,7 @@ package in.cdac.university.globalService.service;
 import com.google.common.hash.Hashing;
 import in.cdac.university.globalService.bean.ApplicantBean;
 import in.cdac.university.globalService.bean.ApplicantDetailBean;
-import in.cdac.university.globalService.entity.GmstApplicantDraftMst;
-import in.cdac.university.globalService.entity.GmstApplicantDtl;
-import in.cdac.university.globalService.entity.GmstApplicantMst;
-import in.cdac.university.globalService.entity.GmstApplicantTypeMst;
+import in.cdac.university.globalService.entity.*;
 import in.cdac.university.globalService.exception.ApplicationException;
 import in.cdac.university.globalService.repository.ApplicantDetailRepository;
 import in.cdac.university.globalService.repository.ApplicantRepository;
@@ -20,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.Valid;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -157,9 +155,6 @@ public class ApplicantService {
         ApplicantBean applicantBean = BeanUtils.copyProperties(gmstApplicantMst.get(), ApplicantBean.class);
 
         List<GmstApplicantDtl> gmstApplicantDtlList = applicantDetailRepository.findByUnumApplicantIdAndUnumIsvalid(applicantId, 1);
-        if(gmstApplicantDtlList.isEmpty()) {
-            return ServiceResponse.errorResponse(language.notFoundForId("Applicant Document Detail", applicantId));
-        }
 
         List<ApplicantDetailBean> applicantDetailBeanList = BeanUtils.copyListProperties(gmstApplicantDtlList, ApplicantDetailBean.class);
 
@@ -203,26 +198,97 @@ public class ApplicantService {
         return ServiceResponse.successMessage(language.message("Applicant Verified"));
     }
 
-    public ServiceResponse getApplicantToModify(Long applicantId) {
-        if(applicantId == null) {
-            return ServiceResponse.errorResponse(language.notFoundForId("Applicant id", applicantId));
-        }
-        Optional<GmstApplicantMst> gmstApplicantMst = applicantRepository.findByUnumApplicantIdAndUnumIsvalid(applicantId, 0);
-        if(gmstApplicantMst.isEmpty()) {
-            return ServiceResponse.errorResponse(language.notFoundForId("Applicant id", applicantId));
+
+    @Transactional
+    public ServiceResponse updateApplicant(ApplicantBean applicantBean) {
+        if (applicantBean.getUnumApplicantId() == null) {
+            return ServiceResponse.errorResponse(language.mandatory("Applicant Id"));
         }
 
-        ApplicantBean applicantBean = BeanUtils.copyProperties(gmstApplicantMst.get(), ApplicantBean.class);
+        // Upload Documents
+        List<ApplicantDetailBean> applicantDetailBeans = applicantBean.getApplicantDetailBeans();
 
-        List<GmstApplicantDtl> gmstApplicantDtlList = applicantDetailRepository.findByUnumApplicantIdAndUnumIsvalid(applicantId, 1);
-        if(gmstApplicantDtlList.isEmpty()) {
-            return ServiceResponse.errorResponse(language.notFoundForId("Applicant Document Detail", applicantId));
+        for (ApplicantDetailBean applicantDetailBean: applicantDetailBeans) {
+            log.debug("File Path: {}", applicantDetailBean.getUstrDocPath());
+            if (applicantDetailBean.getUstrDocPath() != null && !applicantDetailBean.getUstrDocPath().isBlank()) {
+                // check if file already exist
+                boolean isFileExist = ftpUtility.isFileExists(applicantDetailBean.getUstrDocPath());
+                log.debug("Is File exists {}", isFileExist);
+                if (isFileExist) {
+                    // File already exists in final directory no need to move
+                    continue;
+                }
+
+                log.debug("Moving file to final location");
+
+                boolean isFileMoved = ftpUtility.moveFileFromTempToFinalDirectory(applicantDetailBean.getUstrDocPath());
+                log.debug("File moved: {}", isFileMoved);
+                if (!isFileMoved) {
+                    throw new ApplicationException("Unable to upload file");
+                }
+            }
         }
 
-        List<ApplicantDetailBean> applicantDetailBeanList = BeanUtils.copyListProperties(gmstApplicantDtlList, ApplicantDetailBean.class);
+        Long applicantIdToUpdate = applicantBean.getUnumApplicantId();
+        Optional<GmstApplicantMst> gmstApplicantMst = applicantRepository.findByUnumApplicantIdAndUnumIsvalid(applicantIdToUpdate,1);
+        if(gmstApplicantMst.isEmpty()){
+            return ServiceResponse.errorResponse(language.notFoundForId("Applicant Id", applicantIdToUpdate));
+        }
+        ApplicantBean applicantBean1 = BeanUtils.copyProperties(gmstApplicantMst.get(), ApplicantBean.class);
+        Long newApplicantId = applicantRepository.getNextId();
+        applicantBean.setUnumApplicantId(newApplicantId);
+        applicantBean.setUdtEffFrom(new Date());
+        applicantBean.setUnumApplicantDistrictid(applicantBean1.getUnumApplicantDistrictid());
+        applicantBean.setUnumApplicantMobile(applicantBean1.getUnumApplicantMobile());
+        applicantBean.setUnumApplicantPincode(applicantBean1.getUnumApplicantPincode());
+        applicantBean.setUnumApplicantStateid(applicantBean1.getUnumApplicantStateid());
+        applicantBean.setUnumIsVerifiedApplicant(0);
+        applicantBean.setUstrApplicantAddress(applicantBean1.getUstrApplicantAddress());
+        applicantBean.setUstrApplicantCity(applicantBean1.getUstrApplicantCity());
+        applicantBean.setUstrApplicantEmail(applicantBean1.getUstrApplicantEmail());
+        applicantBean.setUstrApplicantName(applicantBean1.getUstrApplicantName());
+        applicantBean.setUstrUid(applicantBean1.getUstrUid());
+        applicantBean.setUstrPass(applicantBean1.getUstrPass());
+        applicantBean.setUstrTempPass(applicantBean1.getUstrTempPass());
 
-        applicantBean.setApplicantDetailBeans(applicantDetailBeanList);
+        // Create Log
+        List<Long> applicantIdList = List.of(applicantIdToUpdate);
+        int noOfRecordsAffected = applicantRepository.createLog(applicantIdList);
+        if (noOfRecordsAffected == 0) {
+            throw new ApplicationException(language.updateError("Applicant"));
+        }
 
-        return ServiceResponse.successObject(applicantBean);
+        applicantDetailRepository.createLog(applicantIdList);
+
+        // Save new Data
+        GmstApplicantMst applicantMst = BeanUtils.copyProperties(applicantBean, GmstApplicantMst.class);
+        applicantRepository.save(applicantMst);
+
+        List<GmstApplicantDtl> applicantDtls = new ArrayList<>();
+        for (ApplicantDetailBean applicantDetailBean: applicantDetailBeans) {
+            if (applicantDetailBean.getUstrDocPath() != null && !applicantDetailBean.getUstrDocPath().isBlank()) {
+                GmstApplicantDtl gmstApplicantDtl = BeanUtils.copyProperties(applicantDetailBean, GmstApplicantDtl.class);
+                gmstApplicantDtl.setUnumIsvalid(applicantBean.getUnumIsvalid());
+                gmstApplicantDtl.setUdtEffFrom(applicantBean.getUdtEffFrom());
+                gmstApplicantDtl.setUdtEntryDate(applicantBean.getUdtEntryDate());
+                gmstApplicantDtl.setUnumDocIsVerified(0);
+                applicantDtls.add(gmstApplicantDtl);
+            }
+
+        }
+
+        // Save Document Details
+        if (!applicantDtls.isEmpty()) {
+            // Get the maximum applicant document id
+            Long maxApplicantDocId = applicantDetailRepository.getMaxApplicantDocId(applicantBean.getUnumApplicantId());
+
+            for (GmstApplicantDtl gmstApplicantDtl : applicantDtls) {
+                gmstApplicantDtl.setUnumApplicantId(applicantBean.getUnumApplicantId());
+                maxApplicantDocId++;
+                gmstApplicantDtl.setUnumApplicantDocId(Long.valueOf(applicantBean.getUnumApplicantId().toString() + "" + StringUtility.padLeftZeros(maxApplicantDocId.toString(), 5)));
+            }
+            applicantDetailRepository.saveAll(applicantDtls);
+        }
+        return ServiceResponse.successMessage(language.updateSuccess("Applicant"));
     }
 }

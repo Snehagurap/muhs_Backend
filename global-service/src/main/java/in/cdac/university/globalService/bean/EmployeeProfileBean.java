@@ -18,6 +18,7 @@ public class EmployeeProfileBean {
     private Long unumCollegeId;
     private Long unumEntryUid;
     private Integer unumFacultyId;
+    private Long unumCourseId;
     private Long unumSubId;
     private Long unumEmpId;
     private Integer unumUnivId;

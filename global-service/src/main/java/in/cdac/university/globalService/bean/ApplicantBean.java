@@ -57,6 +57,8 @@ public class ApplicantBean {
 
     private Integer unumRegisteredDistrictid;
 
+    private String ustrRegisteredDistrictName;
+
     @NotNull(message = "Mobile Number/Contact Number is mandatory")
     private Long unumRegisteredMobileno;
 
@@ -64,6 +66,8 @@ public class ApplicantBean {
 
     @NotNull(message = "State of Registered Society/Trust/Company is mandatory")
     private Integer unumRegisteredStateid;
+
+    private String ustrRegisteredStateName;
 
     @NotBlank(message = "Full Address of Registered Society/Trust/Company is mandatory")
     private String ustrAddrofRegisteredSoceity;

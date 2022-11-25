@@ -2,6 +2,7 @@ package in.cdac.university.globalService.controller;
 
 import in.cdac.university.globalService.bean.CourseBean;
 import in.cdac.university.globalService.service.CourseService;
+import in.cdac.university.globalService.util.ComboUtility;
 import in.cdac.university.globalService.util.ListPageUtility;
 import in.cdac.university.globalService.util.RequestUtility;
 import in.cdac.university.globalService.util.ResponseHandler;
@@ -25,6 +26,13 @@ public class CourseController {
                 ListPageUtility.generateListPageData(
                         courseService.listPageData(status)
                 )
+        );
+    }
+
+    @GetMapping("combo/{facultyId}")
+    public ResponseEntity<?> getCousreByFacultyId(@PathVariable("facultyId") Integer facultyId) throws Exception {
+        return ResponseHandler.generateOkResponse(
+                ComboUtility.generateComboData(courseService.getCousreByFacultyId(facultyId))
         );
     }
 

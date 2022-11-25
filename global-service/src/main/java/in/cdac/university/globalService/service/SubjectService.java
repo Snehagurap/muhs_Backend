@@ -1,5 +1,6 @@
 package in.cdac.university.globalService.service;
 
+import in.cdac.university.globalService.bean.CourseBean;
 import in.cdac.university.globalService.bean.SubjectBean;
 import in.cdac.university.globalService.entity.GmstSubjectMst;
 import in.cdac.university.globalService.exception.ApplicationException;
@@ -144,6 +145,13 @@ public class SubjectService {
     public List<SubjectBean> getSubjects() throws Exception {
         return BeanUtils.copyListProperties(
                 subjectRepository.findSubjects(RequestUtility.getUniversityId()), SubjectBean.class
+        );
+    }
+
+    public List<SubjectBean> getSubjectByCousreId(Long courseId) throws Exception {
+        return BeanUtils.copyListProperties(
+                subjectRepository.findSubjectByCourseId(
+                        courseId, RequestUtility.getUniversityId()), SubjectBean.class
         );
     }
 }

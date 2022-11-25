@@ -133,4 +133,11 @@ public class CourseService {
                 .message(language.deleteSuccess("Course"))
                 .build();
     }
+
+    public List<CourseBean> getCousreByFacultyId(Integer facultyId) throws Exception {
+        return BeanUtils.copyListProperties(
+                courseRepository.findByUnumCfacultyIdAndUnumIsvalidAndUnumUnivId(
+                        facultyId, 1,RequestUtility.getUniversityId()), CourseBean.class
+        );
+    }
 }
