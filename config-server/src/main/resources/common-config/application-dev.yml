@@ -22,7 +22,7 @@ config:
 
 jwt:
   secret: BvPHGM8C0ia4uOuxxqPD5DTbWC9F9TWvPStp3pb7ARo0oK2mJ3pd3YG4lxA9i8bj6OTbadwezxgeEByY
-  expirationTime: 1200    # 7200: 2 hours for development only
+  expirationTime: 7200    # 7200: 2 hours for development only
 
 spring:
   datasource:
@@ -41,9 +41,26 @@ spring:
       file-size-threshold: 2KB
       max-file-size: 5MB
       max-request-size: 200MB
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - DELETE
+              - PUT
+              - PATCH
+            allowedHeaders:
+              - Authorization
+              - content-type
+              - fhttf
+              - f_code
 
 ftp:
-  url: devmuhsnashik01.dcservices.in
+  url: 10.226.80.182
   username: ftpuser1
   password: ftpuser1!
 

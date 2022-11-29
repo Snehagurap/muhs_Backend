@@ -145,5 +145,7 @@ public class TemplateItemBean {
 
     private Long unumTemplCompItemId;
 
+    private String ustrItemValue;
+
     List<TemplateItemBean> children;
 }

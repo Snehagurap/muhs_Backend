@@ -131,4 +131,11 @@ public class EmployeeController {
                 employeeService.updateMember2Flag(employeeBean.getEmployeesToFlag())
         );
     }
+
+    @PostMapping("updateCommitteeSelectionFlag")
+    public ResponseEntity<?> updateCommitteeSelectionFlag(@RequestBody EmployeeBean employeeBean) {
+        return ResponseHandler.generateResponse(
+                employeeService.updateCommitteeSelectionFlag(employeeBean.getEmployeesToFlag())
+        );
+    }
 }

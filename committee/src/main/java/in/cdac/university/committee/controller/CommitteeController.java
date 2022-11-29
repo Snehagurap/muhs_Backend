@@ -1,5 +1,6 @@
 package in.cdac.university.committee.controller;
 
+import com.itextpdf.text.DocumentException;
 import in.cdac.university.committee.bean.CommitteeBean;
 import in.cdac.university.committee.bean.CommitteeMemberBean;
 import in.cdac.university.committee.service.CommitteeService;
@@ -8,6 +9,8 @@ import in.cdac.university.committee.util.ListPageUtility;
 import in.cdac.university.committee.util.RequestUtility;
 import in.cdac.university.committee.util.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,22 +48,22 @@ public class CommitteeController {
         );
     }
 
-    @GetMapping("creator/listPage")
-    public ResponseEntity<?> getListPage() throws Exception {
+    @GetMapping("creator/listPage/{committeeTypeId}")
+    public ResponseEntity<?> getListPage(@PathVariable("committeeTypeId") Integer committeeTypeId) throws Exception {
         return ResponseHandler.generateOkResponse(
-                ListPageUtility.generateListPageData(committeeService.getCommitteeList())
+                ListPageUtility.generateListPageData(committeeService.getCommitteeList(committeeTypeId))
         );
     }
 
     @GetMapping("{committeeId}")
-    public ResponseEntity<?> getCommittee(@PathVariable("committeeId") Long committeeId) throws Exception {
+    public ResponseEntity<?> getCommittee(@PathVariable("committeeId") Long committeeId) {
         return ResponseHandler.generateResponse(
                 committeeService.getCommittee(committeeId)
         );
     }
 
     @GetMapping("withMembers/{eventId}")
-    public ResponseEntity<?> getCommitteeByEventIdWithMembers(@PathVariable("eventId") Long eventId) throws Exception {
+    public ResponseEntity<?> getCommitteeByEventIdWithMembers(@PathVariable("eventId") Long eventId) {
         return ResponseHandler.generateResponse(
                 committeeService.getCommitteeByEventIdWithMembers(eventId)
         );
@@ -82,5 +85,12 @@ public class CommitteeController {
         return ResponseHandler.generateResponse(
                 committeeService.getCommitteeMemberMappingByEventId(eventId)
         );
+    }
+
+    @GetMapping("memberMapping/print/{eventId}")
+    public ResponseEntity<?> generateCommitteeReport(@PathVariable("eventId") Long eventId) throws Exception {
+        byte[] pdfBytes = committeeService.generateCommitteeReport(eventId);
+
+        return ResponseHandler.generateFileResponse(pdfBytes, "committee_report.pdf");
     }
 }

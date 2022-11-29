@@ -54,15 +54,56 @@ public class MasterTemplateService {
     @Autowired
     private FtpUtility ftpUtility;
 
-    public ServiceResponse getTemplate(Long masterTemplateId) throws Exception {
+    @Autowired
+    private FacultyRepository facultyRepository;
+
+    public ServiceResponse getTemplate(Long masterTemplateId, Long notificationId, Long notificationDetailId) throws Exception {
         Optional<GmstConfigMastertemplateMst> templateByIdOptional = masterTemplateRepository.findById(new GmstConfigMastertemplateMstPK(masterTemplateId, 1));
         if (templateByIdOptional.isEmpty()) {
             return ServiceResponse.errorResponse(language.notFoundForId("Master Template", masterTemplateId));
         }
-
         MasterTemplateBean masterTemplateBean = BeanUtils.copyProperties(templateByIdOptional.get(), MasterTemplateBean.class);
-
         Integer universityId = RequestUtility.getUniversityId();
+
+        // Get Notification Detail
+        NotificationBean notificationBean = restUtility.get(RestUtility.SERVICE_TYPE.PLANNING_BOARD, Constants.URL_GET_NOTIFICATION_BY_ID + notificationId, NotificationBean.class);
+        if (notificationBean == null)
+            return ServiceResponse.errorResponse(language.notFoundForId("Notification", notificationId));
+
+        NotificationDetailBean notificationDetailBean = notificationBean.getNotificationDetails().stream()
+                .filter(bean -> bean.getUnumNdtlId().equals(notificationDetailId))
+                .findFirst()
+                .orElse(null);
+
+        if (notificationDetailBean == null)
+            return ServiceResponse.errorResponse(language.notFoundForId("Notification Detail", notificationDetailId));
+
+        Optional<GmstCoursefacultyMst> facultyById = facultyRepository.findById(new GmstCoursefacultyMstPK(notificationDetailBean.getUnumFacultyId(), 1));
+        String tempFacultyName = "";
+        if (facultyById.isPresent()) {
+            tempFacultyName = facultyById.get().getUstrCfacultyFname();
+        }
+
+        final String facultyName = tempFacultyName;
+        final String purpose = notificationBean.getUstrNSubHeading() == null ? "" : notificationBean.getUstrNSubHeading();
+        // Check if application already exists
+        Map<Long, String> mapItemValues = new HashMap<>();
+        Optional<GbltConfigApplicationDataMst> applicationOptional = applicantDataMasterRepository.getApplication(universityId, RequestUtility.getUserId(), notificationId, notificationDetailId);
+        if (applicationOptional.isPresent()) {
+            GbltConfigApplicationDataMst applicationDataMst = applicationOptional.get();
+            masterTemplateBean.setUnumApplicationEntryStatus(applicationDataMst.getUnumApplicationEntryStatus());
+            masterTemplateBean.setUnumApplicationId(applicationDataMst.getUnumApplicationId());
+
+            // Get details of application item wise
+            List<GbltConfigApplicationDataDtl> applicationDetails = applicationDataDetailRepository.findByUnumIsvalidAndUnumUnivIdAndUnumApplicationId(1, universityId, applicationDataMst.getUnumApplicationId());
+            mapItemValues = applicationDetails.stream()
+                    .collect(Collectors.toMap(GbltConfigApplicationDataDtl::getUnumTempleItemId,
+                            applicationDetail -> applicationDetail.getUstrItemValue() == null ? "" : applicationDetail.getUstrItemValue(),
+                            (v1, v2) -> v2));
+        } else {
+            masterTemplateBean.setUnumApplicationEntryStatus(0);
+        }
+        final Map<Long, String> itemMap = mapItemValues;
 
         List<GmstConfigMastertemplateTemplatedtl> masterTemplateDetails = masterTemplateDetailRepository.findByUnumIsvalidAndUnumUnivIdAndUnumMtempleId(1, universityId, masterTemplateBean.getUnumMtempleId());
 
@@ -129,6 +170,9 @@ public class MasterTemplateService {
                     templateHeaderBean.setUnumPageColumns(mapNoOfPageColumns.getOrDefault(configTemplateDtl.getUnumTempleHeadId(), 2));
                     templateHeaderBean.setUnumHeadIsmandy(gmstConfigTemplateHeaderMst.getUnumHeadIsmandy() == null ? 0 : gmstConfigTemplateHeaderMst.getUnumHeadIsmandy());
                     templateHeaderBean.setUnumIsMergeWithParent(gmstConfigTemplateHeaderMst.getUnumIsMergeWithParent() == null ? 0 : gmstConfigTemplateHeaderMst.getUnumIsMergeWithParent());
+
+                    // Replace constants
+                    templateHeaderBean.setUstrHeadPrintText(replaceFacultyNameAndPurpose(gmstConfigTemplateHeaderMst.getUstrHeadPrintText(), facultyName, purpose));
                     headerBeans.add(templateHeaderBean);
                     headerIdsAdded.put(configTemplateDtl.getUnumTempleHeadId(), templateHeaderBean);
                 } else {
@@ -161,6 +205,12 @@ public class MasterTemplateService {
                             templateComponentBean.setUnumCompDisplayOrder(templateDtl.getUnumDisplayOrder());
                             templateComponentBean.setUnumIsHidden(templateDtl.getUnumHideComponentTxt() == null ? 0 : templateDtl.getUnumHideComponentTxt());
                             templateComponentBean.setUnumTempledtlId(templateDtl.getUnumTempledtlId());
+
+                            // Replace constants
+                            templateComponentBean.setUstrCompPrintText(
+                                    replaceFacultyNameAndPurpose(gmstConfigTemplateComponentMst.getUstrCompPrintText(), facultyName, purpose)
+                            );
+
                             return templateComponentBean;
                         })
                         .sorted(Comparator.comparing(TemplateComponentBean::getUnumCompDisplayOrder, Comparator.nullsLast(Comparator.naturalOrder())))
@@ -189,6 +239,14 @@ public class MasterTemplateService {
                                 templateItemBean.setUnumIsHidden(templateDtl.getUnumHideItemTxt() == null ? 0 : templateDtl.getUnumHideItemTxt());
                                 templateItemBean.setUnumTempledtlId(templateDtl.getUnumTempledtlId());
                                 templateItemBean.setUnumTemplCompItemId(templateDtl.getUnumTemplCompItemId());
+                                templateItemBean.setUstrItemValue(itemMap.getOrDefault(gmstConfigTemplateItemMst.getUnumTemplItemId(), ""));
+
+                                // replace constants
+                                templateItemBean.setUstrItemPrintPreText(
+                                        replaceFacultyNameAndPurpose(gmstConfigTemplateItemMst.getUstrItemPrintPreText(), facultyName, purpose));
+                                templateItemBean.setUstrItemPrintPostText(
+                                        replaceFacultyNameAndPurpose(gmstConfigTemplateItemMst.getUstrItemPrintPostText(), facultyName, purpose));
+
                                 return templateItemBean;
                             })
                             .sorted(Comparator.comparing(TemplateItemBean::getUnumItemDisplayOrder, Comparator.nullsLast(Comparator.naturalOrder())))
@@ -197,7 +255,7 @@ public class MasterTemplateService {
                     templateComponentBean.setItems(templateItemBeans);
 
                     for (TemplateItemBean templateItemBean: templateItemBeans) {
-                        fetchSubItems(templateItemBean, itemsByTemplateId, templateDetailByTemplateId);
+                        fetchSubItems(templateItemBean, itemsByTemplateId, templateDetailByTemplateId, itemMap, facultyName, purpose);
                     }
                 }
             }
@@ -207,7 +265,29 @@ public class MasterTemplateService {
         return ServiceResponse.successObject(masterTemplateBean);
     }
 
-    private void fetchSubItems(TemplateItemBean templateItemBean, List<GmstConfigTemplateItemMst> itemsByTemplateId, List<GmstConfigTemplateDtl> templateDetailByTemplateId) {
+    private String replaceFacultyNameAndPurpose(String text, String facultyName, String purpose) {
+        if (text == null)
+            return null;
+        return text.replaceAll("#faculty_name#", facultyName)
+                .replaceAll("#application_purpose#", purpose);
+    }
+
+    private String replaceFacultyName(String text, String facultyName) {
+        return replaceText(text, "#faculty_name#", facultyName);
+    }
+
+    private String replacePurpose(String text, String purpose) {
+        return replaceText(text, "#application_purpose#", purpose);
+    }
+
+    private String replaceText(String text, String textToReplace, String replacementString) {
+        if (text == null)
+            return null;
+        return text.replaceAll(textToReplace, replacementString);
+    }
+
+    private void fetchSubItems(TemplateItemBean templateItemBean, List<GmstConfigTemplateItemMst> itemsByTemplateId,
+                               List<GmstConfigTemplateDtl> templateDetailByTemplateId, Map<Long, String> itemMap, String facultyName, String purpose) {
 
         List<TemplateItemBean> childItems = itemsByTemplateId.stream()
                 .filter(gmstConfigTemplateItemMst -> gmstConfigTemplateItemMst.getUnumTemplParentItemId() != null &&
@@ -222,6 +302,13 @@ public class MasterTemplateService {
                         itemBean.setUnumIsHidden(gmstConfigTemplateDtl.getUnumHideItemTxt() == null ? 0 : gmstConfigTemplateDtl.getUnumHideItemTxt());
                         itemBean.setUnumTempledtlId(gmstConfigTemplateDtl.getUnumTempledtlId());
                         itemBean.setUnumTemplCompItemId(gmstConfigTemplateDtl.getUnumTemplCompItemId());
+                        itemBean.setUstrItemValue(itemMap.getOrDefault(gmstConfigTemplateItemMst.getUnumTemplItemId(), ""));
+
+                        // Replace constants
+                        itemBean.setUstrItemPrintPreText(
+                                replaceFacultyNameAndPurpose(gmstConfigTemplateItemMst.getUstrItemPrintPreText(), facultyName, purpose));
+                        itemBean.setUstrItemPrintPostText(
+                                replaceFacultyNameAndPurpose(gmstConfigTemplateItemMst.getUstrItemPrintPostText(), facultyName, purpose));
                     }
                     return itemBean;
                 })
@@ -234,7 +321,7 @@ public class MasterTemplateService {
             return;
 
         for (TemplateItemBean childItem: childItems) {
-            fetchSubItems(childItem, itemsByTemplateId, templateDetailByTemplateId);
+            fetchSubItems(childItem, itemsByTemplateId, templateDetailByTemplateId, itemMap, facultyName, purpose);
         }
     }
 
@@ -269,11 +356,13 @@ public class MasterTemplateService {
             return ServiceResponse.errorResponse(language.notFoundForId("Notification Detail", templateToSaveBean.getUnumNdtlId()));
 
         // Upload all the file to main directory
-        for (TemplateToSaveDetailBean templateToSaveDetailBean: templateToSaveBean.getItemDetails()) {
-            if (templateToSaveDetailBean.getUnumUiControlId() == 9) {
-                if (templateToSaveDetailBean.getUstrItemValue() != null && !templateToSaveDetailBean.getUstrItemValue().isBlank()) {
-                    if (!ftpUtility.moveFileFromTempToFinalDirectory(templateToSaveDetailBean.getUstrTempleItemValue()))
-                        return ServiceResponse.errorResponse(language.message("Unable to upload file [" + templateToSaveDetailBean.getUstrTempleItemValue() + "]."));
+        if (templateToSaveBean.getUnumApplicationEntryStatus() == 2) {
+            for (TemplateToSaveDetailBean templateToSaveDetailBean : templateToSaveBean.getItemDetails()) {
+                if (templateToSaveDetailBean.getUnumUiControlId() == 9) {
+                    if (templateToSaveDetailBean.getUstrItemValue() != null && !templateToSaveDetailBean.getUstrItemValue().isBlank()) {
+                        if (!ftpUtility.moveFileFromTempToFinalDirectory(templateToSaveDetailBean.getUstrItemValue()))
+                            return ServiceResponse.errorResponse(language.message("Unable to upload file [" + templateToSaveDetailBean.getUstrItemValue() + "]."));
+                    }
                 }
             }
         }
@@ -282,6 +371,13 @@ public class MasterTemplateService {
         Date currentDate = new Date();
         Long applicationId = templateToSaveBean.getUnumApplicationId();
         if (applicationId == null || applicationId == 0L) {
+            // Check if Application already exists
+            Optional<GbltConfigApplicationDataMst> applicationOptional = applicantDataMasterRepository.getApplication(
+                    RequestUtility.getUniversityId(), RequestUtility.getUserId(), notificationBean.getUnumNid(), notificationDetailBean.getUnumNdtlId());
+            if (applicationOptional.isPresent()) {
+                return ServiceResponse.errorResponse(language.message("Application already saved"));
+            }
+
             applicationId = applicantDataMasterRepository.getNextId();
 
             GmstConfigMastertemplateMst mastertemplateMst = mastertemplateMstOptional.get();
@@ -315,6 +411,17 @@ public class MasterTemplateService {
         } else {
             // Delete all entries
             applicationDataDetailRepository.delete(1, universityId, applicationId);
+
+            // Update master table
+            Optional<GbltConfigApplicationDataMst> applicationDataMstOptional = applicantDataMasterRepository.findById(new GbltConfigApplicationDataMstPK(
+                    applicationId, applicantId, notificationBean.getUnumNid(), notificationDetailBean.getUnumNdtlId(), 1
+            ));
+            if (applicationDataMstOptional.isEmpty())
+                return ServiceResponse.errorResponse(language.notFoundForId("Application", applicationId));
+            GbltConfigApplicationDataMst applicationDataMst = applicationDataMstOptional.get();
+            applicationDataMst.setUnumApplicationId(applicationId);
+            applicationDataMst.setUnumApplicantId(applicantId);
+            applicantDataMasterRepository.save(applicationDataMst);
         }
 
         List<GbltConfigApplicationDataDtl> itemDetailList = new ArrayList<>();
@@ -338,5 +445,12 @@ public class MasterTemplateService {
         TemplateToSaveBean responseObject = new TemplateToSaveBean();
         responseObject.setUnumApplicationId(applicationId);
         return ServiceResponse.successObject(responseObject);
+    }
+
+    public List<MasterTemplateBean> getCombo() throws Exception {
+        return BeanUtils.copyListProperties(
+                masterTemplateRepository.findByUnumIsvalidAndUnumUnivId(1, RequestUtility.getUniversityId()),
+                MasterTemplateBean.class
+        );
     }
 }

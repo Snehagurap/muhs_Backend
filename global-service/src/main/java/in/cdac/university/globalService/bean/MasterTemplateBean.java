@@ -1,6 +1,8 @@
 package in.cdac.university.globalService.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import in.cdac.university.globalService.util.annotations.ComboKey;
+import in.cdac.university.globalService.util.annotations.ComboValue;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -13,6 +15,7 @@ import java.util.List;
 @ToString
 public class MasterTemplateBean {
 
+    @ComboKey
     private Long unumMtempleId;
 
     @JsonIgnore
@@ -47,7 +50,11 @@ public class MasterTemplateBean {
 
     private String ustrMtempleCode;
 
+    @ComboValue
     private String ustrMtempleName;
+
+    private Integer unumApplicationEntryStatus;
+    private Long unumApplicationId;
 
     private List<TemplateBean> templateList;
 }

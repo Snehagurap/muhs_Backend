@@ -230,4 +230,10 @@ public class EmployeeService {
         employeeRepository.updateMember2Flag(employeesToFlag);
         return ServiceResponse.successMessage(language.message("Flag updated successfully"));
     }
+
+    @Transactional
+    public ServiceResponse updateCommitteeSelectionFlag(List<Long> employeesToFlag) {
+        employeeRepository.updateCommitteeSelectionFlag(employeesToFlag);
+        return ServiceResponse.successMessage(language.message("Flag updated successfully"));
+    }
 }

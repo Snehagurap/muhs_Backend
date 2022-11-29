@@ -64,4 +64,7 @@ public class GbltNotificationDtl implements Serializable {
 
 	@Column(name="ustr_ndtl_sno_description")
 	private String ustrNdtlSnoDescription;
+
+	@Column(name = "unum_mtemple_id")
+	private Long unumMtempleId;
 }

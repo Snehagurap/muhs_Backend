@@ -86,7 +86,6 @@ public class GmstEmpMst implements Serializable {
 
 	@Column(name="ustr_t_emailid")
 	private String ustrTEmailid;
-
 	@Column(name="ustr_t_pan_no")
 	private String ustrTPanNo;
 
@@ -95,6 +94,9 @@ public class GmstEmpMst implements Serializable {
 
 	@Column(name="willingness_to_work_on_lic")
 	private String willingnessToWorkOnLic;
+
+	@Column(name = "unum_isexternal")
+	private Integer unumIsexternal;
 
 	@Column(name="unum_dept_id")
 	private Integer unumDeptId;
@@ -125,4 +127,7 @@ public class GmstEmpMst implements Serializable {
 
 	@Column(name="unum_ay_lic_member2_count")
 	private Integer unumAyLicMember2Count;
+
+	@Column(name = "unum_is_selected")
+	private Integer unumIsSelected;
 }

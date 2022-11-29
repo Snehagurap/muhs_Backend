@@ -1,5 +1,9 @@
 package in.cdac.university.committee.service;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import in.cdac.university.committee.bean.*;
 import in.cdac.university.committee.entity.*;
 import in.cdac.university.committee.repository.*;
@@ -9,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayOutputStream;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -85,11 +91,11 @@ public class CommitteeService {
                 .build();
     }
 
-    public List<CommitteeBean> getCommitteeList() {
+    public List<CommitteeBean> getCommitteeList(Integer committeeTypeId) {
         Integer universityId = RequestUtility.getUniversityId();
 
         return BeanUtils.copyListProperties(
-                committeeMasterRepository.findByUnumUnivIdAndUnumIsvalidOrderByUstrComNameAsc(universityId, 1),
+                committeeMasterRepository.findByUnumUnivIdAndUnumIsvalidAndUnumComtypeIdOrderByUstrComNameAsc(universityId, 1, committeeTypeId),
                 CommitteeBean.class
         );
     }
@@ -197,6 +203,7 @@ public class CommitteeService {
             }
 
             Map<Long, EmployeeBean> teacherMap = Arrays.stream(teachers)
+                        .filter(teacher -> teacher.getUnumIsSelected() == null || teacher.getUnumIsSelected() == 0)
                         .collect(Collectors.toMap(EmployeeBean::getUnumEmpId, Function.identity(), (v1, v2) -> v2));
 
             Map<Integer, String> committeeRoles = committeeRoleRepository.findAll().stream()
@@ -206,16 +213,28 @@ public class CommitteeService {
             AtomicInteger memberCount = new AtomicInteger(1);
             List<CommitteeDetailBean> committeeDetailBeans = committeeDtlList.stream().map(
                     committeeDetail -> {
-                        if (committeeDetail.getUnumRoleId() == 10)
-                            sno.set(1);
-                        else if (committeeDetail.getUnumRoleId() == 11)
-                            sno.set(memberCount.addAndGet(1));
-                        else
-                            sno.set(0);
-                        if (sno.get() == 0)
+                        if (committeeBean.getUnumIsFormulaBased() == null || committeeBean.getUnumIsFormulaBased() == 0) {
+                            CommitteeDetailBean committeeDetailBean = mapTeacherManual(teachers, committeeRoles, committeeDetail, committeeDetail.getUnumRoleId());
+
+                            if (committeeDetailBean.getTeachersCombo().isEmpty())
+                                committeeDetailBean = mapTeacherByRule(facultyWiseTeachers, designationWiseTeachers, teacherMap, committeeRoles, committeeDetail);
+
+                            return committeeDetailBean;
+
+
+//                            if (committeeDetail.getUnumRoleId() == 10)
+//                                sno.set(1);
+//                            else if (committeeDetail.getUnumRoleId() == 11)
+//                                sno.set(memberCount.addAndGet(1));
+//                            else
+//                                sno.set(0);
+//                            if (sno.get() == 0)
+//                                return mapTeacherByRule(facultyWiseTeachers, designationWiseTeachers, teacherMap, committeeRoles, committeeDetail);
+//                            else
+//                                return mapTeacherManual(teachers, committeeRoles, committeeDetail, committeeDetail.getUnumRoleId());
+                        } else {
                             return mapTeacherByRule(facultyWiseTeachers, designationWiseTeachers, teacherMap, committeeRoles, committeeDetail);
-                        else
-                            return mapTeacherManual(teachers, committeeRoles, committeeDetail, sno.get());
+                        }
                     }
             ).toList();
 
@@ -274,7 +293,9 @@ public class CommitteeService {
             for (Long teacherId: filteredTeacherIds) {
                 if (teacherMap.containsKey(teacherId)) {
                     EmployeeBean employeeBean = teacherMap.get(teacherId);
-                    filteredTeachers.add(new ComboBean(employeeBean.getUnumEmpId().toString(), employeeBean.getUstrEmpName()));
+                    Integer employeeRole = employeeBean.getUnumIsexternal() == null ? 0 : employeeBean.getUnumIsexternal();
+                    if (isExternal.equals(employeeRole))
+                        filteredTeachers.add(new ComboBean(employeeBean.getUnumEmpId().toString(), employeeBean.getUstrEmpName()));
                 }
             }
         }
@@ -327,19 +348,30 @@ public class CommitteeService {
         List<Long> chairmen = new ArrayList<>();
         List<Long> member1 = new ArrayList<>();
         List<Long> member2 = new ArrayList<>();
+        List<Long> committeeMembers = new ArrayList<>();
         boolean isMember1 = true;
         for (CommitteeMember committeeMember: committeeMemberBean.getMembers()) {
             GbltCommitteeMemberDtl committeeMemberDtl = BeanUtils.copyProperties(committeeMember, GbltCommitteeMemberDtl.class);
-            if (committeeMember.getUnumPreference1Empid() == null)
+            if (committeeMember.getUnumPreference1Empid() == null) {
                 committeeMemberDtl.setUnumPreference1Empname(null);
-            if (committeeMember.getUnumPreference2Empid() == null)
+                committeeMembers.add(committeeMember.getUnumPreference1Empid());
+            }
+            if (committeeMember.getUnumPreference2Empid() == null) {
                 committeeMemberDtl.setUnumPreference2Empname(null);
-            if (committeeMember.getUnumPreference3Empid() == null)
+                committeeMembers.add(committeeMember.getUnumPreference2Empid());
+            }
+            if (committeeMember.getUnumPreference3Empid() == null) {
                 committeeMemberDtl.setUnumPreference3Empname(null);
-            if (committeeMember.getUnumPreference4Empid() == null)
+                committeeMembers.add(committeeMember.getUnumPreference3Empid());
+            }
+            if (committeeMember.getUnumPreference4Empid() == null) {
                 committeeMemberDtl.setUnumPreference4Empname(null);
-            if (committeeMember.getUnumPreference5Empid() == null)
+                committeeMembers.add(committeeMember.getUnumPreference4Empid());
+            }
+            if (committeeMember.getUnumPreference5Empid() == null) {
                 committeeMemberDtl.setUnumPreference5Empname(null);
+                committeeMembers.add(committeeMember.getUnumPreference5Empid());
+            }
 
             committeeMemberDtl.setUnumComMemberId(committeeMemberMappingRepository.getNextId());
             committeeMemberDtl.setUnumIsvalid(committeeMemberBean.getUnumIsvalid());
@@ -351,9 +383,9 @@ public class CommitteeService {
             committeeMemberDtl.setUnumUnivId(committeeMemberBean.getUnumUnivId());
 
             List<Long> employees = null;
-            if (committeeMember.getUnumRoleId().equals(10)) {
+            if (committeeMember.getUnumRoleId().equals(1)) {
                 employees = chairmen;
-            } else if (committeeMember.getUnumRoleId().equals(11)) {
+            } else if (committeeMember.getUnumRoleId().equals(2) || committeeMember.getUnumRoleId().equals(3)) {
                 if (isMember1) {
                     employees = member1;
                     isMember1 = false;
@@ -375,9 +407,6 @@ public class CommitteeService {
         committeeMemberMappingRepository.saveAll(membersToSave);
 
         // Update Committee Flag in Employee Master
-        System.out.println("Chairmen " + chairmen);
-        System.out.println("Member 1 " + member1);
-        System.out.println("Member 2 " + member2);
         EmployeeBean empBean = new EmployeeBean();
         if (!chairmen.isEmpty()) {
             empBean.setEmployeesToFlag(chairmen);
@@ -400,6 +429,14 @@ public class CommitteeService {
             String response = restUtility.post(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_UPDATE_MEMBER2_FLAG, empBean, String.class);
             if (response == null) {
                 log.error("Unable to update Member 2 flag for members");
+            }
+        }
+
+        if (!committeeMembers.isEmpty()) {
+            empBean.setEmployeesToFlag(committeeMembers);
+            String response = restUtility.post(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_UPDATE_COMMITTEE_SELECTION_FLAG, empBean, String.class);
+            if (response == null) {
+                log.error("Unable to update Committee Selection flag for members");
             }
         }
 
@@ -454,5 +491,38 @@ public class CommitteeService {
                 .status(1)
                 .responseObject(committeeBean)
                 .build();
+    }
+
+    public byte[] generateCommitteeReport(Long eventId) throws DocumentException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Document document = new Document(PageSize.A4);
+        PdfWriter.getInstance(document, baos);
+        PdfPTable header = new PdfPTable(3);
+        header.setWidthPercentage(100);
+        header.setWidths(new int[] {1, 5, 1});
+        Font headerFont = FontFactory.getFont(FontFactory.HELVETICA);
+
+        document.open();
+        PdfPCell hcell;
+        // Logo
+        hcell = new PdfPCell(new Phrase("", headerFont));
+        hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        header.addCell(hcell);
+
+        // Header
+        hcell = new PdfPCell(new Phrase(Constants.HeaderEnglish + "\n" + Constants.HeaderHindi, headerFont));
+        hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        header.addCell(hcell);
+
+        // Logo
+        hcell = new PdfPCell(new Phrase("", headerFont));
+        hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        header.addCell(hcell);
+
+        document.add(header);
+
+        document.close();
+        System.out.println("Document Length " + baos.toByteArray().length);
+        return baos.toByteArray();
     }
 }
