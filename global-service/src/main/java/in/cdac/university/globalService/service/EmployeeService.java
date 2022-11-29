@@ -151,7 +151,7 @@ public class EmployeeService {
         List<EmployeeProfileBean> employeeProfileList = BeanUtils.copyListProperties(gmstEmpProfileDtlList, EmployeeProfileBean.class);
         
         employeeBean.setEmployeeProfileList(employeeProfileList);
-
+        employeeBean.setUnumCollegeId(employeeProfileList.get(0).getUnumCollegeId());
         return ServiceResponse.builder()
                 .status(1)
                 .responseObject(employeeBean)
