@@ -11,6 +11,7 @@ import in.cdac.university.globalService.repository.EmployeeCurrentDetailReposito
 import in.cdac.university.globalService.repository.EmployeeProfileRepository;
 import in.cdac.university.globalService.repository.EmployeeRepository;
 import in.cdac.university.globalService.util.*;
+import org.checkerframework.checker.nullness.Opt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -78,13 +79,16 @@ public class EmployeeService {
         if(employeeProfileBeanList != null && employeeProfileBeanList.size()>0){
             employeeProfileBeanList.forEach(employeeProfileBean -> {
                 GmstEmpProfileDtl gmstEmpProfileDtl = BeanUtils.copyProperties(employeeProfileBean, GmstEmpProfileDtl.class);
+                gmstEmpProfileDtl.setUnumEmpId(empID);
                 Long maxEmpProfileId = employeeProfileRepository.getMaxEmpProfileId(empID);
+                maxEmpProfileId++;
                 gmstEmpProfileDtl.setUnumProfileId(Long.valueOf(empID.toString() + "" + StringUtility.padLeftZeros(maxEmpProfileId.toString(), 5)));
                 gmstEmpProfileDtl.setUnumCollegeId(employeeBean.getUnumCollegeId());
                 gmstEmpProfileDtl.setUnumIsvalid(1);
                 gmstEmpProfileDtl.setUdtEntryDate(employeeBean.getUdtEntryDate());
                 gmstEmpProfileDtl.setUnumUnivId(employeeBean.getUnumUnivId());
                 gmstEmpProfileDtl.setUnumEntryUid(employeeBean.getUnumEntryUid());
+                gmstEmpProfileDtl.setUdtEffFrom(employeeBean.getUdtEffFrom());
                 gmstEmpProfileDtlList.add(gmstEmpProfileDtl);
             });
 
@@ -93,6 +97,7 @@ public class EmployeeService {
 
 
         EmployeeCurrentDetailBean employeeCurrentDetail = new EmployeeCurrentDetailBean();
+        employeeCurrentDetail.setUnumEmpId(empID);
         employeeCurrentDetail.setUnumEmpDesigid(employeeBean.getUnumEmpDesigid());
         employeeCurrentDetail.setUstrTAadharNo(employeeBean.getUstrTAadharNo());
         employeeCurrentDetail.setUdtUgJoiningDate(employeeBean.getUdtUgJoiningDate());
@@ -105,6 +110,7 @@ public class EmployeeService {
         if(employeeCurrentDetail != null) {
             GmstEmpCurDtl gmstEmpCurDtl = BeanUtils.copyProperties(employeeCurrentDetail, GmstEmpCurDtl.class);
             Long maxEmpCurrDetailId = employeeCurrentDetailRepository.getMaxEmpCurrDetailId(empID);
+            maxEmpCurrDetailId++;
             gmstEmpCurDtl.setUnumEmpCurId(Long.valueOf(empID.toString() + "" + StringUtility.padLeftZeros(maxEmpCurrDetailId.toString(), 5)));
 
             employeeCurrentDetailRepository.save(gmstEmpCurDtl);
@@ -123,6 +129,28 @@ public class EmployeeService {
             return ServiceResponse.errorResponse(language.notFoundForId("Teacher", teacherId));
 
         EmployeeBean employeeBean = BeanUtils.copyProperties(gmstEmpMstOptional.get(), EmployeeBean.class);
+
+        Optional<GmstEmpCurDtl> gmstEmpCurDtlOptional = employeeCurrentDetailRepository.findByUnumIsvalidAndUnumEmpId(1, teacherId);
+
+        if (gmstEmpCurDtlOptional.isEmpty())
+            return ServiceResponse.errorResponse(language.notFoundForId("Current Detail", teacherId));
+
+        EmployeeCurrentDetailBean employeeCurrentDetail = BeanUtils.copyProperties(gmstEmpCurDtlOptional.get(), EmployeeCurrentDetailBean.class);
+
+        employeeBean.setUstrTAadharNo(employeeCurrentDetail.getUstrTAadharNo());
+        employeeBean.setUnumEmpDesigid(employeeCurrentDetail.getUnumEmpDesigid());
+        employeeBean.setUdtUgJoiningDate(employeeCurrentDetail.getUdtUgJoiningDate());
+        employeeBean.setUdtPgJoiningDate(employeeCurrentDetail.getUdtPgJoiningDate());
+
+        List<GmstEmpProfileDtl> gmstEmpProfileDtlList = employeeProfileRepository.findByUnumIsvalidAndUnumEmpId(1, teacherId);
+
+        if(gmstEmpProfileDtlList.isEmpty()) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Profile Detail", teacherId));
+        }
+
+        List<EmployeeProfileBean> employeeProfileList = BeanUtils.copyListProperties(gmstEmpProfileDtlList, EmployeeProfileBean.class);
+        
+        employeeBean.setEmployeeProfileList(employeeProfileList);
 
         return ServiceResponse.builder()
                 .status(1)

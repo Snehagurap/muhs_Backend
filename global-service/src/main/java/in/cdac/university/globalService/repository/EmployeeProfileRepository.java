@@ -18,4 +18,8 @@ public interface EmployeeProfileRepository extends JpaRepository<GmstEmpProfileD
             "where unumEmpId= :empID")
     Long getMaxEmpProfileId(@Param("empID") Long empID);
 
+    List<GmstEmpProfileDtl> findByUnumIsvalidAndUnumEmpId(Integer unumIsvalid, Long unumEmpId);
+
+
+
 }

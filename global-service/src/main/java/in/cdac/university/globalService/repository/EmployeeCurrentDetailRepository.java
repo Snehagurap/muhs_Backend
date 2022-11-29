@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EmployeeCurrentDetailRepository extends JpaRepository<GmstEmpCurDtl, GmstEmpCurDtlPK> {
 
@@ -15,4 +16,8 @@ public interface EmployeeCurrentDetailRepository extends JpaRepository<GmstEmpCu
     @Query("select count(*) from GmstEmpCurDtl " +
             "where unumEmpId= :empID")
     Long getMaxEmpCurrDetailId(@Param("empID") Long empID);
+
+    Optional<GmstEmpCurDtl> findByUnumIsvalidAndUnumEmpId(Integer unumIsvalid, Long unumEmpId);
+
+
 }
