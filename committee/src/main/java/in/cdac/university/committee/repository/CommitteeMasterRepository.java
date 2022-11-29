@@ -42,7 +42,7 @@ public interface CommitteeMasterRepository extends JpaRepository<GbltCommitteeMs
             "order by c.ustrComName ")
     List<GbltCommitteeMst> activeCommitteeList(@Param("start_date") Date startDate, @Param("universityId") Integer universityId);
 
-    List<GbltCommitteeMst> findByUnumUnivIdAndUnumIsvalidOrderByUstrComNameAsc(Integer unumUnivId, Integer unumIsvalid);
+    List<GbltCommitteeMst> findByUnumUnivIdAndUnumIsvalidAndUnumComtypeIdOrderByUstrComNameAsc(Integer unumUnivId, Integer unumIsvalid, Integer unumComtypeId);
 
     Optional<GbltCommitteeMst> findByUnumIsvalidAndUnumComidAndUnumUnivId(Integer unumIsvalid, Long unumComid, Integer unumUnivId);
 

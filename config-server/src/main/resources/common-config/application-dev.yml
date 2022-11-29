@@ -22,7 +22,7 @@ config:
 
 jwt:
   secret: BvPHGM8C0ia4uOuxxqPD5DTbWC9F9TWvPStp3pb7ARo0oK2mJ3pd3YG4lxA9i8bj6OTbadwezxgeEByY
-  expirationTime: 1200    # 7200: 2 hours for development only
+  expirationTime: 7200    # 7200: 2 hours for development only
 
 spring:
   datasource:

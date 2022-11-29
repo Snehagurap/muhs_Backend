@@ -70,14 +70,22 @@ public class MasterTemplateService {
         if (notificationBean == null)
             return ServiceResponse.errorResponse(language.notFoundForId("Notification", notificationId));
 
-        Optional<GmstCoursefacultyMst> facultyById = facultyRepository.findById(new GmstCoursefacultyMstPK(notificationBean.getUnumCfacultyId(), 1));
+        NotificationDetailBean notificationDetailBean = notificationBean.getNotificationDetails().stream()
+                .filter(bean -> bean.getUnumNdtlId().equals(notificationDetailId))
+                .findFirst()
+                .orElse(null);
+
+        if (notificationDetailBean == null)
+            return ServiceResponse.errorResponse(language.notFoundForId("Notification Detail", notificationDetailId));
+
+        Optional<GmstCoursefacultyMst> facultyById = facultyRepository.findById(new GmstCoursefacultyMstPK(notificationDetailBean.getUnumFacultyId(), 1));
         String tempFacultyName = "";
         if (facultyById.isPresent()) {
             tempFacultyName = facultyById.get().getUstrCfacultyFname();
         }
 
         final String facultyName = tempFacultyName;
-        final String purpose = notificationBean.getUstrNMainHeading() == null ? "" : notificationBean.getUstrNMainHeading();
+        final String purpose = notificationBean.getUstrNSubHeading() == null ? "" : notificationBean.getUstrNSubHeading();
         // Check if application already exists
         Map<Long, String> mapItemValues = new HashMap<>();
         Optional<GbltConfigApplicationDataMst> applicationOptional = applicantDataMasterRepository.getApplication(universityId, RequestUtility.getUserId(), notificationId, notificationDetailId);

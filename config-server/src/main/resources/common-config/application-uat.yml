@@ -41,24 +41,26 @@ spring:
       file-size-threshold: 2KB
       max-file-size: 5MB
       max-request-size: 200MB
-  cloud:
-    gateway:
-      globalcors:
-        cors-configurations:
-          '[/**]':
-            allowedOrigins: "muhs.uat.dcservices.in"
-            allowedMethods:
-              - GET
-              - POST
-              - DELETE
-              - PUT
-              - PATCH
-            allowedHeaders:
-              - Authorization
-              - content-type
-              - fhttf
-              - f_code
-              -
+#  cloud:
+#    gateway:
+#      default-filters:
+#        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+#      globalcors:
+#        cors-configurations:
+#          '[/**]':
+#            allowedOrigins: "*"
+#            allowedMethods:
+#              - GET
+#              - POST
+#              - DELETE
+#              - PUT
+#              - PATCH
+#            allowedHeaders:
+#              - Authorization
+#              - content-type
+#              - fhttf
+#              - f_code
+
 ftp:
   url: 10.10.10.168
   username: ftpuser1

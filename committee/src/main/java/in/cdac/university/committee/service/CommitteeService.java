@@ -91,11 +91,11 @@ public class CommitteeService {
                 .build();
     }
 
-    public List<CommitteeBean> getCommitteeList() {
+    public List<CommitteeBean> getCommitteeList(Integer committeeTypeId) {
         Integer universityId = RequestUtility.getUniversityId();
 
         return BeanUtils.copyListProperties(
-                committeeMasterRepository.findByUnumUnivIdAndUnumIsvalidOrderByUstrComNameAsc(universityId, 1),
+                committeeMasterRepository.findByUnumUnivIdAndUnumIsvalidAndUnumComtypeIdOrderByUstrComNameAsc(universityId, 1, committeeTypeId),
                 CommitteeBean.class
         );
     }
@@ -493,15 +493,16 @@ public class CommitteeService {
                 .build();
     }
 
-    public byte[] generateCommitteeReport(CommitteeMemberBean committeeMemberBean) throws DocumentException {
+    public byte[] generateCommitteeReport(Long eventId) throws DocumentException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Document document = new Document(PageSize.A4);
-        PdfWriter pdfWriter = PdfWriter.getInstance(document, baos);
+        PdfWriter.getInstance(document, baos);
         PdfPTable header = new PdfPTable(3);
         header.setWidthPercentage(100);
         header.setWidths(new int[] {1, 5, 1});
         Font headerFont = FontFactory.getFont(FontFactory.HELVETICA);
 
+        document.open();
         PdfPCell hcell;
         // Logo
         hcell = new PdfPCell(new Phrase("", headerFont));
@@ -520,6 +521,8 @@ public class CommitteeService {
 
         document.add(header);
 
+        document.close();
+        System.out.println("Document Length " + baos.toByteArray().length);
         return baos.toByteArray();
     }
 }

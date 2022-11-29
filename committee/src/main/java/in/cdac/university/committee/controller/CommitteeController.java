@@ -48,22 +48,22 @@ public class CommitteeController {
         );
     }
 
-    @GetMapping("creator/listPage")
-    public ResponseEntity<?> getListPage() throws Exception {
+    @GetMapping("creator/listPage/{committeeTypeId}")
+    public ResponseEntity<?> getListPage(@PathVariable("committeeTypeId") Integer committeeTypeId) throws Exception {
         return ResponseHandler.generateOkResponse(
-                ListPageUtility.generateListPageData(committeeService.getCommitteeList())
+                ListPageUtility.generateListPageData(committeeService.getCommitteeList(committeeTypeId))
         );
     }
 
     @GetMapping("{committeeId}")
-    public ResponseEntity<?> getCommittee(@PathVariable("committeeId") Long committeeId) throws Exception {
+    public ResponseEntity<?> getCommittee(@PathVariable("committeeId") Long committeeId) {
         return ResponseHandler.generateResponse(
                 committeeService.getCommittee(committeeId)
         );
     }
 
     @GetMapping("withMembers/{eventId}")
-    public ResponseEntity<?> getCommitteeByEventIdWithMembers(@PathVariable("eventId") Long eventId) throws Exception {
+    public ResponseEntity<?> getCommitteeByEventIdWithMembers(@PathVariable("eventId") Long eventId) {
         return ResponseHandler.generateResponse(
                 committeeService.getCommitteeByEventIdWithMembers(eventId)
         );
@@ -87,12 +87,10 @@ public class CommitteeController {
         );
     }
 
-    @PostMapping("memberMapping/print")
-    public ResponseEntity<?> generateCommitteeReport(@Valid @RequestBody CommitteeMemberBean committeeMemberBean) throws Exception {
-        byte[] pdfBytes = committeeService.generateCommitteeReport(committeeMemberBean);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment: committee_report.pdf")
-                .contentType(MediaType.APPLICATION_PDF)
-                .body(pdfBytes);
+    @GetMapping("memberMapping/print/{eventId}")
+    public ResponseEntity<?> generateCommitteeReport(@PathVariable("eventId") Long eventId) throws Exception {
+        byte[] pdfBytes = committeeService.generateCommitteeReport(eventId);
+
+        return ResponseHandler.generateFileResponse(pdfBytes, "committee_report.pdf");
     }
 }
