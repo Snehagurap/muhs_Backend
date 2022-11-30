@@ -26,4 +26,5 @@ public interface ApplicantRepository extends JpaRepository<GmstApplicantMst, Gms
             "from GmstApplicantMst a where a.unumApplicantId = u.unumApplicantId and a.unumIsvalid > 2) " +
             "where u.unumApplicantId in (:applicantId) and u.unumIsvalid in (1, 2) ")
     Integer createLog(@Param("applicantId") List<Long> applicantId);
+
 }

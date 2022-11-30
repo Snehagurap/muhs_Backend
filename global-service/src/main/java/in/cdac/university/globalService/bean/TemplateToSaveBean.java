@@ -1,5 +1,6 @@
 package in.cdac.university.globalService.bean;
 
+import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Data;
 
 import javax.validation.Valid;
@@ -10,6 +11,7 @@ import java.util.List;
 @Data
 public class TemplateToSaveBean {
 
+    @ListColumn(name = "Application Id")
     private Long unumApplicationId;
 
     @NotNull(message = "Master Template Id is mandatory")
@@ -28,4 +30,7 @@ public class TemplateToSaveBean {
     @Size(min = 1, message = "Item details are mandatory.")
     @Valid
     private List<TemplateToSaveDetailBean> itemDetails;
+
+    @ListColumn(order = 2, name = "Applicant Name")
+    private String applicantName;
 }
