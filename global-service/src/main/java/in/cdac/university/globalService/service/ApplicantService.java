@@ -17,7 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.Valid;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -124,7 +123,7 @@ public class ApplicantService {
         return ServiceResponse.successMessage(message);
     }
 
-    public List<ApplicantBean> getListPageVerification(Integer isVerifiedApplicant) throws Exception {
+    public List<ApplicantBean> getListPageVerification(Integer isVerifiedApplicant)  {
         List<GmstApplicantMst> gmstApplicantMstList = applicantRepository.findByUnumIsVerifiedApplicantAndUnumIsvalid(isVerifiedApplicant, 1);
         if(gmstApplicantMstList.isEmpty()){
             return BeanUtils.copyListProperties(gmstApplicantMstList, ApplicantBean.class);
@@ -186,9 +185,9 @@ public class ApplicantService {
             return ServiceResponse.errorResponse(language.notFoundForId("Applicant Document Detail", applicantId));
         }
 
-        gmstApplicantDtlList.forEach( applicantDetailBean -> {
-                    applicantDetailBean.setUnumDocIsVerified(applicantBean.getUnumIsVerifiedApplicant());
-        });
+        gmstApplicantDtlList.forEach( applicantDetailBean ->
+                    applicantDetailBean.setUnumDocIsVerified(applicantBean.getUnumIsVerifiedApplicant())
+        );
 
         applicantDetailRepository.saveAll(gmstApplicantDtlList);
 
