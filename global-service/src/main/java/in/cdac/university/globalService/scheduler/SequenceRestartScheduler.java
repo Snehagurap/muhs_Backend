@@ -56,6 +56,7 @@ public class SequenceRestartScheduler {
             "university.seq_gmst_emp_mst",
             "university.seq_gmst_applicant_mst",
             "university.seq_gmst_config_mastertemplate_mst",
+            "university.seq_gmst_config_template_component_mst",
 
             // Planning Board
             "upb.seq_gblt_notification_master",
