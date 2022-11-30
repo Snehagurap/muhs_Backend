@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -23,6 +24,17 @@ public interface ConfigApplicantDataMasterRepository extends JpaRepository<GbltC
             "and unumNdtlId = :notificationDetailId ")
     Optional<GbltConfigApplicationDataMst> getApplication(@Param("universityId") Integer universityId,
                                                           @Param("applicantId") Long applicantId,
+                                                          @Param("notificationId") Long notificationId,
+                                                          @Param("notificationDetailId") Long notificationDetailId);
+
+    @Query("select c from GbltConfigApplicationDataMst c " +
+            "where unumIsvalid = 1 " +
+            "and unumUnivId = :universityId " +
+            "and unumApplicationEntryStatus = :status " +
+            "and unumNid = :notificationId " +
+            "and unumNdtlId = :notificationDetailId ")
+    List<GbltConfigApplicationDataMst> getApplicationByNotification(@Param("universityId") Integer universityId,
+                                                          @Param("status") Integer notificationStatus,
                                                           @Param("notificationId") Long notificationId,
                                                           @Param("notificationDetailId") Long notificationDetailId);
 }

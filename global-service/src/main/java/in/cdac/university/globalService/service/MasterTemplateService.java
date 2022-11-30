@@ -453,4 +453,23 @@ public class MasterTemplateService {
                 MasterTemplateBean.class
         );
     }
+
+    public List<TemplateToSaveBean> scrutinyListPage(Long notificationId, Long notificationDetail, Integer applicationStatus) throws Exception {
+        List<GbltConfigApplicationDataMst> applicationDataList = applicantDataMasterRepository.getApplicationByNotification(
+                RequestUtility.getUniversityId(), applicationStatus, notificationId, notificationDetail
+        );
+
+        Map<Long, String> applicants = applicantRepository.findByUnumIsVerifiedApplicantAndUnumIsvalid(1, 1)
+                .stream()
+                .collect(Collectors.toMap(GmstApplicantMst::getUnumApplicantId, GmstApplicantMst::getUstrApplicantName));
+
+        return applicationDataList.stream()
+                .map(applicationData -> {
+                    TemplateToSaveBean templateToSaveBean = new TemplateToSaveBean();
+                    templateToSaveBean.setUnumApplicationId(applicationData.getUnumApplicationId());
+                    templateToSaveBean.setApplicantName(applicants.getOrDefault(applicationData.getUnumApplicantId(), ""));
+                    return templateToSaveBean;
+                })
+                .toList();
+    }
 }

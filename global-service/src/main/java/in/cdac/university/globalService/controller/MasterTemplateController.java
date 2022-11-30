@@ -4,6 +4,7 @@ import in.cdac.university.globalService.bean.ComboBean;
 import in.cdac.university.globalService.bean.TemplateToSaveBean;
 import in.cdac.university.globalService.service.MasterTemplateService;
 import in.cdac.university.globalService.util.ComboUtility;
+import in.cdac.university.globalService.util.ListPageUtility;
 import in.cdac.university.globalService.util.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,5 +43,14 @@ public class MasterTemplateController {
         comboBeanList.add(new ComboBean("", "Select Template"));
         comboBeanList.addAll(ComboUtility.generateComboData(masterTemplateService.getCombo()));
         return ResponseHandler.generateOkResponse(comboBeanList);
+    }
+
+    @GetMapping("scrutiny/listPage/{notificationId}/{notificationDetailId}/{applicationStatus}")
+    public ResponseEntity<?> scrutinyListPage(@PathVariable("notificationId") Long notificationId,
+                                              @PathVariable("notificationDetailId") Long notificationDetailId,
+                                              @PathVariable("applicationStatus") Integer applicationStatus) throws Exception {
+        return ResponseHandler.generateOkResponse(
+                ListPageUtility.generateListPageData(masterTemplateService.scrutinyListPage(notificationId, notificationDetailId, applicationStatus))
+        );
     }
 }

@@ -46,13 +46,13 @@ public class RequestBodyRewrite implements RewriteFunction<String, String> {
                     jsonToString(valueAsMap, result);
                 }
             }
-        }
-        else if(body instanceof ArrayList<?> bodyAsList){
+        } else if(body instanceof ArrayList<?> bodyAsList) {
             String string = bodyAsList.stream()
                     .map(String::valueOf)
-        //           .map(data -> String.valueOf(data))
                     .collect(Collectors.joining());
             result.append(string);
+        } else if (body instanceof String bodyAsString) {
+            result.append(bodyAsString);
         }
     }
 
