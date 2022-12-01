@@ -24,5 +24,10 @@ public interface TemplateComponentRepository extends JpaRepository<GmstConfigTem
 
     List<GmstConfigTemplateComponentMst> findByUnumIsvalidAndUnumUnivIdOrderByUnumCompDisplayOrderAsc(Integer unumIsvalid, Integer unumUnivId);
 
+    @Query(value = "select to_char(current_date, 'yymm') || lpad(nextval('university.seq_gmst_config_template_component_mst')\\:\\:text, 6, '0')", nativeQuery = true)
+    Long getNextUnumTemplCompId();
+    
+    @Query(value = "select max(unumTemplCompId) from university.gmst_config_template_component_mst where  ", nativeQuery = true)
+    Long getNextUnumTemplCompItemId();
 
 }

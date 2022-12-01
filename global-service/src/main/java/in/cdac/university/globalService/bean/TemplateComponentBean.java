@@ -59,4 +59,6 @@ public class TemplateComponentBean {
     private Long unumTempledtlId;
 
     private List<TemplateItemBean> items;
+    
+    private List<TemplateComponentDtlsBean> templateComponentDtlsBeanList;
 }
