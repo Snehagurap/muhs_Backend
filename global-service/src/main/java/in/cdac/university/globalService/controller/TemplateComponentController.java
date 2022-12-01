@@ -1,5 +1,7 @@
 package in.cdac.university.globalService.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,14 +37,13 @@ public class TemplateComponentController {
 	}
 
 	@PostMapping("update")
-	public ResponseEntity<?> update() throws Exception {
-		return ResponseHandler
-				.generateOkResponse(ListPageUtility.generateListPageData(templateComponentService.listPage()));
+	public ResponseEntity<?> update(@Valid @RequestBody TemplateComponentBean templateBean) throws Exception {
+		return ResponseHandler.generateResponse(templateComponentService.update(templateBean));
 	}
 
 	@GetMapping("delete")
-	public ResponseEntity<?> delete() throws Exception {
-		return ResponseHandler
-				.generateOkResponse(ListPageUtility.generateListPageData(templateComponentService.listPage()));
+	public ResponseEntity<?> delete(@RequestBody List<Long> idsToDelete) throws Exception {
+		return ResponseHandler.generateOkResponse(templateComponentService.delete(idsToDelete));
+
 	}
 }
