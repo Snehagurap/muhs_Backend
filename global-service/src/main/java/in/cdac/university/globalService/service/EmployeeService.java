@@ -1,7 +1,7 @@
 package in.cdac.university.globalService.service;
 
 
-import com.netflix.discovery.converters.Auto;
+
 import in.cdac.university.globalService.bean.*;
 import in.cdac.university.globalService.entity.GmstEmpCurDtl;
 import in.cdac.university.globalService.entity.GmstEmpMst;
@@ -11,7 +11,7 @@ import in.cdac.university.globalService.repository.EmployeeCurrentDetailReposito
 import in.cdac.university.globalService.repository.EmployeeProfileRepository;
 import in.cdac.university.globalService.repository.EmployeeRepository;
 import in.cdac.university.globalService.util.*;
-import org.checkerframework.checker.nullness.Opt;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,10 +77,10 @@ public class EmployeeService {
         List<GmstEmpProfileDtl> gmstEmpProfileDtlList = new ArrayList<>();
         List<EmployeeProfileBean> employeeProfileBeanList = employeeBean.getEmployeeProfileList();
         if(employeeProfileBeanList != null && employeeProfileBeanList.size()>0){
-            employeeProfileBeanList.forEach(employeeProfileBean -> {
+            Long maxEmpProfileId = employeeProfileRepository.getMaxEmpProfileId(empID);
+            for(EmployeeProfileBean employeeProfileBean :employeeProfileBeanList) {
                 GmstEmpProfileDtl gmstEmpProfileDtl = BeanUtils.copyProperties(employeeProfileBean, GmstEmpProfileDtl.class);
                 gmstEmpProfileDtl.setUnumEmpId(empID);
-                Long maxEmpProfileId = employeeProfileRepository.getMaxEmpProfileId(empID);
                 maxEmpProfileId++;
                 gmstEmpProfileDtl.setUnumProfileId(Long.valueOf(empID.toString() + "" + StringUtility.padLeftZeros(maxEmpProfileId.toString(), 5)));
                 gmstEmpProfileDtl.setUnumCollegeId(employeeBean.getUnumCollegeId());
@@ -90,34 +90,33 @@ public class EmployeeService {
                 gmstEmpProfileDtl.setUnumEntryUid(employeeBean.getUnumEntryUid());
                 gmstEmpProfileDtl.setUdtEffFrom(employeeBean.getUdtEffFrom());
                 gmstEmpProfileDtlList.add(gmstEmpProfileDtl);
-            });
+            }
 
             employeeProfileRepository.saveAll(gmstEmpProfileDtlList);
         }
 
 
-        EmployeeCurrentDetailBean employeeCurrentDetail = new EmployeeCurrentDetailBean();
-        employeeCurrentDetail.setUnumEmpId(empID);
-        employeeCurrentDetail.setUnumEmpDesigid(employeeBean.getUnumEmpDesigid());
-        employeeCurrentDetail.setUstrTAadharNo(employeeBean.getUstrTAadharNo());
-        employeeCurrentDetail.setUdtUgJoiningDate(employeeBean.getUdtUgJoiningDate());
-        employeeCurrentDetail.setUdtPgJoiningDate(employeeBean.getUdtPgJoiningDate());
-        employeeCurrentDetail.setUnumIsvalid(1);
-        employeeCurrentDetail.setUdtEntryDate(employeeBean.getUdtEntryDate());
-        employeeCurrentDetail.setUnumUnivId(employeeBean.getUnumUnivId());
-        employeeCurrentDetail.setUnumEntryUid(employeeBean.getUnumEntryUid());
+        GmstEmpCurDtl gmstEmpCurDtl = new GmstEmpCurDtl();
+        gmstEmpCurDtl.setUnumEmpId(empID);
+        gmstEmpCurDtl.setUnumEmpDesigid(employeeBean.getUnumEmpDesigid());
+        gmstEmpCurDtl.setUstrTAadharNo(employeeBean.getUstrTAadharNo());
+        gmstEmpCurDtl.setUdtUgJoiningDate(employeeBean.getUdtUgJoiningDate());
+        gmstEmpCurDtl.setUdtPgJoiningDate(employeeBean.getUdtPgJoiningDate());
+        gmstEmpCurDtl.setUnumIsvalid(1);
+        gmstEmpCurDtl.setUdtEntryDate(employeeBean.getUdtEntryDate());
+        gmstEmpCurDtl.setUnumUnivId(employeeBean.getUnumUnivId());
+        gmstEmpCurDtl.setUnumEntryUid(employeeBean.getUnumEntryUid());
 
-        if(employeeCurrentDetail != null) {
-            GmstEmpCurDtl gmstEmpCurDtl = BeanUtils.copyProperties(employeeCurrentDetail, GmstEmpCurDtl.class);
-            Long maxEmpCurrDetailId = employeeCurrentDetailRepository.getMaxEmpCurrDetailId(empID);
-            maxEmpCurrDetailId++;
-            gmstEmpCurDtl.setUnumEmpCurId(Long.valueOf(empID.toString() + "" + StringUtility.padLeftZeros(maxEmpCurrDetailId.toString(), 5)));
 
-            employeeCurrentDetailRepository.save(gmstEmpCurDtl);
-        }
+        Long maxEmpCurrDetailId = employeeCurrentDetailRepository.getMaxEmpCurrDetailId(empID);
+        maxEmpCurrDetailId++;
+        gmstEmpCurDtl.setUnumEmpCurId(Long.valueOf(empID.toString() + "" + StringUtility.padLeftZeros(maxEmpCurrDetailId.toString(), 5)));
+
+        employeeCurrentDetailRepository.save(gmstEmpCurDtl);
+
 
         employeeRepository.save(gmstEmpMst);
-        return ServiceResponse.successMessage(language.message("Teacher detail"));
+        return ServiceResponse.successMessage(language.saveSuccess("Teacher detail"));
     }
 
     public ServiceResponse getTeacherById(Long teacherId) throws Exception {
@@ -191,10 +190,10 @@ public class EmployeeService {
         List<GmstEmpProfileDtl> gmstEmpProfileDtlList = new ArrayList<>();
         List<EmployeeProfileBean> employeeProfileBeanList = employeeBean.getEmployeeProfileList();
         if(employeeProfileBeanList != null && employeeProfileBeanList.size()>0){
-            employeeProfileBeanList.forEach(employeeProfileBean -> {
+            Long maxEmpProfileId = employeeProfileRepository.getMaxEmpProfileId(empID);
+            for(EmployeeProfileBean employeeProfileBean :employeeProfileBeanList) {
                 GmstEmpProfileDtl gmstEmpProfileDtl = BeanUtils.copyProperties(employeeProfileBean, GmstEmpProfileDtl.class);
                 gmstEmpProfileDtl.setUnumEmpId(empID);
-                Long maxEmpProfileId = employeeProfileRepository.getMaxEmpProfileId(empID);
                 maxEmpProfileId++;
                 gmstEmpProfileDtl.setUnumProfileId(Long.valueOf(empID.toString() + "" + StringUtility.padLeftZeros(maxEmpProfileId.toString(), 5)));
                 gmstEmpProfileDtl.setUnumCollegeId(employeeBean.getUnumCollegeId());
@@ -204,31 +203,30 @@ public class EmployeeService {
                 gmstEmpProfileDtl.setUnumEntryUid(employeeBean.getUnumEntryUid());
                 gmstEmpProfileDtl.setUdtEffFrom(employeeBean.getUdtEffFrom());
                 gmstEmpProfileDtlList.add(gmstEmpProfileDtl);
-            });
+            }
 
             employeeProfileRepository.saveAll(gmstEmpProfileDtlList);
         }
 
 
-        EmployeeCurrentDetailBean employeeCurrentDetail = new EmployeeCurrentDetailBean();
-        employeeCurrentDetail.setUnumEmpId(empID);
-        employeeCurrentDetail.setUnumEmpDesigid(employeeBean.getUnumEmpDesigid());
-        employeeCurrentDetail.setUstrTAadharNo(employeeBean.getUstrTAadharNo());
-        employeeCurrentDetail.setUdtUgJoiningDate(employeeBean.getUdtUgJoiningDate());
-        employeeCurrentDetail.setUdtPgJoiningDate(employeeBean.getUdtPgJoiningDate());
-        employeeCurrentDetail.setUnumIsvalid(1);
-        employeeCurrentDetail.setUdtEntryDate(employeeBean.getUdtEntryDate());
-        employeeCurrentDetail.setUnumUnivId(employeeBean.getUnumUnivId());
-        employeeCurrentDetail.setUnumEntryUid(employeeBean.getUnumEntryUid());
+        GmstEmpCurDtl gmstEmpCurDtl = new GmstEmpCurDtl();
+        gmstEmpCurDtl.setUnumEmpId(empID);
+        gmstEmpCurDtl.setUnumEmpDesigid(employeeBean.getUnumEmpDesigid());
+        gmstEmpCurDtl.setUstrTAadharNo(employeeBean.getUstrTAadharNo());
+        gmstEmpCurDtl.setUdtUgJoiningDate(employeeBean.getUdtUgJoiningDate());
+        gmstEmpCurDtl.setUdtPgJoiningDate(employeeBean.getUdtPgJoiningDate());
+        gmstEmpCurDtl.setUnumIsvalid(1);
+        gmstEmpCurDtl.setUdtEntryDate(employeeBean.getUdtEntryDate());
+        gmstEmpCurDtl.setUnumUnivId(employeeBean.getUnumUnivId());
+        gmstEmpCurDtl.setUnumEntryUid(employeeBean.getUnumEntryUid());
 
-        if(employeeCurrentDetail != null) {
-            GmstEmpCurDtl gmstEmpCurDtl = BeanUtils.copyProperties(employeeCurrentDetail, GmstEmpCurDtl.class);
-            Long maxEmpCurrDetailId = employeeCurrentDetailRepository.getMaxEmpCurrDetailId(empID);
-            maxEmpCurrDetailId++;
-            gmstEmpCurDtl.setUnumEmpCurId(Long.valueOf(empID.toString() + "" + StringUtility.padLeftZeros(maxEmpCurrDetailId.toString(), 5)));
 
-            employeeCurrentDetailRepository.save(gmstEmpCurDtl);
-        }
+        Long maxEmpCurrDetailId = employeeCurrentDetailRepository.getMaxEmpCurrDetailId(empID);
+        maxEmpCurrDetailId++;
+        gmstEmpCurDtl.setUnumEmpCurId(Long.valueOf(empID.toString() + "" + StringUtility.padLeftZeros(maxEmpCurrDetailId.toString(), 5)));
+
+        employeeCurrentDetailRepository.save(gmstEmpCurDtl);
+
 
 
         return ServiceResponse.builder()
