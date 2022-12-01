@@ -43,18 +43,42 @@ public class TemplateComponentService {
 				.findByUnumIsvalidAndUnumUnivIdOrderByUnumCompDisplayOrderAsc(1, RequestUtility.getUniversityId()),
 				TemplateComponentBean.class);
 	}
-
+	
 	@Transactional
 	public ServiceResponse save(TemplateComponentBean templateBean) throws Exception {
+		return saveAndUpdateTemplateComponent(templateBean, true);
+	}
+
+	@Transactional
+	public ServiceResponse update(TemplateComponentBean templateBean) throws Exception {
+		return saveAndUpdateTemplateComponent(templateBean, false);
+	}
+	
+	public ServiceResponse saveAndUpdateTemplateComponent(TemplateComponentBean templateBean, boolean isSave) throws Exception {
 		GmstConfigTemplateComponentMst gmstConfigTemplateComponentMst = new GmstConfigTemplateComponentMst();
 		BeanUtils.copyProperties(templateBean, gmstConfigTemplateComponentMst);
+		
+		if (!isSave) {
+			Integer updatedRow = templateComponentRepository.updateTemplateComponentRecord(templateBean.getUnumTemplCompId());
+			if(updatedRow > 0) {
+				templateComponentDetailRepository.updateTemplateComponentItemRecord(templateBean.getUnumTemplCompId());
+			} else {
+				log.info("No Active Component found to Update for ID : {} ", templateBean.getUnumTemplCompId());
+				return ServiceResponse.builder().status(1).message(language.updateError("Component")).build();
+			}
+			
+		} else {
+			gmstConfigTemplateComponentMst.setUnumTemplCompId(templateComponentRepository.getNextUnumTemplCompId());
+		}
+
 		gmstConfigTemplateComponentMst.setUnumIsvalid(1);
 		gmstConfigTemplateComponentMst.setUdtEffFrom(new java.sql.Date(System.currentTimeMillis()));
 
 		gmstConfigTemplateComponentMst.setUnumUnivId(RequestUtility.getUniversityId());
 		gmstConfigTemplateComponentMst.setUnumEntryUid(RequestUtility.getUserId());
 		gmstConfigTemplateComponentMst.setUdtEntryDate(new java.sql.Date(System.currentTimeMillis()));
-		gmstConfigTemplateComponentMst.setUnumTemplCompId(templateComponentRepository.getNextUnumTemplCompId());
+		
+		
 		log.info("univ id {}", gmstConfigTemplateComponentMst.getUnumUnivId());
 		templateComponentRepository.save(gmstConfigTemplateComponentMst);
 
@@ -68,40 +92,27 @@ public class TemplateComponentService {
 						gmstConfigTemplateComponentDtl.setUnumTemplCompItemId(
 								Long.parseLong(gmstConfigTemplateComponentMst.getUnumTemplCompId()
 										+ StringUtility.padLeftZeros(count.incrementAndGet() + "", 5)));
+						gmstConfigTemplateComponentDtl.setUnumTemplCompId(gmstConfigTemplateComponentMst.getUnumTemplCompId());
+						gmstConfigTemplateComponentDtl.setUnumIsvalid(1);
 					} catch (Exception e) {
 						throw new RuntimeException(e);
 					}
 					return gmstConfigTemplateComponentDtl;
 				}).collect(Collectors.toList()));
-		return ServiceResponse.builder().status(1).message(language.saveSuccess("Saved Successfully")).build();
+		
+		return ServiceResponse.builder().status(1).message(language.updateSuccess("Component")).build();
 	}
 
 	@Transactional
-	public ServiceResponse update(TemplateComponentBean templateBean) throws Exception {
+	public ServiceResponse delete(List<Long> idsToDelete) {
 
-		GmstConfigTemplateComponentMst gmstConfigTemplateComponentMst = new GmstConfigTemplateComponentMst();
-		BeanUtils.copyProperties(templateBean, gmstConfigTemplateComponentMst);
-		long unumTemplCompId = gmstConfigTemplateComponentMst.getUnumTemplCompId();
-		templateComponentRepository.updateRecord(unumTemplCompId);
-		templateComponentRepository.save(gmstConfigTemplateComponentMst);
-
-		return ServiceResponse.builder().status(1).message(language.updateSuccess("Updated Component")).build();
+		Integer deletedCount = templateComponentRepository.deleteTemplateComponentRecord(idsToDelete);
+		if (deletedCount > 0) {
+			templateComponentDetailRepository.deleteTemplateComponentItemRecord(idsToDelete);
+		} else {
+			return ServiceResponse.builder().status(1).message(language.deleteError("Component")).build();
+		}
+		return ServiceResponse.builder().status(1).message(language.deleteSuccess("Component")).build();
 	}
-
-//	public ServiceResponse delete(List<Long> idsToDelete) {
-//		if (idsToDelete == null || idsToDelete.size() == 0) {
-//			return ServiceResponse.errorResponse(language.mandatory("Id"));
-//		}
-//		List<GmstConfigTemplateComponentMst> idListToDelete = templateComponentRepository
-//				.findByUnumTemplCompId(idsToDelete);
-//
-//		for (GmstConfigTemplateComponentMst rec : idListToDelete) {
-//			templateComponentRepository.updateRecord(rec.getUnumTemplCompId());
-//			log.info(rec.getUnumTemplCompId() + "is Updated");
-//			rec.setUnumIsvalid(0);
-//			templateComponentRepository.save(rec);
-//		}
-//		return ServiceResponse.builder().status(1).message(language.updateSuccess("Deleted Component")).build();
-//	}
 
 }
