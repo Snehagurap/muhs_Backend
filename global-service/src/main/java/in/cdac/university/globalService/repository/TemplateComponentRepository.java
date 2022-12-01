@@ -30,11 +30,13 @@ public interface TemplateComponentRepository
 	Long getNextUnumTemplCompId();
 
 	@Modifying
-	@Query("update GmstSubjectMst a set a.unumIsvalid = max(a.unumIsvalid)+1, " + "udt_eff_to = current_timestamp, "
-			+ "where a.unumTemplCompId= :unumTemplCompId")
+	@Query(value="update university.gmst_config_template_component_mst a set "
+			+ " unum_isvalid = (select coalesce(max(unum_isvalid), 2) + 1 from university.gmst_config_template_component_mst b \r\n"
+			+ " where a.unum_templ_comp_id = b.unum_templ_comp_id  ), udt_eff_to = current_timestamp where unum_templ_comp_id = :unumTemplCompId",nativeQuery = true)
 	GmstConfigTemplateComponentMst updateRecord(@Param("unumTemplCompId") Long unumTemplCompId);
 
-	List<GmstConfigTemplateComponentMst> findByComponentsunumTemplCompIdIn(
-			@Param("idsToDelete") List<Long> idsToDelete);
-
+//	List<GmstConfigTemplateComponentMst> findByUnumTemplCompId(
+//			@Param("idsToDelete") List<Long> idsToDelete);
+	
+	
 }

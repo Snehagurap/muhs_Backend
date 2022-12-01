@@ -41,9 +41,9 @@ public class TemplateComponentController {
 		return ResponseHandler.generateResponse(templateComponentService.update(templateBean));
 	}
 
-	@GetMapping("delete")
-	public ResponseEntity<?> delete(@RequestBody List<Long> idsToDelete) throws Exception {
-		return ResponseHandler.generateOkResponse(templateComponentService.delete(idsToDelete));
-
-	}
+//	@GetMapping("delete")
+//	public ResponseEntity<?> delete(@RequestBody List<Long> idsToDelete) throws Exception {
+//		return ResponseHandler.generateOkResponse(templateComponentService.delete(idsToDelete));
+//
+//	}
 }

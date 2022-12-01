@@ -88,20 +88,20 @@ public class TemplateComponentService {
 		return ServiceResponse.builder().status(1).message(language.updateSuccess("Updated Component")).build();
 	}
 
-	public Object delete(List<Long> idsToDelete) {
-		if (idsToDelete == null || idsToDelete.size() == 0) {
-			return ServiceResponse.errorResponse(language.mandatory("Id"));
-		}
-		List<GmstConfigTemplateComponentMst> idListToDelete = templateComponentRepository
-				.findByComponentsunumTemplCompIdIn(idsToDelete);
-
-		for (GmstConfigTemplateComponentMst rec : idListToDelete) {
-			templateComponentRepository.updateRecord(rec.getUnumTemplCompId());
-			log.info(rec.getUnumTemplCompId() + "is Updated");
-			rec.setUnumIsvalid(0);
-			templateComponentRepository.save(rec);
-		}
-		return ServiceResponse.builder().status(1).message(language.updateSuccess("Deleted Component")).build();
-	}
+//	public ServiceResponse delete(List<Long> idsToDelete) {
+//		if (idsToDelete == null || idsToDelete.size() == 0) {
+//			return ServiceResponse.errorResponse(language.mandatory("Id"));
+//		}
+//		List<GmstConfigTemplateComponentMst> idListToDelete = templateComponentRepository
+//				.findByUnumTemplCompId(idsToDelete);
+//
+//		for (GmstConfigTemplateComponentMst rec : idListToDelete) {
+//			templateComponentRepository.updateRecord(rec.getUnumTemplCompId());
+//			log.info(rec.getUnumTemplCompId() + "is Updated");
+//			rec.setUnumIsvalid(0);
+//			templateComponentRepository.save(rec);
+//		}
+//		return ServiceResponse.builder().status(1).message(language.updateSuccess("Deleted Component")).build();
+//	}
 
 }
