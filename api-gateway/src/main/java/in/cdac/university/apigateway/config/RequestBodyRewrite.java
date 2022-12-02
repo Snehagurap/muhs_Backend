@@ -10,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import org.springframework.cloud.gateway.filter.factory.rewrite.RewriteFunction;
 import org.springframework.http.MediaType;
-import org.springframework.http.codec.multipart.Part;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -46,13 +44,13 @@ public class RequestBodyRewrite implements RewriteFunction<String, String> {
                     jsonToString(valueAsMap, result);
                 }
             }
-        }
-        else if(body instanceof ArrayList<?> bodyAsList){
+        } else if(body instanceof ArrayList<?> bodyAsList) {
             String string = bodyAsList.stream()
                     .map(String::valueOf)
-        //           .map(data -> String.valueOf(data))
                     .collect(Collectors.joining());
             result.append(string);
+        } else if (body instanceof String bodyAsString) {
+            result.append(bodyAsString);
         }
     }
 

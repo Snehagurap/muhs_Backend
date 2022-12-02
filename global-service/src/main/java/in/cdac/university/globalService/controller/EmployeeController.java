@@ -1,6 +1,5 @@
 package in.cdac.university.globalService.controller;
 
-import in.cdac.university.globalService.bean.CollegeBean;
 import in.cdac.university.globalService.bean.EmployeeBean;
 import in.cdac.university.globalService.service.EmployeeCurrentDetailService;
 import in.cdac.university.globalService.service.EmployeeProfileService;

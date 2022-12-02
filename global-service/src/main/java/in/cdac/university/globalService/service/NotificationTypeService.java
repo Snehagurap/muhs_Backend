@@ -32,7 +32,7 @@ public class NotificationTypeService {
         );
     }
 
-    public List<NotificationTypeBean> getAllNotificationTypes() throws Exception {
+    public List<NotificationTypeBean> getAllNotificationTypes() {
         return BeanUtils.copyListProperties(
                 notificationTypeRepository.findByUnumIsvalidInOrderByUstrNtypeFname(List.of(0, 1)),
                 NotificationTypeBean.class
