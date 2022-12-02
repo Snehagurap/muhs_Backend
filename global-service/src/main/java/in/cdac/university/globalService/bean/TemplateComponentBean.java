@@ -49,7 +49,7 @@ public class TemplateComponentBean {
     @ListColumn(name = "Prefix Text")
     private String ustrCompPrintPrefixText;
 
-    @NotBlank(message = "ustrCompPrintText is mandatory")
+    @NotBlank(message = "Print Text is mandatory")
     @ListColumn(name = "Print Text")
     private String ustrCompPrintText;
 

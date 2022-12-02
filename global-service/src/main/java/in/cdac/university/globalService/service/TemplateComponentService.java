@@ -112,7 +112,7 @@ public class TemplateComponentService {
 		}
 
 		gmstConfigTemplateComponentMst.setUnumIsvalid(1);
-		gmstConfigTemplateComponentMst.setUdtEffFrom(new java.sql.Date(System.currentTimeMillis()));
+		gmstConfigTemplateComponentMst.setUdtEffFrom(new Date());
 
 		gmstConfigTemplateComponentMst.setUnumUnivId(RequestUtility.getUniversityId());
 		gmstConfigTemplateComponentMst.setUnumEntryUid(RequestUtility.getUserId());
@@ -122,7 +122,7 @@ public class TemplateComponentService {
 		log.info("univ id {}", gmstConfigTemplateComponentMst.getUnumUnivId());
 		templateComponentRepository.save(gmstConfigTemplateComponentMst);
 
-		AtomicInteger count = new AtomicInteger(0);
+		int count = 1;//new AtomicInteger(0);
 
 		List<GmstConfigTemplateComponentDtl> gmstConfigTemplateComponentDtlEntityList = new ArrayList<>();
 		for (TemplateComponentDtlsBean templateComponentDtls : templateBean.getTemplateComponentDtlsBeanList()) {
@@ -132,28 +132,19 @@ public class TemplateComponentService {
 			BeanUtils.copyProperties(templateComponentDtls, gmstConfigTemplateComponentDtl);
 			gmstConfigTemplateComponentDtl.setUnumTemplCompItemId(
 					Long.parseLong(gmstConfigTemplateComponentMst.getUnumTemplCompId()
-							+ StringUtility.padLeftZeros(count.incrementAndGet() + "", 5)));
+							+ StringUtility.padLeftZeros(count++ + "", 5)));
 			gmstConfigTemplateComponentDtl.setUnumTemplCompId(gmstConfigTemplateComponentMst.getUnumTemplCompId());
 			gmstConfigTemplateComponentDtl.setUnumIsvalid(1);
 			gmstConfigTemplateComponentDtl.setUnumEntryUid(RequestUtility.getUserId());
+			gmstConfigTemplateComponentDtl.setUdtEffFrom(new Date());
 			
 		}
-		
 		templateComponentDetailRepository.saveAll(gmstConfigTemplateComponentDtlEntityList);
-		return ServiceResponse.builder().status(1).message(language.updateSuccess("Component")).build();
+		if(!isSave) 
+			return ServiceResponse.builder().status(1).message(language.updateSuccess("Component")).build();
+		else 
+			return ServiceResponse.builder().status(1).message(language.saveSuccess("Component")).build();
 	}
 
-//	@Transactional
-//	public ServiceResponse delete(List<Long> idsToDelete) {
-//
-//		
-//		Integer deletedCount = templateComponentRepository.deleteTemplateComponentRecord(idsToDelete);
-//		if (deletedCount > 0) {
-//			templateComponentDetailRepository.deleteTemplateComponentItemRecord(idsToDelete);
-//		} else {
-//			return ServiceResponse.builder().status(1).message(language.deleteError("Component")).build();
-//		}
-//		return ServiceResponse.builder().status(1).message(language.deleteSuccess("Component")).build();
-//	}
 
 }
