@@ -12,11 +12,14 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
 public class TemplateComponentDtlsBean {
-
+	
+	
 	private Long unumTemplCompItemId;
 
 	private Integer unumIsvalid;
@@ -31,6 +34,7 @@ public class TemplateComponentDtlsBean {
 
 	private Long unumTemplCompId;
 
+	@NotNull(message = "unumTemplItemId is mandatory")
 	private Long unumTemplItemId;
 
 	private Integer unumUnivId;
