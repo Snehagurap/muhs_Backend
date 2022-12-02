@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import in.cdac.university.globalService.bean.TemplateComponentBean;
+import in.cdac.university.globalService.bean.TemplateComponentDtlsBean;
 import in.cdac.university.globalService.entity.GmstConfigTemplateComponentDtl;
 import in.cdac.university.globalService.entity.GmstConfigTemplateComponentMst;
 import in.cdac.university.globalService.repository.TemplateComponentDetailRepository;
@@ -54,6 +55,45 @@ public class TemplateComponentService {
 		return saveAndUpdateTemplateComponent(templateBean, false);
 	}
 	
+	
+	@Transactional
+	public ServiceResponse delete(List<Long> idsToDelete) throws Exception {
+		Long entryUserId = RequestUtility.getUserId();
+
+		// Getting existing active/ inactive records
+		List<GmstConfigTemplateComponentMst> gmstConfigTemplateComponentMstlist = templateComponentRepository
+				.findByUnumTemplCompIdInAndUnumIsvalidIn(idsToDelete, List.of(1, 2));
+
+		List<GmstConfigTemplateComponentDtl> gmstConfigTemplateComponentDtlList = templateComponentDetailRepository
+				.findByUnumTemplCompIdInAndUnumIsvalidIn(idsToDelete, List.of(1, 2));
+
+		// creating log for exiting active record of template component
+		Integer deletedCount = templateComponentRepository.deleteTemplateComponentRecord(idsToDelete);
+		if (deletedCount > 0) {
+			// creating log for exiting active record of template component item
+			templateComponentDetailRepository.deleteTemplateComponentItemRecord(idsToDelete);
+		} else {
+			return ServiceResponse.builder().status(1).message(language.deleteError("Component")).build();
+		}
+		
+		gmstConfigTemplateComponentMstlist.forEach(component -> {
+			component.setUnumIsvalid(0);
+			component.setUdtEntryDate(new Date());
+			component.setUnumEntryUid(entryUserId);
+		});
+		templateComponentRepository.saveAll(gmstConfigTemplateComponentMstlist);
+
+		gmstConfigTemplateComponentDtlList.forEach(item -> {
+			item.setUnumIsvalid(0);
+			item.setUdtEntryDate(new Date());
+			item.setUnumEntryUid(entryUserId);
+		});
+		templateComponentDetailRepository.saveAll(gmstConfigTemplateComponentDtlList);
+		
+		return ServiceResponse.builder().status(1).message(language.deleteSuccess("Component")).build();
+		
+	}
+	
 	public ServiceResponse saveAndUpdateTemplateComponent(TemplateComponentBean templateBean, boolean isSave) throws Exception {
 		GmstConfigTemplateComponentMst gmstConfigTemplateComponentMst = new GmstConfigTemplateComponentMst();
 		BeanUtils.copyProperties(templateBean, gmstConfigTemplateComponentMst);
@@ -84,35 +124,36 @@ public class TemplateComponentService {
 
 		AtomicInteger count = new AtomicInteger(0);
 
-		templateComponentDetailRepository
-				.saveAll(templateBean.getTemplateComponentDtlsBeanList().stream().map(templateComponentDtlsBean -> {
-					GmstConfigTemplateComponentDtl gmstConfigTemplateComponentDtl = new GmstConfigTemplateComponentDtl();
-					try {
-						BeanUtils.copyProperties(templateComponentDtlsBean, gmstConfigTemplateComponentDtl);
-						gmstConfigTemplateComponentDtl.setUnumTemplCompItemId(
-								Long.parseLong(gmstConfigTemplateComponentMst.getUnumTemplCompId()
-										+ StringUtility.padLeftZeros(count.incrementAndGet() + "", 5)));
-						gmstConfigTemplateComponentDtl.setUnumTemplCompId(gmstConfigTemplateComponentMst.getUnumTemplCompId());
-						gmstConfigTemplateComponentDtl.setUnumIsvalid(1);
-					} catch (Exception e) {
-						throw new RuntimeException(e);
-					}
-					return gmstConfigTemplateComponentDtl;
-				}).collect(Collectors.toList()));
+		List<GmstConfigTemplateComponentDtl> gmstConfigTemplateComponentDtlEntityList = new ArrayList<>();
+		for (TemplateComponentDtlsBean templateComponentDtls : templateBean.getTemplateComponentDtlsBeanList()) {
+			GmstConfigTemplateComponentDtl gmstConfigTemplateComponentDtl = new GmstConfigTemplateComponentDtl();
+			gmstConfigTemplateComponentDtlEntityList.add(gmstConfigTemplateComponentDtl);
+			
+			BeanUtils.copyProperties(templateComponentDtls, gmstConfigTemplateComponentDtl);
+			gmstConfigTemplateComponentDtl.setUnumTemplCompItemId(
+					Long.parseLong(gmstConfigTemplateComponentMst.getUnumTemplCompId()
+							+ StringUtility.padLeftZeros(count.incrementAndGet() + "", 5)));
+			gmstConfigTemplateComponentDtl.setUnumTemplCompId(gmstConfigTemplateComponentMst.getUnumTemplCompId());
+			gmstConfigTemplateComponentDtl.setUnumIsvalid(1);
+			gmstConfigTemplateComponentDtl.setUnumEntryUid(RequestUtility.getUserId());
+			
+		}
 		
+		templateComponentDetailRepository.saveAll(gmstConfigTemplateComponentDtlEntityList);
 		return ServiceResponse.builder().status(1).message(language.updateSuccess("Component")).build();
 	}
 
-	@Transactional
-	public ServiceResponse delete(List<Long> idsToDelete) {
-
-		Integer deletedCount = templateComponentRepository.deleteTemplateComponentRecord(idsToDelete);
-		if (deletedCount > 0) {
-			templateComponentDetailRepository.deleteTemplateComponentItemRecord(idsToDelete);
-		} else {
-			return ServiceResponse.builder().status(1).message(language.deleteError("Component")).build();
-		}
-		return ServiceResponse.builder().status(1).message(language.deleteSuccess("Component")).build();
-	}
+//	@Transactional
+//	public ServiceResponse delete(List<Long> idsToDelete) {
+//
+//		
+//		Integer deletedCount = templateComponentRepository.deleteTemplateComponentRecord(idsToDelete);
+//		if (deletedCount > 0) {
+//			templateComponentDetailRepository.deleteTemplateComponentItemRecord(idsToDelete);
+//		} else {
+//			return ServiceResponse.builder().status(1).message(language.deleteError("Component")).build();
+//		}
+//		return ServiceResponse.builder().status(1).message(language.deleteSuccess("Component")).build();
+//	}
 
 }

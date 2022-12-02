@@ -17,12 +17,17 @@ public interface TemplateComponentDetailRepository extends JpaRepository<GmstCon
 	@Modifying
 	@Query(value="update university.gmst_config_template_component_dtl a set "
 			+ " unum_isvalid = (select coalesce(max(unum_isvalid), 2) + 1 from university.gmst_config_template_component_dtl b "
-			+ " where a.unum_templ_comp_id = b.unum_templ_comp_id), udt_eff_to = current_timestamp where unum_templ_comp_id = :unumTemplCompId and unum_isvalid = 1",nativeQuery = true)
+			+ " where a.unum_templ_comp_id = b.unum_templ_comp_id and unum_isvalid > 2), udt_eff_to = current_timestamp where"
+			+ " unum_templ_comp_id = :unumTemplCompId and unum_isvalid = 1",nativeQuery = true)
 	Integer updateTemplateComponentItemRecord(@Param("unumTemplCompId") Long unumTemplCompId);
 
-	@Modifying
+	@Modifying(clearAutomatically = true)
 	@Query(value="update university.gmst_config_template_component_dtl a set "
-			+ " unum_isvalid = 0, udt_eff_to = current_timestamp where unum_templ_comp_id  in ( :unumTemplCompId ) and unum_isvalid = 1",nativeQuery = true)
+			+ " unum_isvalid = (select coalesce(max(unum_isvalid), 2) + 1 from university.gmst_config_template_component_dtl b "
+			+ " where a.unum_templ_comp_id = b.unum_templ_comp_id and unum_isvalid > 2), udt_eff_to = current_timestamp where"
+			+ " unum_templ_comp_id in (:unumTemplCompId) and unum_isvalid = 1",nativeQuery = true)
 	Integer deleteTemplateComponentItemRecord(@Param("unumTemplCompId") List<Long> idsToDelete);
+
+	List<GmstConfigTemplateComponentDtl> findByUnumTemplCompIdInAndUnumIsvalidIn(List<Long> idsToDelete, List<Integer> unumIsvalids);
 	
 }
