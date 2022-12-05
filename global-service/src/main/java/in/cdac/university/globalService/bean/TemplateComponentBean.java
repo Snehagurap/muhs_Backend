@@ -8,6 +8,8 @@ import lombok.Setter;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.constraints.NotBlank;
+
 @Getter
 @Setter
 public class TemplateComponentBean {
@@ -47,6 +49,7 @@ public class TemplateComponentBean {
     @ListColumn(name = "Prefix Text")
     private String ustrCompPrintPrefixText;
 
+    @NotBlank(message = "Print Text is mandatory")
     @ListColumn(name = "Print Text")
     private String ustrCompPrintText;
 
@@ -59,4 +62,6 @@ public class TemplateComponentBean {
     private Long unumTempledtlId;
 
     private List<TemplateItemBean> items;
+    
+    private List<TemplateComponentDtlsBean> templateComponentDtlsBeanList;
 }
