@@ -53,11 +53,13 @@ public class TemplateComponentController {
 	}
 	
 	@GetMapping("getCompDetailsByParentID/{unumTemplCompId}")
-	public TemplateComponentBean getCompDetailsByParentID(@PathVariable("unumTemplCompId") Long unumTemplCompId) throws Exception {
-		return templateComponentService.getCompDetailsByParentID(unumTemplCompId);
+	public ResponseEntity<?> getCompDetailsByParentID(@PathVariable("unumTemplCompId") Long unumTemplCompId) throws Exception {
+		return ResponseHandler.generateOkResponse(
+				templateComponentService.getCompDetailsByParentID(unumTemplCompId)
+        );
 	}
 	
-	@GetMapping("getAllCompDetailsByParentID")
+	@GetMapping("getAllCompyMst")
 	public ResponseEntity<?> getAllCompDetailsByParentID() throws Exception {
 		 return ResponseHandler.generateOkResponse(
 	                ComboUtility.generateComboData(templateComponentService.getUnumTemplCompIds())

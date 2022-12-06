@@ -30,8 +30,8 @@ public interface TemplateComponentDetailRepository extends JpaRepository<GmstCon
 
 	List<GmstConfigTemplateComponentDtl> findByUnumTemplCompIdInAndUnumIsvalidIn(List<Long> idsToDelete, List<Integer> unumIsvalids);
 
-	@Query("select c from university.gmst_config_template_component_dtl c " + "where c.unum_isvalid = 1 "
-			+ "and c.unum_templ_comp_id = :unumTemplCompId")
-	List<GmstConfigTemplateComponentDtl> findByUnumTemplCompId(Long unumTemplCompId);
+//	@Query("select c from university.gmst_config_template_component_dtl c " + "where c.unum_isvalid = 1 "
+//			+ "and c.unum_templ_comp_id = :unumTemplCompId")
+	List<GmstConfigTemplateComponentDtl> findByUnumTemplCompIdAndUnumIsvalid(Long unumTemplCompId,Integer unumIsvalid);
 	
 }

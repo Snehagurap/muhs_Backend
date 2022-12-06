@@ -1,6 +1,9 @@
 package in.cdac.university.globalService.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import in.cdac.university.globalService.util.annotations.ComboKey;
+import in.cdac.university.globalService.util.annotations.ComboValue;
 import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +17,7 @@ import javax.validation.constraints.NotBlank;
 @Setter
 public class TemplateComponentBean {
     @ListColumn(omit = true)
+    @ComboKey
     private Long unumTemplCompId;
 
     @JsonIgnore
@@ -47,6 +51,7 @@ public class TemplateComponentBean {
     private String ustrCompAllignment;
 
     @ListColumn(name = "Prefix Text")
+    @ComboValue
     private String ustrCompPrintPrefixText;
 
     @NotBlank(message = "Print Text is mandatory")

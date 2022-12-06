@@ -26,7 +26,7 @@ import in.cdac.university.globalService.util.RequestUtility;
 import in.cdac.university.globalService.util.ServiceResponse;
 import in.cdac.university.globalService.util.StringUtility;
 import lombok.extern.slf4j.Slf4j;
-
+import static java.util.Objects.nonNull;
 @Service
 @Slf4j
 public class TemplateComponentService {
@@ -149,11 +149,13 @@ public class TemplateComponentService {
 
 	public TemplateComponentBean getCompDetailsByParentID(Long unumTemplCompId) throws Exception {
 		TemplateComponentBean templatecompBean = new TemplateComponentBean();
-		BeanUtils.copyProperties(templateComponentRepository.findByUnumTemplCompId(unumTemplCompId), templatecompBean);
-            
-		List<TemplateComponentDtlsBean> gmstdtlsbeanList = BeanUtils.copyListProperties(templateComponentDetailRepository.findByUnumTemplCompId(unumTemplCompId), TemplateComponentDtlsBean.class);
-		templatecompBean.setTemplateComponentDtlsBeanList(gmstdtlsbeanList);
-
+		GmstConfigTemplateComponentMst gmstConfigTemplateComponentMst =  templateComponentRepository.findByUnumTemplCompIdAndUnumIsvalid(unumTemplCompId,1);
+		if(nonNull(gmstConfigTemplateComponentMst))
+		{
+			BeanUtils.copyProperties(templateComponentRepository.findByUnumTemplCompIdAndUnumIsvalid(unumTemplCompId,1), templatecompBean);
+			List<TemplateComponentDtlsBean> gmstdtlsbeanList = BeanUtils.copyListProperties(templateComponentDetailRepository.findByUnumTemplCompIdAndUnumIsvalid(unumTemplCompId,1), TemplateComponentDtlsBean.class);
+			templatecompBean.setTemplateComponentDtlsBeanList(gmstdtlsbeanList);
+		}
 		return templatecompBean;
 	}
 

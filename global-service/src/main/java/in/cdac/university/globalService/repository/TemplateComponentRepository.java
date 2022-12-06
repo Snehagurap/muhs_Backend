@@ -47,9 +47,9 @@ public interface TemplateComponentRepository
 	List<GmstConfigTemplateComponentMst> findByUnumTemplCompIdInAndUnumIsvalidIn(List<Long> idsToDelete,
 			List<Integer> unumIsvalids);
 	
-	@Query("select c from GmstConfigTemplateComponentMst c " + "where c.unumIsvalid = 1 "
-			+ "and c.unumTemplCompId = :unumTemplCompId")
-	GmstConfigTemplateComponentMst findByUnumTemplCompId(Long unumTemplCompId);
+//	@Query("select c from GmstConfigTemplateComponentMst c " + "where c.unumIsvalid = 1 "
+//			+ "and c.unumTemplCompId = :unumTemplCompId")
+	GmstConfigTemplateComponentMst findByUnumTemplCompIdAndUnumIsvalid(Long unumTemplCompId,Integer unumIsvalid);
 	
 	 @Query("select c from GmstConfigTemplateComponentMst c " +
 	            "where c.unumIsvalid = 1 " +
