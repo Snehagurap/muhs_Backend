@@ -116,7 +116,7 @@ public class TemplateComponentService {
 
 		gmstConfigTemplateComponentMst.setUnumUnivId(RequestUtility.getUniversityId());
 		gmstConfigTemplateComponentMst.setUnumEntryUid(RequestUtility.getUserId());
-		gmstConfigTemplateComponentMst.setUdtEntryDate(new java.sql.Date(System.currentTimeMillis()));
+		gmstConfigTemplateComponentMst.setUdtEntryDate(new Date());
 		
 		
 		log.info("univ id {}", gmstConfigTemplateComponentMst.getUnumUnivId());
@@ -137,7 +137,8 @@ public class TemplateComponentService {
 			gmstConfigTemplateComponentDtl.setUnumIsvalid(1);
 			gmstConfigTemplateComponentDtl.setUnumEntryUid(RequestUtility.getUserId());
 			gmstConfigTemplateComponentDtl.setUdtEffFrom(new Date());
-			
+			gmstConfigTemplateComponentDtl.setUnumUnivId(RequestUtility.getUniversityId());
+			gmstConfigTemplateComponentDtl.setUdtEntryDate(new Date());
 		}
 		templateComponentDetailRepository.saveAll(gmstConfigTemplateComponentDtlEntityList);
 		if(!isSave) 
