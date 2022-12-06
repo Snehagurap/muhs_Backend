@@ -8,14 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import in.cdac.university.globalService.bean.TemplateComponentBean;
 import in.cdac.university.globalService.service.TemplateComponentService;
+import in.cdac.university.globalService.util.ComboUtility;
 import in.cdac.university.globalService.util.ListPageUtility;
 import in.cdac.university.globalService.util.ResponseHandler;
 
@@ -48,4 +51,18 @@ public class TemplateComponentController {
 		return ResponseHandler.generateOkResponse(templateComponentService.delete(idsToDelete));
 
 	}
+	
+	@GetMapping("getCompDetailsByParentID/{unumTemplCompId}")
+	public TemplateComponentBean getCompDetailsByParentID(@PathVariable("unumTemplCompId") Long unumTemplCompId) throws Exception {
+		return templateComponentService.getCompDetailsByParentID(unumTemplCompId);
+	}
+	
+	@GetMapping("getAllCompDetailsByParentID")
+	public ResponseEntity<?> getAllCompDetailsByParentID() throws Exception {
+		 return ResponseHandler.generateOkResponse(
+	                ComboUtility.generateComboData(templateComponentService.getUnumTemplCompIds())
+	        );
+	}
+	
+	
 }

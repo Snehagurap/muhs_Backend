@@ -2,7 +2,6 @@ package in.cdac.university.globalService.service;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.*;
@@ -13,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import in.cdac.university.globalService.bean.SubjectBean;
+import in.cdac.university.globalService.bean.TemplateBean;
 import in.cdac.university.globalService.bean.TemplateComponentBean;
 import in.cdac.university.globalService.bean.TemplateComponentDtlsBean;
 import in.cdac.university.globalService.entity.GmstConfigTemplateComponentDtl;
@@ -44,7 +45,7 @@ public class TemplateComponentService {
 				.findByUnumIsvalidAndUnumUnivIdOrderByUnumCompDisplayOrderAsc(1, RequestUtility.getUniversityId()),
 				TemplateComponentBean.class);
 	}
-	
+
 	@Transactional
 	public ServiceResponse save(TemplateComponentBean templateBean) throws Exception {
 		return saveAndUpdateTemplateComponent(templateBean, true);
@@ -54,8 +55,7 @@ public class TemplateComponentService {
 	public ServiceResponse update(TemplateComponentBean templateBean) throws Exception {
 		return saveAndUpdateTemplateComponent(templateBean, false);
 	}
-	
-	
+
 	@Transactional
 	public ServiceResponse delete(List<Long> idsToDelete) throws Exception {
 		Long entryUserId = RequestUtility.getUserId();
@@ -75,7 +75,7 @@ public class TemplateComponentService {
 		} else {
 			return ServiceResponse.builder().status(1).message(language.deleteError("Component")).build();
 		}
-		
+
 		gmstConfigTemplateComponentMstlist.forEach(component -> {
 			component.setUnumIsvalid(0);
 			component.setUdtEntryDate(new Date());
@@ -89,24 +89,26 @@ public class TemplateComponentService {
 			item.setUnumEntryUid(entryUserId);
 		});
 		templateComponentDetailRepository.saveAll(gmstConfigTemplateComponentDtlList);
-		
+
 		return ServiceResponse.builder().status(1).message(language.deleteSuccess("Component")).build();
-		
+
 	}
-	
-	public ServiceResponse saveAndUpdateTemplateComponent(TemplateComponentBean templateBean, boolean isSave) throws Exception {
+
+	public ServiceResponse saveAndUpdateTemplateComponent(TemplateComponentBean templateBean, boolean isSave)
+			throws Exception {
 		GmstConfigTemplateComponentMst gmstConfigTemplateComponentMst = new GmstConfigTemplateComponentMst();
 		BeanUtils.copyProperties(templateBean, gmstConfigTemplateComponentMst);
-		
+
 		if (!isSave) {
-			Integer updatedRow = templateComponentRepository.updateTemplateComponentRecord(templateBean.getUnumTemplCompId());
-			if(updatedRow > 0) {
+			Integer updatedRow = templateComponentRepository
+					.updateTemplateComponentRecord(templateBean.getUnumTemplCompId());
+			if (updatedRow > 0) {
 				templateComponentDetailRepository.updateTemplateComponentItemRecord(templateBean.getUnumTemplCompId());
 			} else {
 				log.info("No Active Component found to Update for ID : {} ", templateBean.getUnumTemplCompId());
 				return ServiceResponse.builder().status(1).message(language.updateError("Component")).build();
 			}
-			
+
 		} else {
 			gmstConfigTemplateComponentMst.setUnumTemplCompId(templateComponentRepository.getNextUnumTemplCompId());
 		}
@@ -117,34 +119,48 @@ public class TemplateComponentService {
 		gmstConfigTemplateComponentMst.setUnumUnivId(RequestUtility.getUniversityId());
 		gmstConfigTemplateComponentMst.setUnumEntryUid(RequestUtility.getUserId());
 		gmstConfigTemplateComponentMst.setUdtEntryDate(new java.sql.Date(System.currentTimeMillis()));
-		
-		
+
 		log.info("univ id {}", gmstConfigTemplateComponentMst.getUnumUnivId());
 		templateComponentRepository.save(gmstConfigTemplateComponentMst);
 
-		int count = 1;//new AtomicInteger(0);
+		int count = 1;// new AtomicInteger(0);
 
 		List<GmstConfigTemplateComponentDtl> gmstConfigTemplateComponentDtlEntityList = new ArrayList<>();
 		for (TemplateComponentDtlsBean templateComponentDtls : templateBean.getTemplateComponentDtlsBeanList()) {
 			GmstConfigTemplateComponentDtl gmstConfigTemplateComponentDtl = new GmstConfigTemplateComponentDtl();
 			gmstConfigTemplateComponentDtlEntityList.add(gmstConfigTemplateComponentDtl);
-			
+
 			BeanUtils.copyProperties(templateComponentDtls, gmstConfigTemplateComponentDtl);
-			gmstConfigTemplateComponentDtl.setUnumTemplCompItemId(
-					Long.parseLong(gmstConfigTemplateComponentMst.getUnumTemplCompId()
-							+ StringUtility.padLeftZeros(count++ + "", 5)));
+			gmstConfigTemplateComponentDtl.setUnumTemplCompItemId(Long.parseLong(
+					gmstConfigTemplateComponentMst.getUnumTemplCompId() + StringUtility.padLeftZeros(count++ + "", 5)));
 			gmstConfigTemplateComponentDtl.setUnumTemplCompId(gmstConfigTemplateComponentMst.getUnumTemplCompId());
 			gmstConfigTemplateComponentDtl.setUnumIsvalid(1);
 			gmstConfigTemplateComponentDtl.setUnumEntryUid(RequestUtility.getUserId());
 			gmstConfigTemplateComponentDtl.setUdtEffFrom(new Date());
-			
+
 		}
 		templateComponentDetailRepository.saveAll(gmstConfigTemplateComponentDtlEntityList);
-		if(!isSave) 
+		if (!isSave)
 			return ServiceResponse.builder().status(1).message(language.updateSuccess("Component")).build();
-		else 
+		else
 			return ServiceResponse.builder().status(1).message(language.saveSuccess("Component")).build();
 	}
 
+	public TemplateComponentBean getCompDetailsByParentID(Long unumTemplCompId) throws Exception {
+		TemplateComponentBean templatecompBean = new TemplateComponentBean();
+		BeanUtils.copyProperties(templateComponentRepository.findByUnumTemplCompId(unumTemplCompId), templatecompBean);
+            
+		List<TemplateComponentDtlsBean> gmstdtlsbeanList = BeanUtils.copyListProperties(templateComponentDetailRepository.findByUnumTemplCompId(unumTemplCompId), TemplateComponentDtlsBean.class);
+		templatecompBean.setTemplateComponentDtlsBeanList(gmstdtlsbeanList);
+
+		return templatecompBean;
+	}
+
+	public List<TemplateComponentBean> getUnumTemplCompIds() throws Exception {
+
+		return BeanUtils.copyListProperties(
+				templateComponentRepository.findUnumTemplCompIds(RequestUtility.getUniversityId()),
+				TemplateComponentBean.class);
+	}
 
 }

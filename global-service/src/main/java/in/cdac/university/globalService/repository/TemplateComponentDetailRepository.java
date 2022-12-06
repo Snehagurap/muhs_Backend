@@ -29,5 +29,7 @@ public interface TemplateComponentDetailRepository extends JpaRepository<GmstCon
 	Integer deleteTemplateComponentItemRecord(@Param("unumTemplCompId") List<Long> idsToDelete);
 
 	List<GmstConfigTemplateComponentDtl> findByUnumTemplCompIdInAndUnumIsvalidIn(List<Long> idsToDelete, List<Integer> unumIsvalids);
+
+	List<GmstConfigTemplateComponentDtl> findByUnumTemplCompId(Long unumTemplCompId);
 	
 }
