@@ -1,10 +1,7 @@
 package in.cdac.university.globalService.repository;
 
-import in.cdac.university.globalService.entity.GmstConfigTemplateComponentDtl;
 import in.cdac.university.globalService.entity.GmstConfigTemplateComponentMst;
 import in.cdac.university.globalService.entity.GmstConfigTemplateComponentMstPK;
-import in.cdac.university.globalService.entity.GmstConfigTemplateItemMst;
-import in.cdac.university.globalService.entity.GmstSubjectMst;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -46,20 +43,12 @@ public interface TemplateComponentRepository
 
 	List<GmstConfigTemplateComponentMst> findByUnumTemplCompIdInAndUnumIsvalidIn(List<Long> idsToDelete,
 			List<Integer> unumIsvalids);
-	
-//	@Query("select c from GmstConfigTemplateComponentMst c " + "where c.unumIsvalid = 1 "
-//			+ "and c.unumTemplCompId = :unumTemplCompId")
-	GmstConfigTemplateComponentMst findByUnumTemplCompIdAndUnumIsvalid(Long unumTemplCompId,Integer unumIsvalid);
-	
-	 @Query("select c from GmstConfigTemplateComponentMst c " +
-	            "where c.unumIsvalid = 1 " +
-	            "and c.udtEffFrom <= current_date " +
-	            "and coalesce(c.udtEffTo, current_date) >= current_date " +
-	            "and c.unumUnivId = :universityId " +
-	            "order by unumTemplCompId")
+
+	GmstConfigTemplateComponentMst findByUnumTemplCompIdAndUnumIsvalid(Long unumTemplCompId, Integer unumIsvalid);
+
+	@Query("select c from GmstConfigTemplateComponentMst c " + "where c.unumIsvalid = 1 "
+			+ "and c.udtEffFrom <= current_date " + "and coalesce(c.udtEffTo, current_date) >= current_date "
+			+ "and c.unumUnivId = :universityId " + "order by unumTemplCompId")
 	List<GmstConfigTemplateComponentMst> findUnumTemplCompIds(Integer universityId);
-	
-	
-	   
 
 }

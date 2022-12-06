@@ -12,26 +12,26 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TemplateComponentDetailRepository extends JpaRepository<GmstConfigTemplateComponentDtl, GmstConfigTemplateComponentDtlPK> {
-	
+public interface TemplateComponentDetailRepository
+		extends JpaRepository<GmstConfigTemplateComponentDtl, GmstConfigTemplateComponentDtlPK> {
+
 	@Modifying
-	@Query(value="update university.gmst_config_template_component_dtl a set "
+	@Query(value = "update university.gmst_config_template_component_dtl a set "
 			+ " unum_isvalid = (select coalesce(max(unum_isvalid), 2) + 1 from university.gmst_config_template_component_dtl b "
 			+ " where a.unum_templ_comp_id = b.unum_templ_comp_id and unum_isvalid > 2), udt_eff_to = current_timestamp where"
-			+ " unum_templ_comp_id = :unumTemplCompId and unum_isvalid = 1",nativeQuery = true)
+			+ " unum_templ_comp_id = :unumTemplCompId and unum_isvalid = 1", nativeQuery = true)
 	Integer updateTemplateComponentItemRecord(@Param("unumTemplCompId") Long unumTemplCompId);
 
 	@Modifying(clearAutomatically = true)
-	@Query(value="update university.gmst_config_template_component_dtl a set "
+	@Query(value = "update university.gmst_config_template_component_dtl a set "
 			+ " unum_isvalid = (select coalesce(max(unum_isvalid), 2) + 1 from university.gmst_config_template_component_dtl b "
 			+ " where a.unum_templ_comp_id = b.unum_templ_comp_id and unum_isvalid > 2), udt_eff_to = current_timestamp where"
-			+ " unum_templ_comp_id in (:unumTemplCompId) and unum_isvalid = 1",nativeQuery = true)
+			+ " unum_templ_comp_id in (:unumTemplCompId) and unum_isvalid = 1", nativeQuery = true)
 	Integer deleteTemplateComponentItemRecord(@Param("unumTemplCompId") List<Long> idsToDelete);
 
-	List<GmstConfigTemplateComponentDtl> findByUnumTemplCompIdInAndUnumIsvalidIn(List<Long> idsToDelete, List<Integer> unumIsvalids);
+	List<GmstConfigTemplateComponentDtl> findByUnumTemplCompIdInAndUnumIsvalidIn(List<Long> idsToDelete,
+			List<Integer> unumIsvalids);
 
-//	@Query("select c from university.gmst_config_template_component_dtl c " + "where c.unum_isvalid = 1 "
-//			+ "and c.unum_templ_comp_id = :unumTemplCompId")
-	List<GmstConfigTemplateComponentDtl> findByUnumTemplCompIdAndUnumIsvalid(Long unumTemplCompId,Integer unumIsvalid);
-	
+	List<GmstConfigTemplateComponentDtl> findByUnumTemplCompIdAndUnumIsvalid(Long unumTemplCompId, Integer unumIsvalid);
+
 }
