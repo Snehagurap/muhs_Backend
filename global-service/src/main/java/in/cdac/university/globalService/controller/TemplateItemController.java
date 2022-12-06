@@ -71,6 +71,13 @@ public class TemplateItemController {
         );
     }
 
+    @GetMapping("all")
+    public ResponseEntity<?> getAllItems() throws Exception {
+        return ResponseHandler.generateOkResponse(
+                templateItemService.getAllActiveItems(RequestUtility.getUniversityId())
+        );
+    }
+
     @GetMapping("listPage")
     public ResponseEntity<?> listPageData() throws Exception {
         return ResponseHandler.generateOkResponse(
