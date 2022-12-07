@@ -1,6 +1,9 @@
 package in.cdac.university.globalService.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import in.cdac.university.globalService.util.annotations.ComboKey;
+import in.cdac.university.globalService.util.annotations.ComboValue;
 import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,10 +11,13 @@ import lombok.Setter;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.constraints.NotBlank;
+
 @Getter
 @Setter
 public class TemplateComponentBean {
     @ListColumn(omit = true)
+    @ComboKey
     private Long unumTemplCompId;
 
     @JsonIgnore
@@ -45,8 +51,10 @@ public class TemplateComponentBean {
     private String ustrCompAllignment;
 
     @ListColumn(name = "Prefix Text")
+    @ComboValue
     private String ustrCompPrintPrefixText;
 
+    @NotBlank(message = "Print Text is mandatory")
     @ListColumn(name = "Print Text")
     private String ustrCompPrintText;
 
@@ -59,4 +67,6 @@ public class TemplateComponentBean {
     private Long unumTempledtlId;
 
     private List<TemplateItemBean> items;
+    
+    private List<TemplateComponentDtlsBean> templateComponentDtlsBeanList;
 }

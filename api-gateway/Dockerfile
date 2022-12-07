@@ -1,4 +1,4 @@
-FROM openjdk:17-slim-bullseye
+FROM openjdk:17.0.2-slim-bullseye
 RUN apt-get update; apt-get install -y fontconfig libfreetype6
 ADD ["target/api-gateway-0.0.1.jar", "app.jar"]
 EXPOSE 8180

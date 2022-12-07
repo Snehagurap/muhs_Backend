@@ -30,6 +30,14 @@ spring:
     username: muhsnashik
     password: MuHs123NaShIk
     driver-class-name: org.postgresql.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      pool-name: muhs-CP
+      maximum-pool-size: 50
+      connection-timeout: 30000
+      initialization-fail-timeout: 45000
+      idle-timeout: 600000
+      max-lifetime: 1800000
   jpa:
     show-sql: true
     hibernate:

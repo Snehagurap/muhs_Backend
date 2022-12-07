@@ -2,6 +2,7 @@ package in.cdac.university.globalService.controller;
 
 import in.cdac.university.globalService.bean.TemplateHeaderBean;
 import in.cdac.university.globalService.service.TemplateHeaderService;
+import in.cdac.university.globalService.util.ComboUtility;
 import in.cdac.university.globalService.util.ListPageUtility;
 import in.cdac.university.globalService.util.RequestUtility;
 import in.cdac.university.globalService.util.ResponseHandler;
@@ -74,4 +75,11 @@ public class TemplateHeaderController {
           templateHeaderService.delete(templateHeaderBean, idsToDelete)
         );
     }
+    
+    @GetMapping("subHeaderCombo/{unumTemplHeadId}")
+	public ResponseEntity<?> getAllsubHeaderComboByselectedHeader(@PathVariable("unumTemplHeadId") Long unumTemplHeadId) throws Exception {
+		 return ResponseHandler.generateOkResponse(
+	                ComboUtility.generateComboData(templateHeaderService.getSubHeaderComboID(unumTemplHeadId))
+	        );
+	}
 }
