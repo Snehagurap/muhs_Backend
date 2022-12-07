@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+<title>Student Details</title>
+
+
+</head>
+
+<body>
+
+<img class="logo" src="images/logo.png"/>
+
+<div>
+
+<!-- <p th:each="header: ${headers}">  <span style="align-content: center;" th:if="${header.unumTemplHeadId lt 0}" th:text="${header.ustrHeadPrintText}"></span> : <span th:text="${header.ustrTempDescription}"></span> -->
+
+<!-- </p> -->
+
+<div th:each="header: ${headers}" th:if="${header.unumTemplHeadId lt 0}" th:style="'text-align:' + ${header.ustrHeadAllignment}">  
+	<h1 th:text="${ header.ustrHeadPrintText}" th:if="${header.ustrTemplHeadCode eq 'h1'}"></h1>
+	<h2 th:text="${ header.ustrHeadPrintText}" th:if="${header.ustrTemplHeadCode eq 'h2'}"></h2>
+	<h3 th:text="${ header.ustrHeadPrintText}" th:if="${header.ustrTemplHeadCode eq 'h3'}"></h3>
+	<h4 th:text="${ header.ustrHeadPrintText}" th:if="${header.ustrTemplHeadCode eq 'h4'}"></h4>
+	<h5 th:text="${ header.ustrHeadPrintText}" th:if="${header.ustrTemplHeadCode eq 'h5'}"></h5>
+	<h6 th:text="${ header.ustrHeadPrintText}" th:if="${header.ustrTemplHeadCode eq 'h6'}"></h6>
+</div>
+
+<div th:each="header: ${headers}" th:if="${header.unumTemplHeadId ge 0 && header.unumTemplHeadId ne 27}" th:style="'text-align:' + ${header.ustrHeadAllignment}">  
+	<span style="white-space: pre-line" th:text="${ header.ustrHeadPrintText}"></span>
+	<div th:each="component: ${header.components}" >  
+		<div th:each="item: ${component.items}">
+			<span style="white-space: pre-line" th:text="${ item.ustrItemPrintPrefixText}"></span>
+			<span style="white-space: pre-line" th:text="${ item.ustrItemPrintPreText}"></span>
+			<span style="white-space: pre-line" th:text="${ item.ustrItemValue}"></span>
+			<span style="white-space: pre-line" th:text="${ item.ustrItemPrintPostText}"></span>
+			
+			
+		</div>
+	</div>
+</div>
+
+</div>
+
+</body>
+
+</html>
