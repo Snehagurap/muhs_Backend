@@ -1,5 +1,6 @@
 package in.cdac.university.globalService.repository;
 
+import in.cdac.university.globalService.entity.GmstConfigTemplateHeaderMst;
 import in.cdac.university.globalService.entity.GmstConfigTemplateSubheaderMst;
 import in.cdac.university.globalService.entity.GmstConfigTemplateSubheaderMstPK;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,4 +31,9 @@ public interface TemplateSubHeaderRepository extends JpaRepository<GmstConfigTem
             "from GmstConfigTemplateSubheaderMst a where a.unumTemplSubheadId = u.unumTemplSubheadId and a.unumIsvalid > 2) " +
             "where u.unumTemplSubheadId in (:templSubheadId) and u.unumIsvalid in (1,2) " )
     Integer createLog(@Param("templSubheadId") List<Long> templSubheadId);
+    
+    @Query("select c from GmstConfigTemplateSubheaderMst c " + "where c.unumIsvalid = 1 "
+			+ "and c.udtEffFrom <= current_date " + "and coalesce(c.udtEffTo, current_date) >= current_date "
+			+ "and c.unumUnivId = :universityId and c.unumTemplHeadId = :unumTemplHeadId")
+    List<GmstConfigTemplateSubheaderMst> findByunumTemplHeadId(Long unumTemplHeadId, Integer universityId);
 }

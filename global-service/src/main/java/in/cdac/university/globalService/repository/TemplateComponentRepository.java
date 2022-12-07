@@ -2,7 +2,7 @@ package in.cdac.university.globalService.repository;
 
 import in.cdac.university.globalService.entity.GmstConfigTemplateComponentMst;
 import in.cdac.university.globalService.entity.GmstConfigTemplateComponentMstPK;
-import in.cdac.university.globalService.entity.GmstConfigTemplateItemMst;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -30,18 +30,25 @@ public interface TemplateComponentRepository
 	Long getNextUnumTemplCompId();
 
 	@Modifying
-	@Query(value="update university.gmst_config_template_component_mst a set "
+	@Query(value = "update university.gmst_config_template_component_mst a set "
 			+ " unum_isvalid = (select coalesce(max(unum_isvalid), 2) + 1 from university.gmst_config_template_component_mst b "
 			+ " where a.unum_templ_comp_id = b.unum_templ_comp_id and unum_isvalid>2), udt_eff_to = current_timestamp where unum_templ_comp_id = :unumTemplCompId and unum_isvalid = 1", nativeQuery = true)
 	Integer updateTemplateComponentRecord(@Param("unumTemplCompId") Long unumTemplCompId);
 
 	@Modifying(clearAutomatically = true)
-	@Query(value="update university.gmst_config_template_component_mst a set "
+	@Query(value = "update university.gmst_config_template_component_mst a set "
 			+ " unum_isvalid = (select coalesce(max(unum_isvalid), 2) + 1 from university.gmst_config_template_component_mst b "
 			+ " where a.unum_templ_comp_id = b.unum_templ_comp_id and unum_isvalid > 2), udt_eff_to = current_timestamp where unum_templ_comp_id in ( :unumTemplCompId ) and unum_isvalid = 1", nativeQuery = true)
 	Integer deleteTemplateComponentRecord(@Param("unumTemplCompId") List<Long> idsToDelete);
 
 	List<GmstConfigTemplateComponentMst> findByUnumTemplCompIdInAndUnumIsvalidIn(List<Long> idsToDelete,
 			List<Integer> unumIsvalids);
-	
+
+	GmstConfigTemplateComponentMst findByUnumTemplCompIdAndUnumIsvalid(Long unumTemplCompId, Integer unumIsvalid);
+
+	@Query("select c from GmstConfigTemplateComponentMst c " + "where c.unumIsvalid = 1 "
+			+ "and c.udtEffFrom <= current_date " + "and coalesce(c.udtEffTo, current_date) >= current_date "
+			+ "and c.unumUnivId = :universityId " + "order by unumTemplCompId")
+	List<GmstConfigTemplateComponentMst> findUnumTemplCompIds(Integer universityId);
+
 }
