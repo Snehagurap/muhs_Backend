@@ -1,5 +1,7 @@
 package in.cdac.university.globalService.bean;
 
+import in.cdac.university.globalService.util.annotations.ComboKey;
+import in.cdac.university.globalService.util.annotations.ComboValue;
 import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +16,7 @@ import java.util.Date;
 @ToString
 public class TemplateSubHeaderBean {
     @ListColumn(omit = true)
+    @ComboKey
     private Long unumTemplSubheadId;
 
     private Integer unumIsvalid;
@@ -41,6 +44,7 @@ public class TemplateSubHeaderBean {
     private String ustrSubheadAllignment;
 
     @ListColumn(order = 2, name = "Prefix Text")
+    @ComboValue
     private String ustrSubheadPrintPrefixText;
 
     @ListColumn(order = 3, name = "Text")
