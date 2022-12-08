@@ -36,10 +36,12 @@ spring:
     hikari:
       pool-name: muhs-CP
       maximum-pool-size: 50
+      minimum-idle: 5
       connection-timeout: 30000
       initialization-fail-timeout: 45000
-      idle-timeout: 600000
-      max-lifetime: 1800000
+      idle-timeout: 60000
+      keepalive-time: 90000
+      max-lifetime: 600000
 
   jpa:
     show-sql: true
