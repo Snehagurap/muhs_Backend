@@ -19,6 +19,8 @@ import in.cdac.university.globalService.repository.TemplateHeaderRepository;
 import in.cdac.university.globalService.repository.TemplateItemRepository;
 import in.cdac.university.globalService.repository.TemplateSubHeaderRepository;
 import in.cdac.university.globalService.util.*;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,12 +29,14 @@ import static java.util.Objects.nonNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
 @Service
+@Slf4j
 public class TemplateHeaderService {
 
 	@Autowired
@@ -169,53 +173,18 @@ public class TemplateHeaderService {
 
 	public ServiceResponse getItemsByHeaderSubHeaderComponents(
 			@Valid TemplateHeaderSubHeaderBean templateHeaderSubHeaderBean) {
-		TemplateHeaderSubHeaderBean responseBean = new TemplateHeaderSubHeaderBean();
-		List<TemplateComponentItemBean> templcompbeanlist = new ArrayList<TemplateComponentItemBean>();
 
 		List<Long> unumTemplCompIdlist = new ArrayList<Long>();
-		for (TemplateComponentItemBean requestbean : templateHeaderSubHeaderBean.getCompItemBean()) {
+		templateHeaderSubHeaderBean.getCompItemBean().forEach(requestbean->{
 			unumTemplCompIdlist.add(requestbean.getUnumTemplCompId());
-		}
-		List<Long> unumTemplCompItemIdlist = templateDetailRepository
-				.findAllUnumTempleItemIdByUnumTempleCompIdInAndUnumIsvalid(unumTemplCompIdlist, 1);
-		List<TemplateDetailBean> allitemdtlsList = BeanUtils.copyListProperties(
-				templateDetailRepository.findAllByUnumTempleCompIdInAndUnumIsvalid(unumTemplCompIdlist, 1),
-				TemplateDetailBean.class);
-		List<TemplateItemBean> itemsList = BeanUtils.copyListProperties(
-				templateItemRepository.findByUnumTemplItemIdInAndUnumIsvalid(unumTemplCompItemIdlist, 1),
-				TemplateItemBean.class);
+			List<TemplateItemBean> itemsList = BeanUtils.copyListProperties(
+					templateItemRepository.findAllByUnumTemplItemIdAndUnumIsvalid(requestbean.getUnumTemplCompId(),1),
+					TemplateItemBean.class);
+			log.info("itemsList {}",itemsList);
+			requestbean.setItems(itemsList);
+		});
 
-		for (TemplateComponentItemBean requestbean : templateHeaderSubHeaderBean.getCompItemBean()) {
-			TemplateComponentItemBean templateComponentItemBean = new TemplateComponentItemBean();
-			templateComponentItemBean.setUnumTemplCompId(requestbean.getUnumTemplCompId());
-			templateComponentItemBean.setUstrCompPrintText(requestbean.getUstrCompPrintText());
-			Long unumTemplCompId = requestbean.getUnumTemplCompId();
-
-			List<Long> itemIdsforThisBean = new ArrayList<Long>();
-			List<TemplateItemBean> itemsListforthisCompItemId = new ArrayList<TemplateItemBean>();
-			for (TemplateDetailBean detailbean : allitemdtlsList) {
-
-				if (detailbean.getUnumTempleCompId() == unumTemplCompId) {
-					itemIdsforThisBean.add(detailbean.getUnumTempleItemId());
-				}
-			}
-
-			for (TemplateItemBean item : itemsList) {
-				if (itemIdsforThisBean.contains(item.getUnumTemplItemId())) {
-					itemsListforthisCompItemId.add(item);
-				}
-			}
-
-			templateComponentItemBean.setItems(itemsListforthisCompItemId);
-			templcompbeanlist.add(templateComponentItemBean);
-		}
-		responseBean.setUnumTemplHeadId(templateHeaderSubHeaderBean.getUnumTemplHeadId());
-		responseBean.setUstrHeadPrintText(templateHeaderSubHeaderBean.getUstrHeadPrintText());
-		responseBean.setUnumTemplSubheadId(templateHeaderSubHeaderBean.getUnumTemplSubheadId());
-		responseBean.setUstrSubheadPrintPrefixText(templateHeaderSubHeaderBean.getUstrSubheadPrintPrefixText());
-		responseBean.setCompItemBean(templcompbeanlist);
-
-		return ServiceResponse.successObject(responseBean);
+		return ServiceResponse.successObject(templateHeaderSubHeaderBean);
 
 	}
 }
