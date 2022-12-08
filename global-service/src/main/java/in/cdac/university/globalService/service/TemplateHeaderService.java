@@ -2,12 +2,21 @@ package in.cdac.university.globalService.service;
 
 import in.cdac.university.globalService.bean.TemplateComponentBean;
 import in.cdac.university.globalService.bean.TemplateComponentDtlsBean;
+import in.cdac.university.globalService.bean.TemplateComponentItemBean;
+import in.cdac.university.globalService.bean.TemplateDetailBean;
 import in.cdac.university.globalService.bean.TemplateHeaderBean;
+import in.cdac.university.globalService.bean.TemplateHeaderSubHeaderBean;
+import in.cdac.university.globalService.bean.TemplateItemBean;
 import in.cdac.university.globalService.bean.TemplateSubHeaderBean;
 import in.cdac.university.globalService.entity.GmstConfigTemplateComponentMst;
+import in.cdac.university.globalService.entity.GmstConfigTemplateDtl;
 import in.cdac.university.globalService.entity.GmstConfigTemplateHeaderMst;
+import in.cdac.university.globalService.entity.GmstConfigTemplateItemMst;
 import in.cdac.university.globalService.exception.ApplicationException;
+import in.cdac.university.globalService.repository.TemplateComponentDetailRepository;
+import in.cdac.university.globalService.repository.TemplateDetailRepository;
 import in.cdac.university.globalService.repository.TemplateHeaderRepository;
+import in.cdac.university.globalService.repository.TemplateItemRepository;
 import in.cdac.university.globalService.repository.TemplateSubHeaderRepository;
 import in.cdac.university.globalService.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +25,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static java.util.Objects.nonNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import javax.validation.Valid;
 
 @Service
 public class TemplateHeaderService {
@@ -31,6 +43,12 @@ public class TemplateHeaderService {
 
 	@Autowired
 	private TemplateSubHeaderRepository templateSubHeaderRepository;
+
+	@Autowired
+	private TemplateDetailRepository templateDetailRepository;
+
+	@Autowired
+	private TemplateItemRepository templateItemRepository;
 
 	public List<TemplateHeaderBean> listPageData() throws Exception {
 		return BeanUtils.copyListProperties(templateHeaderRepository
@@ -143,8 +161,61 @@ public class TemplateHeaderService {
 	}
 
 	public List<TemplateSubHeaderBean> getSubHeaderComboID(Long unumTemplHeadId) throws Exception {
-		return BeanUtils.copyListProperties(templateSubHeaderRepository.findByunumTemplHeadId(
-				unumTemplHeadId, RequestUtility.getUniversityId()), TemplateSubHeaderBean.class);
+		return BeanUtils.copyListProperties(
+				templateSubHeaderRepository.findByunumTemplHeadId(unumTemplHeadId, RequestUtility.getUniversityId()),
+				TemplateSubHeaderBean.class);
+
+	}
+
+	public ServiceResponse getItemsByHeaderSubHeaderComponents(
+			@Valid TemplateHeaderSubHeaderBean templateHeaderSubHeaderBean) {
+		TemplateHeaderSubHeaderBean responseBean = new TemplateHeaderSubHeaderBean();
+		List<TemplateComponentItemBean> templcompbeanlist = new ArrayList<TemplateComponentItemBean>();
+
+		List<Long> unumTemplCompIdlist = new ArrayList<Long>();
+		for (TemplateComponentItemBean requestbean : templateHeaderSubHeaderBean.getCompItemBean()) {
+			unumTemplCompIdlist.add(requestbean.getUnumTemplCompId());
+		}
+		List<Long> unumTemplCompItemIdlist = templateDetailRepository
+				.findAllUnumTempleItemIdByUnumTempleCompIdInAndUnumIsvalid(unumTemplCompIdlist, 1);
+		List<TemplateDetailBean> allitemdtlsList = BeanUtils.copyListProperties(
+				templateDetailRepository.findAllByUnumTempleCompIdInAndUnumIsvalid(unumTemplCompIdlist, 1),
+				TemplateDetailBean.class);
+		List<TemplateItemBean> itemsList = BeanUtils.copyListProperties(
+				templateItemRepository.findByUnumTemplItemIdInAndUnumIsvalid(unumTemplCompItemIdlist, 1),
+				TemplateItemBean.class);
+
+		for (TemplateComponentItemBean requestbean : templateHeaderSubHeaderBean.getCompItemBean()) {
+			TemplateComponentItemBean templateComponentItemBean = new TemplateComponentItemBean();
+			templateComponentItemBean.setUnumTemplCompId(requestbean.getUnumTemplCompId());
+			templateComponentItemBean.setUstrCompPrintText(requestbean.getUstrCompPrintText());
+			Long unumTemplCompId = requestbean.getUnumTemplCompId();
+
+			List<Long> itemIdsforThisBean = new ArrayList<Long>();
+			List<TemplateItemBean> itemsListforthisCompItemId = new ArrayList<TemplateItemBean>();
+			for (TemplateDetailBean detailbean : allitemdtlsList) {
+
+				if (detailbean.getUnumTempleCompId() == unumTemplCompId) {
+					itemIdsforThisBean.add(detailbean.getUnumTempleItemId());
+				}
+			}
+
+			for (TemplateItemBean item : itemsList) {
+				if (itemIdsforThisBean.contains(item.getUnumTemplItemId())) {
+					itemsListforthisCompItemId.add(item);
+				}
+			}
+
+			templateComponentItemBean.setItems(itemsListforthisCompItemId);
+			templcompbeanlist.add(templateComponentItemBean);
+		}
+		responseBean.setUnumTemplHeadId(templateHeaderSubHeaderBean.getUnumTemplHeadId());
+		responseBean.setUstrHeadPrintText(templateHeaderSubHeaderBean.getUstrHeadPrintText());
+		responseBean.setUnumTemplSubheadId(templateHeaderSubHeaderBean.getUnumTemplSubheadId());
+		responseBean.setUstrSubheadPrintPrefixText(templateHeaderSubHeaderBean.getUstrSubheadPrintPrefixText());
+		responseBean.setCompItemBean(templcompbeanlist);
+
+		return ServiceResponse.successObject(responseBean);
 
 	}
 }

@@ -1,5 +1,6 @@
 package in.cdac.university.globalService.repository;
 
+import in.cdac.university.globalService.bean.TemplateItemBean;
 import in.cdac.university.globalService.entity.GmstConfigTemplateItemMst;
 import in.cdac.university.globalService.entity.GmstConfigTemplateItemMstPK;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -57,4 +58,6 @@ public interface TemplateItemRepository extends JpaRepository<GmstConfigTemplate
             "from GmstConfigTemplateItemMst a where a.unumTemplItemId = u.unumTemplItemId and  a.unumIsvalid > 2) " +
             "where u.unumTemplItemId in (:templItemId) and u.unumIsvalid in (1, 2) ")
     Integer createLog(@Param("templItemId") List<Long> unumTemplItemId);
+
+	List<GmstConfigTemplateItemMst> findByUnumTemplItemIdInAndUnumIsvalid(List<Long> unumTemplCompItemIdlist,Integer unumIsvalid);
 }
