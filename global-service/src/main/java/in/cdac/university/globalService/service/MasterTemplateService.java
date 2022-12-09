@@ -458,7 +458,7 @@ public class MasterTemplateService {
 
 
     public List<TemplateToSaveBean> scrutinyListPage(Long notificationId, Integer applicationStatus) throws Exception {
-        System.out.println(notificationId+ " , " + applicationStatus);
+
         List<GbltConfigApplicationDataMst> applicationDataList = applicantDataMasterRepository.getApplicationByNotification(
                 RequestUtility.getUniversityId(), applicationStatus, notificationId
         );
@@ -496,7 +496,7 @@ public class MasterTemplateService {
             return ServiceResponse.errorResponse(language.notFoundForId("Application", applicationId));
 
         ApplicationDataBean applicationDataBean = BeanUtils.copyProperties(applicationDataMstOptional.get(), ApplicationDataBean.class);
-        System.out.println(applicationDataBean);
+
         Optional<GmstApplicantMst> gmstApplicantMstOptional = applicantRepository.findByUnumApplicantIdAndUnumIsvalid(applicationDataBean.getUnumApplicantId(), 1);
 
         if(!gmstApplicantMstOptional.isEmpty()) {
