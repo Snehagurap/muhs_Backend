@@ -85,4 +85,7 @@ public class GbltConfigApplicationDataMst implements Serializable {
 
 	@Column(name="unum_ctype_id")
 	private Integer unumCtypeId;
+
+	@Column(name = "unum_mtemple_id")
+	private Integer unumMtempleId;
 }
