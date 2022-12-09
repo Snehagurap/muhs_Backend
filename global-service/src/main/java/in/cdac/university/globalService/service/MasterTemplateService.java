@@ -2,6 +2,7 @@ package in.cdac.university.globalService.service;
 
 import in.cdac.university.globalService.bean.*;
 import in.cdac.university.globalService.entity.*;
+import in.cdac.university.globalService.exception.ApplicationException;
 import in.cdac.university.globalService.repository.*;
 import in.cdac.university.globalService.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -454,9 +455,12 @@ public class MasterTemplateService {
         );
     }
 
-    public List<TemplateToSaveBean> scrutinyListPage(Long notificationId, Long notificationDetail, Integer applicationStatus) throws Exception {
+
+
+    public List<TemplateToSaveBean> scrutinyListPage(Long notificationId, Integer applicationStatus) throws Exception {
+        System.out.println(notificationId+ " , " + applicationStatus);
         List<GbltConfigApplicationDataMst> applicationDataList = applicantDataMasterRepository.getApplicationByNotification(
-                RequestUtility.getUniversityId(), applicationStatus, notificationId, notificationDetail
+                RequestUtility.getUniversityId(), applicationStatus, notificationId
         );
 
         Map<Long, String> applicants = applicantRepository.findByUnumIsVerifiedApplicantAndUnumIsvalid(1, 1)
@@ -472,4 +476,36 @@ public class MasterTemplateService {
                 })
                 .toList();
     }
+
+    public List<ApplicationStatusBean> getApplicationStatusCombo() {
+        return(BeanUtils.copyListProperties(
+                applicantDataMasterRepository.getAllApplicationStatus() , ApplicationStatusBean.class)
+        );
+    }
+
+    public ServiceResponse getApplicationById(Long applicationId) throws Exception {
+        if(applicationId == null) {
+            return ServiceResponse.errorResponse(language.mandatory("Application Id"));
+        }
+
+        Optional<GbltConfigApplicationDataMst> applicationDataMstOptional = applicantDataMasterRepository.findByUnumApplicationIdAndUnumIsvalidAndUnumUnivId(
+                applicationId, 1, RequestUtility.getUniversityId()
+        );
+
+        if(applicationDataMstOptional.isEmpty())
+            return ServiceResponse.errorResponse(language.notFoundForId("Application", applicationId));
+
+        ApplicationDataBean applicationDataBean = BeanUtils.copyProperties(applicationDataMstOptional.get(), ApplicationDataBean.class);
+        System.out.println(applicationDataBean);
+        Optional<GmstApplicantMst> gmstApplicantMstOptional = applicantRepository.findByUnumApplicantIdAndUnumIsvalid(applicationDataBean.getUnumApplicantId(), 1);
+
+        if(!gmstApplicantMstOptional.isEmpty()) {
+            applicationDataBean.setUstrApplicantName(gmstApplicantMstOptional.get().getUstrApplicantName());
+        }
+
+        return ServiceResponse.successObject(applicationDataBean);
+
+
+    }
+
 }

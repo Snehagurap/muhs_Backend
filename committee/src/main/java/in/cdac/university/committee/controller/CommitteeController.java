@@ -34,6 +34,7 @@ public class CommitteeController {
         cal.setTime(committeeBean.getUdtComStartDate());
         cal.add(Calendar.DATE, committeeBean.getUnumComdurationDays());
         committeeBean.setUdtComEndDate(cal.getTime());
+        committeeBean.setUstrComForyear(String.valueOf(cal.get(Calendar.YEAR)));
         return ResponseHandler.generateResponse(
                 committeeService.createCommittee(committeeBean)
         );

@@ -249,11 +249,36 @@ public class EmployeeService {
             return ServiceResponse.errorResponse(language.notFoundForId("Teacher", Arrays.toString(idsToDelete)));
         }
 
-        // Create Log
+        // Create Log Emp Mst
         int noOfRowsAffected = employeeRepository.createLog(List.of(idsToDelete));
         if (noOfRowsAffected != idsToDelete.length) {
             throw new ApplicationException(language.deleteError("Teacher"));
         }
+
+        List<GmstEmpCurDtl> gmstEmpCurDtlList = employeeCurrentDetailRepository.findByUnumEmpIdInAndUnumIsvalidInAndUnumUnivId(
+                List.of(idsToDelete),  List.of(1, 2), employeeBean.getUnumUnivId()
+        );
+
+        if(gmstEmpCurDtlList.isEmpty()) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Teacher", Arrays.toString(idsToDelete)));
+        }
+
+        // create log Current Detail
+        int noOfRowsAffectedCurDtl = employeeCurrentDetailRepository.createLog(List.of(idsToDelete));
+        if (noOfRowsAffectedCurDtl != idsToDelete.length) {
+            throw new ApplicationException(language.deleteError("Teacher"));
+        }
+
+        List<GmstEmpProfileDtl> gmstEmpProfileDtlList = employeeProfileRepository.findByUnumEmpIdInAndUnumIsvalidInAndUnumUnivId(
+                List.of(idsToDelete),  List.of(1, 2), employeeBean.getUnumUnivId()
+        );
+
+        if(gmstEmpProfileDtlList.isEmpty()) {
+            throw new ApplicationException(language.deleteError("Teacher"));
+        }
+
+        // create log Profile
+        employeeProfileRepository.createLog(List.of(idsToDelete));
 
         empMstList.forEach(teacher -> {
             teacher.setUnumIsvalid(0);
@@ -261,7 +286,21 @@ public class EmployeeService {
             teacher.setUnumEntryUid(employeeBean.getUnumEntryUid());
         });
 
+        gmstEmpCurDtlList.forEach(teacher -> {
+            teacher.setUnumIsvalid(0);
+            teacher.setUdtEntryDate(employeeBean.getUdtEntryDate());
+            teacher.setUnumEntryUid(employeeBean.getUnumEntryUid());
+        });
+
+        gmstEmpProfileDtlList.forEach(teacher -> {
+            teacher.setUnumIsvalid(0);
+            teacher.setUdtEntryDate(employeeBean.getUdtEntryDate());
+            teacher.setUnumEntryUid(employeeBean.getUnumEntryUid());
+        });
+
         employeeRepository.saveAll(empMstList);
+        employeeCurrentDetailRepository.saveAll(gmstEmpCurDtlList);
+        employeeProfileRepository.saveAll(gmstEmpProfileDtlList);
         return ServiceResponse.builder()
                 .status(1)
                 .message(language.deleteSuccess("Teacher"))

@@ -25,7 +25,7 @@ public class GbltConfigApplicationTrackerDtlPK implements Serializable {
 	private Long unumNdtlId;
 
 	@Column(name="unum_application_status_sno")
-	private Long unumApplicationStatusSno;
+	private Integer unumApplicationStatusSno;
 
 	@Column(name="unum_isvalid")
 	private Integer unumIsvalid;

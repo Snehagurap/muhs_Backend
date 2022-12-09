@@ -54,6 +54,9 @@ public class GbltCommitteeDtl implements Serializable {
 	@Column(name="unum_role_min_exp_years")
 	private Integer unumRoleMinExpYears;
 
+	@Column(name="unum_min_approved_exp")
+	private Integer unumMinApprovedExp;
+
 	@Column(name="unum_role_min_yearly_occurance")
 	private Integer unumRoleMinYearlyOccurance;
 

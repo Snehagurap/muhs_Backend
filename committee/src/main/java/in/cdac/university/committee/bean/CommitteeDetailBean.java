@@ -38,6 +38,9 @@ public class CommitteeDetailBean {
     @NotNull(message = "Min Yearly Occurrence is mandatory")
     private Integer unumRoleMinYearlyOccurance;
 
+    @NotNull(message = "Min Approved Experience is mandatory")
+    private Integer unumMinApprovedExp;
+
     private Integer unumRoleIsExternal;
     private Integer unumRoleMaxExpYears;
     private Integer unumUnivId;

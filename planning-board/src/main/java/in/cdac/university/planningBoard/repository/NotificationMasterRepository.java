@@ -32,4 +32,15 @@ public interface NotificationMasterRepository extends JpaRepository<GbltNotifica
             "and coalesce(c.udtValidTo, current_date) >= current_date " +
             "order by udtNDt desc ")
     List<GbltNotificationMaster> getActiveNotifications(@PathVariable("universityId") Integer universityId);
+
+    @Modifying(clearAutomatically = true)
+    @Query("select c from GbltNotificationMaster c " +
+            "where c.unumNid in (select a.unumNid from GbltNotificationDtl a " +
+            "where a.unumCoursetypeId = :courseId " +
+            "and a.unumFacultyId = :facultyId " +
+            "and a.unumNotificationTypeId = :notificationTypeId " +
+            "and a.unumIsvalid = 1) " +
+            "and c.ustrAcademicYear = :year " +
+            " and c.unumIsvalid = 1 " )
+    List<GbltNotificationMaster> getNotificationByYearCourseFacultyNotifyType(@PathVariable("year") String year, @PathVariable("courseId") Integer courseId, @PathVariable("facultyId") Integer facultyId, @PathVariable("notificationTypeId") Integer notificationTypeId);
 }

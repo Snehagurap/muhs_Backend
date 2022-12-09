@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -18,6 +19,8 @@ public interface EmployeeProfileRepository extends JpaRepository<GmstEmpProfileD
     @Query("select count(*) from GmstEmpProfileDtl " +
             "where unumEmpId= :empID")
     Long getMaxEmpProfileId(@Param("empID") Long empID);
+
+    List<GmstEmpProfileDtl> findByUnumEmpIdInAndUnumIsvalidInAndUnumUnivId(Collection<Long> unumEmpIds, Collection<Integer> unumIsvalids, Integer unumUnivId);
 
     List<GmstEmpProfileDtl> findByUnumIsvalidAndUnumEmpId(Integer unumIsvalid, Long unumEmpId);
 
