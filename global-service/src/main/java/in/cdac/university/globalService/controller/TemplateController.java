@@ -22,4 +22,17 @@ public class TemplateController {
                 templateService.getTemplate(templateId)
         );
     }
+    
+    @GetMapping("/getTemplateById/{templateId}")
+    public ResponseEntity<?> getTemplateById(@PathVariable("templateId") Long templateId) throws Exception {
+        return ResponseHandler.generateResponse(
+                templateService.getTemplateById(templateId)
+        );
+    }
+    @GetMapping("/getAllTemplate")
+    public ResponseEntity<?> getAllTemplate() throws Exception {
+        return ResponseHandler.generateResponse(
+                templateService.getAllTemplate()
+        );
+    }
 }
