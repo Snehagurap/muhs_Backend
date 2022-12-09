@@ -33,4 +33,6 @@ public interface TemplateRepository extends JpaRepository<GmstConfigTemplateMst,
 			+ " where a.unum_temple_id = b.unum_temple_id and unum_isvalid > 2), udt_eff_to = current_timestamp where unum_temple_id in ( :idsToDelete ) and unum_isvalid = 1", nativeQuery = true)
 	Integer deleteTemplateMstRecord(@Param("idsToDelete") List<Long> idsToDelete);
     
+   GmstConfigTemplateMst findByUnumIsvalidAndUnumUnivIdAndUnumTempleId(Integer unumIsvalid, Integer unumUnivId,  Long unumTemplId);
+   List<GmstConfigTemplateMst> findByUnumIsvalidAndUnumUnivId(Integer unumIsvalid, Integer unumUnivId);
 }

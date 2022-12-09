@@ -14,6 +14,7 @@ import java.util.List;
 @Repository
 public interface TemplateDetailRepository extends JpaRepository<GmstConfigTemplateDtl, GmstConfigTemplateDtlPK> {
     List<GmstConfigTemplateDtl> findByUnumIsvalidAndUnumUnivIdAndUnumTempleIdIn(Integer unumIsvalid, Integer unumUnivId, List<Long> unumTempleId);
+    List<GmstConfigTemplateDtl> findByUnumIsvalidAndUnumUnivIdAndUnumTempleId(Integer unumIsvalid, Integer unumUnivId, Long unumTempleId);
 
 	List<GmstConfigTemplateDtl> findByUnumTempleCompIdInAndUnumIsvalid(List<Long> unumTemplCompIdlist,Integer unumIsvalid);
 

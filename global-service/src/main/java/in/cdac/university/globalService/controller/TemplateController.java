@@ -34,6 +34,7 @@ public class TemplateController {
         );
     }
     
+
     @PostMapping("/save")
 	public ResponseEntity<?> save(@Valid @RequestBody TemplateMasterBean templateMasterBean) throws Exception {
 
@@ -52,4 +53,18 @@ public class TemplateController {
 
 	}
     
+
+    @GetMapping("/getTemplateById/{templateId}")
+    public ResponseEntity<?> getTemplateById(@PathVariable("templateId") Long templateId) throws Exception {
+        return ResponseHandler.generateResponse(
+                templateService.getTemplateById(templateId)
+        );
+    }
+    @GetMapping("/getAllTemplate")
+    public ResponseEntity<?> getAllTemplate() throws Exception {
+        return ResponseHandler.generateResponse(
+                templateService.getAllTemplate()
+        );
+    }
+
 }

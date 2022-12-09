@@ -17,6 +17,7 @@ import javax.validation.constraints.NotBlank;
 @Setter
 public class TemplateMasterBean {
     @ListColumn(omit = true)
+    @ComboKey
     private Long unumTempleId;
 
     @JsonIgnore
@@ -49,7 +50,7 @@ public class TemplateMasterBean {
     private String ustrTempDescription;
     
     private String ustrTempleCode;
-    
+    @ComboValue
     private String ustrTempleName;
     
     private List<TemplateMasterDtlsBean> templateMasterDtlsBeanList;

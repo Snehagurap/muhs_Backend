@@ -1,13 +1,16 @@
 package in.cdac.university.globalService.bean;
 
 import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
+
 @Getter
+@Setter
 public class TemplateMasterDtlsBean {
 
 	@ListColumn(omit = true)

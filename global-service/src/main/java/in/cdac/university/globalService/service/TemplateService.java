@@ -5,6 +5,8 @@ import in.cdac.university.globalService.bean.TemplateMasterBean;
 import in.cdac.university.globalService.bean.TemplateMasterDtlsBean;
 import in.cdac.university.globalService.entity.GmstConfigTemplateComponentDtl;
 import in.cdac.university.globalService.entity.GmstConfigTemplateComponentMst;
+import in.cdac.university.globalService.bean.TemplateMasterBean;
+import in.cdac.university.globalService.bean.TemplateMasterDtlsBean;
 import in.cdac.university.globalService.entity.GmstConfigTemplateDtl;
 import in.cdac.university.globalService.entity.GmstConfigTemplateMst;
 import in.cdac.university.globalService.repository.TemplateDetailRepository;
@@ -21,6 +23,13 @@ import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
+
+import in.cdac.university.globalService.util.ComboUtility;
+import in.cdac.university.globalService.util.RequestUtility;
+import in.cdac.university.globalService.util.ServiceResponse;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,9 +48,13 @@ public class TemplateService {
     @Autowired
 	private Language language;
 
+    
+
+
     public ServiceResponse getTemplate(Long templateId) {
         return null;
     }
+
 
     @Transactional
 	public ServiceResponse save(@Valid TemplateMasterBean templateMasterBean) throws Exception{
@@ -140,4 +153,25 @@ public class TemplateService {
 		return ServiceResponse.builder().status(1).message(language.deleteSuccess("Template")).build();
 
 	}
+
+    
+    public ServiceResponse getTemplateById(Long templateId) throws Exception
+    {
+    	TemplateMasterBean templateMasterBean = new TemplateMasterBean();
+    	BeanUtils.copyProperties(templateRepository.findByUnumIsvalidAndUnumUnivIdAndUnumTempleId(1,RequestUtility.getUniversityId(),templateId),templateMasterBean) ;
+    	log.info("templateMasterBean {}" , templateMasterBean);
+    	List<TemplateMasterDtlsBean> templateMasterDtlsBeans = BeanUtils.copyListProperties(templateDetailRepository.findByUnumIsvalidAndUnumUnivIdAndUnumTempleId(1,RequestUtility.getUniversityId(),templateId), TemplateMasterDtlsBean.class) ;
+    	log.info("templateMasterDtlsBeans {}" , templateMasterDtlsBeans);
+    	templateMasterBean.setTemplateMasterDtlsBeanList(templateMasterDtlsBeans);
+    	return ServiceResponse.successObject(templateMasterBean);
+    }
+    
+    public ServiceResponse getAllTemplate() throws Exception
+    {
+    	List<GmstConfigTemplateMst> gmstConfigTemplateMsts = templateRepository.findByUnumIsvalidAndUnumUnivId(1,RequestUtility.getUniversityId());
+    	
+    	
+    	return ServiceResponse.successObject(
+				ComboUtility.generateComboData(BeanUtils.copyListProperties(gmstConfigTemplateMsts, TemplateMasterBean.class)));
+    }
 }
