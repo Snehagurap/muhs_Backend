@@ -2,7 +2,6 @@ package in.cdac.university.globalService.service;
 
 import in.cdac.university.globalService.bean.*;
 import in.cdac.university.globalService.entity.*;
-import in.cdac.university.globalService.exception.ApplicationException;
 import in.cdac.university.globalService.repository.*;
 import in.cdac.university.globalService.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -474,7 +473,7 @@ public class MasterTemplateService {
 
 
     public List<TemplateToSaveBean> scrutinyListPage(Long notificationId, Integer applicationStatus) throws Exception {
-        System.out.println(notificationId+ " , " + applicationStatus);
+
         List<GbltConfigApplicationDataMst> applicationDataList = applicantDataMasterRepository.getApplicationByNotification(
                 RequestUtility.getUniversityId(), applicationStatus, notificationId
         );
@@ -512,10 +511,10 @@ public class MasterTemplateService {
             return ServiceResponse.errorResponse(language.notFoundForId("Application", applicationId));
 
         ApplicationDataBean applicationDataBean = BeanUtils.copyProperties(applicationDataMstOptional.get(), ApplicationDataBean.class);
-        System.out.println(applicationDataBean);
+
         Optional<GmstApplicantMst> gmstApplicantMstOptional = applicantRepository.findByUnumApplicantIdAndUnumIsvalid(applicationDataBean.getUnumApplicantId(), 1);
 
-        if(!gmstApplicantMstOptional.isEmpty()) {
+        if(gmstApplicantMstOptional.isPresent()) {
             applicationDataBean.setUstrApplicantName(gmstApplicantMstOptional.get().getUstrApplicantName());
         }
 

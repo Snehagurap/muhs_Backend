@@ -1,12 +1,9 @@
 package in.cdac.university.globalService.service;
 
-import in.cdac.university.globalService.bean.ApplicationTrackerBean;
 import in.cdac.university.globalService.bean.ApplicationTrackerDtlBean;
-import in.cdac.university.globalService.entity.GbltConfigApplicationDataMst;
 import in.cdac.university.globalService.entity.GbltConfigApplicationTracker;
 import in.cdac.university.globalService.entity.GbltConfigApplicationTrackerDtl;
 import in.cdac.university.globalService.exception.ApplicationException;
-import in.cdac.university.globalService.repository.ApplicantRepository;
 import in.cdac.university.globalService.repository.ApplicationTrackerDtlRepository;
 import in.cdac.university.globalService.repository.ApplicationTrackerRepository;
 import in.cdac.university.globalService.repository.ConfigApplicantDataMasterRepository;

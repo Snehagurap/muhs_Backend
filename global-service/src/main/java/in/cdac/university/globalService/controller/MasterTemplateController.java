@@ -1,13 +1,10 @@
 package in.cdac.university.globalService.controller;
 
-import in.cdac.university.globalService.bean.ApplicationTrackerBean;
-import in.cdac.university.globalService.bean.ApplicationTrackerDtlBean;
 import in.cdac.university.globalService.bean.ComboBean;
 import in.cdac.university.globalService.bean.TemplateToSaveBean;
 import in.cdac.university.globalService.service.MasterTemplateService;
 import in.cdac.university.globalService.util.ComboUtility;
 import in.cdac.university.globalService.util.ListPageUtility;
-import in.cdac.university.globalService.util.RequestUtility;
 import in.cdac.university.globalService.util.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @RestController
