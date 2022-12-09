@@ -47,8 +47,8 @@ public class GmstCourseMst implements Serializable {
 	@Column(name="unum_course_duration_inyy")
 	private Integer unumCourseDurationInyy;
 
-	@Column(name="unum_course_lang_medium")
-	private Integer unumCourseLangMedium;
+	@Column(name="ustr_course_lang_medium")
+	private String unumCourseLangMedium;
 
 	@Column(name="unum_course_maxmonths")
 	private Integer unumCourseMaxmonths;
@@ -62,7 +62,7 @@ public class GmstCourseMst implements Serializable {
 	@Column(name="unum_course_minyears")
 	private Integer unumCourseMinyears;
 
-	@Column(name="unum_course_pattern")
+	@Column(name="unum_exam_frequency")
 	private Integer unumCoursePattern;
 
 	@Column(name="unum_ctype_id")

@@ -41,7 +41,7 @@ public class CourseBean {
     @NotNull(message = "Course Duration in Years is mandatory")
     private Integer unumCourseDurationInyy;
 
-    private Integer unumCourseLangMedium;
+    private String unumCourseLangMedium;
 
     @Range(min = 0, max = 99, message = "Maximum months must be less than or equal to 99")
     private Integer unumCourseMaxmonths;

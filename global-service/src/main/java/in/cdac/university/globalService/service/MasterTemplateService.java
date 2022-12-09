@@ -138,7 +138,23 @@ public class MasterTemplateService {
         List<GmstConfigTemplateComponentMst> componentsByTemplateId = templateComponentRepository.findComponentsByTemplateId(universityId, templateIds);
 
         // Get items by template id
-        List<GmstConfigTemplateItemMst> itemsByTemplateId = templateItemRepository.findItemsByTemplateId(universityId, templateIds);
+        int facultyId = notificationBean.getUnumCfacultyId();
+        List<GmstConfigTemplateItemMst> itemsByTemplateId = templateItemRepository.findItemsByTemplateId(universityId, templateIds)
+                .stream()
+                .filter(item -> switch (facultyId) {
+                    case 10 -> item.getUnumMedicalFlag() == 1;
+                    case 11 -> item.getUnumDentalFlag() == 1;
+                    case 12 -> item.getUnumAyurvedFlag() == 1;
+                    case 13 -> item.getUnumUnaniFlag() == 1;
+                    case 14 -> item.getUnumHomeopathyFlag() == 1;
+                    case 15 -> item.getUnumNursingFlag() == 1;
+                    case 16 -> item.getUnumPhysiotherapyFlag() == 1;
+                    case 17 -> item.getUnumOccupationalTherapyFlag() == 1;
+                    case 18 -> item.getUnumAudiologyAndSpeechFlag() == 1;
+                    case 19 -> item.getUnumPAndOFlag() == 1;
+                    default -> true;
+                })
+                .collect(Collectors.toList());
 
         for (TemplateBean templateBean: templateBeans) {
             Long templateId = templateBean.getUnumTempleId();

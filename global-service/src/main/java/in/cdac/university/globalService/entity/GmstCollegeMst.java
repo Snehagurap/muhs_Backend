@@ -78,7 +78,7 @@ public class GmstCollegeMst implements Serializable {
 	@Column(name="unum_state_id")
 	private Integer unumStateId;
 
-	@Column(name="unum_tot_noof_addhocteachers")
+	@Column(name="unum_tot_noof_contractteachers")
 	private Integer unumTotNoofAddhocteachers;
 
 	@Column(name="unum_tot_noof_labs")
