@@ -18,6 +18,9 @@ public interface TemplateDetailRepository extends JpaRepository<GmstConfigTempla
 
 	List<GmstConfigTemplateDtl> findByUnumTempleCompIdInAndUnumIsvalid(List<Long> unumTemplCompIdlist,Integer unumIsvalid);
 
+	@Query(value = "select to_char(current_date, 'yymm') || lpad(nextval('university.seq_gmst_config_template_dtl')\\:\\:text, 6, '0')", nativeQuery = true)
+	Long getNextUnumTempledtlId();
+	
 	@Modifying
 	@Query(value = "update university.gmst_config_template_dtl a set "
 			+ " unum_isvalid = (select coalesce(max(unum_isvalid), 2) + 1 from university.gmst_config_template_dtl b "

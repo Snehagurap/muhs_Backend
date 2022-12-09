@@ -83,6 +83,7 @@ public class TemplateService {
 
 		} else {
 			gmstConfigTemplateMst.setUnumTempleId(templateRepository.getNextUnumTempleId());
+			log.info("UnumTempleId {}",gmstConfigTemplateMst.getUnumTempleId() );
 		}
 
 		
@@ -104,7 +105,8 @@ public class TemplateService {
 	      gmstConfigTemplateDtlEntityList.add(gmstConfigTemplateDtl);
 		  
 		  BeanUtils.copyProperties(templateMasterDtls, gmstConfigTemplateDtl);
-		  gmstConfigTemplateDtl.setUnumTempledtlId(Long.parseLong(gmstConfigTemplateMst.getUnumTempleId() +StringUtility.padLeftZeros(count++ + "", 5)));
+		  gmstConfigTemplateDtl.setUnumTempledtlId(templateDetailRepository.getNextUnumTempledtlId());
+		  log.info("UnumTempledtlId {}",gmstConfigTemplateDtl.getUnumTempledtlId() );
 		  gmstConfigTemplateDtl.setUnumTempleId(gmstConfigTemplateMst.getUnumTempleId());
 		  gmstConfigTemplateDtl.setUnumIsvalid(1);
 		  gmstConfigTemplateDtl.setUnumEntryUid(RequestUtility.getUserId());
