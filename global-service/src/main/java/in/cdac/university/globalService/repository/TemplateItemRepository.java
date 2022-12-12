@@ -1,5 +1,6 @@
 package in.cdac.university.globalService.repository;
 
+import in.cdac.university.globalService.bean.TemplateItemBean;
 import in.cdac.university.globalService.entity.GmstConfigTemplateItemMst;
 import in.cdac.university.globalService.entity.GmstConfigTemplateItemMstPK;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -57,4 +58,20 @@ public interface TemplateItemRepository extends JpaRepository<GmstConfigTemplate
             "from GmstConfigTemplateItemMst a where a.unumTemplItemId = u.unumTemplItemId and  a.unumIsvalid > 2) " +
             "where u.unumTemplItemId in (:templItemId) and u.unumIsvalid in (1, 2) ")
     Integer createLog(@Param("templItemId") List<Long> unumTemplItemId);
+
+	List<GmstConfigTemplateItemMst> findByUnumTemplItemIdInAndUnumIsvalid(List<Long> unumTemplCompItemIdlist,Integer unumIsvalid);
+	
+	@Query("select c from GmstConfigTemplateItemMst c " +
+            "where c.unumIsvalid = :unumIsvalid " +
+            "and c.unumTemplItemId in (select t.unumTempleItemId from GmstConfigTemplateDtl t " +
+            "where t.unumIsvalid = :unumIsvalid " +
+            "and t.unumTempleCompId in (:unumTemplCompItemIdlist) ) ")
+	List<GmstConfigTemplateItemMst> findAllByUnumTemplItemIdInAndUnumIsvalid(@Param("unumTemplCompItemIdlist") List<Long> unumTemplCompItemIdlist,@Param("unumIsvalid") Integer unumIsvalid);
+	
+	@Query("select c from GmstConfigTemplateItemMst c " +
+            "where c.unumIsvalid = :unumIsvalid " +
+            "and c.unumTemplItemId in (select t.unumTempleItemId from GmstConfigTemplateDtl t " +
+            "where t.unumIsvalid = :unumIsvalid " +
+            "and t.unumTempleCompId = :unumTemplCompItemId ) ")
+	List<GmstConfigTemplateItemMst> findAllByUnumTemplItemIdAndUnumIsvalid(@Param("unumTemplCompItemId") Long unumTemplCompItemIdlist,@Param("unumIsvalid") Integer unumIsvalid);
 }

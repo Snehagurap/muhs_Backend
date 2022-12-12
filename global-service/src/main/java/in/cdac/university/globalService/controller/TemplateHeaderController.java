@@ -1,6 +1,7 @@
 package in.cdac.university.globalService.controller;
 
 import in.cdac.university.globalService.bean.TemplateHeaderBean;
+import in.cdac.university.globalService.bean.TemplateHeaderSubHeaderBean;
 import in.cdac.university.globalService.service.TemplateHeaderService;
 import in.cdac.university.globalService.util.ComboUtility;
 import in.cdac.university.globalService.util.ListPageUtility;
@@ -82,4 +83,14 @@ public class TemplateHeaderController {
 	                ComboUtility.generateComboData(templateHeaderService.getSubHeaderComboID(unumTemplHeadId))
 	        );
 	}
+    
+    @PostMapping("ItemsByHeaderSubHeaderComponents")
+    public ResponseEntity<?> getItemsByHeaderSubHeaderComponents(@Valid @RequestBody TemplateHeaderSubHeaderBean templateHeaderSubHeaderBean) throws Exception {
+       
+        return ResponseHandler.generateResponse(
+                templateHeaderService.getItemsByHeaderSubHeaderComponents(templateHeaderSubHeaderBean)
+        );
+    }
+    
+    
 }

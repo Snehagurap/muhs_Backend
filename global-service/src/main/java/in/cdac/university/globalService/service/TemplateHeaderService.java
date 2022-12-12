@@ -2,25 +2,41 @@ package in.cdac.university.globalService.service;
 
 import in.cdac.university.globalService.bean.TemplateComponentBean;
 import in.cdac.university.globalService.bean.TemplateComponentDtlsBean;
+import in.cdac.university.globalService.bean.TemplateComponentItemBean;
+import in.cdac.university.globalService.bean.TemplateDetailBean;
 import in.cdac.university.globalService.bean.TemplateHeaderBean;
+import in.cdac.university.globalService.bean.TemplateHeaderSubHeaderBean;
+import in.cdac.university.globalService.bean.TemplateItemBean;
 import in.cdac.university.globalService.bean.TemplateSubHeaderBean;
 import in.cdac.university.globalService.entity.GmstConfigTemplateComponentMst;
+import in.cdac.university.globalService.entity.GmstConfigTemplateDtl;
 import in.cdac.university.globalService.entity.GmstConfigTemplateHeaderMst;
+import in.cdac.university.globalService.entity.GmstConfigTemplateItemMst;
 import in.cdac.university.globalService.exception.ApplicationException;
+import in.cdac.university.globalService.repository.TemplateComponentDetailRepository;
+import in.cdac.university.globalService.repository.TemplateDetailRepository;
 import in.cdac.university.globalService.repository.TemplateHeaderRepository;
+import in.cdac.university.globalService.repository.TemplateItemRepository;
 import in.cdac.university.globalService.repository.TemplateSubHeaderRepository;
 import in.cdac.university.globalService.util.*;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static java.util.Objects.nonNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 @Service
+@Slf4j
 public class TemplateHeaderService {
 
 	@Autowired
@@ -31,6 +47,12 @@ public class TemplateHeaderService {
 
 	@Autowired
 	private TemplateSubHeaderRepository templateSubHeaderRepository;
+
+	@Autowired
+	private TemplateDetailRepository templateDetailRepository;
+
+	@Autowired
+	private TemplateItemRepository templateItemRepository;
 
 	public List<TemplateHeaderBean> listPageData() throws Exception {
 		return BeanUtils.copyListProperties(templateHeaderRepository
@@ -143,8 +165,26 @@ public class TemplateHeaderService {
 	}
 
 	public List<TemplateSubHeaderBean> getSubHeaderComboID(Long unumTemplHeadId) throws Exception {
-		return BeanUtils.copyListProperties(templateSubHeaderRepository.findByunumTemplHeadId(
-				unumTemplHeadId, RequestUtility.getUniversityId()), TemplateSubHeaderBean.class);
+		return BeanUtils.copyListProperties(
+				templateSubHeaderRepository.findByunumTemplHeadId(unumTemplHeadId, RequestUtility.getUniversityId()),
+				TemplateSubHeaderBean.class);
+
+	}
+
+	public ServiceResponse getItemsByHeaderSubHeaderComponents(
+			@Valid TemplateHeaderSubHeaderBean templateHeaderSubHeaderBean) {
+
+		List<Long> unumTemplCompIdlist = new ArrayList<Long>();
+		templateHeaderSubHeaderBean.getCompItemBean().forEach(requestbean->{
+			unumTemplCompIdlist.add(requestbean.getUnumTemplCompId());
+			List<TemplateItemBean> itemsList = BeanUtils.copyListProperties(
+					templateItemRepository.findAllByUnumTemplItemIdAndUnumIsvalid(requestbean.getUnumTemplCompId(),1),
+					TemplateItemBean.class);
+			log.info("itemsList {}",itemsList);
+			requestbean.setItems(itemsList);
+		});
+
+		return ServiceResponse.successObject(templateHeaderSubHeaderBean);
 
 	}
 }
