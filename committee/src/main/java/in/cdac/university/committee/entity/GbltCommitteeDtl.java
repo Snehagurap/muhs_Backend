@@ -72,7 +72,7 @@ public class GbltCommitteeDtl implements Serializable {
 	@Column(name = "unum_entry_uid")
 	private Long unumEntryUid;
 
-	@Formula("(select t.ustr_cfaculty_fname from university.gmst_coursefaculty_mst t where t.unum_cfaculty_id = unum_role_cfaculty_id)")
+	@Formula("(select t.ustr_cfaculty_fname from university.gmst_faculty_mst t where t.unum_cfaculty_id = unum_role_cfaculty_id)")
 	private String facultyName;
 
 	@Formula("(select t.ustr_post_fname from university.gmst_post_mst t where t.unum_post_id = unum_role_post_id)")

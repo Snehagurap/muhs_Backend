@@ -16,4 +16,6 @@ public class NotificationApplyDetailBean {
     private Long unumMtempleId;
     private Long unumNdtlId;
     private Long unumNid;
+
+    private String ustrDescription;
 }

@@ -141,16 +141,16 @@ public class MasterTemplateService {
         List<GmstConfigTemplateItemMst> itemsByTemplateId = templateItemRepository.findItemsByTemplateId(universityId, templateIds)
                 .stream()
                 .filter(item -> switch (facultyId) {
-                    case 10 -> item.getUnumMedicalFlag() == 1;
-                    case 11 -> item.getUnumDentalFlag() == 1;
-                    case 12 -> item.getUnumAyurvedFlag() == 1;
-                    case 13 -> item.getUnumUnaniFlag() == 1;
-                    case 14 -> item.getUnumHomeopathyFlag() == 1;
-                    case 15 -> item.getUnumNursingFlag() == 1;
-                    case 16 -> item.getUnumPhysiotherapyFlag() == 1;
-                    case 17 -> item.getUnumOccupationalTherapyFlag() == 1;
-                    case 18 -> item.getUnumAudiologyAndSpeechFlag() == 1;
-                    case 19 -> item.getUnumPAndOFlag() == 1;
+                    case 10 -> item.getUnumMedicalFlag() != null && item.getUnumMedicalFlag() == 1;
+                    case 11 -> item.getUnumDentalFlag() != null && item.getUnumDentalFlag() == 1;
+                    case 12 -> item.getUnumAyurvedFlag() != null && item.getUnumAyurvedFlag() == 1;
+                    case 13 -> item.getUnumUnaniFlag() != null && item.getUnumUnaniFlag() == 1;
+                    case 14 -> item.getUnumHomeopathyFlag() != null && item.getUnumHomeopathyFlag() == 1;
+                    case 15 -> item.getUnumNursingFlag() != null && item.getUnumNursingFlag() == 1;
+                    case 16 -> item.getUnumPhysiotherapyFlag() != null && item.getUnumPhysiotherapyFlag() == 1;
+                    case 17 -> item.getUnumOccupationalTherapyFlag() != null && item.getUnumOccupationalTherapyFlag() == 1;
+                    case 18 -> item.getUnumAudiologyAndSpeechFlag() != null && item.getUnumAudiologyAndSpeechFlag() == 1;
+                    case 19 -> item.getUnumPAndOFlag() != null && item.getUnumPAndOFlag() == 1;
                     default -> true;
                 })
                 .collect(Collectors.toList());
@@ -288,20 +288,6 @@ public class MasterTemplateService {
                 .replaceAll("#application_purpose#", purpose);
     }
 
-    private String replaceFacultyName(String text, String facultyName) {
-        return replaceText(text, "#faculty_name#", facultyName);
-    }
-
-    private String replacePurpose(String text, String purpose) {
-        return replaceText(text, "#application_purpose#", purpose);
-    }
-
-    private String replaceText(String text, String textToReplace, String replacementString) {
-        if (text == null)
-            return null;
-        return text.replaceAll(textToReplace, replacementString);
-    }
-
     private void fetchSubItems(TemplateItemBean templateItemBean, List<GmstConfigTemplateItemMst> itemsByTemplateId,
                                List<GmstConfigTemplateDtl> templateDetailByTemplateId, Map<Long, String> itemMap, String facultyName, String purpose) {
 
@@ -372,7 +358,7 @@ public class MasterTemplateService {
             return ServiceResponse.errorResponse(language.notFoundForId("Notification Detail", templateToSaveBean.getUnumNdtlId()));
 
         // Upload all the file to main directory
-        if (templateToSaveBean.getUnumApplicationEntryStatus() == 2) {
+        if (templateToSaveBean.getUnumApplicationEntryStatus() == 5) {
             for (TemplateToSaveDetailBean templateToSaveDetailBean : templateToSaveBean.getItemDetails()) {
                 if (templateToSaveDetailBean.getUnumUiControlId() == 9) {
                     if (templateToSaveDetailBean.getUstrItemValue() != null && !templateToSaveDetailBean.getUstrItemValue().isBlank()) {
@@ -422,6 +408,7 @@ public class MasterTemplateService {
             applicationDataMst.setUdtEntryDate(currentDate);
             if (notificationDetailBean.getUnumCoursetypeId() != null)
                 applicationDataMst.setUnumCtypeId(notificationDetailBean.getUnumCoursetypeId());
+            applicationDataMst.setUnumMtempleId(mastertemplateMst.getUnumMtempleId());
 
             applicantDataMasterRepository.save(applicationDataMst);
         } else {
@@ -437,6 +424,7 @@ public class MasterTemplateService {
             GbltConfigApplicationDataMst applicationDataMst = applicationDataMstOptional.get();
             applicationDataMst.setUnumApplicationId(applicationId);
             applicationDataMst.setUnumApplicantId(applicantId);
+            applicationDataMst.setUnumApplicationEntryStatus(templateToSaveBean.getUnumApplicationEntryStatus());
             applicantDataMasterRepository.save(applicationDataMst);
         }
 
