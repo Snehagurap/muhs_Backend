@@ -6,10 +6,7 @@ import in.cdac.university.globalService.util.RequestUtility;
 import in.cdac.university.globalService.util.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Date;
@@ -34,4 +31,15 @@ public class ApplicationTrackerController {
                 applicationTrackerService.applicationScrutiny(applicationTrackerDtlBean)
         );
     }
+
+
+    @GetMapping("scrutinyDetail/planningBoard/{applicationId}/{applicationStatus}")
+    public ResponseEntity<?> getScrutinyDetailPlanningBoard(@PathVariable("applicationId") Long applicationId,
+                                                            @PathVariable("applicationStatus") Integer applicationStatus) {
+        return ResponseHandler.generateResponse(
+                applicationTrackerService.getScrutinyDetailPlanningBoard(applicationId, applicationStatus)
+        );
+    }
+
+
 }
