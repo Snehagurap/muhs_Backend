@@ -207,7 +207,7 @@ public class CommitteeService {
                         .collect(Collectors.toMap(EmployeeBean::getUnumEmpId, Function.identity(), (v1, v2) -> v2));
 
             Map<Integer, String> committeeRoles = committeeRoleRepository.findAll().stream()
-                    .collect(Collectors.toMap(GmstCommitteeRoleMst::getUnumRoleId, GmstCommitteeRoleMst::getUstrRoleFname));
+                    .collect(Collectors.toMap(GmstCommitteeRoleMst::getUnumRoleId, GmstCommitteeRoleMst::getUstrRoleFname, (u, v) -> u));
 
             AtomicInteger sno = new AtomicInteger(0);
             AtomicInteger memberCount = new AtomicInteger(1);

@@ -45,12 +45,27 @@ public class MasterTemplateController {
         return ResponseHandler.generateOkResponse(comboBeanList);
     }
 
-    @GetMapping("scrutiny/listPage/{notificationId}/{notificationDetailId}/{applicationStatus}")
+    @GetMapping("scrutiny/listPage/{notificationId}/{applicationStatus}")
     public ResponseEntity<?> scrutinyListPage(@PathVariable("notificationId") Long notificationId,
-                                              @PathVariable("notificationDetailId") Long notificationDetailId,
                                               @PathVariable("applicationStatus") Integer applicationStatus) throws Exception {
         return ResponseHandler.generateOkResponse(
-                ListPageUtility.generateListPageData(masterTemplateService.scrutinyListPage(notificationId, notificationDetailId, applicationStatus))
+                ListPageUtility.generateListPageData(masterTemplateService.scrutinyListPage(notificationId, applicationStatus))
         );
     }
+
+    @GetMapping("applicationStatusCombo")
+    public ResponseEntity<?> getApplicationStatusCombo() throws IllegalAccessException {
+        return ResponseHandler.generateOkResponse(
+                ComboUtility.generateComboData( masterTemplateService.getApplicationStatusCombo() )
+        );
+    }
+
+    @GetMapping("application/{applicationId}")
+    public ResponseEntity<?> getApplicationById(@PathVariable("applicationId") Long applicationId) throws Exception {
+        return ResponseHandler.generateResponse(
+                masterTemplateService.getApplicationById(applicationId)
+        );
+    }
+
+
 }

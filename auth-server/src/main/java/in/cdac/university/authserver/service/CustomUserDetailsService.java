@@ -39,36 +39,35 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public CustomUser loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.debug("Checking the user: {}", username);
+        log.info("Checking the user: {}", username);
         String applicationType = "1";
         String userCategory = "1";
         try {
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
             applicationType = request.getHeader("applicationType");
             userCategory = request.getHeader("userCategory");
-            log.debug("Application Type: {}", applicationType);
-            log.debug("User Category: {}", userCategory);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        log.info("Application Type: {}", applicationType);
+        log.info("User Category: {}", userCategory);
 
         CustomUser customUser = null;
         switch (applicationType) {
-            case "1":
+            case "1" -> {
                 if (userCategory != null && userCategory.equals("2")) {
                     customUser = findApplicant(username);
                 } else {
                     // Application user
                     customUser = findApplicationUser(username);
                 }
-                break;
-            case "2":
+            }
+            case "2" ->
                 // User Management User
-                customUser = findUserManagementUser(username);
-                break;
-            case "3":
+                    customUser = findUserManagementUser(username);
+            case "3" ->
                 // User Management Super User
-                customUser = findUserManagementSuperUser(username);
+                    customUser = findUserManagementSuperUser(username);
         }
         if (customUser != null) {
             customUser.setApplicationType(Integer.parseInt(applicationType));

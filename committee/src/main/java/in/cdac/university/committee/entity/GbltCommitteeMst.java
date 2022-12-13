@@ -74,6 +74,6 @@ public class GbltCommitteeMst implements Serializable {
 	@Formula("(select t.ustr_comtype_fname from ucom.gblt_committee_type_mst t where t.unum_comtype_id = unum_comtype_id )")
 	private String committeeTypeName;
 
-	@Formula("(select t.ustr_cfaculty_fname from university.gmst_coursefaculty_mst t where t.unum_cfaculty_id = unum_com_cfaculty_id)")
+	@Formula("(select t.ustr_cfaculty_fname from university.gmst_faculty_mst t where t.unum_cfaculty_id = unum_com_cfaculty_id)")
 	private String facultyName;
 }

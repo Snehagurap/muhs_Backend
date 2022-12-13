@@ -386,4 +386,14 @@ public class NotificationService {
 
         return ServiceResponse.successObject(notificationApplyBeans);
     }
+
+
+    public List<NotificationBean> getNotificationComboByYearCourseFacultyNotifyType(String year, Integer courseId, Integer facultyId, Integer notificationTypeId) {
+
+        List<GbltNotificationMaster> notificationMasterList = masterRepository.getNotificationByYearCourseFacultyNotifyType(year, courseId, facultyId, notificationTypeId);
+
+        List<NotificationBean> notificationBeanList = BeanUtils.copyListProperties(notificationMasterList, NotificationBean.class);
+
+        return notificationBeanList;
+    }
 }

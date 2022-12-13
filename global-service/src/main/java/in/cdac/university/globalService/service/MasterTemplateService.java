@@ -137,7 +137,23 @@ public class MasterTemplateService {
         List<GmstConfigTemplateComponentMst> componentsByTemplateId = templateComponentRepository.findComponentsByTemplateId(universityId, templateIds);
 
         // Get items by template id
-        List<GmstConfigTemplateItemMst> itemsByTemplateId = templateItemRepository.findItemsByTemplateId(universityId, templateIds);
+        int facultyId = notificationBean.getUnumCfacultyId();
+        List<GmstConfigTemplateItemMst> itemsByTemplateId = templateItemRepository.findItemsByTemplateId(universityId, templateIds)
+                .stream()
+                .filter(item -> switch (facultyId) {
+                    case 10 -> item.getUnumMedicalFlag() != null && item.getUnumMedicalFlag() == 1;
+                    case 11 -> item.getUnumDentalFlag() != null && item.getUnumDentalFlag() == 1;
+                    case 12 -> item.getUnumAyurvedFlag() != null && item.getUnumAyurvedFlag() == 1;
+                    case 13 -> item.getUnumUnaniFlag() != null && item.getUnumUnaniFlag() == 1;
+                    case 14 -> item.getUnumHomeopathyFlag() != null && item.getUnumHomeopathyFlag() == 1;
+                    case 15 -> item.getUnumNursingFlag() != null && item.getUnumNursingFlag() == 1;
+                    case 16 -> item.getUnumPhysiotherapyFlag() != null && item.getUnumPhysiotherapyFlag() == 1;
+                    case 17 -> item.getUnumOccupationalTherapyFlag() != null && item.getUnumOccupationalTherapyFlag() == 1;
+                    case 18 -> item.getUnumAudiologyAndSpeechFlag() != null && item.getUnumAudiologyAndSpeechFlag() == 1;
+                    case 19 -> item.getUnumPAndOFlag() != null && item.getUnumPAndOFlag() == 1;
+                    default -> true;
+                })
+                .collect(Collectors.toList());
 
         for (TemplateBean templateBean: templateBeans) {
             Long templateId = templateBean.getUnumTempleId();
@@ -272,20 +288,6 @@ public class MasterTemplateService {
                 .replaceAll("#application_purpose#", purpose);
     }
 
-    private String replaceFacultyName(String text, String facultyName) {
-        return replaceText(text, "#faculty_name#", facultyName);
-    }
-
-    private String replacePurpose(String text, String purpose) {
-        return replaceText(text, "#application_purpose#", purpose);
-    }
-
-    private String replaceText(String text, String textToReplace, String replacementString) {
-        if (text == null)
-            return null;
-        return text.replaceAll(textToReplace, replacementString);
-    }
-
     private void fetchSubItems(TemplateItemBean templateItemBean, List<GmstConfigTemplateItemMst> itemsByTemplateId,
                                List<GmstConfigTemplateDtl> templateDetailByTemplateId, Map<Long, String> itemMap, String facultyName, String purpose) {
 
@@ -356,7 +358,7 @@ public class MasterTemplateService {
             return ServiceResponse.errorResponse(language.notFoundForId("Notification Detail", templateToSaveBean.getUnumNdtlId()));
 
         // Upload all the file to main directory
-        if (templateToSaveBean.getUnumApplicationEntryStatus() == 2) {
+        if (templateToSaveBean.getUnumApplicationEntryStatus() == 5) {
             for (TemplateToSaveDetailBean templateToSaveDetailBean : templateToSaveBean.getItemDetails()) {
                 if (templateToSaveDetailBean.getUnumUiControlId() == 9) {
                     if (templateToSaveDetailBean.getUstrItemValue() != null && !templateToSaveDetailBean.getUstrItemValue().isBlank()) {
@@ -406,6 +408,7 @@ public class MasterTemplateService {
             applicationDataMst.setUdtEntryDate(currentDate);
             if (notificationDetailBean.getUnumCoursetypeId() != null)
                 applicationDataMst.setUnumCtypeId(notificationDetailBean.getUnumCoursetypeId());
+            applicationDataMst.setUnumMtempleId(mastertemplateMst.getUnumMtempleId());
 
             applicantDataMasterRepository.save(applicationDataMst);
         } else {
@@ -421,6 +424,7 @@ public class MasterTemplateService {
             GbltConfigApplicationDataMst applicationDataMst = applicationDataMstOptional.get();
             applicationDataMst.setUnumApplicationId(applicationId);
             applicationDataMst.setUnumApplicantId(applicantId);
+            applicationDataMst.setUnumApplicationEntryStatus(templateToSaveBean.getUnumApplicationEntryStatus());
             applicantDataMasterRepository.save(applicationDataMst);
         }
 
@@ -454,9 +458,12 @@ public class MasterTemplateService {
         );
     }
 
-    public List<TemplateToSaveBean> scrutinyListPage(Long notificationId, Long notificationDetail, Integer applicationStatus) throws Exception {
+
+
+    public List<TemplateToSaveBean> scrutinyListPage(Long notificationId, Integer applicationStatus) throws Exception {
+
         List<GbltConfigApplicationDataMst> applicationDataList = applicantDataMasterRepository.getApplicationByNotification(
-                RequestUtility.getUniversityId(), applicationStatus, notificationId, notificationDetail
+                RequestUtility.getUniversityId(), applicationStatus, notificationId
         );
 
         Map<Long, String> applicants = applicantRepository.findByUnumIsVerifiedApplicantAndUnumIsvalid(1, 1)
@@ -472,4 +479,36 @@ public class MasterTemplateService {
                 })
                 .toList();
     }
+
+    public List<ApplicationStatusBean> getApplicationStatusCombo() {
+        return(BeanUtils.copyListProperties(
+                applicantDataMasterRepository.getAllApplicationStatus() , ApplicationStatusBean.class)
+        );
+    }
+
+    public ServiceResponse getApplicationById(Long applicationId) throws Exception {
+        if(applicationId == null) {
+            return ServiceResponse.errorResponse(language.mandatory("Application Id"));
+        }
+
+        Optional<GbltConfigApplicationDataMst> applicationDataMstOptional = applicantDataMasterRepository.findByUnumApplicationIdAndUnumIsvalidAndUnumUnivId(
+                applicationId, 1, RequestUtility.getUniversityId()
+        );
+
+        if(applicationDataMstOptional.isEmpty())
+            return ServiceResponse.errorResponse(language.notFoundForId("Application", applicationId));
+
+        ApplicationDataBean applicationDataBean = BeanUtils.copyProperties(applicationDataMstOptional.get(), ApplicationDataBean.class);
+
+        Optional<GmstApplicantMst> gmstApplicantMstOptional = applicantRepository.findByUnumApplicantIdAndUnumIsvalid(applicationDataBean.getUnumApplicantId(), 1);
+
+        if(gmstApplicantMstOptional.isPresent()) {
+            applicationDataBean.setUstrApplicantName(gmstApplicantMstOptional.get().getUstrApplicantName());
+        }
+
+        return ServiceResponse.successObject(applicationDataBean);
+
+
+    }
+
 }

@@ -22,7 +22,8 @@ public class FtpUtility {
         COMMITTEE ("com"),
         NOTIFICATION ("notification"),
         REGISTRATION ("registration"),
-        APPLICANT ("applicant");
+        APPLICANT ("applicant"),
+        APPLICATION ("application");
 
         public final String folderName;
 
