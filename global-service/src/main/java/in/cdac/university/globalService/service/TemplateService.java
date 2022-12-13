@@ -108,6 +108,7 @@ public class TemplateService {
 		  
 		  BeanUtils.copyProperties(templateMasterDtls, gmstConfigTemplateDtl);
 		  gmstConfigTemplateDtl.setUnumTempledtlId(templateDetailRepository.getNextUnumTempledtlId());
+		  log.info("UnumTempledtlId {}",gmstConfigTemplateDtl.getUnumTempledtlId() );
 		  gmstConfigTemplateDtl.setUnumTempleId(gmstConfigTemplateMst.getUnumTempleId());
 		  gmstConfigTemplateDtl.setUnumIsvalid(1);
 		  gmstConfigTemplateDtl.setUnumEntryUid(RequestUtility.getUserId());
