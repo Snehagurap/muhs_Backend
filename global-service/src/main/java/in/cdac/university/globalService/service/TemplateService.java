@@ -100,13 +100,14 @@ public class TemplateService {
 
 		
 		  List<GmstConfigTemplateDtl> gmstConfigTemplateDtlEntityList = new ArrayList<>(); 
+		  GmstConfigTemplateDtl gmstConfigTemplateDtl = null;
 		  for (TemplateMasterDtlsBean templateMasterDtls : templateMasterBean.getTemplateMasterDtlsBeanList()) {
-	      GmstConfigTemplateDtl gmstConfigTemplateDtl = new GmstConfigTemplateDtl();
+	      
+			 gmstConfigTemplateDtl = new GmstConfigTemplateDtl();
 	      gmstConfigTemplateDtlEntityList.add(gmstConfigTemplateDtl);
 		  
 		  BeanUtils.copyProperties(templateMasterDtls, gmstConfigTemplateDtl);
 		  gmstConfigTemplateDtl.setUnumTempledtlId(templateDetailRepository.getNextUnumTempledtlId());
-		  log.info("UnumTempledtlId {}",gmstConfigTemplateDtl.getUnumTempledtlId() );
 		  gmstConfigTemplateDtl.setUnumTempleId(gmstConfigTemplateMst.getUnumTempleId());
 		  gmstConfigTemplateDtl.setUnumIsvalid(1);
 		  gmstConfigTemplateDtl.setUnumEntryUid(RequestUtility.getUserId());

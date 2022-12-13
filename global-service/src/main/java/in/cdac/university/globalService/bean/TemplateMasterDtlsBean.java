@@ -31,13 +31,13 @@ public class TemplateMasterDtlsBean {
 	@JsonIgnore
 	private Long unumEntryUid;
 
-	@JsonIgnore
+
 	private Long unumTemplCompItemId;
 
-	@JsonIgnore
+	
 	private Long unumTempleCompId;
 
-	@JsonIgnore
+	
 	private Long unumTempleHeadId;
 
 	@JsonIgnore
@@ -45,10 +45,10 @@ public class TemplateMasterDtlsBean {
 
 	private Integer unumTempleIsmandy;
 
-	@JsonIgnore
+	
 	private Long unumTempleItemId;
 
-	@JsonIgnore
+	
 	private Long unumTempleSubheadId;
 
 	@JsonIgnore
