@@ -50,10 +50,10 @@ public class TemplateMasterBean {
     private Integer unumUnivId;
     
     private String ustrTempDescription;
-    @ListColumn(omit = true)
+    @ListColumn
     private String ustrTempleCode;
     @ComboValue
-    @ListColumn(omit = true)
+    @ListColumn
     private String ustrTempleName;
     
     private List<TemplateMasterDtlsBean> templateMasterDtlsBeanList;
