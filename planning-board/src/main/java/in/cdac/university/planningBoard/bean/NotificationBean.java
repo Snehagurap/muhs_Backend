@@ -1,5 +1,7 @@
 package in.cdac.university.planningBoard.bean;
 
+import in.cdac.university.planningBoard.util.annotations.ComboKey;
+import in.cdac.university.planningBoard.util.annotations.ComboValue;
 import in.cdac.university.planningBoard.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,10 +18,13 @@ import java.util.List;
 @Setter
 @ToString
 public class NotificationBean {
+
+    @ComboKey
     @ListColumn(omit = true)
     private Long unumNid;
     private Integer unumIsvalid;
     private Date udtEntryDate;
+
 
     @ListColumn(name = "Notification Date")
     @NotNull(message = "Notification Date is mandatory")
@@ -71,6 +76,7 @@ public class NotificationBean {
     private String ustrApprovingUsername;
     private String ustrDescription;
 
+    @ComboValue
     @ListColumn(order = 4, name = "Notification Title")
     @NotNull(message = "Notification Title is mandatory")
     private String ustrNMainHeading;

@@ -27,7 +27,7 @@ public class GbltConfigApplicationTrackerDtl implements Serializable {
 	private Long unumNdtlId;
 
 	@Id
-	private Long unumApplicationStatusSno;
+	private Integer unumApplicationStatusSno;
 
 	@Id
 	private Integer unumIsvalid;
@@ -45,13 +45,13 @@ public class GbltConfigApplicationTrackerDtl implements Serializable {
 	private Date udtEntryDate;
 
 	@Column(name="unum_application_status_id")
-	private Long unumApplicationStatusId;
+	private Integer unumApplicationStatusId;
 
-	@Column(name="unum_doc_id")
-	private Long unumDocId;
+	@Column(name="unum_doc_sno")
+	private Long unumDocSno;
 
 	@Column(name="unum_entry_uid")
-	private Integer unumEntryUid;
+	private Long unumEntryUid;
 
 	@Column(name="unum_mtemple_id")
 	private Long unumMtempleId;

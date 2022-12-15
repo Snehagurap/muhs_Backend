@@ -49,8 +49,8 @@ public class CommitteeBean {
     @NotNull(message = "For Faculty is mandatory")
     private Integer unumComCfacultyId;
 
-    @ListColumn(order = 2, name = "Year")
-    @NotNull(message = "For Year is mandatory")
+//    @ListColumn(order = 2, name = "Year")
+//    @NotNull(message = "For Year is mandatory")
     private String ustrComForyear;
 
     @ComboKey(index = 3)

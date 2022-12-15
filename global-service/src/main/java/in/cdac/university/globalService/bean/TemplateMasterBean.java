@@ -35,7 +35,6 @@ public class TemplateMasterBean {
     @JsonIgnore
     private Long unumEntryUid;
 
-    @JsonIgnore
     private Integer unumFacultyId;
     
     private Integer unumTemplateForYyyy;

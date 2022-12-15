@@ -47,8 +47,8 @@ public class GbltConfigApplicationTracker implements Serializable {
 	@Column(name="udt_entry_date")
 	private Date udtEntryDate;
 
-	@Column(name="unum_application_status")
-	private Long unumApplicationStatus;
+	@Column(name="unum_application_status_id")
+	private Integer unumApplicationStatusId;
 
 	@Column(name="unum_entry_uid")
 	private Long unumEntryUid;
@@ -73,4 +73,7 @@ public class GbltConfigApplicationTracker implements Serializable {
 
 	@Column(name="ustr_status_by")
 	private String ustrStatusBy;
+
+	@Column(name="unum_ctype_id")
+	private Long unumCtypeId;
 }
