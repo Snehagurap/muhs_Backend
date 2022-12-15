@@ -41,12 +41,14 @@ public class TemplateComponentController {
 		return ResponseHandler.generateResponse(templateComponentService.save(templateBean));
 	}
 
-	@PutMapping("update")
+	// Put mapping replaced by POST
+@PostMapping("update")
 	public ResponseEntity<?> update(@Valid @RequestBody TemplateComponentBean templateBean) throws Exception {
 		return ResponseHandler.generateResponse(templateComponentService.update(templateBean));
 	}
 
-	@DeleteMapping("delete")
+	// Delete mapping replaced by POST
+@PostMapping("delete")
 	public ResponseEntity<?> delete(@RequestBody List<Long> idsToDelete) throws Exception {
 		return ResponseHandler.generateOkResponse(templateComponentService.delete(idsToDelete));
 
