@@ -174,6 +174,6 @@ public class TemplateService {
     	
     	
     	return ServiceResponse.successObject(
-				ComboUtility.generateComboData(BeanUtils.copyListProperties(gmstConfigTemplateMsts, TemplateMasterBean.class)));
+				BeanUtils.copyListProperties(gmstConfigTemplateMsts, TemplateMasterBean.class));
     }
 }
