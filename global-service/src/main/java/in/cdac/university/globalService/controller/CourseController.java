@@ -53,7 +53,8 @@ public class CourseController {
         );
     }
 
-    @PutMapping("update")
+    // Put mapping replaced by POST
+@PostMapping("update")
     public ResponseEntity<?> update(@Valid @RequestBody CourseBean courseBean) throws Exception {
         courseBean.setUnumEntryUid(RequestUtility.getUserId());
         courseBean.setUnumUnivId(RequestUtility.getUniversityId());
@@ -63,7 +64,8 @@ public class CourseController {
         );
     }
 
-    @DeleteMapping("delete")
+    // Delete mapping replaced by POST
+@PostMapping("delete")
     public ResponseEntity<?> delete(@RequestBody Long[] idsToDelete) throws Exception {
         CourseBean courseBean = new CourseBean();
         courseBean.setUdtEntryDate(new Date());

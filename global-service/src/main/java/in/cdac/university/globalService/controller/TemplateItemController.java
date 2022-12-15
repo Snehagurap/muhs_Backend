@@ -39,7 +39,8 @@ public class TemplateItemController {
         );
     }
 
-    @PutMapping("update")
+    // Put mapping replaced by POST
+@PostMapping("update")
     public ResponseEntity<?> update(@Valid @RequestBody TemplateItemBean templateItemBean) throws Exception {
         templateItemBean.setUnumIsvalid(1);
         templateItemBean.setUnumEntryUid(RequestUtility.getUserId());
@@ -51,7 +52,8 @@ public class TemplateItemController {
         );
     }
 
-    @DeleteMapping("delete")
+    // Delete mapping replaced by POST
+@PostMapping("delete")
     public ResponseEntity<?> delete(@RequestBody Long[] idsToDelete) throws Exception {
         TemplateItemBean templateItemBean = new TemplateItemBean();
         templateItemBean.setUdtEntryDate(new Date());

@@ -130,7 +130,8 @@ public class MenuController {
         );
     }
 
-    @PatchMapping("update")
+    // Patch mapping replaced by POST
+@PostMapping("update")
     @ApiOperation("Update Menu name or Menu URL only")
     public @ResponseBody ResponseEntity<?> update(@RequestBody MenuBean menuBean) throws Exception {
         return ResponseHandler.generateResponse(
@@ -138,7 +139,8 @@ public class MenuController {
         );
     }
 
-    @DeleteMapping("delete")
+    // Delete mapping replaced by POST
+@PostMapping("delete")
     public @ResponseBody ResponseEntity<?> delete(@RequestBody String[] idsToDelete) throws Exception {
         MenuBean menuBean = new MenuBean();
         menuBean.setIdsToDelete(idsToDelete);

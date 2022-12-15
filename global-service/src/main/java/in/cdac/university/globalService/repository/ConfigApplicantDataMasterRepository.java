@@ -38,7 +38,7 @@ public interface ConfigApplicantDataMasterRepository extends JpaRepository<GbltC
                                                           @Param("status") Integer notificationStatus,
                                                           @Param("notificationId") Long notificationId);
 
-    @Query("select c from GmstApplicationStatusMst c  where unumIsvalid = 1 ")
+    @Query("select c from GmstApplicationStatusMst c  where unumIsvalid = 1 ORDER BY unumApplicationStatusId")
     List<GmstApplicationStatusMst> getAllApplicationStatus();
 
     Optional<GbltConfigApplicationDataMst> findByUnumApplicationIdAndUnumIsvalidAndUnumUnivId(Long unumApplicationId, Integer unumIsvalid, Integer unumUnivId);
@@ -52,4 +52,8 @@ public interface ConfigApplicantDataMasterRepository extends JpaRepository<GbltC
                                       @Param("applicationId") Long applicationId,
                                       @Param("applicantId") Long applicantId,
                                       @Param("unumIsvalid") Integer unumIsvalid);
+
+    List<GbltConfigApplicationDataMst> findByUnumIsvalidAndUnumUnivIdAndUnumApplicantId(Integer unumIsvalid, Integer unumUnivId, Long applicantId);
+
+
 }

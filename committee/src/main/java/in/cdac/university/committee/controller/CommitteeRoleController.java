@@ -52,7 +52,8 @@ public class CommitteeRoleController {
         return ResponseHandler.generateResponse(committeeRoleService.save(committeeRoleBean));
     }
 
-    @PutMapping("update")
+    // Put mapping replaced by POST
+@PostMapping("update")
     public ResponseEntity<?> update(@Valid @RequestBody CommitteeRoleBean committeeRoleBean) {
         committeeRoleBean.setUnumUnivId(RequestUtility.getUniversityId());
         committeeRoleBean.setUdtEntryDate(new Date());
@@ -61,7 +62,8 @@ public class CommitteeRoleController {
         );
     }
 
-    @DeleteMapping("delete")
+    // Delete mapping replaced by POST
+@PostMapping("delete")
     public ResponseEntity<?> delete(@RequestBody Integer[] idsToDelete) {
         CommitteeRoleBean committeeRoleBean = new CommitteeRoleBean();
         committeeRoleBean.setUdtEntryDate(new Date());

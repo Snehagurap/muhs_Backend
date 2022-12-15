@@ -7,13 +7,12 @@ import in.cdac.university.globalService.exception.ApplicationException;
 import in.cdac.university.globalService.repository.ApplicationTrackerDtlRepository;
 import in.cdac.university.globalService.repository.ApplicationTrackerRepository;
 import in.cdac.university.globalService.repository.ConfigApplicantDataMasterRepository;
-import in.cdac.university.globalService.util.BeanUtils;
-import in.cdac.university.globalService.util.FtpUtility;
-import in.cdac.university.globalService.util.Language;
-import in.cdac.university.globalService.util.ServiceResponse;
+import in.cdac.university.globalService.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class ApplicationTrackerService {
@@ -59,5 +58,24 @@ public class ApplicationTrackerService {
         applicationTrackerDtlRepository.save(gbltConfigApplicationTrackerDtl);
 
         return ServiceResponse.successMessage(language.saveSuccess("Application Scrutiny"));
+    }
+
+
+
+    public ServiceResponse getScrutinyDetailPlanningBoard(Long applicationId, Integer applicationStatus) {
+        if(applicationId == null) {
+            return ServiceResponse.errorResponse(language.mandatory("ApplicationId"));
+        }
+        Optional<GbltConfigApplicationTrackerDtl> gbltConfigApplicationTrackerDtlOptional = applicationTrackerDtlRepository.getScrutinyDetails(
+                applicationId, applicationStatus
+        );
+
+        if(gbltConfigApplicationTrackerDtlOptional.isEmpty()) {
+            return ServiceResponse.errorResponse(language.notFoundForId("ApplicationId", applicationId));
+        }
+
+        return ServiceResponse.successObject(
+                BeanUtils.copyProperties(gbltConfigApplicationTrackerDtlOptional.get(), ApplicationTrackerDtlBean.class)
+        );
     }
 }

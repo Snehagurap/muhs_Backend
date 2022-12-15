@@ -8,4 +8,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface ComboValue {
+    int order() default 1;
+
+    String startSeparator() default "";
+
+    String endSeparator() default "";
 }

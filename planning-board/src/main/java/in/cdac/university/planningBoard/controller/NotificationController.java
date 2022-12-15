@@ -46,7 +46,8 @@ public class NotificationController {
         );
     }
 
-    @PutMapping("update")
+    // Put mapping replaced by POST
+@PostMapping("update")
     public ResponseEntity<?> updateNotification(@Valid @RequestBody NotificationBean notificationBean) throws Exception {
         notificationBean.setUnumIsvalid(1);
         notificationBean.setUdtEntryDate(new Date());
@@ -57,7 +58,8 @@ public class NotificationController {
         );
     }
 
-    @DeleteMapping("delete")
+    // Delete mapping replaced by POST
+@PostMapping("delete")
     public ResponseEntity<?> deleteNotification(@RequestBody Long[] idsToDelete) throws Exception {
         NotificationBean notificationBean = new NotificationBean();
         notificationBean.setUnumIsvalid(1);

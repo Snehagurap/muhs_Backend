@@ -48,13 +48,9 @@ public class TemplateService {
     @Autowired
 	private Language language;
 
-    
-
-
     public ServiceResponse getTemplate(Long templateId) {
         return null;
     }
-
 
     @Transactional
 	public ServiceResponse saveTemplateList(@Valid List<TemplateMasterBean> templateMasterBeanlist) throws Exception{

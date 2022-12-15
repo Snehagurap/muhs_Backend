@@ -32,7 +32,7 @@ public class TemplateController {
                 templateService.getTemplate(templateId)
         );
     }
-    
+
 
     @PostMapping("/save")
 	public ResponseEntity<?> save(@Valid @RequestBody List<TemplateMasterBean> templateMasterBeanlist) throws Exception {
@@ -40,13 +40,13 @@ public class TemplateController {
 		return ResponseHandler.generateResponse(templateService.saveTemplateList(templateMasterBeanlist));
 	}
 
-	@PutMapping("update")
+	@PostMapping("update")
 	public ResponseEntity<?> update(@Valid @RequestBody List<TemplateMasterBean> templateMasterBeanlist) throws Exception {
 		return ResponseHandler.generateResponse(templateService.updateTemplateList(templateMasterBeanlist));
-		
 	}
 
-	@DeleteMapping("delete")
+	// Delete mapping replaced by POST
+    @PostMapping("delete")
 	public ResponseEntity<?> delete(@RequestBody List<Long> idsToDelete) throws Exception {
 		return ResponseHandler.generateOkResponse(templateService.delete(idsToDelete));
 
