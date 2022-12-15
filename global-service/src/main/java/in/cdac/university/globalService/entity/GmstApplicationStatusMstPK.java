@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class GmstApplicationStatusMstPK implements Serializable {
 
     @Column(name="unum_application_status_id")
-    private Long unumApplicationStatusId;
+    private Integer unumApplicationStatusId;
 
     @Column(name="unum_isvalid")
     private Integer unumIsvalid;

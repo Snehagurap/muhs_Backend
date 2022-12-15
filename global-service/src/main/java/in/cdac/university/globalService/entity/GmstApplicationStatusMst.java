@@ -14,7 +14,7 @@ import java.util.Date;
 public class GmstApplicationStatusMst {
 
     @Id
-    private Long unumApplicationStatusId;
+    private Integer unumApplicationStatusId;
 
     @Id
     private Integer unumIsvalid;

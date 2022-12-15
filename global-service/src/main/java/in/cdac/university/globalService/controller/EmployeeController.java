@@ -89,7 +89,8 @@ public class EmployeeController {
         );
     }
 
-    @PutMapping("update")
+    // Put mapping replaced by POST
+@PostMapping("update")
     public ResponseEntity<?> update(@Valid @RequestBody EmployeeBean employeeBean) throws Exception {
         employeeBean.setUdtEntryDate(new Date());
         employeeBean.setUnumUnivId(RequestUtility.getUniversityId());
@@ -99,7 +100,8 @@ public class EmployeeController {
         );
     }
 
-    @DeleteMapping("delete")
+    // Delete mapping replaced by POST
+@PostMapping("delete")
     public ResponseEntity<?> delete(@RequestBody Long[] idsToDelete) throws Exception {
         EmployeeBean employeeBean = new EmployeeBean();
         employeeBean.setUdtEntryDate(new Date());
