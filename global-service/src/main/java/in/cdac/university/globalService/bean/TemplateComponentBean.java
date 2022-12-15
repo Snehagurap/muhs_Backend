@@ -52,10 +52,10 @@ public class TemplateComponentBean {
     private String ustrCompAllignment;
 
     @ListColumn(name = "Prefix Text")
-    @ComboValue(order = 2,startSeparator = "-")
     private String ustrCompPrintPrefixText;
 
     @NotBlank(message = "Print Text is mandatory")
+    @ComboValue(order = 2,startSeparator = "-")
     @ListColumn(name = "Print Text")
     private String ustrCompPrintText;
 
