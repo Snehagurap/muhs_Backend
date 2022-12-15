@@ -54,7 +54,8 @@ public class TemplateHeaderController {
         );
     }
 
-    @PutMapping("update")
+    // Put mapping replaced by POST
+@PostMapping("update")
     public ResponseEntity<?> update(@Valid @RequestBody TemplateHeaderBean templateHeaderBean) throws Exception {
         templateHeaderBean.setUnumIsvalid(1);
         templateHeaderBean.setUdtEffFrom(new Date());
@@ -66,7 +67,8 @@ public class TemplateHeaderController {
         );
     }
 
-    @DeleteMapping("delete")
+    // Delete mapping replaced by POST
+@PostMapping("delete")
     public ResponseEntity<?> delete(@RequestBody Long[] idsToDelete) throws Exception {
         TemplateHeaderBean templateHeaderBean = new TemplateHeaderBean();
         templateHeaderBean.setUdtEntryDate(new Date());
