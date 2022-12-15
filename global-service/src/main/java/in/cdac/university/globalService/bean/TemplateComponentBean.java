@@ -18,6 +18,7 @@ import javax.validation.constraints.NotBlank;
 public class TemplateComponentBean {
     @ListColumn(omit = true)
     @ComboKey
+    @ComboValue(order = 1)
     private Long unumTemplCompId;
 
     @JsonIgnore
@@ -51,7 +52,7 @@ public class TemplateComponentBean {
     private String ustrCompAllignment;
 
     @ListColumn(name = "Prefix Text")
-    @ComboValue
+    @ComboValue(order = 2,startSeparator = "-")
     private String ustrCompPrintPrefixText;
 
     @NotBlank(message = "Print Text is mandatory")

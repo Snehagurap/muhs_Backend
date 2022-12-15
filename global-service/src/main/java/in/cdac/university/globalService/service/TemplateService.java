@@ -53,13 +53,21 @@ public class TemplateService {
     }
 
     @Transactional
-	public ServiceResponse save(@Valid TemplateMasterBean templateMasterBean) throws Exception{
-		return saveAndUpdateTemplateMaster(templateMasterBean, true);
+	public ServiceResponse saveTemplateList(@Valid List<TemplateMasterBean> templateMasterBeanlist) throws Exception{
+    	for(TemplateMasterBean templateMasterBean:templateMasterBeanlist)
+    	{
+    		ServiceResponse	resp = saveAndUpdateTemplateMaster(templateMasterBean, true);	
+		}
+		return ServiceResponse.builder().status(1).message(language.saveSuccess("Templatelist")).build();
 	}
 	
 	@Transactional
-	public ServiceResponse update(TemplateMasterBean templateMasterBean) throws Exception {
-		return saveAndUpdateTemplateMaster(templateMasterBean, false);
+	public ServiceResponse updateTemplateList( List<TemplateMasterBean> templateMasterBeanlist) throws Exception {
+		for(TemplateMasterBean templateMasterBean:templateMasterBeanlist)
+    	{
+    		ServiceResponse	resp = saveAndUpdateTemplateMaster(templateMasterBean, false);	
+		}
+		return ServiceResponse.builder().status(1).message(language.updateSuccess("Templatelist")).build();
 	}
 	
 	public ServiceResponse saveAndUpdateTemplateMaster(TemplateMasterBean templateMasterBean, boolean isSave)
@@ -96,8 +104,10 @@ public class TemplateService {
 
 		
 		  List<GmstConfigTemplateDtl> gmstConfigTemplateDtlEntityList = new ArrayList<>(); 
+		  GmstConfigTemplateDtl gmstConfigTemplateDtl = null;
 		  for (TemplateMasterDtlsBean templateMasterDtls : templateMasterBean.getTemplateMasterDtlsBeanList()) {
-	      GmstConfigTemplateDtl gmstConfigTemplateDtl = new GmstConfigTemplateDtl();
+	      
+			 gmstConfigTemplateDtl = new GmstConfigTemplateDtl();
 	      gmstConfigTemplateDtlEntityList.add(gmstConfigTemplateDtl);
 		  
 		  BeanUtils.copyProperties(templateMasterDtls, gmstConfigTemplateDtl);
@@ -170,6 +180,7 @@ public class TemplateService {
     	
     	
     	return ServiceResponse.successObject(
-				ComboUtility.generateComboData(BeanUtils.copyListProperties(gmstConfigTemplateMsts, TemplateMasterBean.class)));
+				BeanUtils.copyListProperties(gmstConfigTemplateMsts, TemplateMasterBean.class));
     }
+
 }

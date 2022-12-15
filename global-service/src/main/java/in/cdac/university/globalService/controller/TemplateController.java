@@ -1,6 +1,5 @@
 package in.cdac.university.globalService.controller;
 
-import in.cdac.university.globalService.bean.TemplateComponentBean;
 import in.cdac.university.globalService.bean.TemplateMasterBean;
 import in.cdac.university.globalService.service.TemplateService;
 import in.cdac.university.globalService.util.ResponseHandler;
@@ -36,16 +35,14 @@ public class TemplateController {
 
 
     @PostMapping("/save")
-	public ResponseEntity<?> save(@Valid @RequestBody TemplateMasterBean templateMasterBean) throws Exception {
+	public ResponseEntity<?> save(@Valid @RequestBody List<TemplateMasterBean> templateMasterBeanlist) throws Exception {
 
-		return ResponseHandler.generateResponse(templateService.save(templateMasterBean));
+		return ResponseHandler.generateResponse(templateService.saveTemplateList(templateMasterBeanlist));
 	}
 
-	// Put mapping replaced by POST
-    @PostMapping("update")
-	public ResponseEntity<?> update(@Valid @RequestBody TemplateMasterBean templateMasterBean) throws Exception {
-		return ResponseHandler.generateResponse(templateService.update(templateMasterBean));
-		
+	@PostMapping("update")
+	public ResponseEntity<?> update(@Valid @RequestBody List<TemplateMasterBean> templateMasterBeanlist) throws Exception {
+		return ResponseHandler.generateResponse(templateService.updateTemplateList(templateMasterBeanlist));
 	}
 
 	// Delete mapping replaced by POST
