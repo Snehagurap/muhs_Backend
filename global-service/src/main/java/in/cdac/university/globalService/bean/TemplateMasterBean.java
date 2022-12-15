@@ -21,12 +21,15 @@ public class TemplateMasterBean {
     private Long unumTempleId;
 
     @JsonIgnore
+    
     private Integer unumIsvalid;
 
     @JsonIgnore
+    @ListColumn(omit = true)
     private Date udtEffFrom;
 
     @JsonIgnore
+    @ListColumn(omit = true)
     private Date udtEffTo;
 
     @JsonIgnore
@@ -47,9 +50,10 @@ public class TemplateMasterBean {
     private Integer unumUnivId;
     
     private String ustrTempDescription;
-    
+    @ListColumn(omit = true)
     private String ustrTempleCode;
     @ComboValue
+    @ListColumn(omit = true)
     private String ustrTempleName;
     
     private List<TemplateMasterDtlsBean> templateMasterDtlsBeanList;
