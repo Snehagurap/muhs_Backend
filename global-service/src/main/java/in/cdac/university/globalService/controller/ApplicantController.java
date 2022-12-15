@@ -77,7 +77,8 @@ public class ApplicantController {
     }
 
 
-    @PutMapping("verify")
+    // Put mapping replaced by POST
+@PostMapping("verify")
     public ResponseEntity<?> verifyApplicant(@RequestBody ApplicantBean applicantBean) throws Exception {
         applicantBean.setUnumVerifiedBy(RequestUtility.getUserId());
         applicantBean.setUdtVerifiedDate(new Date());
@@ -86,7 +87,8 @@ public class ApplicantController {
         );
     }
 
-    @PutMapping("update")
+    // Put mapping replaced by POST
+@PostMapping("update")
     public ResponseEntity<?> update(@Valid @RequestBody ApplicantBean applicantBean) throws Exception {
         applicantBean.setUnumIsvalid(1);
         applicantBean.setUdtEntryDate(new Date());

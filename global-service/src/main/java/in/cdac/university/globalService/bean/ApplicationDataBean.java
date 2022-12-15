@@ -1,5 +1,6 @@
 package in.cdac.university.globalService.bean;
 
+import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -15,6 +16,7 @@ import java.util.Date;
 @ToString
 public class ApplicationDataBean {
 
+    @ListColumn(name = "Application No.", order = 2)
     private Long unumApplicationId;
 
     private Long unumApplicantId;
@@ -62,4 +64,10 @@ public class ApplicationDataBean {
     private String ustrApplicantName;
 
     private Long unumMtempleId;
+
+    @ListColumn(name = "Status", order = 3)
+    private String statusName;
+
+    @ListColumn(name = "Notification")
+    private String notificationName;
 }

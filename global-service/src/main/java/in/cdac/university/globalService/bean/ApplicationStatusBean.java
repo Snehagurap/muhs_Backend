@@ -15,7 +15,7 @@ public class ApplicationStatusBean {
 
 
     @ComboKey
-    private Long unumApplicationStatusId;
+    private Integer unumApplicationStatusId;
 
 
     private Integer unumIsvalid;
