@@ -61,7 +61,8 @@ public class SubjectController {
         );
     }
 
-    @PutMapping("update")
+    // Put mapping replaced by POST
+@PostMapping("update")
     public ResponseEntity<?> update(@Valid @RequestBody SubjectBean subjectBean) throws Exception {
         subjectBean.setUnumEntryUid(RequestUtility.getUserId());
         subjectBean.setUnumUnivId(RequestUtility.getUniversityId());
@@ -71,7 +72,8 @@ public class SubjectController {
         );
     }
 
-    @DeleteMapping("delete")
+    // Delete mapping replaced by POST
+@PostMapping("delete")
     public ResponseEntity<?> delete(@RequestBody String[] idsToDelete) throws Exception {
         SubjectBean subjectBean = new SubjectBean();
         subjectBean.setUnumEntryUid(RequestUtility.getUserId());

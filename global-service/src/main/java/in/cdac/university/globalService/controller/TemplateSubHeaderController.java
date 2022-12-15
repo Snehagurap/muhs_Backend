@@ -45,7 +45,8 @@ public class TemplateSubHeaderController {
         );
     }
 
-    @PutMapping("update")
+    // Put mapping replaced by POST
+@PostMapping("update")
     public ResponseEntity<?> update(@Valid @RequestBody TemplateSubHeaderBean templateSubHeaderBean) throws Exception {
         templateSubHeaderBean.setUnumIsvalid(1);
         templateSubHeaderBean.setUdtEffFrom(new Date());
@@ -57,7 +58,8 @@ public class TemplateSubHeaderController {
         );
     }
 
-    @DeleteMapping("delete")
+    // Delete mapping replaced by POST
+@PostMapping("delete")
     public ResponseEntity<?> delete(@RequestBody Long[] idsToDelete) throws Exception {
         TemplateSubHeaderBean templateSubHeaderBean = new TemplateSubHeaderBean();
         templateSubHeaderBean.setUnumUnivId(RequestUtility.getUniversityId());
