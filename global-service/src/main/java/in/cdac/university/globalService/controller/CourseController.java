@@ -54,7 +54,7 @@ public class CourseController {
     }
 
     // Put mapping replaced by POST
-@PostMapping("update")
+    @PostMapping("update")
     public ResponseEntity<?> update(@Valid @RequestBody CourseBean courseBean) throws Exception {
         courseBean.setUnumEntryUid(RequestUtility.getUserId());
         courseBean.setUnumUnivId(RequestUtility.getUniversityId());
@@ -65,7 +65,7 @@ public class CourseController {
     }
 
     // Delete mapping replaced by POST
-@PostMapping("delete")
+    @PostMapping("delete")
     public ResponseEntity<?> delete(@RequestBody Long[] idsToDelete) throws Exception {
         CourseBean courseBean = new CourseBean();
         courseBean.setUdtEntryDate(new Date());
@@ -73,6 +73,13 @@ public class CourseController {
         courseBean.setUnumEntryUid(RequestUtility.getUserId());
         return ResponseHandler.generateResponse(
                 courseService.delete(courseBean, idsToDelete)
+        );
+    }
+
+    @PostMapping("combo/minRequiredCourse")
+    public ResponseEntity<?> getMinRequiredCourse(@RequestBody Integer[] courseTypeIds) throws Exception {
+        return ResponseHandler.generateOkResponse(
+                ComboUtility.generateComboData(courseService.getMinReqCourseByCourseType(courseTypeIds))
         );
     }
 }

@@ -56,13 +56,13 @@ public class TemplateHeaderService {
 
 	public List<TemplateHeaderBean> listPageData() throws Exception {
 		return BeanUtils.copyListProperties(templateHeaderRepository
-				.findByUnumIsvalidAndUnumUnivIdOrderByUstrTemplHeadCodeAsc(1, RequestUtility.getUniversityId()),
+				.findByUnumIsvalidAndUnumUnivIdOrderByUstrTempleHeadCodeAsc(1, RequestUtility.getUniversityId()),
 				TemplateHeaderBean.class);
 	}
 
 	public ServiceResponse getTemplateHeaderById(Long headerId) throws Exception {
 		Optional<GmstConfigTemplateHeaderMst> gmstConfigTemplateHeaderMstOptional = templateHeaderRepository
-				.findByUnumTemplHeadIdAndUnumIsvalidAndUnumUnivId(headerId, 1, RequestUtility.getUniversityId());
+				.findByUnumTempleHeadIdAndUnumIsvalidAndUnumUnivId(headerId, 1, RequestUtility.getUniversityId());
 
 		if (gmstConfigTemplateHeaderMstOptional.isEmpty()) {
 			return ServiceResponse.errorResponse(language.notFoundForId("Template Header", headerId));
@@ -89,7 +89,7 @@ public class TemplateHeaderService {
 		// Generate new header id
 		GmstConfigTemplateHeaderMst gmstConfigTemplateHeaderMst = BeanUtils.copyProperties(templateHeaderBean,
 				GmstConfigTemplateHeaderMst.class);
-		gmstConfigTemplateHeaderMst.setUnumTemplHeadId(templateHeaderRepository.getNextId());
+		gmstConfigTemplateHeaderMst.setUnumTempleHeadId(templateHeaderRepository.getNextId());
 		templateHeaderRepository.save(gmstConfigTemplateHeaderMst);
 
 		return ServiceResponse.builder().status(1).message(language.saveSuccess("Template Header")).build();
@@ -97,14 +97,14 @@ public class TemplateHeaderService {
 
 	@Transactional
 	public ServiceResponse update(TemplateHeaderBean templateHeaderBean) {
-		if (templateHeaderBean.getUnumTemplHeadId() == null) {
+		if (templateHeaderBean.getUnumTempleHeadId() == null) {
 			return ServiceResponse.errorResponse(language.mandatory("Header Id"));
 		}
 
 		// Duplicate Check
 		List<GmstConfigTemplateHeaderMst> gmstConfigTemplateHeaderMstList = templateHeaderRepository
-				.findByUnumTemplHeadIdNotAndUstrHeadPrintTextIgnoreCaseAndUnumIsvalidAndUnumUnivId(
-						templateHeaderBean.getUnumTemplHeadId(), templateHeaderBean.getUstrHeadPrintText(), 1,
+				.findByUnumTempleHeadIdNotAndUstrHeadPrintTextIgnoreCaseAndUnumIsvalidAndUnumUnivId(
+						templateHeaderBean.getUnumTempleHeadId(), templateHeaderBean.getUstrHeadPrintText(), 1,
 						templateHeaderBean.getUnumUnivId());
 
 		if (!gmstConfigTemplateHeaderMstList.isEmpty()) {
@@ -113,9 +113,9 @@ public class TemplateHeaderService {
 		}
 
 		// Create Log
-		int noOfRowsAffected = templateHeaderRepository.createLog(List.of(templateHeaderBean.getUnumTemplHeadId()));
+		int noOfRowsAffected = templateHeaderRepository.createLog(List.of(templateHeaderBean.getUnumTempleHeadId()));
 		if (noOfRowsAffected == 0) {
-			throw new ApplicationException(language.notFoundForId("Header", templateHeaderBean.getUnumTemplHeadId()));
+			throw new ApplicationException(language.notFoundForId("Header", templateHeaderBean.getUnumTempleHeadId()));
 		}
 
 		// Save New Data
@@ -133,7 +133,7 @@ public class TemplateHeaderService {
 		}
 
 		List<GmstConfigTemplateHeaderMst> gmstConfigTemplateHeaderMstList = templateHeaderRepository
-				.findByUnumTemplHeadIdInAndUnumIsvalidAndUnumUnivId(List.of(idsToDelete), 1,
+				.findByUnumTempleHeadIdInAndUnumIsvalidAndUnumUnivId(List.of(idsToDelete), 1,
 						templateHeaderBean.getUnumUnivId());
 
 		if (gmstConfigTemplateHeaderMstList.size() != idsToDelete.length) {
@@ -164,9 +164,9 @@ public class TemplateHeaderService {
 				ComboUtility.generateComboData(BeanUtils.copyListProperties(allHeaders, TemplateHeaderBean.class)));
 	}
 
-	public List<TemplateSubHeaderBean> getSubHeaderComboID(Long unumTemplHeadId) throws Exception {
+	public List<TemplateSubHeaderBean> getSubHeaderComboID(Long unumTempleHeadId) throws Exception {
 		return BeanUtils.copyListProperties(
-				templateSubHeaderRepository.findByunumTemplHeadId(unumTemplHeadId, RequestUtility.getUniversityId()),
+				templateSubHeaderRepository.findByunumTempleHeadId(unumTempleHeadId, RequestUtility.getUniversityId()),
 				TemplateSubHeaderBean.class);
 
 	}

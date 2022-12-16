@@ -47,4 +47,10 @@ public interface CourseRepository extends JpaRepository<GmstCourseMst, GmstCours
     Integer createLog(@Param("courseId") List<Long> courseId);
 
     List<GmstCourseMst> findByUnumCfacultyIdAndUnumIsvalidAndUnumUnivId(Integer unumCfacultyId, Integer unumIsvalid, Integer unumUnivId);
+
+    @Query("select c from GmstCourseMst c " +
+            "where c.unumCtypeId in (:courseTypeIds) " +
+            "and c.unumIsvalid = :unumIsvalid " +
+            "and c.unumUnivId = :universityId")
+    List<GmstCourseMst> getMinReqCourseByCourseType(@Param("courseTypeIds") Integer[] courseTypeIds, @Param("unumIsvalid") Integer unumIsvalid, @Param("universityId") Integer universityId);
 }

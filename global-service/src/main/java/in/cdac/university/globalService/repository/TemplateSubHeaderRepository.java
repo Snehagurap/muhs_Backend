@@ -19,21 +19,21 @@ public interface TemplateSubHeaderRepository extends JpaRepository<GmstConfigTem
     @Query(value= "select to_char(current_date, 'yymm') || lpad(nextval('university.seq_gmst_config_template_subheader_mst')\\:\\:text, 6, '0')", nativeQuery = true)
     Long getNextId();
 
-    List<GmstConfigTemplateSubheaderMst> findByUnumIsvalidAndUnumUnivIdAndUnumTemplHeadIdOrderByUnumSubheadDisplayOrderAsc(Integer unumIsvalid, Integer unumUnivId, Long unumTemplHeadId);
+    List<GmstConfigTemplateSubheaderMst> findByUnumIsvalidAndUnumUnivIdAndUnumTempleHeadIdOrderByUnumSubheadDisplayOrderAsc(Integer unumIsvalid, Integer unumUnivId, Long unumTempleHeadId);
 
-    Optional<GmstConfigTemplateSubheaderMst> findByUnumTemplSubheadIdAndUnumIsvalidAndUnumUnivId(Long unumTemplSubheadId, Integer unumIsvalid, Integer unumUnivId);
+    Optional<GmstConfigTemplateSubheaderMst> findByUnumTempleSubheadIdAndUnumIsvalidAndUnumUnivId(Long unumTemplSubheadId, Integer unumIsvalid, Integer unumUnivId);
 
-    List<GmstConfigTemplateSubheaderMst> findByUnumTemplSubheadIdInAndUnumIsvalidAndUnumUnivId(Collection<Long> unumTemplSubheadIds, Integer unumIsvalid, Integer unumUnivId);
+    List<GmstConfigTemplateSubheaderMst> findByUnumTempleSubheadIdInAndUnumIsvalidAndUnumUnivId(Collection<Long> unumTemplSubheadIds, Integer unumIsvalid, Integer unumUnivId);
 
 
     @Modifying(clearAutomatically = true)
     @Query("update GmstConfigTemplateSubheaderMst u set u.unumIsvalid = (select coalesce(max(a.unumIsvalid), 2) + 1 " +
-            "from GmstConfigTemplateSubheaderMst a where a.unumTemplSubheadId = u.unumTemplSubheadId and a.unumIsvalid > 2) " +
-            "where u.unumTemplSubheadId in (:templSubheadId) and u.unumIsvalid in (1,2) " )
+            "from GmstConfigTemplateSubheaderMst a where a.unumTempleSubheadId = u.unumTempleSubheadId and a.unumIsvalid > 2) " +
+            "where u.unumTempleSubheadId in (:templSubheadId) and u.unumIsvalid in (1,2) " )
     Integer createLog(@Param("templSubheadId") List<Long> templSubheadId);
     
     @Query("select c from GmstConfigTemplateSubheaderMst c " + "where c.unumIsvalid = 1 "
 			+ "and c.udtEffFrom <= current_date " + "and coalesce(c.udtEffTo, current_date) >= current_date "
-			+ "and c.unumUnivId = :universityId and c.unumTemplHeadId = :unumTemplHeadId")
-    List<GmstConfigTemplateSubheaderMst> findByunumTemplHeadId(Long unumTemplHeadId, Integer universityId);
+			+ "and c.unumUnivId = :universityId and c.unumTempleHeadId = :unumTempleHeadId")
+    List<GmstConfigTemplateSubheaderMst> findByunumTempleHeadId(Long unumTempleHeadId, Integer universityId);
 }

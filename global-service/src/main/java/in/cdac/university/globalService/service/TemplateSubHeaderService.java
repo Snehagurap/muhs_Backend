@@ -25,7 +25,7 @@ public class TemplateSubHeaderService {
     private Language language;
 
     public List<TemplateSubHeaderBean> listPageData(Long headerId) throws Exception {
-        List<GmstConfigTemplateSubheaderMst> subHeadList = templateSubHeaderRepository.findByUnumIsvalidAndUnumUnivIdAndUnumTemplHeadIdOrderByUnumSubheadDisplayOrderAsc(
+        List<GmstConfigTemplateSubheaderMst> subHeadList = templateSubHeaderRepository.findByUnumIsvalidAndUnumUnivIdAndUnumTempleHeadIdOrderByUnumSubheadDisplayOrderAsc(
                 1, RequestUtility.getUniversityId(), headerId
         );
         return BeanUtils.copyListProperties(subHeadList, TemplateSubHeaderBean.class);
@@ -34,13 +34,13 @@ public class TemplateSubHeaderService {
     @Transactional
     public ServiceResponse save(TemplateSubHeaderBean templateSubHeaderBean) {
         GmstConfigTemplateSubheaderMst gmstConfigTemplateSubheaderMst = BeanUtils.copyProperties(templateSubHeaderBean, GmstConfigTemplateSubheaderMst.class);
-        gmstConfigTemplateSubheaderMst.setUnumTemplSubheadId(templateSubHeaderRepository.getNextId());
+        gmstConfigTemplateSubheaderMst.setUnumTempleSubheadId(templateSubHeaderRepository.getNextId());
         templateSubHeaderRepository.save(gmstConfigTemplateSubheaderMst);
         return ServiceResponse.successMessage(language.saveSuccess("Template Sub Header"));
     }
 
     public ServiceResponse getSubHeaderById(Long subHeaderId) throws Exception {
-        Optional<GmstConfigTemplateSubheaderMst> gmstConfigTemplateSubheaderMstOptional = templateSubHeaderRepository.findByUnumTemplSubheadIdAndUnumIsvalidAndUnumUnivId(
+        Optional<GmstConfigTemplateSubheaderMst> gmstConfigTemplateSubheaderMstOptional = templateSubHeaderRepository.findByUnumTempleSubheadIdAndUnumIsvalidAndUnumUnivId(
                 subHeaderId, 1, RequestUtility.getUniversityId()
         );
 
@@ -60,9 +60,9 @@ public class TemplateSubHeaderService {
         }
 
         // Create Log
-        int noOfRowsAffected = templateSubHeaderRepository.createLog(List.of(templateSubHeaderBean.getUnumTemplSubheadId()));
+        int noOfRowsAffected = templateSubHeaderRepository.createLog(List.of(templateSubHeaderBean.getUnumTempleSubheadId()));
         if(noOfRowsAffected == 0) {
-            return ServiceResponse.errorResponse(language.notFoundForId("Sub Header", templateSubHeaderBean.getUnumTemplSubheadId()));
+            return ServiceResponse.errorResponse(language.notFoundForId("Sub Header", templateSubHeaderBean.getUnumTempleSubheadId()));
         }
 
         // Save new Record
@@ -78,7 +78,7 @@ public class TemplateSubHeaderService {
             return ServiceResponse.errorResponse(language.mandatory("Sub Header Id"));
         }
 
-        List<GmstConfigTemplateSubheaderMst> gmstConfigTemplateSubheaderMstList = templateSubHeaderRepository.findByUnumTemplSubheadIdInAndUnumIsvalidAndUnumUnivId(
+        List<GmstConfigTemplateSubheaderMst> gmstConfigTemplateSubheaderMstList = templateSubHeaderRepository.findByUnumTempleSubheadIdInAndUnumIsvalidAndUnumUnivId(
           List.of(idsToDelete), 1, RequestUtility.getUniversityId()
         );
 

@@ -1,9 +1,13 @@
 package in.cdac.university.globalService.service;
 
 import in.cdac.university.globalService.bean.CourseBean;
+import in.cdac.university.globalService.controller.GmstCourseTypeMst;
 import in.cdac.university.globalService.entity.GmstCourseMst;
+import in.cdac.university.globalService.entity.GmstCoursefacultyMst;
 import in.cdac.university.globalService.exception.ApplicationException;
 import in.cdac.university.globalService.repository.CourseRepository;
+import in.cdac.university.globalService.repository.CourseTypeRepository;
+import in.cdac.university.globalService.repository.FacultyRepository;
 import in.cdac.university.globalService.util.BeanUtils;
 import in.cdac.university.globalService.util.Language;
 import in.cdac.university.globalService.util.RequestUtility;
@@ -12,9 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -24,13 +27,36 @@ public class CourseService {
     private CourseRepository courseRepository;
 
     @Autowired
+    private FacultyRepository facultyRepository;
+
+    @Autowired
+    private CourseTypeRepository courseTypeRepository;
+
+    @Autowired
     private Language language;
 
     public List<CourseBean> listPageData(int status) throws Exception {
-        return BeanUtils.copyListProperties(
-                courseRepository.listPageData(status, RequestUtility.getUniversityId()),
-                CourseBean.class
-        );
+        List<GmstCourseMst> gmstCourseMstList = courseRepository.listPageData(status, RequestUtility.getUniversityId());
+        if(!gmstCourseMstList.isEmpty()) {
+            Map<Integer, String> courseFaculty = facultyRepository.getAllFaculty(RequestUtility.getUniversityId()).stream()
+                    .collect(Collectors.toMap(GmstCoursefacultyMst::getUnumCfacultyId, GmstCoursefacultyMst::getUstrCfacultyFname));
+
+            Map<Long, String> courseType = courseTypeRepository.getAllCourseTypes(RequestUtility.getUniversityId()).stream()
+                    .collect(Collectors.toMap(GmstCourseTypeMst::getUnumCtypeId, GmstCourseTypeMst::getUstrCtypeFname));
+
+            return  gmstCourseMstList.stream().map(
+                    gmstCourseMst ->  {
+                        CourseBean courseBean1 = BeanUtils.copyProperties(gmstCourseMst, CourseBean.class);
+                        if(gmstCourseMst.getUnumCfacultyId() != null)
+                            courseBean1.setUstrCfacultyName(courseFaculty.getOrDefault(gmstCourseMst.getUnumCfacultyId(), ""));
+                        if(gmstCourseMst.getUnumCtypeId() != null)
+                            courseBean1.setUstrCtypeName(courseType.getOrDefault(Long.valueOf(gmstCourseMst.getUnumCtypeId()), ""));
+                        return courseBean1;
+                    }
+            ).toList();
+
+        }
+        return new ArrayList<>();
     }
 
     @Transactional
@@ -63,7 +89,6 @@ public class CourseService {
         if (courseMstOptional.isEmpty()) {
             return ServiceResponse.errorResponse(language.notFoundForId("Course", courseId));
         }
-
         return ServiceResponse.builder()
                 .status(1)
                 .responseObject(BeanUtils.copyProperties(courseMstOptional.get(), CourseBean.class))
@@ -138,6 +163,13 @@ public class CourseService {
         return BeanUtils.copyListProperties(
                 courseRepository.findByUnumCfacultyIdAndUnumIsvalidAndUnumUnivId(
                         facultyId, 1,RequestUtility.getUniversityId()), CourseBean.class
+        );
+    }
+
+    public List<CourseBean> getMinReqCourseByCourseType(Integer[] courseTypeIds) throws Exception {
+
+        return BeanUtils.copyListProperties(
+                courseRepository.getMinReqCourseByCourseType(courseTypeIds, 1, RequestUtility.getUniversityId()), CourseBean.class
         );
     }
 }

@@ -11,8 +11,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GmstConfigTemplateComponentMstPK implements Serializable {
-	@Column(name="unum_templ_comp_id")
-	private Long unumTemplCompId;
+	@Column(name="unum_temple_comp_id")
+	private Long unumTempleCompId;
 
 	@Column(name="unum_isvalid")
 	private Integer unumIsvalid;

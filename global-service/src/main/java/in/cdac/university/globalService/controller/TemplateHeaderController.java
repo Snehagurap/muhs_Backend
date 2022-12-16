@@ -55,7 +55,7 @@ public class TemplateHeaderController {
     }
 
     // Put mapping replaced by POST
-@PostMapping("update")
+    @PostMapping("update")
     public ResponseEntity<?> update(@Valid @RequestBody TemplateHeaderBean templateHeaderBean) throws Exception {
         templateHeaderBean.setUnumIsvalid(1);
         templateHeaderBean.setUdtEffFrom(new Date());
@@ -68,7 +68,7 @@ public class TemplateHeaderController {
     }
 
     // Delete mapping replaced by POST
-@PostMapping("delete")
+    @PostMapping("delete")
     public ResponseEntity<?> delete(@RequestBody Long[] idsToDelete) throws Exception {
         TemplateHeaderBean templateHeaderBean = new TemplateHeaderBean();
         templateHeaderBean.setUdtEntryDate(new Date());
@@ -79,10 +79,10 @@ public class TemplateHeaderController {
         );
     }
     
-    @GetMapping("subHeaderCombo/{unumTemplHeadId}")
-	public ResponseEntity<?> getAllsubHeaderComboByselectedHeader(@PathVariable("unumTemplHeadId") Long unumTemplHeadId) throws Exception {
+    @GetMapping("subHeaderCombo/{unumTempleHeadId}")
+	public ResponseEntity<?> getAllsubHeaderComboByselectedHeader(@PathVariable("unumTempleHeadId") Long unumTempleHeadId) throws Exception {
 		 return ResponseHandler.generateOkResponse(
-	                ComboUtility.generateComboData(templateHeaderService.getSubHeaderComboID(unumTemplHeadId))
+	                ComboUtility.generateComboData(templateHeaderService.getSubHeaderComboID(unumTempleHeadId))
 	        );
 	}
     
