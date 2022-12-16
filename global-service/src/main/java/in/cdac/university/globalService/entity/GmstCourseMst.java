@@ -122,4 +122,12 @@ public class GmstCourseMst implements Serializable {
 	@Column(name="ustr_teachers_course_code")
 	private String ustrTeachersCourseCode;
 
+	@Column(name="ustr_stu_minreq_ctypeids")
+	private String ustrStuMinreqCtypeids;
+
+	@Column(name="ustr_stu_minreq_courseids")
+	private String ustrStuMinreqCourseids;
+
+	@Column(name="unum_eligible_institute_type")
+	private Integer unumEligibleInstituteType;
 }

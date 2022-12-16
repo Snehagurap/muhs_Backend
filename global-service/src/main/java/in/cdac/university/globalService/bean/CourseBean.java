@@ -30,6 +30,7 @@ public class CourseBean {
     @NotNull(message = "Course Duration is mandatory")
     private Integer unumCdCategoryId;
 
+
     private Integer unumCfacultyId;
     private Integer unumCourseAdmissionmode;
 
@@ -56,6 +57,7 @@ public class CourseBean {
     private Integer unumCourseMinyears;
 
     private Integer unumCoursePattern;
+
 
     @NotNull(message = "Course Type is mandatory")
     private Integer unumCtypeId;
@@ -94,4 +96,16 @@ public class CourseBean {
     private String ustrExonnCoursecd;
     private String ustrExonnFacultycode;
     private String ustrTeachersCourseCode;
+
+    private String ustrStuMinreqCtypeids;
+    private String ustrStuMinreqCourseids;
+
+    @ListColumn(order=6,name = "Institute Type")
+    private Integer unumEligibleInstituteType;
+
+    @ListColumn(order=5,name = "Faculty Type")
+    private String ustrCfacultyName;
+
+    @ListColumn(order=4,name = "Course Type")
+    private String ustrCtypeName;
 }
