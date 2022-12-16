@@ -53,20 +53,16 @@ public class TemplateService {
     }
 
     @Transactional
-	public ServiceResponse saveTemplateList(@Valid List<TemplateMasterBean> templateMasterBeanlist) throws Exception{
-    	for(TemplateMasterBean templateMasterBean:templateMasterBeanlist)
-    	{
-    		ServiceResponse	resp = saveAndUpdateTemplateMaster(templateMasterBean, true);	
-		}
+	public ServiceResponse save(TemplateMasterBean templateMasterBean) throws Exception{
+    	
+    	ServiceResponse	resp = saveAndUpdateTemplateMaster(templateMasterBean, true);	
 		return ServiceResponse.builder().status(1).message(language.saveSuccess("Templatelist")).build();
 	}
 	
 	@Transactional
-	public ServiceResponse updateTemplateList( List<TemplateMasterBean> templateMasterBeanlist) throws Exception {
-		for(TemplateMasterBean templateMasterBean:templateMasterBeanlist)
-    	{
-    		ServiceResponse	resp = saveAndUpdateTemplateMaster(templateMasterBean, false);	
-		}
+	public ServiceResponse update( TemplateMasterBean templateMasterBean) throws Exception {
+		
+    	ServiceResponse	resp = saveAndUpdateTemplateMaster(templateMasterBean, false);	
 		return ServiceResponse.builder().status(1).message(language.updateSuccess("Templatelist")).build();
 	}
 	
