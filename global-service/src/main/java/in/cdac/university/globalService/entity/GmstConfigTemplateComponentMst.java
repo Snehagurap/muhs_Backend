@@ -15,7 +15,7 @@ import java.util.Date;
 public class GmstConfigTemplateComponentMst implements Serializable {
 
 	@Id
-	private Long unumTemplCompId;
+	private Long unumTempleCompId;
 
 	@Id
 	private Integer unumIsvalid;
@@ -47,8 +47,8 @@ public class GmstConfigTemplateComponentMst implements Serializable {
 	@Column(name="unum_is_merge_with_parent")
 	private Integer unumIsMergeWithParent;
 
-	@Column(name="unum_templ_parent_comp_id")
-	private Long unumTemplParentCompId;
+	@Column(name="unum_temple_parent_comp_id")
+	private Long unumTempleParentCompId;
 
 	@Column(name="unum_univ_id")
 	private Integer unumUnivId;
@@ -65,8 +65,8 @@ public class GmstConfigTemplateComponentMst implements Serializable {
 	@Column(name="ustr_description")
 	private String ustrDescription;
 
-	@Column(name="ustr_templ_comp_code")
-	private String ustrTemplCompCode;
+	@Column(name="ustr_temple_comp_code")
+	private String ustrTempleCompCode;
 
 	@Column(name="unum_is_hidden")
 	private Integer unumIsHidden;

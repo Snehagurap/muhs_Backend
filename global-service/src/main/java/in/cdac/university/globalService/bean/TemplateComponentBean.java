@@ -19,7 +19,7 @@ public class TemplateComponentBean {
     @ListColumn(omit = true)
     @ComboKey
     @ComboValue(order = 1)
-    private Long unumTemplCompId;
+    private Long unumTempleCompId;
 
     @JsonIgnore
     private Integer unumIsvalid;

@@ -165,7 +165,7 @@ public class MasterTemplateService {
             for (GmstConfigTemplateDtl configTemplateDtl: templateDetailByTemplateId) {
                 if (configTemplateDtl.getUnumTempleHeadId() == 27 || !headerIdsAdded.containsKey(configTemplateDtl.getUnumTempleHeadId())) {
                     GmstConfigTemplateHeaderMst gmstConfigTemplateHeaderMst = headersByTemplateId.stream()
-                            .filter(header -> header.getUnumTemplHeadId().equals(configTemplateDtl.getUnumTempleHeadId()))
+                            .filter(header -> header.getUnumTempleHeadId().equals(configTemplateDtl.getUnumTempleHeadId()))
                             .findFirst()
                             .orElse(null);
                     if (gmstConfigTemplateHeaderMst == null)
@@ -205,7 +205,7 @@ public class MasterTemplateService {
             // Get Component Detail for each header
             int noOfPages = 0;
             for (TemplateHeaderBean templateHeaderBean: headerBeans) {
-                Long headerId = templateHeaderBean.getUnumTemplHeadId();
+                Long headerId = templateHeaderBean.getUnumTempleHeadId();
                 if (headerId == 27)
                     noOfPages++;
                 Map<Long, GmstConfigTemplateDtl> componentsInTemplate = templateDetailByTemplateId.stream()
@@ -213,11 +213,11 @@ public class MasterTemplateService {
                         .collect(Collectors.toMap(GmstConfigTemplateDtl::getUnumTempleCompId, Function.identity(), (u1, u2) -> u1));
 
                 List<TemplateComponentBean> templateComponentBeans = componentsByTemplateId.stream()
-                        .filter(gmstConfigTemplateComponentMst -> gmstConfigTemplateComponentMst.getUnumTemplCompId() != null &&
-                                componentsInTemplate.containsKey(gmstConfigTemplateComponentMst.getUnumTemplCompId()))
+                        .filter(gmstConfigTemplateComponentMst -> gmstConfigTemplateComponentMst.getUnumTempleCompId() != null &&
+                                componentsInTemplate.containsKey(gmstConfigTemplateComponentMst.getUnumTempleCompId()))
                         .map(gmstConfigTemplateComponentMst -> {
                             TemplateComponentBean templateComponentBean = BeanUtils.copyProperties(gmstConfigTemplateComponentMst, TemplateComponentBean.class);
-                            GmstConfigTemplateDtl templateDtl = componentsInTemplate.get(gmstConfigTemplateComponentMst.getUnumTemplCompId());
+                            GmstConfigTemplateDtl templateDtl = componentsInTemplate.get(gmstConfigTemplateComponentMst.getUnumTempleCompId());
                             templateComponentBean.setUnumCompDisplayOrder(templateDtl.getUnumDisplayOrder());
                             templateComponentBean.setUnumIsHidden(templateDtl.getUnumHideComponentTxt() == null ? 0 : templateDtl.getUnumHideComponentTxt());
                             templateComponentBean.setUnumTempledtlId(templateDtl.getUnumTempledtlId());
@@ -236,7 +236,7 @@ public class MasterTemplateService {
 
                 // Get Item for each Component
                 for (TemplateComponentBean templateComponentBean: templateComponentBeans) {
-                    Long componentId = templateComponentBean.getUnumTemplCompId();
+                    Long componentId = templateComponentBean.getUnumTempleCompId();
                     Map<Long, GmstConfigTemplateDtl> itemsInTemplate = templateDetailByTemplateId.stream()
                             .filter(gmstConfigTemplateDtl -> gmstConfigTemplateDtl.getUnumTempleHeadId() != null && gmstConfigTemplateDtl.getUnumTempleHeadId().equals(headerId))
                             .filter(gmstConfigTemplateDtl -> gmstConfigTemplateDtl.getUnumTempleCompId() != null

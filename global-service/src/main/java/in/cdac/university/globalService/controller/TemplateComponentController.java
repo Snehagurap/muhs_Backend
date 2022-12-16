@@ -64,7 +64,7 @@ public class TemplateComponentController {
 	@GetMapping("getAllCompMst")
 	public ResponseEntity<?> getAllCompDetailsByParentID() throws Exception {
 		 return ResponseHandler.generateOkResponse(
-	                ComboUtility.generateComboData(templateComponentService.getUnumTemplCompIds())
+	                ComboUtility.generateComboData(templateComponentService.getUnumTempleCompIds())
 	        );
 	}
 	

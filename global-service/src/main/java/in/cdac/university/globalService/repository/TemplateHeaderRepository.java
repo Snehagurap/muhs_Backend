@@ -18,12 +18,12 @@ import java.util.Optional;
 public interface TemplateHeaderRepository
 		extends JpaRepository<GmstConfigTemplateHeaderMst, GmstConfigTemplateHeaderMstPK> {
 
-	@Query("select coalesce(max(unumTemplHeadId), 0) + 1 from GmstConfigTemplateHeaderMst")
+	@Query("select coalesce(max(unumTempleHeadId), 0) + 1 from GmstConfigTemplateHeaderMst")
 	Long getNextId();
 
 	@Query("select c from GmstConfigTemplateHeaderMst c " + "where c.unumIsvalid = 1 "
 			+ "and c.unumUnivId = :universityId "
-			+ "and c.unumTemplHeadId in (select t.unumTempleHeadId from GmstConfigTemplateDtl t "
+			+ "and c.unumTempleHeadId in (select t.unumTempleHeadId from GmstConfigTemplateDtl t "
 			+ "where t.unumIsvalid = 1 " + "and t.unumUnivId = :universityId "
 			+ "and t.unumTempleId in (:templateId) ) ")
 	List<GmstConfigTemplateHeaderMst> findHeadersByTemplateId(@Param("universityId") Integer universityId,
@@ -33,25 +33,25 @@ public interface TemplateHeaderRepository
 			+ "and c.unumUnivId = :universityId ")
 	List<GmstConfigTemplateHeaderMst> findAllHeaders(@Param("universityId") Integer universityId);
 
-	List<GmstConfigTemplateHeaderMst> findByUnumIsvalidAndUnumUnivIdOrderByUstrTemplHeadCodeAsc(Integer unumIsvalid,
+	List<GmstConfigTemplateHeaderMst> findByUnumIsvalidAndUnumUnivIdOrderByUstrTempleHeadCodeAsc(Integer unumIsvalid,
 			Integer unumUnivId);
 
 	List<GmstConfigTemplateHeaderMst> findByUstrHeadPrintTextIgnoreCaseAndUnumIsvalidAndUnumUnivId(
 			String ustrHeadPrintText, Integer unumIsvalid, Integer unumUnivId);
 
-	Optional<GmstConfigTemplateHeaderMst> findByUnumTemplHeadIdAndUnumIsvalidAndUnumUnivId(Long unumTemplHeadId,
+	Optional<GmstConfigTemplateHeaderMst> findByUnumTempleHeadIdAndUnumIsvalidAndUnumUnivId(Long unumTemplHeadId,
 			Integer unumIsvalid, Integer unumUnivId);
 
-	List<GmstConfigTemplateHeaderMst> findByUnumTemplHeadIdNotAndUstrHeadPrintTextIgnoreCaseAndUnumIsvalidAndUnumUnivId(
+	List<GmstConfigTemplateHeaderMst> findByUnumTempleHeadIdNotAndUstrHeadPrintTextIgnoreCaseAndUnumIsvalidAndUnumUnivId(
 			Long unumTemplHeadId, String ustrHeadPrintText, Integer unumIsvalid, Integer unumUnivId);
 
-	List<GmstConfigTemplateHeaderMst> findByUnumTemplHeadIdInAndUnumIsvalidAndUnumUnivId(
+	List<GmstConfigTemplateHeaderMst> findByUnumTempleHeadIdInAndUnumIsvalidAndUnumUnivId(
 			Collection<Long> unumTemplHeadIds, Integer unumIsvalid, Integer unumUnivId);
 
 	@Modifying(clearAutomatically = true)
 	@Query("update GmstConfigTemplateHeaderMst u set u.unumIsvalid = (select coalesce(max(a.unumIsvalid), 2) + 1 "
-			+ "from GmstConfigTemplateHeaderMst a where a.unumTemplHeadId = u.unumTemplHeadId and a.unumIsvalid > 2) "
-			+ "where u.unumTemplHeadId in (:templHeadId) and u.unumIsvalid in (1,2) ")
+			+ "from GmstConfigTemplateHeaderMst a where a.unumTempleHeadId = u.unumTempleHeadId and a.unumIsvalid > 2) "
+			+ "where u.unumTempleHeadId in (:templHeadId) and u.unumIsvalid in (1,2) ")
 	Integer createLog(@Param("templHeadId") List<Long> templHeadId);
 
 }
