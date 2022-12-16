@@ -164,9 +164,9 @@ public class TemplateHeaderService {
 				ComboUtility.generateComboData(BeanUtils.copyListProperties(allHeaders, TemplateHeaderBean.class)));
 	}
 
-	public List<TemplateSubHeaderBean> getSubHeaderComboID(Long unumTemplHeadId) throws Exception {
+	public List<TemplateSubHeaderBean> getSubHeaderComboID(Long unumTempleHeadId) throws Exception {
 		return BeanUtils.copyListProperties(
-				templateSubHeaderRepository.findByunumTemplHeadId(unumTemplHeadId, RequestUtility.getUniversityId()),
+				templateSubHeaderRepository.findByunumTempleHeadId(unumTempleHeadId, RequestUtility.getUniversityId()),
 				TemplateSubHeaderBean.class);
 
 	}

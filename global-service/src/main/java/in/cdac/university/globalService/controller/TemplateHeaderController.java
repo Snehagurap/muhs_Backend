@@ -79,10 +79,10 @@ public class TemplateHeaderController {
         );
     }
     
-    @GetMapping("subHeaderCombo/{unumTemplHeadId}")
-	public ResponseEntity<?> getAllsubHeaderComboByselectedHeader(@PathVariable("unumTemplHeadId") Long unumTemplHeadId) throws Exception {
+    @GetMapping("subHeaderCombo/{unumTempleHeadId}")
+	public ResponseEntity<?> getAllsubHeaderComboByselectedHeader(@PathVariable("unumTempleHeadId") Long unumTempleHeadId) throws Exception {
 		 return ResponseHandler.generateOkResponse(
-	                ComboUtility.generateComboData(templateHeaderService.getSubHeaderComboID(unumTemplHeadId))
+	                ComboUtility.generateComboData(templateHeaderService.getSubHeaderComboID(unumTempleHeadId))
 	        );
 	}
     
