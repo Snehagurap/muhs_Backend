@@ -35,14 +35,14 @@ public class TemplateController {
 
 
     @PostMapping("/save")
-	public ResponseEntity<?> save(@Valid @RequestBody List<TemplateMasterBean> templateMasterBeanlist) throws Exception {
+	public ResponseEntity<?> save(@Valid @RequestBody TemplateMasterBean templateMasterBean) throws Exception {
 
-		return ResponseHandler.generateResponse(templateService.saveTemplateList(templateMasterBeanlist));
+		return ResponseHandler.generateResponse(templateService.save(templateMasterBean));
 	}
 
 	@PostMapping("update")
-	public ResponseEntity<?> update(@Valid @RequestBody List<TemplateMasterBean> templateMasterBeanlist) throws Exception {
-		return ResponseHandler.generateResponse(templateService.updateTemplateList(templateMasterBeanlist));
+	public ResponseEntity<?> update(@Valid @RequestBody TemplateMasterBean templateMasterBean) throws Exception {
+		return ResponseHandler.generateResponse(templateService.update(templateMasterBean));
 	}
 
 	// Delete mapping replaced by POST
