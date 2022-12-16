@@ -17,7 +17,7 @@ import java.util.Date;
 public class TemplateSubHeaderBean {
     @ListColumn(omit = true)
     @ComboKey
-    private Long unumTemplSubheadId;
+    private Long unumTempleSubheadId;
 
     private Integer unumIsvalid;
 
@@ -51,8 +51,8 @@ public class TemplateSubHeaderBean {
     @NotBlank(message = "Sub Header text is mandatory")
     private String ustrSubheadPrintText;
 
-    private String ustrTemplSubheadCode;
+    private String ustrTempleSubheadCode;
 
     @NotNull(message = "Header Id is mandatory")
-    private Long unumTemplHeadId;
+    private Long unumTempleHeadId;
 }
