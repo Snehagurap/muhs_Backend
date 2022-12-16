@@ -21,7 +21,7 @@ public class TemplateHeaderBean {
 
     @ComboKey
     @ListColumn(omit = true)
-    private Long unumTemplHeadId;
+    private Long unumTempleHeadId;
 
     @JsonIgnore
     private Integer unumIsvalid;
