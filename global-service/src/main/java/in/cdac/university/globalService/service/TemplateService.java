@@ -1,8 +1,10 @@
 package in.cdac.university.globalService.service;
 
 
+import in.cdac.university.globalService.bean.CompHeadSubHeader;
 import in.cdac.university.globalService.bean.TemplateMasterBean;
 import in.cdac.university.globalService.bean.TemplateMasterDtlsBean;
+import in.cdac.university.globalService.bean.TemplateMasterDtlsChildBean;
 import in.cdac.university.globalService.entity.GmstConfigTemplateComponentDtl;
 import in.cdac.university.globalService.entity.GmstConfigTemplateComponentMst;
 import in.cdac.university.globalService.bean.TemplateMasterBean;
@@ -20,7 +22,9 @@ import in.cdac.university.globalService.util.Language;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -164,10 +168,34 @@ public class TemplateService {
     	TemplateMasterBean templateMasterBean = new TemplateMasterBean();
     	BeanUtils.copyProperties(templateRepository.findByUnumIsvalidAndUnumUnivIdAndUnumTempleId(1,RequestUtility.getUniversityId(),templateId),templateMasterBean) ;
     	
-    	log.info("templateMasterBean {}" , templateMasterBean);
+    	log.debug("templateMasterBean {}" , templateMasterBean);
     	List<TemplateMasterDtlsBean> templateMasterDtlsBeans = BeanUtils.copyListProperties(templateDetailRepository.findByUnumIsvalidAndUnumUnivIdAndUnumTempleId(1,RequestUtility.getUniversityId(),templateId), TemplateMasterDtlsBean.class) ;
-    	log.info("templateMasterDtlsBeans {}" , templateMasterDtlsBeans);
-    	templateMasterBean.setTemplateMasterDtlsBeanList(templateMasterDtlsBeans);
+    	log.debug("templateMasterDtlsBeans {}" , templateMasterDtlsBeans);
+    	
+    	Map<CompHeadSubHeader,List<TemplateMasterDtlsChildBean>> resultmap = new HashMap<CompHeadSubHeader,List<TemplateMasterDtlsChildBean>>(); 
+    	
+    	for(TemplateMasterDtlsBean bean:templateMasterDtlsBeans)
+    	{
+    		CompHeadSubHeader key = new CompHeadSubHeader();
+			key.setUnumTempleCompId(bean.getUnumTempleCompId());
+			key.setUnumTempleHeadId(bean.getUnumTempleHeadId());
+			key.setUnumTempleSubheadId(bean.getUnumTempleSubheadId());
+			 List<TemplateMasterDtlsChildBean> childrens;
+    		
+    			if(resultmap.containsKey(key))
+    				{	
+    			    childrens = resultmap.get(key);
+    				}
+    			else {
+    			     childrens = new ArrayList<>();
+    			}
+    			TemplateMasterDtlsChildBean newChildbean = BeanUtils.copyProperties(bean,TemplateMasterDtlsChildBean.class);
+   			    childrens.add(newChildbean);
+   			    key.setChildren(childrens);
+   			    resultmap.put(key, childrens);
+    		
+    	}
+    	templateMasterBean.setCompHeadSubHeaders(resultmap.keySet());
     	return ServiceResponse.successObject(templateMasterBean);
     }
     
