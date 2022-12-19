@@ -246,8 +246,8 @@ public class MasterTemplateService {
                     List<TemplateItemBean> templateItemBeans = itemsByTemplateId.stream()
                             .filter(gmstConfigTemplateItemMst -> gmstConfigTemplateItemMst.getUnumTempleItemId() != null &&
                                     itemsInTemplate.containsKey(gmstConfigTemplateItemMst.getUnumTempleItemId()))
-                            .filter(gmstConfigTemplateItemMst -> gmstConfigTemplateItemMst.getUnumTemplParentItemId() == null ||
-                                    gmstConfigTemplateItemMst.getUnumTemplParentItemId().equals(0L))
+                            .filter(gmstConfigTemplateItemMst -> gmstConfigTemplateItemMst.getUnumTempleParentItemId() == null ||
+                                    gmstConfigTemplateItemMst.getUnumTempleParentItemId().equals(0L))
                             .map(gmstConfigTemplateItemMst -> {
                                 TemplateItemBean templateItemBean = BeanUtils.copyProperties(gmstConfigTemplateItemMst, TemplateItemBean.class);
                                 GmstConfigTemplateDtl templateDtl = itemsInTemplate.get(gmstConfigTemplateItemMst.getUnumTempleItemId());
@@ -292,8 +292,8 @@ public class MasterTemplateService {
                                List<GmstConfigTemplateDtl> templateDetailByTemplateId, Map<Long, String> itemMap, String facultyName, String purpose) {
 
         List<TemplateItemBean> childItems = itemsByTemplateId.stream()
-                .filter(gmstConfigTemplateItemMst -> gmstConfigTemplateItemMst.getUnumTemplParentItemId() != null &&
-                        gmstConfigTemplateItemMst.getUnumTemplParentItemId().equals(templateItemBean.getUnumTempleItemId()))
+                .filter(gmstConfigTemplateItemMst -> gmstConfigTemplateItemMst.getUnumTempleParentItemId() != null &&
+                        gmstConfigTemplateItemMst.getUnumTempleParentItemId().equals(templateItemBean.getUnumTempleItemId()))
                 .map(gmstConfigTemplateItemMst -> {
                     TemplateItemBean itemBean = BeanUtils.copyProperties(gmstConfigTemplateItemMst, TemplateItemBean.class);
                     GmstConfigTemplateDtl gmstConfigTemplateDtl = templateDetailByTemplateId.stream().filter(

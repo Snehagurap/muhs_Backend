@@ -59,13 +59,13 @@ public class TemplateItemBean {
 
     private Long unumLinkvalTempleCompId;
 
-    private Long unumLinkvalTemplHeadId;
+    private Long unumLinkvalTempleHeadId;
 
-    private Long unumLinkvalTemplId;
+    private Long unumLinkvalTempleId;
 
-    private Long unumLinkvalTemplItemId;
+    private Long unumLinkvalTempleItemId;
 
-    private Long unumLinkvalTemplSubheadId;
+    private Long unumLinkvalTempleSubheadId;
 
     private Integer unumMedicalFlag;
 
@@ -87,7 +87,7 @@ public class TemplateItemBean {
 
     private Integer unumPrintitemFlag;
 
-    private Long unumTemplParentItemId;
+    private Long unumTempleParentItemId;
 
     @NotNull(message = "Item Control ID is mandatory")
     private Integer unumUiControlId;
@@ -130,7 +130,7 @@ public class TemplateItemBean {
     private String ustrTableRowColId;
 
     @NotNull(message = "Item Code is mandatory")
-    private String ustrTemplItemCode;
+    private String ustrTempleItemCode;
 
     private String ustrValueText;
 

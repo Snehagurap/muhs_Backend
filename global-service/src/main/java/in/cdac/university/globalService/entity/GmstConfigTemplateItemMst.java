@@ -66,17 +66,17 @@ public class GmstConfigTemplateItemMst implements Serializable {
 	@Column(name="unum_linkval_temple_comp_id")
 	private Long unumLinkvalTempleCompId;
 
-	@Column(name="unum_linkval_templ_head_id")
-	private Long unumLinkvalTemplHeadId;
+	@Column(name="unum_linkval_temple_head_id")
+	private Long unumLinkvalTempleHeadId;
 
-	@Column(name="unum_linkval_templ_id")
-	private Long unumLinkvalTemplId;
+	@Column(name="unum_linkval_temple_id")
+	private Long unumLinkvalTempleId;
 
-	@Column(name="unum_linkval_templ_item_id")
-	private Long unumLinkvalTemplItemId;
+	@Column(name="unum_linkval_temple_item_id")
+	private Long unumLinkvalTempleItemId;
 
-	@Column(name="unum_linkval_templ_subhead_id")
-	private Long unumLinkvalTemplSubheadId;
+	@Column(name="unum_linkval_temple_subhead_id")
+	private Long unumLinkvalTempleSubheadId;
 
 	@Column(name="unum_medical_flag")
 	private Integer unumMedicalFlag;
@@ -108,8 +108,8 @@ public class GmstConfigTemplateItemMst implements Serializable {
 	@Column(name="unum_printitem_flag")
 	private Integer unumPrintitemFlag;
 
-	@Column(name="unum_templ_parent_item_id")
-	private Long unumTemplParentItemId;
+	@Column(name="unum_temple_parent_item_id")
+	private Long unumTempleParentItemId;
 
 	@Column(name="unum_ui_control_id")
 	private Integer unumUiControlId;
@@ -159,8 +159,8 @@ public class GmstConfigTemplateItemMst implements Serializable {
 	@Column(name="ustr_table_row_col_id")
 	private String ustrTableRowColId;
 
-	@Column(name="ustr_templ_item_code")
-	private String ustrTemplItemCode;
+	@Column(name="ustr_temple_item_code")
+	private String ustrTempleItemCode;
 
 	@Column(name="ustr_value_text")
 	private String ustrValueText;
