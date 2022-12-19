@@ -20,7 +20,7 @@ import javax.validation.constraints.NotNull;
 public class TemplateComponentDtlsBean {
 	
 	
-	private Long unumTemplCompItemId;
+	private Long unumTempleCompItemId;
 
 	private Integer unumIsvalid;
 
@@ -32,7 +32,7 @@ public class TemplateComponentDtlsBean {
 
 	private Long unumEntryUid;
 
-	private Long unumTemplCompId;
+	private Long unumTempleCompId;
 
 	@NotNull(message = "unumTempleItemId is mandatory")
 	private Long unumTempleItemId;

@@ -254,7 +254,7 @@ public class MasterTemplateService {
                                 templateItemBean.setUnumItemDisplayOrder(templateDtl.getUnumDisplayOrder());
                                 templateItemBean.setUnumIsHidden(templateDtl.getUnumHideItemTxt() == null ? 0 : templateDtl.getUnumHideItemTxt());
                                 templateItemBean.setUnumTempledtlId(templateDtl.getUnumTempledtlId());
-                                templateItemBean.setUnumTemplCompItemId(templateDtl.getUnumTemplCompItemId());
+                                templateItemBean.setUnumTempleCompItemId(templateDtl.getUnumTemplCompItemId());
                                 templateItemBean.setUstrItemValue(itemMap.getOrDefault(gmstConfigTemplateItemMst.getUnumTempleItemId(), ""));
 
                                 // replace constants
@@ -303,7 +303,7 @@ public class MasterTemplateService {
                         itemBean.setUnumItemDisplayOrder(gmstConfigTemplateDtl.getUnumDisplayOrder());
                         itemBean.setUnumIsHidden(gmstConfigTemplateDtl.getUnumHideItemTxt() == null ? 0 : gmstConfigTemplateDtl.getUnumHideItemTxt());
                         itemBean.setUnumTempledtlId(gmstConfigTemplateDtl.getUnumTempledtlId());
-                        itemBean.setUnumTemplCompItemId(gmstConfigTemplateDtl.getUnumTemplCompItemId());
+                        itemBean.setUnumTempleCompItemId(gmstConfigTemplateDtl.getUnumTemplCompItemId());
                         itemBean.setUstrItemValue(itemMap.getOrDefault(gmstConfigTemplateItemMst.getUnumTempleItemId(), ""));
 
                         // Replace constants
