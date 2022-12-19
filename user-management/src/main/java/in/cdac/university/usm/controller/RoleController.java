@@ -57,7 +57,8 @@ public class RoleController {
         return ResponseHandler.generateResponse(roleService.saveRole(roleBean));
     }
 
-    @PatchMapping("update")
+    // Patch mapping replaced by POST
+    @PostMapping("update")
     public @ResponseBody ResponseEntity<?> update(@Valid @RequestBody RoleBean roleBean) throws Exception {
         roleBean.setGnumEntryBy(RequestUtility.getUserId());
         roleBean.setGdtEntrydate(new Date());
@@ -65,7 +66,7 @@ public class RoleController {
         return ResponseHandler.generateResponse(roleService.update(roleBean));
     }
 
-    @DeleteMapping("delete")
+    @PostMapping("delete")
     public @ResponseBody ResponseEntity<?> delete(@RequestBody String[] idsToDelete) throws Exception {
         RoleBean roleBean = new RoleBean();
         roleBean.setIdsToDelete(idsToDelete);

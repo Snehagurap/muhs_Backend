@@ -40,9 +40,9 @@ public class DocumentTypeBean {
     @JsonIgnore
     private String ustrDescription;
 
-    private String ustrDocFname;
+    private String ustrDocName;
 
     @JsonIgnore
-    private String ustrDocSname;
+    private String ustrDocCode;
 }
 

@@ -68,10 +68,11 @@ public class FtpUtility {
         boolean isDirectoryExists = ftpClient.changeWorkingDirectory(directoryName);
         if (!isDirectoryExists) {
             boolean result = ftpClient.makeDirectory(directoryName);
-            if (result)
+            if (result) {
                 return ftpClient.changeWorkingDirectory(directoryName);
-            else
+            } else {
                 return false;
+            }
         }
         return  true;
     }
@@ -86,15 +87,16 @@ public class FtpUtility {
             boolean result = changeOrCreateDirectory(ftpClient, "temp");
             if (!result) {
                 log.error("Unable to create temporary directory");
+                logErrorMessages(ftpClient);
                 return false;
             }
 
             result = changeOrCreateDirectory(ftpClient, fileDirectory.folderName);
             if (!result) {
-                log.error("Unable to create directory");
+                log.error("Unable to create directory: {}", fileDirectory.folderName);
+                logErrorMessages(ftpClient);
                 return false;
             }
-            System.out.println("PWD " + ftpClient.printWorkingDirectory());
             return ftpClient.storeFile(fileNameToSave, file.getInputStream());
         } catch (Exception e) {
             e.printStackTrace();
@@ -107,6 +109,15 @@ public class FtpUtility {
             }
         }
         return false;
+    }
+
+    private void logErrorMessages(FTPClient ftpClient) {
+        String[] replies = ftpClient.getReplyStrings();
+        if (replies != null) {
+            for (String aReply : replies) {
+                log.error("FTP SERVER: {}", aReply);
+            }
+        }
     }
 
     public boolean moveFileFromTempToFinalDirectory(String fileName) {

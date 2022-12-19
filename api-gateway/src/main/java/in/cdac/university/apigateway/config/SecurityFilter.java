@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @RefreshScope
 @Component
 @Slf4j
@@ -41,7 +43,8 @@ public class SecurityFilter implements GatewayFilter {
     }
 
     private String getSecurityHeader(ServerHttpRequest request) {
-        return request.getHeaders().getOrEmpty("fhttf").get(0);
+        List<String> fhttfs = request.getHeaders().getOrEmpty("fhttf");
+        return fhttfs.isEmpty() ? "" : fhttfs.get(0);
     }
 
     private boolean isSecurityHeaderPresent(ServerHttpRequest request) {
