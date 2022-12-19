@@ -56,6 +56,11 @@ public class TemplateMasterBean {
     private String ustrTempleName;
     
     private List<TemplateMasterDtlsBean> templateMasterDtlsBeanList;
-    
+
     private Set<CompHeadSubHeader> compHeadSubHeaders;
+
+    private String ustrCfacultyFname;
+    
+    private String ustrCfacultySname; 
+    
 }

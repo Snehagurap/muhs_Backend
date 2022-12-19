@@ -15,14 +15,14 @@ import javax.validation.constraints.NotBlank;
 public class TemplateHeaderSubHeaderBean {
 
 	@ListColumn(omit = true)
-	private Long unumTemplHeadId;
+	private Long unumTempleHeadId;
 
 	@ListColumn(order = 4, name = "Header Text")
 	@NotBlank(message = "Header Text is mandatory")
 	private String ustrHeadPrintText;
 
 	@ListColumn(omit = true)
-	private Long unumTemplSubheadId;
+	private Long unumTempleSubheadId;
 
 	@ListColumn(order = 2, name = "Prefix Text")
 	private String ustrSubheadPrintPrefixText;

@@ -1,43 +1,34 @@
 package in.cdac.university.globalService.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import in.cdac.university.globalService.bean.CompHeadSubHeader;
 import in.cdac.university.globalService.bean.TemplateMasterBean;
 import in.cdac.university.globalService.bean.TemplateMasterDtlsBean;
 import in.cdac.university.globalService.bean.TemplateMasterDtlsChildBean;
-import in.cdac.university.globalService.entity.GmstConfigTemplateComponentDtl;
-import in.cdac.university.globalService.entity.GmstConfigTemplateComponentMst;
-import in.cdac.university.globalService.bean.TemplateMasterBean;
-import in.cdac.university.globalService.bean.TemplateMasterDtlsBean;
 import in.cdac.university.globalService.entity.GmstConfigTemplateDtl;
+import in.cdac.university.globalService.entity.GmstConfigTemplateItemMst;
 import in.cdac.university.globalService.entity.GmstConfigTemplateMst;
+import in.cdac.university.globalService.entity.GmstCoursefacultyMst;
+import in.cdac.university.globalService.repository.FacultyRepository;
 import in.cdac.university.globalService.repository.TemplateDetailRepository;
+import in.cdac.university.globalService.repository.TemplateItemRepository;
 import in.cdac.university.globalService.repository.TemplateRepository;
 import in.cdac.university.globalService.util.BeanUtils;
-import in.cdac.university.globalService.util.RequestUtility;
-import in.cdac.university.globalService.util.ServiceResponse;
-import in.cdac.university.globalService.util.StringUtility;
-import lombok.extern.slf4j.Slf4j;
 import in.cdac.university.globalService.util.Language;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.validation.Valid;
-
-import in.cdac.university.globalService.util.ComboUtility;
 import in.cdac.university.globalService.util.RequestUtility;
 import in.cdac.university.globalService.util.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -51,6 +42,12 @@ public class TemplateService {
     
     @Autowired
 	private Language language;
+    
+    @Autowired
+    private FacultyRepository facultyRepository;
+    
+    @Autowired
+    private TemplateItemRepository templateItemRepository;
 
     public ServiceResponse getTemplate(Long templateId) {
         return null;
@@ -167,19 +164,33 @@ public class TemplateService {
     {
     	TemplateMasterBean templateMasterBean = new TemplateMasterBean();
     	BeanUtils.copyProperties(templateRepository.findByUnumIsvalidAndUnumUnivIdAndUnumTempleId(1,RequestUtility.getUniversityId(),templateId),templateMasterBean) ;
+    	log.debug("templateMasterBean {}" , templateMasterBean);
     	
     	log.debug("templateMasterBean {}" , templateMasterBean);
     	List<TemplateMasterDtlsBean> templateMasterDtlsBeans = BeanUtils.copyListProperties(templateDetailRepository.findByUnumIsvalidAndUnumUnivIdAndUnumTempleId(1,RequestUtility.getUniversityId(),templateId), TemplateMasterDtlsBean.class) ;
     	log.debug("templateMasterDtlsBeans {}" , templateMasterDtlsBeans);
     	
+    	GmstCoursefacultyMst gmstCoursefacultyMst = facultyRepository.findByUnumCfacultyIdAndUnumIsvalid(templateMasterBean.getUnumFacultyId(), 1);
+    	templateMasterBean.setUstrCfacultyFname(gmstCoursefacultyMst.getUstrCfacultyFname());
+    	templateMasterBean.setUstrCfacultySname(gmstCoursefacultyMst.getUstrCfacultySname());
+    	
+		 List<GmstConfigTemplateItemMst> gmstConfigTemplateItemMstList = templateItemRepository.findItemsByTemplateId(templateMasterBean.getUnumUnivId(), Arrays.asList(templateId));
+		 Map<Long, String> itemMstMap = gmstConfigTemplateItemMstList.stream().collect(
+				 Collectors.toMap(GmstConfigTemplateItemMst :: getUnumTempleItemId, GmstConfigTemplateItemMst :: getUstrItemPrintPreText));
+		 
+		 for(TemplateMasterDtlsBean templateMasterDtlsBean : templateMasterDtlsBeans) {
+			 templateMasterDtlsBean.setUstrItemPrintPreText(itemMstMap.get(templateMasterDtlsBean.getUnumTempleItemId()));
+		 }
+    	
     	Map<CompHeadSubHeader,List<TemplateMasterDtlsChildBean>> resultmap = new HashMap<CompHeadSubHeader,List<TemplateMasterDtlsChildBean>>(); 
     	
-    	for(TemplateMasterDtlsBean bean:templateMasterDtlsBeans)
+    	CompHeadSubHeader key = null;
+    	for(TemplateMasterDtlsBean bean : templateMasterDtlsBeans)
     	{
-    		CompHeadSubHeader key = new CompHeadSubHeader();
-			key.setUnumTempleCompId(bean.getUnumTempleCompId());
-			key.setUnumTempleHeadId(bean.getUnumTempleHeadId());
-			key.setUnumTempleSubheadId(bean.getUnumTempleSubheadId());
+    		key = new CompHeadSubHeader();
+			key.setUnumTempleCompId(bean.getUnumTempleCompId()); 
+			key.setUnumTempleHeadId(bean.getUnumTempleHeadId()); 
+			key.setUnumTempleSubheadId(bean.getUnumTempleSubheadId()); 
 			 List<TemplateMasterDtlsChildBean> childrens;
     		
     			if(resultmap.containsKey(key))
@@ -190,12 +201,14 @@ public class TemplateService {
     			     childrens = new ArrayList<>();
     			}
     			TemplateMasterDtlsChildBean newChildbean = BeanUtils.copyProperties(bean,TemplateMasterDtlsChildBean.class);
-   			    childrens.add(newChildbean);
+   			    childrens.add(newChildbean); 
    			    key.setChildren(childrens);
    			    resultmap.put(key, childrens);
     		
     	}
     	templateMasterBean.setCompHeadSubHeaders(resultmap.keySet());
+
+//    	templateMasterBean.setTemplateMasterDtlsBeanList(templateMasterDtlsBeans);
     	return ServiceResponse.successObject(templateMasterBean);
     }
     

@@ -2,6 +2,8 @@ package in.cdac.university.globalService.bean;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import in.cdac.university.globalService.util.annotations.ListColumn;
@@ -32,7 +34,7 @@ public class TemplateMasterDtlsBean {
 	private Long unumEntryUid;
 
 
-	private Long unumTemplCompItemId;
+	private Long unumTempleCompItemId;
 
 	
 	private Long unumTempleCompId;
@@ -65,4 +67,6 @@ public class TemplateMasterDtlsBean {
 	private Integer unumHideItemTxt;
 
 	private Integer unumPageColumns;
+	
+	private String ustrItemPrintPreText;
 }
