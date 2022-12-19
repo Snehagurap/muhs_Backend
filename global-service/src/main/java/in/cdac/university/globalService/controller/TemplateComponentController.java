@@ -6,14 +6,11 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import in.cdac.university.globalService.bean.TemplateComponentBean;
@@ -54,10 +51,10 @@ public class TemplateComponentController {
 
 	}
 	
-	@GetMapping("getCompDetailsByParentID/{unumTemplCompId}")
-	public ResponseEntity<?> getCompDetailsByParentID(@PathVariable("unumTemplCompId") Long unumTemplCompId) throws Exception {
+	@GetMapping("getCompDetailsByParentID/{unumTempleCompId}")
+	public ResponseEntity<?> getCompDetailsByParentID(@PathVariable("unumTempleCompId") Long unumTempleCompId) throws Exception {
 		return ResponseHandler.generateOkResponse(
-				templateComponentService.getCompDetailsByParentID(unumTemplCompId)
+				templateComponentService.getCompDetailsByParentID(unumTempleCompId)
         );
 	}
 	

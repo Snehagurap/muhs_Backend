@@ -22,5 +22,7 @@ public interface FacultyRepository extends JpaRepository<GmstCoursefacultyMst, G
 
     List<GmstCoursefacultyMst> findByUnumIsvalid(Integer unumIsvalid);
 
+	GmstCoursefacultyMst findByUnumCfacultyIdAndUnumIsvalid(Integer unumFacultyId, int unumIsvalid);
+
 
 }

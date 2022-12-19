@@ -57,4 +57,8 @@ public class TemplateMasterBean {
     private String ustrTempleName;
     
     private List<TemplateMasterDtlsBean> templateMasterDtlsBeanList;
+    
+    private String ustrCfacultyFname;
+    
+    private String ustrCfacultySname; 
 }

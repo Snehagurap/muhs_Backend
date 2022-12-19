@@ -174,11 +174,11 @@ public class TemplateHeaderService {
 	public ServiceResponse getItemsByHeaderSubHeaderComponents(
 			@Valid TemplateHeaderSubHeaderBean templateHeaderSubHeaderBean) {
 
-		List<Long> unumTemplCompIdlist = new ArrayList<Long>();
+		List<Long> unumTempleCompIdlist = new ArrayList<Long>();
 		templateHeaderSubHeaderBean.getCompItemBean().forEach(requestbean->{
-			unumTemplCompIdlist.add(requestbean.getUnumTemplCompId());
+			unumTempleCompIdlist.add(requestbean.getUnumTempleCompId());
 			List<TemplateItemBean> itemsList = BeanUtils.copyListProperties(
-					templateItemRepository.findAllByUnumTempleItemIdAndUnumIsvalid(requestbean.getUnumTemplCompId(),1),
+					templateItemRepository.findAllByUnumTempleItemIdAndUnumIsvalid(requestbean.getUnumTempleCompId(),1),
 					TemplateItemBean.class);
 			log.info("itemsList {}",itemsList);
 			requestbean.setItems(itemsList);

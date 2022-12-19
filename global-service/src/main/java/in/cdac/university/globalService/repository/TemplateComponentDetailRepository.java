@@ -29,9 +29,9 @@ public interface TemplateComponentDetailRepository
 			+ " unum_templ_comp_id in (:unumTemplCompId) and unum_isvalid = 1", nativeQuery = true)
 	Integer deleteTemplateComponentItemRecord(@Param("unumTemplCompId") List<Long> idsToDelete);
 
-	List<GmstConfigTemplateComponentDtl> findByUnumTemplCompIdInAndUnumIsvalidIn(List<Long> idsToDelete,
+	List<GmstConfigTemplateComponentDtl> findByUnumTempleCompIdInAndUnumIsvalidIn(List<Long> idsToDelete,
 			List<Integer> unumIsvalids);
 
-	List<GmstConfigTemplateComponentDtl> findByUnumTemplCompIdAndUnumIsvalid(Long unumTemplCompId, Integer unumIsvalid);
+	List<GmstConfigTemplateComponentDtl> findByUnumTempleCompIdAndUnumIsvalid(Long unumTemplCompId, Integer unumIsvalid);
 
 }

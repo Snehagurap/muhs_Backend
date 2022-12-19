@@ -12,8 +12,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class GmstConfigTemplateComponentDtlPK implements Serializable {
 
-	@Column(name="unum_templ_comp_item_id")
-	private Long unumTemplCompItemId;
+	@Column(name="unum_temple_comp_item_id")
+	private Long unumTempleCompItemId;
 
 	@Column(name="unum_isvalid")
 	private Integer unumIsvalid;

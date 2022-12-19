@@ -65,7 +65,7 @@ public class TemplateComponentService {
 				.findByUnumTempleCompIdInAndUnumIsvalidIn(idsToDelete, List.of(1, 2));
 
 		List<GmstConfigTemplateComponentDtl> gmstConfigTemplateComponentDtlList = templateComponentDetailRepository
-				.findByUnumTemplCompIdInAndUnumIsvalidIn(idsToDelete, List.of(1, 2));
+				.findByUnumTempleCompIdInAndUnumIsvalidIn(idsToDelete, List.of(1, 2));
 
 		// creating log for exiting active record of template component
 		Integer deletedCount = templateComponentRepository.deleteTemplateComponentRecord(idsToDelete);
@@ -131,9 +131,9 @@ public class TemplateComponentService {
 			gmstConfigTemplateComponentDtlEntityList.add(gmstConfigTemplateComponentDtl);
 
 			BeanUtils.copyProperties(templateComponentDtls, gmstConfigTemplateComponentDtl);
-			gmstConfigTemplateComponentDtl.setUnumTemplCompItemId(Long.parseLong(
+			gmstConfigTemplateComponentDtl.setUnumTempleCompItemId(Long.parseLong(
 					gmstConfigTemplateComponentMst.getUnumTempleCompId() + StringUtility.padLeftZeros(count++ + "", 5)));
-			gmstConfigTemplateComponentDtl.setUnumTemplCompId(gmstConfigTemplateComponentMst.getUnumTempleCompId());
+			gmstConfigTemplateComponentDtl.setUnumTempleCompId(gmstConfigTemplateComponentMst.getUnumTempleCompId());
 			gmstConfigTemplateComponentDtl.setUnumIsvalid(1);
 			gmstConfigTemplateComponentDtl.setUnumEntryUid(RequestUtility.getUserId());
 			gmstConfigTemplateComponentDtl.setUdtEffFrom(new Date());
@@ -153,7 +153,7 @@ public class TemplateComponentService {
 		if(nonNull(gmstConfigTemplateComponentMst))
 		{
 			BeanUtils.copyProperties(templateComponentRepository.findByUnumTempleCompIdAndUnumIsvalid(unumTempleCompId,1), templatecompBean);
-			List<TemplateComponentDtlsBean> gmstdtlsbeanList = BeanUtils.copyListProperties(templateComponentDetailRepository.findByUnumTemplCompIdAndUnumIsvalid(unumTempleCompId,1), TemplateComponentDtlsBean.class);
+			List<TemplateComponentDtlsBean> gmstdtlsbeanList = BeanUtils.copyListProperties(templateComponentDetailRepository.findByUnumTempleCompIdAndUnumIsvalid(unumTempleCompId,1), TemplateComponentDtlsBean.class);
 			templatecompBean.setTemplateComponentDtlsBeanList(gmstdtlsbeanList);
 		}
 		return templatecompBean;

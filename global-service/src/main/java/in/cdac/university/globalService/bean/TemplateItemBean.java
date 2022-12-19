@@ -143,7 +143,7 @@ public class TemplateItemBean {
 
     private Long unumTempledtlId;
 
-    private Long unumTemplCompItemId;
+    private Long unumTempleCompItemId;
 
     private String ustrItemValue;
 

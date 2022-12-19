@@ -15,7 +15,7 @@ import javax.validation.constraints.NotBlank;
 public class TemplateComponentItemBean {
 
 	@ListColumn(omit = true)
-	private Long unumTemplCompId;
+	private Long unumTempleCompId;
 
 	@NotBlank(message = "Print Text is mandatory")
 	@ListColumn(name = "Print Text")
