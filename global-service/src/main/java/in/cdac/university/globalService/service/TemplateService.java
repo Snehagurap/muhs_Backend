@@ -163,6 +163,7 @@ public class TemplateService {
     {
     	TemplateMasterBean templateMasterBean = new TemplateMasterBean();
     	BeanUtils.copyProperties(templateRepository.findByUnumIsvalidAndUnumUnivIdAndUnumTempleId(1,RequestUtility.getUniversityId(),templateId),templateMasterBean) ;
+    	
     	log.info("templateMasterBean {}" , templateMasterBean);
     	List<TemplateMasterDtlsBean> templateMasterDtlsBeans = BeanUtils.copyListProperties(templateDetailRepository.findByUnumIsvalidAndUnumUnivIdAndUnumTempleId(1,RequestUtility.getUniversityId(),templateId), TemplateMasterDtlsBean.class) ;
     	log.info("templateMasterDtlsBeans {}" , templateMasterDtlsBeans);
@@ -173,7 +174,6 @@ public class TemplateService {
     public ServiceResponse getAllTemplate() throws Exception
     {
     	List<GmstConfigTemplateMst> gmstConfigTemplateMsts = templateRepository.findByUnumIsvalidAndUnumUnivId(1,RequestUtility.getUniversityId());
-    	
     	
     	return ServiceResponse.successObject(
 				BeanUtils.copyListProperties(gmstConfigTemplateMsts, TemplateMasterBean.class));

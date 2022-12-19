@@ -21,7 +21,7 @@ public class TemplateItemBean {
     @ComboKey
     @ComboValue(endSeparator = ": ")
     @ListColumn(omit = true)
-    private Long unumTemplItemId;
+    private Long unumTempleItemId;
 
     @JsonIgnore
     private Integer unumIsvalid;
@@ -57,15 +57,15 @@ public class TemplateItemBean {
 
     private Integer unumItemType;
 
-    private Long unumLinkvalTemplCompId;
+    private Long unumLinkvalTempleCompId;
 
-    private Long unumLinkvalTemplHeadId;
+    private Long unumLinkvalTempleHeadId;
 
-    private Long unumLinkvalTemplId;
+    private Long unumLinkvalTempleId;
 
-    private Long unumLinkvalTemplItemId;
+    private Long unumLinkvalTempleItemId;
 
-    private Long unumLinkvalTemplSubheadId;
+    private Long unumLinkvalTempleSubheadId;
 
     private Integer unumMedicalFlag;
 
@@ -87,7 +87,7 @@ public class TemplateItemBean {
 
     private Integer unumPrintitemFlag;
 
-    private Long unumTemplParentItemId;
+    private Long unumTempleParentItemId;
 
     @NotNull(message = "Item Control ID is mandatory")
     private Integer unumUiControlId;
@@ -130,7 +130,7 @@ public class TemplateItemBean {
     private String ustrTableRowColId;
 
     @NotNull(message = "Item Code is mandatory")
-    private String ustrTemplItemCode;
+    private String ustrTempleItemCode;
 
     private String ustrValueText;
 

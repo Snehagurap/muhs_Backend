@@ -244,18 +244,18 @@ public class MasterTemplateService {
                             .collect(Collectors.toMap(GmstConfigTemplateDtl::getUnumTempleItemId, Function.identity(), (u1, u2) -> u1));
 
                     List<TemplateItemBean> templateItemBeans = itemsByTemplateId.stream()
-                            .filter(gmstConfigTemplateItemMst -> gmstConfigTemplateItemMst.getUnumTemplItemId() != null &&
-                                    itemsInTemplate.containsKey(gmstConfigTemplateItemMst.getUnumTemplItemId()))
-                            .filter(gmstConfigTemplateItemMst -> gmstConfigTemplateItemMst.getUnumTemplParentItemId() == null ||
-                                    gmstConfigTemplateItemMst.getUnumTemplParentItemId().equals(0L))
+                            .filter(gmstConfigTemplateItemMst -> gmstConfigTemplateItemMst.getUnumTempleItemId() != null &&
+                                    itemsInTemplate.containsKey(gmstConfigTemplateItemMst.getUnumTempleItemId()))
+                            .filter(gmstConfigTemplateItemMst -> gmstConfigTemplateItemMst.getUnumTempleParentItemId() == null ||
+                                    gmstConfigTemplateItemMst.getUnumTempleParentItemId().equals(0L))
                             .map(gmstConfigTemplateItemMst -> {
                                 TemplateItemBean templateItemBean = BeanUtils.copyProperties(gmstConfigTemplateItemMst, TemplateItemBean.class);
-                                GmstConfigTemplateDtl templateDtl = itemsInTemplate.get(gmstConfigTemplateItemMst.getUnumTemplItemId());
+                                GmstConfigTemplateDtl templateDtl = itemsInTemplate.get(gmstConfigTemplateItemMst.getUnumTempleItemId());
                                 templateItemBean.setUnumItemDisplayOrder(templateDtl.getUnumDisplayOrder());
                                 templateItemBean.setUnumIsHidden(templateDtl.getUnumHideItemTxt() == null ? 0 : templateDtl.getUnumHideItemTxt());
                                 templateItemBean.setUnumTempledtlId(templateDtl.getUnumTempledtlId());
                                 templateItemBean.setUnumTemplCompItemId(templateDtl.getUnumTemplCompItemId());
-                                templateItemBean.setUstrItemValue(itemMap.getOrDefault(gmstConfigTemplateItemMst.getUnumTemplItemId(), ""));
+                                templateItemBean.setUstrItemValue(itemMap.getOrDefault(gmstConfigTemplateItemMst.getUnumTempleItemId(), ""));
 
                                 // replace constants
                                 templateItemBean.setUstrItemPrintPreText(
@@ -292,19 +292,19 @@ public class MasterTemplateService {
                                List<GmstConfigTemplateDtl> templateDetailByTemplateId, Map<Long, String> itemMap, String facultyName, String purpose) {
 
         List<TemplateItemBean> childItems = itemsByTemplateId.stream()
-                .filter(gmstConfigTemplateItemMst -> gmstConfigTemplateItemMst.getUnumTemplParentItemId() != null &&
-                        gmstConfigTemplateItemMst.getUnumTemplParentItemId().equals(templateItemBean.getUnumTemplItemId()))
+                .filter(gmstConfigTemplateItemMst -> gmstConfigTemplateItemMst.getUnumTempleParentItemId() != null &&
+                        gmstConfigTemplateItemMst.getUnumTempleParentItemId().equals(templateItemBean.getUnumTempleItemId()))
                 .map(gmstConfigTemplateItemMst -> {
                     TemplateItemBean itemBean = BeanUtils.copyProperties(gmstConfigTemplateItemMst, TemplateItemBean.class);
                     GmstConfigTemplateDtl gmstConfigTemplateDtl = templateDetailByTemplateId.stream().filter(
-                            gmstConfigTemplateDtl1 -> gmstConfigTemplateDtl1.getUnumTempleItemId() != null && gmstConfigTemplateDtl1.getUnumTempleItemId().equals(itemBean.getUnumTemplItemId())
+                            gmstConfigTemplateDtl1 -> gmstConfigTemplateDtl1.getUnumTempleItemId() != null && gmstConfigTemplateDtl1.getUnumTempleItemId().equals(itemBean.getUnumTempleItemId())
                     ).findFirst().orElse(null);
                     if (gmstConfigTemplateDtl != null) {
                         itemBean.setUnumItemDisplayOrder(gmstConfigTemplateDtl.getUnumDisplayOrder());
                         itemBean.setUnumIsHidden(gmstConfigTemplateDtl.getUnumHideItemTxt() == null ? 0 : gmstConfigTemplateDtl.getUnumHideItemTxt());
                         itemBean.setUnumTempledtlId(gmstConfigTemplateDtl.getUnumTempledtlId());
                         itemBean.setUnumTemplCompItemId(gmstConfigTemplateDtl.getUnumTemplCompItemId());
-                        itemBean.setUstrItemValue(itemMap.getOrDefault(gmstConfigTemplateItemMst.getUnumTemplItemId(), ""));
+                        itemBean.setUstrItemValue(itemMap.getOrDefault(gmstConfigTemplateItemMst.getUnumTempleItemId(), ""));
 
                         // Replace constants
                         itemBean.setUstrItemPrintPreText(
