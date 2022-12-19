@@ -24,15 +24,15 @@ public class TemplateMasterBean {
     
     private Integer unumIsvalid;
 
-    @JsonIgnore
+//    @JsonIgnore
     @ListColumn(omit = true)
     private Date udtEffFrom;
 
-    @JsonIgnore
+//    @JsonIgnore
     @ListColumn(omit = true)
     private Date udtEffTo;
 
-    @JsonIgnore
+//    @JsonIgnore
     private Date udtEntryDate;
     
     @JsonIgnore

@@ -21,7 +21,7 @@ public class TemplateItemBean {
     @ComboKey
     @ComboValue(endSeparator = ": ")
     @ListColumn(omit = true)
-    private Long unumTemplItemId;
+    private Long unumTempleItemId;
 
     @JsonIgnore
     private Integer unumIsvalid;
@@ -57,7 +57,7 @@ public class TemplateItemBean {
 
     private Integer unumItemType;
 
-    private Long unumLinkvalTemplCompId;
+    private Long unumLinkvalTempleCompId;
 
     private Long unumLinkvalTemplHeadId;
 

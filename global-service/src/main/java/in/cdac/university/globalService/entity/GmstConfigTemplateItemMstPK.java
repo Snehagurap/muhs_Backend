@@ -11,8 +11,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class GmstConfigTemplateItemMstPK implements Serializable {
-	@Column(name="unum_templ_item_id")
-	private Long unumTemplItemId;
+	@Column(name="unum_temple_item_id")
+	private Long unumTempleItemId;
 
 	@Column(name="unum_isvalid")
 	private Integer unumIsvalid;

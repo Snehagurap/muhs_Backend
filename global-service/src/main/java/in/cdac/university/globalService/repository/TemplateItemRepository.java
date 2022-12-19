@@ -43,35 +43,35 @@ public interface TemplateItemRepository extends JpaRepository<GmstConfigTemplate
     @Query("select c from GmstConfigTemplateItemMst c " +
             "where c.unumIsvalid = 1 " +
             "and c.unumUnivId = :universityId " +
-            "and c.unumTemplItemId in (select t.unumTempleItemId from GmstConfigTemplateDtl t " +
+            "and c.unumTempleItemId in (select t.unumTempleItemId from GmstConfigTemplateDtl t " +
             "where t.unumIsvalid = 1 " +
             "and t.unumUnivId = :universityId " +
             "and t.unumTempleId in (:templateId) ) ")
     List<GmstConfigTemplateItemMst> findItemsByTemplateId(@Param("universityId") Integer universityId, @Param("templateId") List<Long> templateId);
 
-    List<GmstConfigTemplateItemMst> findByUnumTemplItemIdInAndUnumIsvalidInAndUnumUnivId(Collection<Long> unumTemplItemIds, Collection<Integer> unumIsvalids, Integer unumUnivId);
+    List<GmstConfigTemplateItemMst> findByUnumTempleItemIdInAndUnumIsvalidInAndUnumUnivId(Collection<Long> unumTempleItemIds, Collection<Integer> unumIsvalids, Integer unumUnivId);
 
 
 
     @Modifying(clearAutomatically = true)
     @Query("update GmstConfigTemplateItemMst u set u.unumIsvalid = (select coalesce(max(a.unumIsvalid), 2) + 1 " +
-            "from GmstConfigTemplateItemMst a where a.unumTemplItemId = u.unumTemplItemId and  a.unumIsvalid > 2) " +
-            "where u.unumTemplItemId in (:templItemId) and u.unumIsvalid in (1, 2) ")
-    Integer createLog(@Param("templItemId") List<Long> unumTemplItemId);
+            "from GmstConfigTemplateItemMst a where a.unumTempleItemId = u.unumTempleItemId and  a.unumIsvalid > 2) " +
+            "where u.unumTempleItemId in (:templItemId) and u.unumIsvalid in (1, 2) ")
+    Integer createLog(@Param("templItemId") List<Long> unumTempleItemId);
 
-	List<GmstConfigTemplateItemMst> findByUnumTemplItemIdInAndUnumIsvalid(List<Long> unumTemplCompItemIdlist,Integer unumIsvalid);
+	List<GmstConfigTemplateItemMst> findByUnumTempleItemIdInAndUnumIsvalid(List<Long> unumTemplCompItemIdlist,Integer unumIsvalid);
 	
 	@Query("select c from GmstConfigTemplateItemMst c " +
             "where c.unumIsvalid = :unumIsvalid " +
-            "and c.unumTemplItemId in (select t.unumTempleItemId from GmstConfigTemplateDtl t " +
+            "and c.unumTempleItemId in (select t.unumTempleItemId from GmstConfigTemplateDtl t " +
             "where t.unumIsvalid = :unumIsvalid " +
             "and t.unumTempleCompId in (:unumTemplCompItemIdlist) ) ")
-	List<GmstConfigTemplateItemMst> findAllByUnumTemplItemIdInAndUnumIsvalid(@Param("unumTemplCompItemIdlist") List<Long> unumTemplCompItemIdlist,@Param("unumIsvalid") Integer unumIsvalid);
+	List<GmstConfigTemplateItemMst> findAllByUnumTempleItemIdInAndUnumIsvalid(@Param("unumTemplCompItemIdlist") List<Long> unumTemplCompItemIdlist,@Param("unumIsvalid") Integer unumIsvalid);
 	
 	@Query("select c from GmstConfigTemplateItemMst c " +
             "where c.unumIsvalid = :unumIsvalid " +
-            "and c.unumTemplItemId in (select t.unumTempleItemId from GmstConfigTemplateDtl t " +
+            "and c.unumTempleItemId in (select t.unumTempleItemId from GmstConfigTemplateDtl t " +
             "where t.unumIsvalid = :unumIsvalid " +
             "and t.unumTempleCompId = :unumTemplCompItemId ) ")
-	List<GmstConfigTemplateItemMst> findAllByUnumTemplItemIdAndUnumIsvalid(@Param("unumTemplCompItemId") Long unumTemplCompItemIdlist,@Param("unumIsvalid") Integer unumIsvalid);
+	List<GmstConfigTemplateItemMst> findAllByUnumTempleItemIdAndUnumIsvalid(@Param("unumTemplCompItemId") Long unumTemplCompItemIdlist,@Param("unumIsvalid") Integer unumIsvalid);
 }

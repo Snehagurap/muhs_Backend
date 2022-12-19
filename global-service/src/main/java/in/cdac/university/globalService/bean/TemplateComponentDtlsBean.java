@@ -34,8 +34,8 @@ public class TemplateComponentDtlsBean {
 
 	private Long unumTemplCompId;
 
-	@NotNull(message = "unumTemplItemId is mandatory")
-	private Long unumTemplItemId;
+	@NotNull(message = "unumTempleItemId is mandatory")
+	private Long unumTempleItemId;
 
 	private Integer unumUnivId;
 

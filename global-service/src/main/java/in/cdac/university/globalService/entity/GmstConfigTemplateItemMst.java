@@ -16,7 +16,7 @@ import java.util.Date;
 public class GmstConfigTemplateItemMst implements Serializable {
 
 	@Id
-	private Long unumTemplItemId;
+	private Long unumTempleItemId;
 
 	@Id
 	private Integer unumIsvalid;
@@ -63,8 +63,8 @@ public class GmstConfigTemplateItemMst implements Serializable {
 	@Column(name="unum_item_type")
 	private Integer unumItemType;
 
-	@Column(name="unum_linkval_templ_comp_id")
-	private Long unumLinkvalTemplCompId;
+	@Column(name="unum_linkval_temple_comp_id")
+	private Long unumLinkvalTempleCompId;
 
 	@Column(name="unum_linkval_templ_head_id")
 	private Long unumLinkvalTemplHeadId;

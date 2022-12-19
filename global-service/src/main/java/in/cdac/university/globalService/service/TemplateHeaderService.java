@@ -178,7 +178,7 @@ public class TemplateHeaderService {
 		templateHeaderSubHeaderBean.getCompItemBean().forEach(requestbean->{
 			unumTemplCompIdlist.add(requestbean.getUnumTemplCompId());
 			List<TemplateItemBean> itemsList = BeanUtils.copyListProperties(
-					templateItemRepository.findAllByUnumTemplItemIdAndUnumIsvalid(requestbean.getUnumTemplCompId(),1),
+					templateItemRepository.findAllByUnumTempleItemIdAndUnumIsvalid(requestbean.getUnumTemplCompId(),1),
 					TemplateItemBean.class);
 			log.info("itemsList {}",itemsList);
 			requestbean.setItems(itemsList);

@@ -41,7 +41,7 @@ public class TemplateItemService {
             return ServiceResponse.errorResponse("Item with same Prefix + Pre + Post Text already exists");
 
         GmstConfigTemplateItemMst gmstConfigTemplateItemMst = BeanUtils.copyProperties(templateItemBean, GmstConfigTemplateItemMst.class);
-        gmstConfigTemplateItemMst.setUnumTemplItemId(templateItemRepository.getNextId());
+        gmstConfigTemplateItemMst.setUnumTempleItemId(templateItemRepository.getNextId());
         templateItemRepository.save(gmstConfigTemplateItemMst);
 
         return ServiceResponse.successMessage(
@@ -76,13 +76,13 @@ public class TemplateItemService {
 
     @Transactional
     public ServiceResponse update(TemplateItemBean templateItemBean) {
-        if (templateItemBean.getUnumTemplItemId() == null)
+        if (templateItemBean.getUnumTempleItemId() == null)
             return ServiceResponse.errorResponse(language.mandatory("Template Item Id"));
 
         // Create Log
-        int noOfRecords = templateItemRepository.createLog(List.of(templateItemBean.getUnumTemplItemId()));
+        int noOfRecords = templateItemRepository.createLog(List.of(templateItemBean.getUnumTempleItemId()));
         if(noOfRecords == 0) {
-            throw new ApplicationException(language.notFoundForId("TemplateItem", templateItemBean.getUnumTemplItemId()));
+            throw new ApplicationException(language.notFoundForId("TemplateItem", templateItemBean.getUnumTempleItemId()));
         }
 
         // Save new Record
@@ -100,7 +100,7 @@ public class TemplateItemService {
             return ServiceResponse.errorResponse(language.mandatory("Template Item Id"));
         }
 
-        List<GmstConfigTemplateItemMst> templateItemMstList = templateItemRepository.findByUnumTemplItemIdInAndUnumIsvalidInAndUnumUnivId(
+        List<GmstConfigTemplateItemMst> templateItemMstList = templateItemRepository.findByUnumTempleItemIdInAndUnumIsvalidInAndUnumUnivId(
                 List.of(idsToDelete), List.of(1,2) , templateItemBean.getUnumUnivId()
         );
 

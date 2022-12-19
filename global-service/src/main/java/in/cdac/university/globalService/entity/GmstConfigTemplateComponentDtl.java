@@ -39,8 +39,8 @@ public class GmstConfigTemplateComponentDtl implements Serializable {
 	@Column(name="unum_templ_comp_id")
 	private Long unumTemplCompId;
 
-	@Column(name="unum_templ_item_id")
-	private Long unumTemplItemId;
+	@Column(name="unum_temple_item_id")
+	private Long unumTempleItemId;
 
 	@Column(name="unum_univ_id")
 	private Integer unumUnivId;
