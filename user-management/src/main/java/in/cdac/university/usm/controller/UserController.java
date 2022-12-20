@@ -47,7 +47,7 @@ public class UserController {
         return ResponseHandler.generateResponse(userService.save(userBean));
     }
 
-    @PutMapping("update")
+    @PostMapping("update")
     public @ResponseBody ResponseEntity<?> update(@Valid @RequestBody UserBean userBean) throws Exception {
         userBean.setGnumLstmodBy(RequestUtility.getUserId());
         userBean.setGdtLstmodDate(new Date());
@@ -56,7 +56,7 @@ public class UserController {
         return ResponseHandler.generateResponse(userService.update(userBean));
     }
 
-    @DeleteMapping("delete")
+    @PostMapping("delete")
     @ApiOperation(value = "Delete the users based on the ids passed.", response = ServiceResponse.class)
     public @ResponseBody ResponseEntity<?> delete(@RequestBody String[] idsToDelete) throws Exception {
         UserBean userBean = new UserBean();

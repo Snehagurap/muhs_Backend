@@ -57,7 +57,8 @@ public class UserTypeController {
         return ResponseHandler.generateResponse(userTypeService.save(userTypeBean));
     }
 
-    @PatchMapping("/update")
+    // Patch mapping replaced by POST
+    @PostMapping("/update")
     public ResponseEntity<?> update(@Valid @RequestBody UserTypeBean userTypeBean) throws Exception {
         log.info("Updating User Type: " + userTypeBean.toString());
         userTypeBean.setGnumEntryBy(RequestUtility.getUserId());
@@ -65,7 +66,7 @@ public class UserTypeController {
         return ResponseHandler.generateResponse(userTypeService.update(userTypeBean));
     }
 
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     public ResponseEntity<?> delete(@RequestBody String[] idsToDelete) throws Exception {
         log.info("Deleting User Type: " + Arrays.toString(idsToDelete));
         UserTypeBean userTypeBean = new UserTypeBean();

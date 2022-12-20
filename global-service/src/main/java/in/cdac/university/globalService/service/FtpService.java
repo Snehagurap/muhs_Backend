@@ -48,6 +48,7 @@ public class FtpService {
 
         String fileNameServerToken = Hashing.sha256().hashString(file.getOriginalFilename(), StandardCharsets.UTF_8).toString();
         if (fileNameClientToken != null && !fileNameClientToken.equals(fileNameServerToken)) {
+            log.error("File Name: {}, Client Token: {}, Server Token: {}", file.getOriginalFilename(), fileNameClientToken, fileNameServerToken);
             return ServiceResponse.errorResponse("Form data tampered");
         }
 

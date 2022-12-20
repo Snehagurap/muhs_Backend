@@ -53,7 +53,7 @@ public class DesignationController {
         return ResponseHandler.generateResponse(designationService.save(designationBean));
     }
 
-    @PutMapping("update")
+    @PostMapping("update")
     public ResponseEntity<?> update(@Valid @RequestBody DesignationBean designationBean) throws Exception {
         designationBean.setUnumUnivId(RequestUtility.getUniversityId());
         designationBean.setUdtEntryDate(new Date());
@@ -62,7 +62,7 @@ public class DesignationController {
         );
     }
 
-    @DeleteMapping("delete")
+    @PostMapping("delete")
     public ResponseEntity<?> delete(@RequestBody Integer[] idsToDelete) throws Exception {
         DesignationBean designationBean = new DesignationBean();
         designationBean.setUdtEntryDate(new Date());
