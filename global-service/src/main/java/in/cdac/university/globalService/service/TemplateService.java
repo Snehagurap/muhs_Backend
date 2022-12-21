@@ -16,14 +16,22 @@ import in.cdac.university.globalService.bean.CompHeadSubHeader;
 import in.cdac.university.globalService.bean.TemplateMasterBean;
 import in.cdac.university.globalService.bean.TemplateMasterDtlsBean;
 import in.cdac.university.globalService.bean.TemplateMasterDtlsChildBean;
+import in.cdac.university.globalService.entity.GmstConfigTemplateComponentDtl;
+import in.cdac.university.globalService.entity.GmstConfigTemplateComponentMst;
 import in.cdac.university.globalService.entity.GmstConfigTemplateDtl;
+import in.cdac.university.globalService.entity.GmstConfigTemplateHeaderMst;
 import in.cdac.university.globalService.entity.GmstConfigTemplateItemMst;
 import in.cdac.university.globalService.entity.GmstConfigTemplateMst;
+import in.cdac.university.globalService.entity.GmstConfigTemplateSubheaderMst;
 import in.cdac.university.globalService.entity.GmstCoursefacultyMst;
 import in.cdac.university.globalService.repository.FacultyRepository;
+import in.cdac.university.globalService.repository.TemplateComponentDetailRepository;
+import in.cdac.university.globalService.repository.TemplateComponentRepository;
 import in.cdac.university.globalService.repository.TemplateDetailRepository;
+import in.cdac.university.globalService.repository.TemplateHeaderRepository;
 import in.cdac.university.globalService.repository.TemplateItemRepository;
 import in.cdac.university.globalService.repository.TemplateRepository;
+import in.cdac.university.globalService.repository.TemplateSubHeaderRepository;
 import in.cdac.university.globalService.util.BeanUtils;
 import in.cdac.university.globalService.util.Language;
 import in.cdac.university.globalService.util.RequestUtility;
@@ -48,7 +56,20 @@ public class TemplateService {
     
     @Autowired
     private TemplateItemRepository templateItemRepository;
-
+    
+    @Autowired
+    private  TemplateComponentRepository templateComponentRepository;
+    
+    @Autowired
+    private TemplateComponentDetailRepository templateComponentDetailRepository;
+    
+    @Autowired
+    private TemplateHeaderRepository templateHeaderRepository;
+    
+    @Autowired
+    private TemplateSubHeaderRepository templateSubHeaderRepository;
+    
+    
     public ServiceResponse getTemplate(Long templateId) {
         return null;
     }
@@ -174,12 +195,37 @@ public class TemplateService {
     	templateMasterBean.setUstrCfacultyFname(gmstCoursefacultyMst.getUstrCfacultyFname());
     	templateMasterBean.setUstrCfacultySname(gmstCoursefacultyMst.getUstrCfacultySname());
     	
+    	
+    	
 		 List<GmstConfigTemplateItemMst> gmstConfigTemplateItemMstList = templateItemRepository.findItemsByTemplateId(templateMasterBean.getUnumUnivId(), Arrays.asList(templateId));
 		 Map<Long, String> itemMstMap = gmstConfigTemplateItemMstList.stream().collect(
 				 Collectors.toMap(GmstConfigTemplateItemMst :: getUnumTempleItemId, GmstConfigTemplateItemMst :: getUstrItemPrintPreText));
 		 
+		
+		 
+		 List<GmstConfigTemplateComponentMst> gmstConfigTemplateComponentMstList = templateComponentRepository.findComponentsByTemplateId(templateMasterBean.getUnumUnivId(), Arrays.asList(templateId));
+		 Map<Long, String> compMstMap = gmstConfigTemplateComponentMstList.stream().collect(
+				 Collectors.toMap(GmstConfigTemplateComponentMst :: getUnumTempleCompId, GmstConfigTemplateComponentMst :: getUstrCompPrintText));
+		 
+		 log.debug("gmstConfigTemplateComponentMstList {}" , gmstConfigTemplateComponentMstList);
+		 
+		 List<GmstConfigTemplateComponentDtl> gmstConfigTemplateComponentDtlList = templateComponentDetailRepository.findComponentDtlsByTemplateId(templateMasterBean.getUnumUnivId(), Arrays.asList(templateId));
+		 Map<Long, String> compDtlsMap = gmstConfigTemplateComponentDtlList.stream().collect(
+				 Collectors.toMap(GmstConfigTemplateComponentDtl :: getUnumTempleCompItemId, GmstConfigTemplateComponentDtl :: getUstrDescription));
+		 List<GmstConfigTemplateHeaderMst> gmstConfigTemplateHeaderMstList = templateHeaderRepository.findHeadersByTemplateId(templateMasterBean.getUnumUnivId(), Arrays.asList(templateId));
+		 Map<Long, String> headMstMap = gmstConfigTemplateHeaderMstList.stream().collect(
+				 Collectors.toMap(GmstConfigTemplateHeaderMst :: getUnumTempleHeadId, GmstConfigTemplateHeaderMst ::  getUstrHeadPrintText));
+		 
+		 List<GmstConfigTemplateSubheaderMst> gmstConfigTemplateSubHeaderMstList = templateSubHeaderRepository.findSubHeadersByTemplateId(templateMasterBean.getUnumUnivId(), Arrays.asList(templateId));
+		 Map<Long, String> subHeadMstMap = gmstConfigTemplateSubHeaderMstList.stream().collect(
+				 Collectors.toMap(GmstConfigTemplateSubheaderMst :: getUnumTempleSubheadId, GmstConfigTemplateSubheaderMst :: getUstrSubheadPrintText));
+		 
 		 for(TemplateMasterDtlsBean templateMasterDtlsBean : templateMasterDtlsBeans) {
 			 templateMasterDtlsBean.setUstrItemPrintPreText(itemMstMap.get(templateMasterDtlsBean.getUnumTempleItemId()));
+			 templateMasterDtlsBean.setUstrCompPrintText(compMstMap.get(templateMasterDtlsBean.getUnumTempleCompId()));
+			 templateMasterDtlsBean.setUstrDescription(compDtlsMap.get(templateMasterDtlsBean.getUnumTempleCompItemId()));
+			 templateMasterDtlsBean.setUstrHeadPrintText(headMstMap.get(templateMasterDtlsBean.getUnumTempleHeadId()));
+			 templateMasterDtlsBean.setUstrSubheadPrintText(subHeadMstMap.get(templateMasterDtlsBean.getUnumTempleSubheadId()));
 		 }
     	
     	Map<CompHeadSubHeader,List<TemplateMasterDtlsChildBean>> resultmap = new HashMap<CompHeadSubHeader,List<TemplateMasterDtlsChildBean>>(); 
