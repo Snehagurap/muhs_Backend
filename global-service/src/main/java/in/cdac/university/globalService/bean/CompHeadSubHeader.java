@@ -18,6 +18,12 @@ public class CompHeadSubHeader {
 
 	private Long unumTempleSubheadId;
 	
+	private String ustrCompPrintText;
+	
+	private String ustrHeadPrintText;
+	
+	private String ustrSubheadPrintText;
+	
 	List<TemplateMasterDtlsChildBean> children;
 
 	@Override

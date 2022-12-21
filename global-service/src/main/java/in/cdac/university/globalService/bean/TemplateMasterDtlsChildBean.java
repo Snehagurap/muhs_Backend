@@ -58,4 +58,7 @@ public class TemplateMasterDtlsChildBean {
 	private Integer unumHideItemTxt;
 
 	private Integer unumPageColumns;
+	
+	private String ustrItemPrintPreText;
+	private String ustrDescription;
 }
