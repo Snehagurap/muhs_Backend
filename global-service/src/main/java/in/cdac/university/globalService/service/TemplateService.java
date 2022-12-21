@@ -213,9 +213,10 @@ public class TemplateService {
 		 Map<Long, String> compDtlsMap = gmstConfigTemplateComponentDtlList.stream().collect(
 				 Collectors.toMap(GmstConfigTemplateComponentDtl :: getUnumTempleCompItemId, GmstConfigTemplateComponentDtl :: getUstrDescription));
 		 List<GmstConfigTemplateHeaderMst> gmstConfigTemplateHeaderMstList = templateHeaderRepository.findHeadersByTemplateId(templateMasterBean.getUnumUnivId(), Arrays.asList(templateId));
+//		 Map<Long, String> headMstMap = gmstConfigTemplateHeaderMstList.stream().collect(
+//				 Collectors.toMap(GmstConfigTemplateHeaderMst :: getUnumTempleHeadId, GmstConfigTemplateHeaderMst ::  getUstrHeadPrintText));
 		 Map<Long, String> headMstMap = gmstConfigTemplateHeaderMstList.stream().collect(
-				 Collectors.toMap(GmstConfigTemplateHeaderMst :: getUnumTempleHeadId, GmstConfigTemplateHeaderMst ::  getUstrHeadPrintText));
-		 
+				 HashMap::new, (m,v)->m.put(v.getUnumTempleHeadId(), v.getUstrHeadPrintText()==null ? "-":v.getUstrHeadPrintText() ), HashMap::putAll);
 		 List<GmstConfigTemplateSubheaderMst> gmstConfigTemplateSubHeaderMstList = templateSubHeaderRepository.findSubHeadersByTemplateId(templateMasterBean.getUnumUnivId(), Arrays.asList(templateId));
 		 Map<Long, String> subHeadMstMap = gmstConfigTemplateSubHeaderMstList.stream().collect(
 				 Collectors.toMap(GmstConfigTemplateSubheaderMst :: getUnumTempleSubheadId, GmstConfigTemplateSubheaderMst :: getUstrSubheadPrintText));
