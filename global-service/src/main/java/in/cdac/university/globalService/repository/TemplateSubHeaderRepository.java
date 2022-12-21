@@ -36,4 +36,13 @@ public interface TemplateSubHeaderRepository extends JpaRepository<GmstConfigTem
 			+ "and c.udtEffFrom <= current_date " + "and coalesce(c.udtEffTo, current_date) >= current_date "
 			+ "and c.unumUnivId = :universityId and c.unumTempleHeadId = :unumTempleHeadId")
     List<GmstConfigTemplateSubheaderMst> findByunumTempleHeadId(Long unumTempleHeadId, Integer universityId);
+
+	
+	@Query("select c from GmstConfigTemplateSubheaderMst c " + "where c.unumIsvalid = 1 "
+			+ "and c.unumUnivId = :universityId "
+			+ "and c.unumTempleSubheadId in (select t.unumTempleSubheadId from GmstConfigTemplateDtl t "
+			+ "where t.unumIsvalid = 1 " + "and t.unumUnivId = :universityId "
+			+ "and t.unumTempleId in (:templateId) ) ")
+	List<GmstConfigTemplateSubheaderMst> findSubHeadersByTemplateId(@Param("universityId") Integer universityId,
+			@Param("templateId") List<Long> templateId);
 }

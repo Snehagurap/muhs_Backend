@@ -58,5 +58,8 @@ public class GmstConfigTemplateMst implements Serializable {
 
 	@Column(name="ustr_temple_name")
 	private String ustrTempleName;
+	
+	@Column(name="unum_ctype_id")
+	private String unumCtypeId;
 
 }
