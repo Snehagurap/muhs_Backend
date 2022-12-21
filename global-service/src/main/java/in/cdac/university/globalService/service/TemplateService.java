@@ -220,39 +220,33 @@ public class TemplateService {
 		 List<GmstConfigTemplateSubheaderMst> gmstConfigTemplateSubHeaderMstList = templateSubHeaderRepository.findSubHeadersByTemplateId(templateMasterBean.getUnumUnivId(), Arrays.asList(templateId));
 		 Map<Long, String> subHeadMstMap = gmstConfigTemplateSubHeaderMstList.stream().collect(
 				 Collectors.toMap(GmstConfigTemplateSubheaderMst :: getUnumTempleSubheadId, GmstConfigTemplateSubheaderMst :: getUstrSubheadPrintText));
-		 
+		 Map<CompHeadSubHeader,List<TemplateMasterDtlsChildBean>> resultmap = new HashMap<CompHeadSubHeader,List<TemplateMasterDtlsChildBean>>();
+		 CompHeadSubHeader key = null;
 		 for(TemplateMasterDtlsBean templateMasterDtlsBean : templateMasterDtlsBeans) {
 			 templateMasterDtlsBean.setUstrItemPrintPreText(itemMstMap.get(templateMasterDtlsBean.getUnumTempleItemId()));
 			 templateMasterDtlsBean.setUstrCompPrintText(compMstMap.get(templateMasterDtlsBean.getUnumTempleCompId()));
 			 templateMasterDtlsBean.setUstrDescription(compDtlsMap.get(templateMasterDtlsBean.getUnumTempleCompItemId()));
 			 templateMasterDtlsBean.setUstrHeadPrintText(headMstMap.get(templateMasterDtlsBean.getUnumTempleHeadId()));
 			 templateMasterDtlsBean.setUstrSubheadPrintText(subHeadMstMap.get(templateMasterDtlsBean.getUnumTempleSubheadId()));
+			
+			 
+			 	key = new CompHeadSubHeader();
+				 
+				BeanUtils.copyProperties(templateMasterDtlsBean, key);
+				 List<TemplateMasterDtlsChildBean> childrens;
+	    		
+	    			if(resultmap.containsKey(key))
+	    				{	
+	    			    childrens = resultmap.get(key);
+	    				}
+	    			else {
+	    			     childrens = new ArrayList<>();
+	    			}
+	    			TemplateMasterDtlsChildBean newChildbean = BeanUtils.copyProperties(templateMasterDtlsBean,TemplateMasterDtlsChildBean.class);
+	   			    childrens.add(newChildbean); 
+	   			    key.setChildren(childrens);
+	   			    resultmap.put(key, childrens);
 		 }
-    	
-    	Map<CompHeadSubHeader,List<TemplateMasterDtlsChildBean>> resultmap = new HashMap<CompHeadSubHeader,List<TemplateMasterDtlsChildBean>>(); 
-    	
-    	CompHeadSubHeader key = null;
-    	for(TemplateMasterDtlsBean bean : templateMasterDtlsBeans)
-    	{
-    		key = new CompHeadSubHeader();
-			key.setUnumTempleCompId(bean.getUnumTempleCompId()); 
-			key.setUnumTempleHeadId(bean.getUnumTempleHeadId()); 
-			key.setUnumTempleSubheadId(bean.getUnumTempleSubheadId()); 
-			 List<TemplateMasterDtlsChildBean> childrens;
-    		
-    			if(resultmap.containsKey(key))
-    				{	
-    			    childrens = resultmap.get(key);
-    				}
-    			else {
-    			     childrens = new ArrayList<>();
-    			}
-    			TemplateMasterDtlsChildBean newChildbean = BeanUtils.copyProperties(bean,TemplateMasterDtlsChildBean.class);
-   			    childrens.add(newChildbean); 
-   			    key.setChildren(childrens);
-   			    resultmap.put(key, childrens);
-    		
-    	}
     	templateMasterBean.setCompHeadSubHeaders(resultmap.keySet());
 
 //    	templateMasterBean.setTemplateMasterDtlsBeanList(templateMasterDtlsBeans);
