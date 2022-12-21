@@ -69,4 +69,12 @@ public class TemplateMasterDtlsBean {
 	private Integer unumPageColumns;
 	
 	private String ustrItemPrintPreText;
+	
+	private String ustrCompPrintText;
+	
+	private String ustrDescription;
+	
+	private String ustrHeadPrintText;
+	
+	private String ustrSubheadPrintText;
 }
