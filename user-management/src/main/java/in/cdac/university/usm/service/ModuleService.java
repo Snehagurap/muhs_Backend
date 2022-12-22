@@ -14,7 +14,9 @@ public class ModuleService {
     @Autowired
     private ModuleRepository moduleRepository;
 
+
     public List<ModuleBean> getAllModules() {
         return BeanUtils.copyListProperties(moduleRepository.findAllByGblIsvalidOrderByGstrModuleName(1), ModuleBean.class);
     }
+
 }
