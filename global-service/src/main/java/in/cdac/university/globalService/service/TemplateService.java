@@ -103,7 +103,6 @@ public class TemplateService {
 				log.info("No Active template found to Update for ID : {} ", templateMasterBean.getUnumTempleId());
 				return ServiceResponse.builder().status(1).message(language.updateError("Template")).build();
 			}
-
 		} else {
 			gmstConfigTemplateMst.setUnumTempleId(templateRepository.getNextUnumTempleId());
 			log.info("UnumTempleId {}",gmstConfigTemplateMst.getUnumTempleId() );
@@ -116,33 +115,27 @@ public class TemplateService {
 		  gmstConfigTemplateMst.setUnumEntryUid(RequestUtility.getUserId());
 		  gmstConfigTemplateMst.setUdtEntryDate(new Date());
 		  
-		  log.info("univ id {}", gmstConfigTemplateMst.getUnumUnivId());
+		  log.debug("univ id {}", gmstConfigTemplateMst.getUnumUnivId());
 		  templateRepository.save(gmstConfigTemplateMst);
-		 
-		int count = 1;
-
-		
 		  List<GmstConfigTemplateDtl> gmstConfigTemplateDtlEntityList = new ArrayList<>(); 
 		  GmstConfigTemplateDtl gmstConfigTemplateDtl = null;
 		  for (TemplateMasterDtlsBean templateMasterDtls : templateMasterBean.getTemplateMasterDtlsBeanList()) {
-	      
-			 gmstConfigTemplateDtl = new GmstConfigTemplateDtl();
-	      gmstConfigTemplateDtlEntityList.add(gmstConfigTemplateDtl);
-		  
-		  BeanUtils.copyProperties(templateMasterDtls, gmstConfigTemplateDtl);
-		  gmstConfigTemplateDtl.setUnumTempledtlId(templateDetailRepository.getNextUnumTempledtlId());
-		  log.info("UnumTempledtlId {}",gmstConfigTemplateDtl.getUnumTempledtlId() );
-		  gmstConfigTemplateDtl.setUnumTempleId(gmstConfigTemplateMst.getUnumTempleId());
-		  gmstConfigTemplateDtl.setUnumIsvalid(1);
-		  gmstConfigTemplateDtl.setUnumEntryUid(RequestUtility.getUserId());
-		  gmstConfigTemplateDtl.setUdtEffFrom(new Date());
-		  gmstConfigTemplateDtl.setUnumUnivId(RequestUtility.getUniversityId()); 
-		  gmstConfigTemplateDtl.setUdtEntryDate(new Date()); }
-		  templateDetailRepository.saveAll(gmstConfigTemplateDtlEntityList); 
-		  if (!isSave)
-		  return ServiceResponse.builder().status(1).message(language.updateSuccess( "Template")).build(); 
-		  else 
-			  return ServiceResponse.builder().status(1).message(language.saveSuccess("Template")).build();
+			  gmstConfigTemplateDtl = new GmstConfigTemplateDtl();
+		      gmstConfigTemplateDtlEntityList.add(gmstConfigTemplateDtl);
+			  BeanUtils.copyProperties(templateMasterDtls, gmstConfigTemplateDtl);
+			  gmstConfigTemplateDtl.setUnumTempledtlId(templateDetailRepository.getNextUnumTempledtlId());
+			  log.debug("UnumTempledtlId {}",gmstConfigTemplateDtl.getUnumTempledtlId() );
+			  gmstConfigTemplateDtl.setUnumTempleId(gmstConfigTemplateMst.getUnumTempleId());
+			  gmstConfigTemplateDtl.setUnumIsvalid(1);
+			  gmstConfigTemplateDtl.setUnumEntryUid(RequestUtility.getUserId());
+			  gmstConfigTemplateDtl.setUdtEffFrom(new Date());
+			  gmstConfigTemplateDtl.setUnumUnivId(RequestUtility.getUniversityId()); 
+			  gmstConfigTemplateDtl.setUdtEntryDate(new Date()); }
+			  templateDetailRepository.saveAll(gmstConfigTemplateDtlEntityList); 
+			  if (!isSave)
+				  return ServiceResponse.builder().status(1).message(language.updateSuccess( "Template")).build(); 
+			  else 
+				  return ServiceResponse.builder().status(1).message(language.saveSuccess("Template")).build();
 	}
 	
 	@Transactional
