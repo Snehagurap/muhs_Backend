@@ -32,7 +32,7 @@ public class TemplateMasterDtlsChildBean {
 	private Long unumEntryUid;
 
 
-	private Long unumTemplCompItemId;
+	private Long unumTempleCompItemId;
 
 
 	@JsonIgnore
