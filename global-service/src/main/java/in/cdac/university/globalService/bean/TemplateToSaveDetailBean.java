@@ -27,7 +27,7 @@ public class TemplateToSaveDetailBean {
     private Long unumMtempledtlId;
 
     @NotNull(message = "Component Item Id is mandatory")
-    private Long unumTemplCompItemId;
+    private Long unumTempleCompItemId;
 
     @NotNull(message = "Component Id  is mandatory")
     private Long unumTempleCompId;
