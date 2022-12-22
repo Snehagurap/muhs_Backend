@@ -60,6 +60,6 @@ public class GmstConfigTemplateMst implements Serializable {
 	private String ustrTempleName;
 	
 	@Column(name="unum_ctype_id")
-	private String unumCtypeId;
+	private Integer unumCtypeId;
 
 }
