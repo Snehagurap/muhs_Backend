@@ -6,6 +6,8 @@ import in.cdac.university.globalService.util.FtpUtility;
 import in.cdac.university.globalService.util.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.metadata.TikaCoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -39,7 +41,7 @@ public class FtpService {
 
     private static final List<String> allowedExtensions = List.of("png", "jpg", "jpeg", "pdf", "doc", "docx");
 
-    private final Pattern fileNameRegex = Pattern.compile("^[A-Za-z-_\\d\\s]+[.][A-Za-z]{3,4}$");
+    private final Pattern fileNameRegex = Pattern.compile("^[A-Za-z0-9-_\\s]+[.][A-Za-z]{3,4}$");
 
     public ServiceResponse uploadFile(MultipartFile file, FtpUtility.FTP_DIRECTORY ftpDirectory, String clientFileToken, String fileNameClientToken) throws IOException {
         if (file == null || file.isEmpty() || file.getOriginalFilename() == null) {
@@ -52,37 +54,42 @@ public class FtpService {
             return ServiceResponse.errorResponse("Form data tampered");
         }
 
-        log.debug("File Name: {}", file.getOriginalFilename());
         Matcher matcher = fileNameRegex.matcher(file.getOriginalFilename());
         if (!matcher.matches()) {
+            log.error("File Name: {}", file.getOriginalFilename());
             return ServiceResponse.errorResponse("Invalid file name. File name can be alphanumeric with space, underscore and dashes only.");
         }
 
         String fileExtension = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1);
-        log.debug("File extension: {}", fileExtension);
         // Check for file extension
         Optional<String> fileExtensionOptional = allowedExtensions.stream()
                 .filter(fileExtension::equalsIgnoreCase)
                 .findFirst();
         if (fileExtensionOptional.isEmpty()) {
+            log.error("File extension: {}", fileExtension);
             return ServiceResponse.errorResponse("Invalid file extension. Allowed extension: " + allowedExtensions);
         }
 
         // Check for file types
         String contentType = file.getContentType();
-        log.debug("Content Type: {}", contentType);
         Optional<String> contentTypeOptional = allowedContentTypes.stream()
                 .filter(allowedContentType -> allowedContentType.equals(contentType))
                 .findFirst();
 
         if (contentTypeOptional.isEmpty()) {
+            log.error("Content Type: {}", contentType);
             return ServiceResponse.errorResponse("Invalid file type. Allowed file types are png, jpeg, jpg, pdf, doc, docx");
         }
 
         // Check for file content
+        Metadata metadata = new Metadata();
+        metadata.add(TikaCoreProperties.RESOURCE_NAME_KEY, file.getOriginalFilename());
+
         Tika tika = new Tika();
-        String detectedType = tika.detect(file.getBytes());
+        String detectedType = tika.detect(file.getInputStream(), metadata);
         if (!detectedType.equals(contentType)) {
+            log.error("Detected file type: {}", detectedType);
+            log.error("File Content type: {}", contentType);
             return ServiceResponse.errorResponse("Invalid file.");
         }
         String fileNameWithoutExtension = file.getOriginalFilename().substring(0, file.getOriginalFilename().lastIndexOf("."));
@@ -154,11 +161,6 @@ public class FtpService {
         if (fileBytes == null) {
             return null;
         }
-//        try(OutputStream os = new FileOutputStream("G:\\1.pdf")) {
-//            os.write(fileBytes);
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
         InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(fileBytes));
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName)
