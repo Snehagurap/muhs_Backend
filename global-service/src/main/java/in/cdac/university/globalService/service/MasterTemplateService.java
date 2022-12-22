@@ -425,6 +425,8 @@ public class MasterTemplateService {
             applicationDataMst.setUnumApplicationId(applicationId);
             applicationDataMst.setUnumApplicantId(applicantId);
             applicationDataMst.setUnumApplicationEntryStatus(templateToSaveBean.getUnumApplicationEntryStatus());
+            applicationDataMst.setUdtLstModDate(new Date());
+            applicationDataMst.setUnumLstModUid(userId);
             applicantDataMasterRepository.save(applicationDataMst);
         }
 
