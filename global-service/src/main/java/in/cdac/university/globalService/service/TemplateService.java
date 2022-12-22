@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import static java.util.Objects.nonNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -198,9 +199,10 @@ public class TemplateService {
     	
     	
 		 List<GmstConfigTemplateItemMst> gmstConfigTemplateItemMstList = templateItemRepository.findItemsByTemplateId(templateMasterBean.getUnumUnivId(), Arrays.asList(templateId));
-		 Map<Long, String> itemMstMap = gmstConfigTemplateItemMstList.stream().collect(
-				 Collectors.toMap(GmstConfigTemplateItemMst :: getUnumTempleItemId, GmstConfigTemplateItemMst :: getUstrItemPrintPreText));
-		 
+//		 Map<Long, String> itemMstMap = gmstConfigTemplateItemMstList.stream().collect(
+//				 Collectors.toMap(GmstConfigTemplateItemMst :: getUnumTempleItemId, GmstConfigTemplateItemMst :: getUstrItemPrintPreText));
+		 Map<Long, GmstConfigTemplateItemMst> itemMstMap = gmstConfigTemplateItemMstList.stream().collect(
+				 HashMap::new, (m,v)->m.put(v.getUnumTempleItemId(), v ), HashMap::putAll);
 		
 		 
 		 List<GmstConfigTemplateComponentMst> gmstConfigTemplateComponentMstList = templateComponentRepository.findComponentsByTemplateId(templateMasterBean.getUnumUnivId(), Arrays.asList(templateId));
@@ -213,8 +215,6 @@ public class TemplateService {
 		 Map<Long, String> compDtlsMap = gmstConfigTemplateComponentDtlList.stream().collect(
 				 Collectors.toMap(GmstConfigTemplateComponentDtl :: getUnumTempleCompItemId, GmstConfigTemplateComponentDtl :: getUstrDescription));
 		 List<GmstConfigTemplateHeaderMst> gmstConfigTemplateHeaderMstList = templateHeaderRepository.findHeadersByTemplateId(templateMasterBean.getUnumUnivId(), Arrays.asList(templateId));
-//		 Map<Long, String> headMstMap = gmstConfigTemplateHeaderMstList.stream().collect(
-//				 Collectors.toMap(GmstConfigTemplateHeaderMst :: getUnumTempleHeadId, GmstConfigTemplateHeaderMst ::  getUstrHeadPrintText));
 		 Map<Long, String> headMstMap = gmstConfigTemplateHeaderMstList.stream().collect(
 				 HashMap::new, (m,v)->m.put(v.getUnumTempleHeadId(), v.getUstrHeadPrintText()==null ? "-":v.getUstrHeadPrintText() ), HashMap::putAll);
 		 List<GmstConfigTemplateSubheaderMst> gmstConfigTemplateSubHeaderMstList = templateSubHeaderRepository.findSubHeadersByTemplateId(templateMasterBean.getUnumUnivId(), Arrays.asList(templateId));
@@ -222,8 +222,14 @@ public class TemplateService {
 				 Collectors.toMap(GmstConfigTemplateSubheaderMst :: getUnumTempleSubheadId, GmstConfigTemplateSubheaderMst :: getUstrSubheadPrintText));
 		 Map<CompHeadSubHeader,List<TemplateMasterDtlsChildBean>> resultmap = new HashMap<CompHeadSubHeader,List<TemplateMasterDtlsChildBean>>();
 		 CompHeadSubHeader key = null;
+		 GmstConfigTemplateItemMst configTemplateItemMst = null;
 		 for(TemplateMasterDtlsBean templateMasterDtlsBean : templateMasterDtlsBeans) {
-			 templateMasterDtlsBean.setUstrItemPrintPreText(itemMstMap.get(templateMasterDtlsBean.getUnumTempleItemId()));
+			 configTemplateItemMst = itemMstMap.get(templateMasterDtlsBean.getUnumTempleItemId());
+			 if(nonNull(configTemplateItemMst))
+			 {
+				 BeanUtils.copyProperties(configTemplateItemMst, templateMasterDtlsBean);
+			 }
+			 
 			 templateMasterDtlsBean.setUstrCompPrintText(compMstMap.get(templateMasterDtlsBean.getUnumTempleCompId()));
 			 templateMasterDtlsBean.setUstrDescription(compDtlsMap.get(templateMasterDtlsBean.getUnumTempleCompItemId()));
 			 templateMasterDtlsBean.setUstrHeadPrintText(headMstMap.get(templateMasterDtlsBean.getUnumTempleHeadId()));

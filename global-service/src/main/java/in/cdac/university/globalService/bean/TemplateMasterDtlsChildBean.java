@@ -61,4 +61,7 @@ public class TemplateMasterDtlsChildBean {
 	
 	private String ustrItemPrintPreText;
 	private String ustrDescription;
+	private String ustrItemPrintPrefixText;
+	private String controlTypeName;
+	private String ustrItemPrintPostText;
 }
