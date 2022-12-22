@@ -19,6 +19,7 @@ public interface DatasetFilterRepository extends JpaRepository<UmmtDatasetFilter
 
     @Modifying(clearAutomatically = true)
     @Query(value = "delete from usm.ummt_dataset_filter_mst where gnum_dataset_id = :gnumDatasetId", nativeQuery = true)
+
     void deleteByGnumDatasetId(@Param("gnumDatasetId")Integer gnumDatasetId);
 
 
