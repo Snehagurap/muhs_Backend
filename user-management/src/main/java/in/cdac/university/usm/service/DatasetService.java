@@ -100,13 +100,18 @@ public class DatasetService {
 
    public ServiceResponse getDatasetById(Integer datasetId) {
 
-        Optional<UmmtDatasetMst> ummtDatasetMstOptional = datasetRepository.findByGnumDatasetId(datasetId);
+       if (datasetId == null) {
+           return ServiceResponse.errorResponse(language.mandatory("Dataset Id"));
+       }
+
+       Optional<UmmtDatasetMst> ummtDatasetMstOptional = datasetRepository.findByGnumDatasetId(datasetId);
 
         if(ummtDatasetMstOptional.isEmpty())
             return ServiceResponse.errorResponse(language.notFoundForId("Dataset", datasetId));
 
        DatasetBean datasetBean = BeanUtils.copyProperties(ummtDatasetMstOptional.get(), DatasetBean.class);
                   datasetBean.setGstrModuleId(datasetBean.getGnumModuleId()+ "^" + datasetBean.getGstrSchemaName());
+
        List<UmmtDatasetFilterMst> ummtDatasetFilterMstList = datasetFilterRepository.findByGnumDatasetIdAndGblIsvalid(datasetId, 1);
        if(ummtDatasetFilterMstList.isEmpty()) {
            return ServiceResponse.errorResponse(language.notFoundForId("Dataset Filter", datasetId));
