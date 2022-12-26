@@ -1,5 +1,6 @@
 package in.cdac.university.planningBoard.repository;
 
+import in.cdac.university.planningBoard.entity.GbltNotificationDtl;
 import in.cdac.university.planningBoard.entity.GbltNotificationMaster;
 import in.cdac.university.planningBoard.entity.GbltNotificationMasterPK;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -34,13 +35,10 @@ public interface NotificationMasterRepository extends JpaRepository<GbltNotifica
     List<GbltNotificationMaster> getActiveNotifications(@PathVariable("universityId") Integer universityId);
 
     @Modifying(clearAutomatically = true)
-    @Query("select c from GbltNotificationMaster c " +
-            "where c.unumNid in (select a.unumNid from GbltNotificationDtl a " +
-            "where a.unumCoursetypeId = :courseId " +
-            "and a.unumFacultyId = :facultyId " +
-            "and a.unumNotificationTypeId = :notificationTypeId " +
-            "and a.unumIsvalid = 1) " +
-            "and c.ustrAcademicYear = :year " +
-            " and c.unumIsvalid = 1 " )
-    List<GbltNotificationMaster> getNotificationByYearCourseFacultyNotifyType(@PathVariable("year") String year, @PathVariable("courseId") Integer courseId, @PathVariable("facultyId") Integer facultyId, @PathVariable("notificationTypeId") Integer notificationTypeId);
+    @Query("select c from GbltNotificationDtl c " +
+            "where c.unumIsvalid = 1 " +
+            "and c.unumNid in (select a.unumNid from GbltNotificationMaster a " +
+            "where a.unumIsvalid = 1 " +
+            "and c.ustrAcademicYear = :year) ")
+    List<GbltNotificationDtl> getNotificationComboByYear(@PathVariable("year") String year);
 }

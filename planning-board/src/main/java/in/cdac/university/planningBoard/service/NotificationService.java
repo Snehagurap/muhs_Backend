@@ -388,12 +388,17 @@ public class NotificationService {
     }
 
 
-    public List<NotificationBean> getNotificationComboByYearCourseFacultyNotifyType(String year, Integer courseId, Integer facultyId, Integer notificationTypeId) {
+    public List<NotificationDetailBean> getNotificationComboByYear(String year) {
 
-        List<GbltNotificationMaster> notificationMasterList = masterRepository.getNotificationByYearCourseFacultyNotifyType(year, courseId, facultyId, notificationTypeId);
+        List<GbltNotificationDtl> notificationMasterList = masterRepository.getNotificationComboByYear(year);
 
-        List<NotificationBean> notificationBeanList = BeanUtils.copyListProperties(notificationMasterList, NotificationBean.class);
-
-        return notificationBeanList;
+        return notificationMasterList.stream()
+                .map(gbltNotificationDtl -> {
+                    NotificationDetailBean notificationDetailBean = new NotificationDetailBean();
+                    notificationDetailBean.setUnumNid(gbltNotificationDtl.getUnumNid());
+                    notificationDetailBean.setUnumNdtlId(gbltNotificationDtl.getUnumNdtlId());
+                    return notificationDetailBean;
+                })
+                .toList();
     }
 }
