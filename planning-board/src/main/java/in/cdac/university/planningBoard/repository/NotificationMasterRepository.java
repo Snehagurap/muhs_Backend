@@ -39,6 +39,6 @@ public interface NotificationMasterRepository extends JpaRepository<GbltNotifica
             "where c.unumIsvalid = 1 " +
             "and c.unumNid in (select a.unumNid from GbltNotificationMaster a " +
             "where a.unumIsvalid = 1 " +
-            "and c.ustrAcademicYear = :year) ")
+            "and a.ustrAcademicYear = :year) ")
     List<GbltNotificationDtl> getNotificationComboByYear(@PathVariable("year") String year);
 }

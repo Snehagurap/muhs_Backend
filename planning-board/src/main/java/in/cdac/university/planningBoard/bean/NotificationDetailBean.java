@@ -13,7 +13,7 @@ import java.util.Date;
 @ToString
 public class NotificationDetailBean {
 
-    @ComboKey
+    @ComboKey(index = 2)
     private Long unumNdtlId;
     private Integer unumIsvalid;
     private Date udtEntryDate;
@@ -24,7 +24,7 @@ public class NotificationDetailBean {
     private Integer unumFacultyId;
     private Integer unumNotificationTypeId;
 
-    @ComboKey(index = 2)
+    @ComboKey
     private Long unumNid;
     private Integer unumSNo;
     private Integer unumSnoDisplayorder;
