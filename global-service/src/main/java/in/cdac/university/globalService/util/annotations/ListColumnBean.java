@@ -10,4 +10,6 @@ public class ListColumnBean {
     private boolean sortable;
     private boolean omit;
     private boolean searchable;
+
+    private String width;
 }
