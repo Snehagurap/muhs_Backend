@@ -2,6 +2,7 @@ package in.cdac.university.committee.controller;
 
 import in.cdac.university.committee.bean.CommitteeRulesetBean;
 import in.cdac.university.committee.service.CommitteeRulesetService;
+import in.cdac.university.committee.util.ComboUtility;
 import in.cdac.university.committee.util.ListPageUtility;
 import in.cdac.university.committee.util.RequestUtility;
 import in.cdac.university.committee.util.ResponseHandler;
@@ -22,6 +23,13 @@ public class CommitteeRulesetController {
     public ResponseEntity<?> getListPage() throws IllegalAccessException {
         return ResponseHandler.generateOkResponse(
                 ListPageUtility.generateListPageData(committeeRulesetService.getListPageData())
+        );
+    }
+
+    @GetMapping("combo")
+    public ResponseEntity<?> getCommitteeRulesetCombo() throws Exception {
+        return ResponseHandler.generateOkResponse(
+                ComboUtility.generateComboData(committeeRulesetService.getCommitteeRulesetCombo())
         );
     }
 

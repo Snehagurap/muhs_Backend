@@ -1,5 +1,7 @@
 package in.cdac.university.committee.bean;
 
+import in.cdac.university.committee.util.annotations.ComboKey;
+import in.cdac.university.committee.util.annotations.ComboValue;
 import in.cdac.university.committee.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +13,7 @@ import java.util.*;
 @Setter
 public class CommitteeRulesetBean {
 
+    @ComboKey
     @ListColumn(omit = true)
     private Long unumComRsId;
 
@@ -29,6 +32,7 @@ public class CommitteeRulesetBean {
 
     private String ustrComDescription;
 
+    @ComboValue
     @ListColumn(order = 2, name = "Committe Ruleset Name")
     private String ustrComRsName;
 

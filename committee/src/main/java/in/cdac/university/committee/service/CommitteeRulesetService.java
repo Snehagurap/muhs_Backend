@@ -145,4 +145,11 @@ public class CommitteeRulesetService {
 
         return ServiceResponse.successMessage(language.updateSuccess("Committee Ruleset"));
     }
+
+    public List<CommitteeRulesetBean> getCommitteeRulesetCombo() {
+        return BeanUtils.copyListProperties(
+                committeeRulesetMstRepository.findByUnumUnivIdAndUnumIsvalid(RequestUtility.getUniversityId(), 1),
+                CommitteeRulesetBean.class
+        );
+    }
 }
