@@ -1,12 +1,16 @@
 package in.cdac.university.globalService.service;
 
 import in.cdac.university.globalService.bean.ApplicationTrackerDtlBean;
+
 import in.cdac.university.globalService.entity.GbltConfigApplicationTracker;
 import in.cdac.university.globalService.entity.GbltConfigApplicationTrackerDtl;
+import in.cdac.university.globalService.entity.GmstCoursefacultyMst;
 import in.cdac.university.globalService.exception.ApplicationException;
+import in.cdac.university.globalService.repository.ApplicantRepository;
 import in.cdac.university.globalService.repository.ApplicationTrackerDtlRepository;
 import in.cdac.university.globalService.repository.ApplicationTrackerRepository;
 import in.cdac.university.globalService.repository.ConfigApplicantDataMasterRepository;
+import in.cdac.university.globalService.repository.FacultyRepository;
 import in.cdac.university.globalService.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +29,15 @@ public class ApplicationTrackerService {
 
     @Autowired
     private ConfigApplicantDataMasterRepository applicantDataMasterRepository;
-
+	
+	@Autowired
+    private FacultyRepository facultyRepository;    
+	
+	@Autowired
+	private ApplicantRepository applicantRepository  ; 
+	
+	
+	
     @Autowired
     private Language language;
 
@@ -75,6 +87,32 @@ public class ApplicationTrackerService {
         }
 
         return ServiceResponse.successObject(
+                BeanUtils.copyProperties(gbltConfigApplicationTrackerDtlOptional.get(), ApplicationTrackerDtlBean.class)
+        );
+    }
+	
+	
+	public ServiceResponse getDepartmentDetails(Long notificationId, Long notificationDetailId) {
+        if(notificationId == null ) {
+            return ServiceResponse.errorResponse(language.mandatory("NotificationId"));
+        }
+        Optional<GbltConfigApplicationTrackerDtl> gbltConfigApplicationTrackerDtlOptional = applicationTrackerDtlRepository.getDepDetails(
+        		notificationId, notificationDetailId
+        );
+
+        if(gbltConfigApplicationTrackerDtlOptional.isEmpty()) {
+            return ServiceResponse.errorResponse(language.notFoundForId("NotificationId", notificationId));
+        }
+        
+        Long ApplicantId=gbltConfigApplicationTrackerDtlOptional.get().getUnumApplicantId(); 
+        Long FacultyId=gbltConfigApplicationTrackerDtlOptional.get().getUnumNdtlFacultyId(); 
+        
+        String Faculty_name =   facultyRepository.findByUnumCfacultyIdAndUnumIsvalid(FacultyId.intValue(), 1).getUstrCfacultyFname();
+		String Applicant_name =   applicantRepository.findByUnumApplicantIdAndUnumIsvalid(ApplicantId, 1 ).get().getUstrApplicantName();
+		gbltConfigApplicationTrackerDtlOptional.get().setFacultyName(Faculty_name);
+		
+		gbltConfigApplicationTrackerDtlOptional.get().setApplicantName(Applicant_name);		
+		return ServiceResponse.successObject(
                 BeanUtils.copyProperties(gbltConfigApplicationTrackerDtlOptional.get(), ApplicationTrackerDtlBean.class)
         );
     }

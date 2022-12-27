@@ -43,7 +43,12 @@ public class GbltConfigApplicationTrackerDtl implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="udt_entry_date")
 	private Date udtEntryDate;
-
+	
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name="udt_application_date")
+	private Date udtApplicationDate;
+	
 	@Column(name="unum_application_status_id")
 	private Integer unumApplicationStatusId;
 
@@ -85,4 +90,12 @@ public class GbltConfigApplicationTrackerDtl implements Serializable {
 
 	@Column(name="ustr_status_by")
 	private String ustrStatusBy;
+	
+	
+	
+	@Transient
+	private String facultyName;
+	@Transient
+	private String applicantName;
+	
 }
