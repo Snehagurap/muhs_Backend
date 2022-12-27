@@ -103,8 +103,8 @@ public class GbltConfigApplicationTrackerDtl implements Serializable {
 	private Long unumEntryUid;
 
 	@Temporal(TemporalType.DATE)
-	@Column(name="unum_lst_mod_daet")
-	private Date unumLstModDaet;
+	@Column(name="unum_lst_mod_date")
+	private Date unumLstModDate;
 
 	@Column(name="unum_lst_mod_uid")
 	private Long unumLstModUid;
