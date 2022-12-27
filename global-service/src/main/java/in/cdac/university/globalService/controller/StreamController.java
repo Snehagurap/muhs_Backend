@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class StreamController {
 
     @Autowired
-    StreamService streamService;
+    private StreamService streamService;
 
     @GetMapping("combo")
     public ResponseEntity<?> getStreamCombo() throws Exception {
