@@ -56,4 +56,10 @@ public class GbltCommitteeRulesetDtl implements Serializable {
 	@Column(name="ustr_comrole_description")
 	private String ustrComroleDescription;
 
+	@Column(name="udt_eff_from")
+	private Date udtEffFrom;
+
+	@Column(name="udt_eff_to")
+	private Date udtEffTo;
+
 }
