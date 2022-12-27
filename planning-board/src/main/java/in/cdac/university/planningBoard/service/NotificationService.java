@@ -388,12 +388,30 @@ public class NotificationService {
     }
 
 
-    public List<NotificationBean> getNotificationComboByYearCourseFacultyNotifyType(String year, Integer courseId, Integer facultyId, Integer notificationTypeId) {
+    public List<NotificationDetailBean> getNotificationComboByYear(String year) {
 
-        List<GbltNotificationMaster> notificationMasterList = masterRepository.getNotificationByYearCourseFacultyNotifyType(year, courseId, facultyId, notificationTypeId);
+        List<GbltNotificationDtl> notificationMasterList = masterRepository.getNotificationComboByYear(year);
 
-        List<NotificationBean> notificationBeanList = BeanUtils.copyListProperties(notificationMasterList, NotificationBean.class);
+        NotificationTypeBean[] notificationTypes = restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_NOTIFICATION_TYPE, NotificationTypeBean[].class);
+        Map<Integer, String> mapNotificationType = Arrays.stream(notificationTypes)
+                .collect(Collectors.toMap(NotificationTypeBean::getUnumNtypeId, NotificationTypeBean::getUstrNtypeFname));
 
-        return notificationBeanList;
+        FacultyBean[] facultyBeans = restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_ALL_FACULTIES, FacultyBean[].class);
+        Map<Integer, String> mapFaculty = Arrays.stream(facultyBeans)
+                .collect(Collectors.toMap(FacultyBean::getUnumCfacultyId, FacultyBean::getUstrCfacultyFname));
+
+        return notificationMasterList.stream()
+                .map(gbltNotificationDtl -> {
+                    NotificationDetailBean notificationDetailBean = new NotificationDetailBean();
+                    notificationDetailBean.setUnumNid(gbltNotificationDtl.getUnumNid());
+                    notificationDetailBean.setUnumNdtlId(gbltNotificationDtl.getUnumNdtlId());
+
+                    String notificationTypeName = mapNotificationType.getOrDefault(gbltNotificationDtl.getUnumNotificationTypeId(), "");
+                    String facultyName = mapFaculty.getOrDefault(gbltNotificationDtl.getUnumFacultyId(), "");
+
+                    notificationDetailBean.setNotificationName(notificationTypeName + " - " + facultyName);
+                    return notificationDetailBean;
+                })
+                .toList();
     }
 }

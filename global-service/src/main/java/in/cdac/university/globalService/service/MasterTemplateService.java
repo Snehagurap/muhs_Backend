@@ -4,6 +4,7 @@ import in.cdac.university.globalService.bean.*;
 import in.cdac.university.globalService.entity.*;
 import in.cdac.university.globalService.repository.*;
 import in.cdac.university.globalService.util.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class MasterTemplateService {
 
@@ -58,6 +60,9 @@ public class MasterTemplateService {
     private FacultyRepository facultyRepository;
 
     public ServiceResponse getTemplate(Long masterTemplateId, Long notificationId, Long notificationDetailId) throws Exception {
+        log.debug("Master Template: {}", masterTemplateId);
+        log.debug("Notification Id: {}", notificationId);
+        log.debug("Notification Details Id: {}", notificationDetailId);
         Optional<GmstConfigMastertemplateMst> templateByIdOptional = masterTemplateRepository.findById(new GmstConfigMastertemplateMstPK(masterTemplateId, 1));
         if (templateByIdOptional.isEmpty()) {
             return ServiceResponse.errorResponse(language.notFoundForId("Master Template", masterTemplateId));
@@ -110,8 +115,10 @@ public class MasterTemplateService {
         // Template ids for the given Master template
         Map<Long, Long> masterTemplateDetailIds = masterTemplateDetails.stream()
                 .collect(Collectors.toMap(GmstConfigMastertemplateTemplatedtl::getUnumTempleId, GmstConfigMastertemplateTemplatedtl::getUnumMtempledtlId));
+        log.debug("Master Templates Map: {}", masterTemplateDetailIds);
 
         List<Long> templateIds = new ArrayList<>(masterTemplateDetailIds.keySet());
+        log.debug("Templates on the basis of Master template: {}", templateIds);
 
         // Get the template on the basis of master template
         List<GmstConfigTemplateMst> templates = templateRepository.findByUnumIsvalidAndUnumUnivIdAndUnumTempleIdIn(1, universityId, templateIds);
@@ -157,6 +164,7 @@ public class MasterTemplateService {
 
         for (TemplateBean templateBean: templateBeans) {
             Long templateId = templateBean.getUnumTempleId();
+            log.debug("Template Id: {}", templateId);
             List<GmstConfigTemplateDtl> templateDetailByTemplateId = mapTemplateDetails.get(templateId);
 
             Map<Long, TemplateHeaderBean> headerIdsAdded = new HashMap<>();
