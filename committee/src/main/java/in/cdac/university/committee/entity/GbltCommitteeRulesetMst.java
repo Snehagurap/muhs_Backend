@@ -44,4 +44,10 @@ public class GbltCommitteeRulesetMst implements Serializable {
 	@Column(name="ustr_com_rs_name")
 	private String ustrComRsName;
 
+	@Column(name="udt_eff_from")
+	private Date udtEffFrom;
+
+	@Column(name="udt_eff_to")
+	private Date udtEffTo;
+
 }

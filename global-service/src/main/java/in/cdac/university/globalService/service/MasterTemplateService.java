@@ -504,9 +504,13 @@ public class MasterTemplateService {
 
         Optional<GmstApplicantMst> gmstApplicantMstOptional = applicantRepository.findByUnumApplicantIdAndUnumIsvalid(applicationDataBean.getUnumApplicantId(), 1);
 
-        if(gmstApplicantMstOptional.isPresent()) {
-            applicationDataBean.setUstrApplicantName(gmstApplicantMstOptional.get().getUstrApplicantName());
-        }
+//        if(gmstApplicantMstOptional.isPresent()) {
+//            applicationDataBean.setUstrApplicantName(gmstApplicantMstOptional.get().getUstrApplicantName());
+//        }
+
+        gmstApplicantMstOptional.ifPresent(gmstApplicantMst -> applicationDataBean.setUstrApplicantName(gmstApplicantMst.getUstrApplicantName()));
+
+
 
         return ServiceResponse.successObject(applicationDataBean);
 
