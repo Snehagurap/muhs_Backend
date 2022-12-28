@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 
 @RestController
-@RequestMapping("/committee/Ruleset")
+@RequestMapping("/committee/ruleset")
 public class CommitteeRulesetController {
 
     @Autowired
