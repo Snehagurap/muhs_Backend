@@ -113,9 +113,7 @@ public class LoginController {
         headers.setBasicAuth(oauthClientId, oauthClientSecret);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.set("applicationType", userDetail.getApplicationType().toString());
-        try {
-            headers.set("userCategory", userDetail.getUserCategory().toString());
-        } catch (Exception e) {}
+        headers.set("userCategory", userDetail.getUserCategory().toString());
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("username", userDetail.getUsername());
@@ -128,18 +126,6 @@ public class LoginController {
                     url, HttpMethod.POST, httpEntity, AccessTokenMapper.class
             );
             UserDetail userDetailResponse = setUserDetailFromToken(tokenResponse);
-
-//            if (tokenResponse.getBody() != null) {
-//
-//
-////                ResponseCookie responseCookie = ResponseCookie.from("refresh_token", tokenResponse.getBody().getRefresh_token())
-////                        .httpOnly(true)
-////                        .sameSite("None")
-////                        .secure(true)
-////                        .maxAge(86400)        // One Day
-////                        .build();
-////                httpResponse.addCookie(responseCookie);
-//            }
             // Log user Login Details
             try {
                 if (tokenResponse.getBody() != null) {
@@ -177,13 +163,9 @@ public class LoginController {
         UserDetail userDetailResponse = new UserDetail();
         if (tokenResponse.getBody() != null) {
             userDetailResponse.setToken(tokenResponse.getBody().getAccess_token());
-            //userDetailResponse.setUserId(tokenResponse.getBody().getUserId());
-            //userDetailResponse.setUserType(tokenResponse.getBody().getUserType());
-            //userDetailResponse.setUniversityId(tokenResponse.getBody().getUniversityId());
             userDetailResponse.setApplicationType(tokenResponse.getBody().getApplicationType());
             userDetailResponse.setRefresh_token(tokenResponse.getBody().getRefresh_token());
             userDetailResponse.setExpires_in(tokenResponse.getBody().getExpires_in());
-            //userDetailResponse.setUserCategory(tokenResponse.getBody().getUserCategory());
         }
         return userDetailResponse;
     }
@@ -196,6 +178,7 @@ public class LoginController {
         headers.setBasicAuth(oauthClientId, oauthClientSecret);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.set("applicationType", token.getApplicationType());
+        headers.set("userCategory", token.getUserCategory());
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("refresh_token", token.getToken());

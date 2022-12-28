@@ -1,22 +1,18 @@
 package in.cdac.university.globalService.bean;
 
- 
-import java.util.Date;
-
 import in.cdac.university.globalService.util.annotations.ComboKey;
 import in.cdac.university.globalService.util.annotations.ComboValue;
-import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
 
 @Getter
 @Setter
-public class StreamBean {
-	
+public class FacultyStreamDtlBean {
+
     @ComboKey
-    @ListColumn(omit = true)
-    private Long unumStreamId;
+    private Long unumFacStreamId;
 
     private Integer unumIsvalid;
 
@@ -28,21 +24,23 @@ public class StreamBean {
 
     private Date udtLstModDate;
 
+    private Integer unumCfacultyId;
+
     private Long unumEntryUid;
 
     private Long unumLstModUid;
+
+    private Long unumStreamId;
 
     private Integer unumUnivId;
 
     private String ustrDescription;
 
-    @ListColumn(name = "Stream Code")
-    private String ustrStreamCode;
+    @ComboValue(order = 1)
+    private String ustrFacStreamCode;
 
-    @ComboValue
-    @ListColumn(name = "Stream Name", order = 2)
-    private String ustrStreamFname;
+    @ComboValue(order = 2)
+    private String ustrFacStreamFname;
 
-    private String ustrStreamSname;
-
+    private String ustrFacStreamSname;
 }

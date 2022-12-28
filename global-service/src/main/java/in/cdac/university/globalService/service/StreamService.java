@@ -16,19 +16,18 @@ public class StreamService {
 	
 	@Autowired
 	private StreamRepository streamRepository;
-	
-	
-	
-	
+
 	public List<StreamBean> getAllStream(int status) throws Exception {
      
-		
-		
-		
 		return BeanUtils.copyListProperties(
 				streamRepository.findAllByunumIsvalid(status),
 				StreamBean.class
         );
     }
 
+    public List<StreamBean> getStreamCombo() throws Exception {
+        return BeanUtils.copyListProperties(
+                streamRepository.findByUnumIsvalidAndUnumUnivId(1, RequestUtility.getUniversityId()), StreamBean.class
+        );
+    }
 }

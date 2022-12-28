@@ -55,7 +55,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         CustomUser customUser = null;
         switch (applicationType) {
             case "1" -> {
-                if (userCategory != null && userCategory.equals("2")) {
+                if (userCategory != null && (userCategory.equals("2") || userCategory.equals("5") || userCategory.equals("6"))) {
                     customUser = findApplicant(username);
                 } else {
                     // Application user

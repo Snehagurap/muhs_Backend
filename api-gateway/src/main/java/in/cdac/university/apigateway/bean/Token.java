@@ -21,6 +21,8 @@ public class Token {
 
     private Integer universityId;
 
+    private String userCategory;
+
     public String getIpAddress() {
         try {
             if (this.ipAddress != null && !this.ipAddress.isBlank())

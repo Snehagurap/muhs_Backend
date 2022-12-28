@@ -85,7 +85,7 @@ logging:
     org.springframework.web: "info"
     org.springframework.security: "info"
     org.hibernate: "info"
-    com.zaxxer.hikari: DEBUG
+    #com.zaxxer.hikari: DEBUG
 
 management:
   endpoints:

@@ -73,5 +73,6 @@ public class ApplicationTrackerDtlBean {
 	private String facultyName;
 	
 	private String applicantName;
-	
+
+    private Date udtApplicationDate;
 }

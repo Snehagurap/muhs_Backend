@@ -74,7 +74,11 @@ public class RequestBodyRewrite implements RewriteFunction<String, String> {
                         log.error("Value: {}", values);
                         log.error("Server Token : {}", serverRequestSecurityToken);
                         log.error("Client Token : {}", this.clientRequestSecurityToken);
-                        throw new FormDataTamperedException("Form data tampered");
+                        FormDataTamperedException formDataTampered = new FormDataTamperedException("Form data tampered");
+                        formDataTampered.setServerToken(serverRequestSecurityToken);
+                        formDataTampered.setClientToken(this.clientRequestSecurityToken);
+                        formDataTampered.setServerValue(values);
+                        throw formDataTampered;
                     }
                 }
                 return Mono.just(gson.toJson(listbody, ArrayList.class));
@@ -90,7 +94,11 @@ public class RequestBodyRewrite implements RewriteFunction<String, String> {
                         log.error("Value: {}", values);
                         log.error("Server Token: {}", serverRequestSecurityToken);
                         log.error("Client Token: {}", this.clientRequestSecurityToken);
-                        throw new FormDataTamperedException("Form data tampered");
+                        FormDataTamperedException formDataTampered = new FormDataTamperedException("Form data tampered");
+                        formDataTampered.setServerToken(serverRequestSecurityToken);
+                        formDataTampered.setClientToken(this.clientRequestSecurityToken);
+                        formDataTampered.setServerValue(values);
+                        throw formDataTampered;
                     }
                 }
                 return Mono.just(gson.toJson(map, Map.class));

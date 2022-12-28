@@ -38,9 +38,11 @@ public class GlobalExceptionHandlerAdvice {
         return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, "Required parameters are missing", errorMap);
     }
 
-//    @ExceptionHandler(FormDataTamperedException.class)
-//    public ResponseEntity<Object> handleFormDataTamperedException(FormDataTamperedException e) {
-//        e.printStackTrace();
-//        return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, "Form data tampered");
-//    }
+    @ExceptionHandler(FormDataTamperedException.class)
+    public ResponseEntity<Object> handleFormDataTamperedException(FormDataTamperedException e) {
+        e.printStackTrace();
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
+        errorResponse.setDetailMessage(e.toString());
+        return ResponseHandler.generateResponse(HttpStatus.BAD_REQUEST, "Form data tampered", errorResponse);
+    }
 }

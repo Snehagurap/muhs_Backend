@@ -128,12 +128,18 @@ public class FtpService {
         }
         int status;
         String message;
-        if (ftpUtility.moveFileFromTempToFinalDirectory(fileName)) {
+        // Check if file is already present in final directory
+        if (ftpUtility.isFileExists(fileName)) {
             status = 1;
-            message = "File moved successfully";
+            message = "File already exists in directory";
         } else {
-            status = 0;
-            message = "Unable to move file";
+            if (ftpUtility.moveFileFromTempToFinalDirectory(fileName)) {
+                status = 1;
+                message = "File moved successfully";
+            } else {
+                status = 0;
+                message = "Unable to move file";
+            }
         }
         return ServiceResponse.builder()
                 .status(status)
