@@ -43,7 +43,6 @@ public class DocumentTypeController {
 
     @PostMapping("save")
     public ResponseEntity<?> saveDocumentTypeDtl(@Valid @RequestBody DocumentTypeBean documentTypeBean) {
-        System.out.print(documentTypeBean.getUnumIsvalid());
         documentTypeBean.setUdtEntryDate(new Date());
         documentTypeBean.setUdtEffFrom(new Date());
         return ResponseHandler.generateResponse(documentTypeService.save(documentTypeBean));

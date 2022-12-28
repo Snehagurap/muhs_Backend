@@ -32,7 +32,7 @@ public class TemplateMasterDtlsChildBean {
 	private Long unumEntryUid;
 
 
-	private Long unumTemplCompItemId;
+	private Long unumTempleCompItemId;
 
 
 	@JsonIgnore
@@ -58,4 +58,10 @@ public class TemplateMasterDtlsChildBean {
 	private Integer unumHideItemTxt;
 
 	private Integer unumPageColumns;
+	
+	private String ustrItemPrintPreText;
+	private String ustrDescription;
+	private String ustrItemPrintPrefixText;
+	private String controlTypeName;
+	private String ustrItemPrintPostText;
 }

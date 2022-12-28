@@ -55,8 +55,8 @@ public class GbltConfigApplicationDataDtl implements Serializable {
 	@Column(name="unum_mtempledtl_id")
 	private Long unumMtempledtlId;
 
-	@Column(name="unum_templ_comp_item_id")
-	private Long unumTemplCompItemId;
+	@Column(name="unum_temple_comp_item_id")
+	private Long unumTempleCompItemId;
 
 	@Column(name="unum_temple_comp_id")
 	private Long unumTempleCompId;

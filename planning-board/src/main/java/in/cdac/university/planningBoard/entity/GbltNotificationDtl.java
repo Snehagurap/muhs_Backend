@@ -41,7 +41,7 @@ public class GbltNotificationDtl implements Serializable {
 	@Column(name="unum_faculty_id")
 	private Integer unumFacultyId;
 
-	@Column(name="unum_notification_type_id")
+	@Column(name="unum_npurpose_id")
 	private Integer unumNotificationTypeId;
 
 	@Column(name="unum_nid")

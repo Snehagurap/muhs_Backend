@@ -37,17 +37,18 @@ spring:
       pool-name: muhs-CP
       maximum-pool-size: 50
       minimum-idle: 5
-      connection-timeout: 30000
-      initialization-fail-timeout: 45000
-      idle-timeout: 60000
-      keepalive-time: 90000
-      max-lifetime: 600000
+      connection-timeout: 30000       # 30 seconds
+      initialization-fail-timeout: 45000      # 45 seconds
+      idle-timeout: 60000     # 1 minute
+      keepalive-time: 90000   # 1 minute 30 seconds
+      max-lifetime: 240000    # 4 minutes
 
   jpa:
     show-sql: true
     hibernate:
       dialect: org.hibernate.dialect.PostgreSQLDialect
       ddl-auto: none
+    open-in-view: false
   servlet:
     multipart:
       enabled: true
@@ -84,3 +85,12 @@ logging:
     org.springframework.web: "info"
     org.springframework.security: "info"
     org.hibernate: "info"
+    #com.zaxxer.hikari: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+    health:
+      show-details: "always"

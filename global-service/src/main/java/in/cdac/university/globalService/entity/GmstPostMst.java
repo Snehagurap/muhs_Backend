@@ -1,7 +1,6 @@
 package in.cdac.university.globalService.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,8 +9,11 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
+@Builder
 @Table(name="gmst_post_mst", schema = "university")
 @IdClass(GmstPostMstPK.class)
+@NoArgsConstructor
+@AllArgsConstructor
 public class GmstPostMst implements Serializable {
 
 	@Id

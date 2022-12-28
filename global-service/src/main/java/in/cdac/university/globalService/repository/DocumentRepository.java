@@ -16,7 +16,7 @@ import java.util.Optional;
 public interface DocumentRepository extends JpaRepository<GmstDocumentMst, GmstDocumentMstPK> {
 
 
-    @Query("select max(a.unumDocId) + 1 from GmstDocumentMst a")
+    @Query("select (coalesce(max(a.unumDocId),0) + 1) from GmstDocumentMst a")
     Integer getNextId();
 
     @Query("select p from GmstDocumentMst p " +

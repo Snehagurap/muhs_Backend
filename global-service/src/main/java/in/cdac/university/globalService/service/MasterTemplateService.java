@@ -4,6 +4,7 @@ import in.cdac.university.globalService.bean.*;
 import in.cdac.university.globalService.entity.*;
 import in.cdac.university.globalService.repository.*;
 import in.cdac.university.globalService.util.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +13,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class MasterTemplateService {
 
@@ -52,12 +54,21 @@ public class MasterTemplateService {
     private ConfigApplicationDataDetailRepository applicationDataDetailRepository;
 
     @Autowired
+    ApplicationTrackerRepository applicationTrackerRepository;
+
+    @Autowired
+    ApplicationTrackerDtlRepository applicationTrackerDtlRepository;
+
+    @Autowired
     private FtpUtility ftpUtility;
 
     @Autowired
     private FacultyRepository facultyRepository;
 
     public ServiceResponse getTemplate(Long masterTemplateId, Long notificationId, Long notificationDetailId) throws Exception {
+        log.debug("Master Template: {}", masterTemplateId);
+        log.debug("Notification Id: {}", notificationId);
+        log.debug("Notification Details Id: {}", notificationDetailId);
         Optional<GmstConfigMastertemplateMst> templateByIdOptional = masterTemplateRepository.findById(new GmstConfigMastertemplateMstPK(masterTemplateId, 1));
         if (templateByIdOptional.isEmpty()) {
             return ServiceResponse.errorResponse(language.notFoundForId("Master Template", masterTemplateId));
@@ -110,8 +121,10 @@ public class MasterTemplateService {
         // Template ids for the given Master template
         Map<Long, Long> masterTemplateDetailIds = masterTemplateDetails.stream()
                 .collect(Collectors.toMap(GmstConfigMastertemplateTemplatedtl::getUnumTempleId, GmstConfigMastertemplateTemplatedtl::getUnumMtempledtlId));
+        log.debug("Master Templates Map: {}", masterTemplateDetailIds);
 
         List<Long> templateIds = new ArrayList<>(masterTemplateDetailIds.keySet());
+        log.debug("Templates on the basis of Master template: {}", templateIds);
 
         // Get the template on the basis of master template
         List<GmstConfigTemplateMst> templates = templateRepository.findByUnumIsvalidAndUnumUnivIdAndUnumTempleIdIn(1, universityId, templateIds);
@@ -121,7 +134,9 @@ public class MasterTemplateService {
                     TemplateBean templateBean = BeanUtils.copyProperties(template, TemplateBean.class);
                     templateBean.setUnumMtempledtlId(masterTemplateDetailIds.get(templateBean.getUnumTempleId()));
                     return templateBean;
-                }).toList();
+                })
+                .sorted(Comparator.comparing(TemplateBean::getUnumTempleId))
+                .toList();
         masterTemplateBean.setTemplateList(templateBeans);
 
         // Get Template details
@@ -157,6 +172,7 @@ public class MasterTemplateService {
 
         for (TemplateBean templateBean: templateBeans) {
             Long templateId = templateBean.getUnumTempleId();
+            log.debug("Template Id: {}", templateId);
             List<GmstConfigTemplateDtl> templateDetailByTemplateId = mapTemplateDetails.get(templateId);
 
             Map<Long, TemplateHeaderBean> headerIdsAdded = new HashMap<>();
@@ -254,7 +270,7 @@ public class MasterTemplateService {
                                 templateItemBean.setUnumItemDisplayOrder(templateDtl.getUnumDisplayOrder());
                                 templateItemBean.setUnumIsHidden(templateDtl.getUnumHideItemTxt() == null ? 0 : templateDtl.getUnumHideItemTxt());
                                 templateItemBean.setUnumTempledtlId(templateDtl.getUnumTempledtlId());
-                                templateItemBean.setUnumTempleCompItemId(templateDtl.getUnumTemplCompItemId());
+                                templateItemBean.setUnumTempleCompItemId(templateDtl.getUnumTempleCompItemId());
                                 templateItemBean.setUstrItemValue(itemMap.getOrDefault(gmstConfigTemplateItemMst.getUnumTempleItemId(), ""));
 
                                 // replace constants
@@ -303,7 +319,7 @@ public class MasterTemplateService {
                         itemBean.setUnumItemDisplayOrder(gmstConfigTemplateDtl.getUnumDisplayOrder());
                         itemBean.setUnumIsHidden(gmstConfigTemplateDtl.getUnumHideItemTxt() == null ? 0 : gmstConfigTemplateDtl.getUnumHideItemTxt());
                         itemBean.setUnumTempledtlId(gmstConfigTemplateDtl.getUnumTempledtlId());
-                        itemBean.setUnumTempleCompItemId(gmstConfigTemplateDtl.getUnumTemplCompItemId());
+                        itemBean.setUnumTempleCompItemId(gmstConfigTemplateDtl.getUnumTempleCompItemId());
                         itemBean.setUstrItemValue(itemMap.getOrDefault(gmstConfigTemplateItemMst.getUnumTempleItemId(), ""));
 
                         // Replace constants
@@ -358,12 +374,14 @@ public class MasterTemplateService {
             return ServiceResponse.errorResponse(language.notFoundForId("Notification Detail", templateToSaveBean.getUnumNdtlId()));
 
         // Upload all the file to main directory
-        if (templateToSaveBean.getUnumApplicationEntryStatus() == 5) {
+        if (Objects.equals(templateToSaveBean.getUnumApplicationEntryStatus(), Constants.APPLICATION_STATUS_FINAL_SAVE)) {
             for (TemplateToSaveDetailBean templateToSaveDetailBean : templateToSaveBean.getItemDetails()) {
                 if (templateToSaveDetailBean.getUnumUiControlId() == 9) {
                     if (templateToSaveDetailBean.getUstrItemValue() != null && !templateToSaveDetailBean.getUstrItemValue().isBlank()) {
-                        if (!ftpUtility.moveFileFromTempToFinalDirectory(templateToSaveDetailBean.getUstrItemValue()))
-                            return ServiceResponse.errorResponse(language.message("Unable to upload file [" + templateToSaveDetailBean.getUstrItemValue() + "]."));
+                        if (!ftpUtility.isFileExists(templateToSaveDetailBean.getUstrItemValue())) {
+                            if (!ftpUtility.moveFileFromTempToFinalDirectory(templateToSaveDetailBean.getUstrItemValue()))
+                                return ServiceResponse.errorResponse(language.message("Unable to upload file [" + templateToSaveDetailBean.getUstrItemValue() + "]."));
+                        }
                     }
                 }
             }
@@ -425,6 +443,11 @@ public class MasterTemplateService {
             applicationDataMst.setUnumApplicationId(applicationId);
             applicationDataMst.setUnumApplicantId(applicantId);
             applicationDataMst.setUnumApplicationEntryStatus(templateToSaveBean.getUnumApplicationEntryStatus());
+            applicationDataMst.setUdtLstModDate(currentDate);
+            applicationDataMst.setUnumLstModUid(userId);
+            applicationDataMst.setUdtApplicationDate(currentDate);
+            applicationDataMst.setUdtApplicationSubmitDate(currentDate);
+            applicationDataMst.setUdtEntryDate(currentDate);
             applicantDataMasterRepository.save(applicationDataMst);
         }
 
@@ -445,6 +468,35 @@ public class MasterTemplateService {
             itemDetailList.add(applicationDataDtl);
         }
         applicationDataDetailRepository.saveAll(itemDetailList);
+
+        // Final save: insert record in tracker detail
+        if (Objects.equals(templateToSaveBean.getUnumApplicationEntryStatus(), Constants.APPLICATION_STATUS_FINAL_SAVE)) {
+            GbltConfigApplicationTracker applicationTracker = new GbltConfigApplicationTracker();
+            applicationTracker.setUnumApplicationId(applicationId);
+            applicationTracker.setUnumApplicantId(applicantId);
+            applicationTracker.setUnumNid(notificationBean.getUnumNid());
+            applicationTracker.setUnumNdtlId(notificationDetailBean.getUnumNdtlId());
+            applicationTracker.setUnumNdtlFacultyId(notificationDetailBean.getUnumFacultyId());
+            applicationTracker.setUnumNdtlDepartmentId(notificationDetailBean.getUnumDepartmentId());
+            applicationTracker.setUnumMtempleId(notificationDetailBean.getUnumMtempleId());
+            applicationTracker.setUnumApplicationStatusSno(1);
+            applicationTracker.setUnumApplicationStatusId(Constants.APPLICATION_STATUS_FINAL_SAVE);
+            applicationTracker.setUdtApplicationStatusDt(currentDate);
+            applicationTracker.setUstrStatusBy(Long.toString(applicantId));
+            applicationTracker.setUnumUnivId(universityId);
+            applicationTracker.setUdtEffFrom(currentDate);
+            applicationTracker.setUnumIsvalid(1);
+            applicationTracker.setUnumEntryUid(RequestUtility.getUserId());
+            applicationTracker.setUdtEntryDate(currentDate);
+            applicationTracker.setUnumCtypeId(notificationDetailBean.getUnumCoursetypeId());
+            applicationTracker.setUnumApplicationLevelId(Constants.APPLICATION_STATUS_FINAL_SAVE);
+            applicationTracker.setUdtApplicationDate(currentDate);
+
+            applicationTrackerRepository.save(applicationTracker);
+
+            GbltConfigApplicationTrackerDtl trackerDtl = BeanUtils.copyProperties(applicationTracker, GbltConfigApplicationTrackerDtl.class);
+            applicationTrackerDtlRepository.save(trackerDtl);
+        }
 
         TemplateToSaveBean responseObject = new TemplateToSaveBean();
         responseObject.setUnumApplicationId(applicationId);
@@ -502,13 +554,9 @@ public class MasterTemplateService {
 
         Optional<GmstApplicantMst> gmstApplicantMstOptional = applicantRepository.findByUnumApplicantIdAndUnumIsvalid(applicationDataBean.getUnumApplicantId(), 1);
 
-        if(gmstApplicantMstOptional.isPresent()) {
-            applicationDataBean.setUstrApplicantName(gmstApplicantMstOptional.get().getUstrApplicantName());
-        }
+        gmstApplicantMstOptional.ifPresent(gmstApplicantMst -> applicationDataBean.setUstrApplicantName(gmstApplicantMst.getUstrApplicantName()));
 
         return ServiceResponse.successObject(applicationDataBean);
-
-
     }
 
 }

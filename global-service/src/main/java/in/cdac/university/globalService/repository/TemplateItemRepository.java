@@ -57,19 +57,20 @@ public interface TemplateItemRepository extends JpaRepository<GmstConfigTemplate
             "where u.unumTempleItemId in (:templItemId) and u.unumIsvalid in (1, 2) ")
     Integer createLog(@Param("templItemId") List<Long> unumTempleItemId);
 
-	List<GmstConfigTemplateItemMst> findByUnumTempleItemIdInAndUnumIsvalid(List<Long> unumTemplCompItemIdlist,Integer unumIsvalid);
+ 
+	List<GmstConfigTemplateItemMst> findByUnumTempleItemIdInAndUnumIsvalid(List<Long> unumTempleCompItemIdlist,Integer unumIsvalid);
 	
 	@Query("select c from GmstConfigTemplateItemMst c " +
             "where c.unumIsvalid = :unumIsvalid " +
             "and c.unumTempleItemId in (select t.unumTempleItemId from GmstConfigTemplateDtl t " +
             "where t.unumIsvalid = :unumIsvalid " +
-            "and t.unumTempleCompId in (:unumTemplCompItemIdlist) ) ")
-	List<GmstConfigTemplateItemMst> findAllByUnumTempleItemIdInAndUnumIsvalid(@Param("unumTemplCompItemIdlist") List<Long> unumTemplCompItemIdlist,@Param("unumIsvalid") Integer unumIsvalid);
+            "and t.unumTempleCompId in (:unumTempleCompItemIdlist) ) ")
+	List<GmstConfigTemplateItemMst> findAllByUnumTempleItemIdInAndUnumIsvalid(@Param("unumTempleCompItemIdlist") List<Long> unumTempleCompItemIdlist,@Param("unumIsvalid") Integer unumIsvalid);
 	
 	@Query("select c from GmstConfigTemplateItemMst c " +
             "where c.unumIsvalid = :unumIsvalid " +
             "and c.unumTempleItemId in (select t.unumTempleItemId from GmstConfigTemplateDtl t " +
             "where t.unumIsvalid = :unumIsvalid " +
-            "and t.unumTempleCompId = :unumTemplCompItemId ) ")
-	List<GmstConfigTemplateItemMst> findAllByUnumTempleItemIdAndUnumIsvalid(@Param("unumTemplCompItemId") Long unumTemplCompItemIdlist,@Param("unumIsvalid") Integer unumIsvalid);
+            "and t.unumTempleCompId = :unumTempleCompItemId ) ")
+	List<GmstConfigTemplateItemMst> findAllByUnumTempleItemIdAndUnumIsvalid(@Param("unumTempleCompItemId") Long unumTempleCompItemIdlist,@Param("unumIsvalid") Integer unumIsvalid);
 }
