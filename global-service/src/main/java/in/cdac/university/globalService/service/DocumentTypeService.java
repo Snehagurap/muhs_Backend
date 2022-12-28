@@ -7,6 +7,7 @@ import in.cdac.university.globalService.exception.ApplicationException;
 import in.cdac.university.globalService.repository.DocumentRepository;
 import in.cdac.university.globalService.util.BeanUtils;
 import in.cdac.university.globalService.util.Language;
+import in.cdac.university.globalService.util.RequestUtility;
 import in.cdac.university.globalService.util.ServiceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,7 +56,7 @@ public class DocumentTypeService {
         );
 
         if (docMstOptional.isEmpty()) {
-            return ServiceResponse.errorResponse(language.notFoundForId("Document Type", docId));
+            return ServiceResponse.errorResponse(language.notFoundForId("Document", docId));
         }
 
         return ServiceResponse.builder()
@@ -71,7 +72,7 @@ public class DocumentTypeService {
                 List.of(1, 2), documentTypeBean.getUstrDocName()
         );
         if (!documentTypeList.isEmpty()) {
-            return ServiceResponse.errorResponse(language.duplicate("DocumentType", documentTypeBean.getUstrDocName()));
+            return ServiceResponse.errorResponse(language.duplicate("Document", documentTypeBean.getUstrDocName()));
         }
 
         GmstDocumentMst gmstDocumentMst = BeanUtils.copyProperties(documentTypeBean, GmstDocumentMst.class);
@@ -81,15 +82,15 @@ public class DocumentTypeService {
 
         return ServiceResponse.builder()
                 .status(1)
-                .message(language.saveSuccess("Document Type"))
+                .message(language.saveSuccess("Document"))
                 .build();
     }
 
     //for update
     @Transactional
-    public ServiceResponse update(DocumentTypeBean documentTypeBean) {
+    public ServiceResponse update(DocumentTypeBean documentTypeBean) throws Exception {
         if (documentTypeBean.getUnumDocId() == null) {
-            return ServiceResponse.errorResponse((language.mandatory("Doc Id")));
+            return ServiceResponse.errorResponse((language.mandatory("Document Id")));
         }
 
         // Duplicate Check
@@ -98,24 +99,24 @@ public class DocumentTypeService {
         );
 
         if (!documentMsts.isEmpty()) {
-            return ServiceResponse.errorResponse(language.duplicate("Document Type", documentTypeBean.getUstrDocName()));
+            return ServiceResponse.errorResponse(language.duplicate("Document", documentTypeBean.getUstrDocName()));
         }
 
         // Create Log
         int noOfRecordsAffected = documentRepository.createLog(List.of((documentTypeBean.getUnumDocId())));
         if (noOfRecordsAffected == 0) {
-            throw new ApplicationException(language.notFoundForId("Document Type", documentTypeBean.getUnumDocId()));
+            throw new ApplicationException(language.notFoundForId("Document Id", documentTypeBean.getUnumDocId()));
         }
 
         // Save new Data
         GmstDocumentMst documentMst = BeanUtils.copyProperties(documentTypeBean, GmstDocumentMst.class);
-        documentMst.setUnumLstModUid(Long.valueOf(1));
+        documentMst.setUnumLstModUid(RequestUtility.getUserId());
         documentMst.setUdtLstModDt(new Date());
         documentRepository.save(documentMst);
 
         return ServiceResponse.builder()
                 .status(1)
-                .message(language.updateSuccess("Document Type"))
+                .message(language.updateSuccess("Document"))
                 .build();
     }
 
@@ -123,7 +124,7 @@ public class DocumentTypeService {
     @Transactional
     public ServiceResponse delete(DocumentTypeBean documentTypeBean, Long[] idsToDelete) {
         if (idsToDelete == null || idsToDelete.length == 0) {
-            return ServiceResponse.errorResponse(language.mandatory("Doc Id"));
+            return ServiceResponse.errorResponse(language.mandatory("Document Id"));
         }
 
         List<GmstDocumentMst> documentMsts = documentRepository.findByUnumIsvalidInAndUnumDocIdIn(
@@ -131,13 +132,13 @@ public class DocumentTypeService {
         );
 
         if (documentMsts.size() != idsToDelete.length) {
-            return ServiceResponse.errorResponse(language.notFoundForId("Document Type", Arrays.toString(idsToDelete)));
+            return ServiceResponse.errorResponse(language.notFoundForId("Document", Arrays.toString(idsToDelete)));
         }
 
         // Create Log
         int noOfRowsAffected = documentRepository.createLog(List.of(idsToDelete));
         if (noOfRowsAffected != idsToDelete.length) {
-            throw new ApplicationException(language.deleteError("Document Type"));
+            throw new ApplicationException(language.deleteError("Document"));
         }
 
         documentMsts.forEach(doc -> {
@@ -148,7 +149,7 @@ public class DocumentTypeService {
         documentRepository.saveAll(documentMsts);
         return ServiceResponse.builder()
                 .status(1)
-                .message(language.deleteSuccess("Document Type"))
+                .message(language.deleteSuccess("Document"))
                 .build();
     }
 }

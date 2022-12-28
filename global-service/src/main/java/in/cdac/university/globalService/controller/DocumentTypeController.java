@@ -43,15 +43,17 @@ public class DocumentTypeController {
 
     @PostMapping("save")
     public ResponseEntity<?> saveDocumentTypeDtl(@Valid @RequestBody DocumentTypeBean documentTypeBean) {
-        documentTypeBean.setUdtEntryDate(new Date());
-        documentTypeBean.setUdtEffFrom(new Date());
+        Date d1 = new Date();
+        documentTypeBean.setUdtEntryDate(d1);
+        documentTypeBean.setUdtEffFrom(d1);
         return ResponseHandler.generateResponse(documentTypeService.save(documentTypeBean));
     }
 
     @PostMapping("update")
     public ResponseEntity<?> update(@Valid @RequestBody DocumentTypeBean documentTypeBean) throws Exception {
-        documentTypeBean.setUdtEntryDate(new Date());
-        documentTypeBean.setUdtEffFrom(new Date());
+        Date d1 = new Date();
+        documentTypeBean.setUdtEntryDate(d1);
+        documentTypeBean.setUdtEffFrom(d1);
         return ResponseHandler.generateResponse(
                 documentTypeService.update(documentTypeBean)
         );
