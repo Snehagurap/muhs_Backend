@@ -49,7 +49,6 @@ public class DesignationController {
     public ResponseEntity<?> savePostDtl(@Valid @RequestBody DesignationBean designationBean) throws Exception {
         designationBean.setUnumUnivId(RequestUtility.getUniversityId());
         designationBean.setUdtEntryDate(new Date());
-        //designationBean.setUnumIsvalid(1); //hard coded value 1 for active
         return ResponseHandler.generateResponse(designationService.save(designationBean));
     }
 

@@ -1,6 +1,7 @@
 package in.cdac.university.globalService.bean;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,31 +19,32 @@ public class DocumentTypeBean {
         return unumDocId;
     }
 
+    @ListColumn(omit = true)
     private Long unumDocId;
 
-    @JsonIgnore
     private Integer unumIsvalid;
 
     private Integer isMandatory = 0;
 
-    @JsonIgnore
     private Date udtEffFrom;
 
-    @JsonIgnore
     private Date udtEffTo;
 
-    @JsonIgnore
     private Date udtEntryDate;
 
-    @JsonIgnore
     private Long unumEntryUid;
 
-    @JsonIgnore
+    private Date udtLstModDt;
+
+    private Long unumLstModUid;
+
+    @ListColumn(name = "Remarks", order = 3)
     private String ustrDescription;
 
+    @ListColumn(name = "Document Name", order = 2)
     private String ustrDocName;
 
-    @JsonIgnore
+    @ListColumn(name = "Document Code", order = 1)
     private String ustrDocCode;
 }
 
