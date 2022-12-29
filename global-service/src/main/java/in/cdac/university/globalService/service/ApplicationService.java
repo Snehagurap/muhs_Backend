@@ -64,4 +64,12 @@ public class ApplicationService {
 
         return applicationData;
     }
+    
+    
+    public List<ApplicationDataBean> getApplicationByunumApplicationId(Long unumApplicationId) throws Exception {
+    	
+    	return BeanUtils.copyListProperties(applicantDataMasterRepository.getApplicationByUnumApplicationIdAndUnumUnivIdAndUnumIsvalid(unumApplicationId,RequestUtility.getUniversityId(),1), ApplicationDataBean.class) ;
+    	
+    }
+    
 }

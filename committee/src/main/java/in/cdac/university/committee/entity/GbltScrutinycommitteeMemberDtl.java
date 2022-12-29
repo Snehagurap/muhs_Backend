@@ -95,4 +95,10 @@ public class GbltScrutinycommitteeMemberDtl implements Serializable {
 
 	@Column(name="ustr_scom_description")
 	private String ustrScomDescription;
+
+	@Column(name="unum_scom_pref_other_empid")
+	private String unumScomPrefOtherEmpid;
+
+	@Column(name="unum_vc_nominated_flag")
+	private String unumVcNominatedFlag;
 }

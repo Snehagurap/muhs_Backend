@@ -57,10 +57,25 @@ public class EmployeeController {
         );
     }
 
+    @GetMapping("allProfiles")
+    public ResponseEntity<?> getAllTeachersProfile() throws Exception {
+        return ResponseHandler.generateResponse(
+                employeeProfileService.getAllTeachersProfile()
+        );
+    }
+
+
     @PostMapping("currentDetail")
     public ResponseEntity<?> getTeachersCurrentDetailsByDesignation(@RequestBody List<Integer> designationIds) throws Exception {
         return ResponseHandler.generateOkResponse(
                 employeeCurrentDetailService.getEmpCurrentDetailsByDesignation(designationIds)
+        );
+    }
+
+    @GetMapping("allCurrentDetails")
+    public ResponseEntity<?> getAllTeachersCurrentDetails() throws Exception {
+        return ResponseHandler.generateResponse(
+                employeeCurrentDetailService.getAllTeachersCurrentDetails()
         );
     }
 

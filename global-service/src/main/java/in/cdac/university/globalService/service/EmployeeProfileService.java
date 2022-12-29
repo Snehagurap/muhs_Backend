@@ -4,6 +4,7 @@ import in.cdac.university.globalService.bean.EmployeeProfileBean;
 import in.cdac.university.globalService.repository.EmployeeProfileRepository;
 import in.cdac.university.globalService.util.BeanUtils;
 import in.cdac.university.globalService.util.RequestUtility;
+import in.cdac.university.globalService.util.ServiceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,5 +21,12 @@ public class EmployeeProfileService {
                 employeeProfileRepository.findByUnumIsvalidAndUnumUnivIdAndUnumFacultyIdIn(1, RequestUtility.getUniversityId(), facultyId),
                 EmployeeProfileBean.class
         );
+    }
+
+    public ServiceResponse getAllTeachersProfile() throws Exception {
+        return ServiceResponse.successObject(BeanUtils.copyListProperties(
+                employeeProfileRepository.findByUnumIsvalidAndUnumUnivId(1, RequestUtility.getUniversityId()),
+                EmployeeProfileBean.class
+        ));
     }
 }

@@ -69,6 +69,10 @@ public class ApplicationTrackerDtlBean {
     private String ustrStatusBy;
 
     private Long unumCtypeId;
+	
+	private String facultyName;
+	
+	private String applicantName;
 
     private Date udtApplicationDate;
 }

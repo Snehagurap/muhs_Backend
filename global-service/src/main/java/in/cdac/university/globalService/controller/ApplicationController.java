@@ -6,6 +6,7 @@ import in.cdac.university.globalService.util.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,6 +21,13 @@ public class ApplicationController {
     public ResponseEntity<?> getApplicationsByUser() throws Exception {
         return ResponseHandler.generateOkResponse(
                 applicationService.getApplicationsByUser(RequestUtility.getUserId())
+        );
+    }
+    
+    @GetMapping("/id/{Id}")
+    public ResponseEntity<?> getApplicationByunumApplicationId(@PathVariable("Id") Long unumApplicationId) throws Exception {
+        return ResponseHandler.generateOkResponse(
+               applicationService.getApplicationByunumApplicationId(unumApplicationId)
         );
     }
 }

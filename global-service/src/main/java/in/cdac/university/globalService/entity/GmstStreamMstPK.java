@@ -1,12 +1,15 @@
 package in.cdac.university.globalService.entity;
 
+import java.io.Serial;
+import java.io.Serializable;
+
+import javax.persistence.Column;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.io.Serial;
-import java.io.Serializable;
-import javax.persistence.*;
+ 
+ 
 
 @Getter
 @Setter
@@ -20,4 +23,5 @@ public class GmstStreamMstPK implements Serializable {
 
 	@Column(name="unum_isvalid")
 	private Integer unumIsvalid;
+ 
 }
