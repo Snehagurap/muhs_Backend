@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ColumnRepository extends JpaRepository<UmstColumnMst, String> {
+
     @Query(value="select column_name as table_column_id , upper(column_name) as table_column_name from information_schema.columns  where upper(table_name) = upper(:tableName)" +
             " and table_name in (SELECT tablename FROM pg_catalog.pg_tables   where schemaname =:schemaName ORDER BY column_name ASC)",nativeQuery = true)
     List<UmstColumnMst> findAllByTableNameAndSchemaName(@Param("tableName") String tableName,

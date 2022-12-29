@@ -18,4 +18,9 @@ public class UmstColumnMst {
     private String tableColumnId;
     @Column
     private String tableColumnName;
+
+    @Column
+    private String tableName;
+
+    @Column String SchemaName;
 }

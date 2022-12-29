@@ -35,7 +35,7 @@ public class DatasetService {
     @Autowired
     private Language language;
     public List<DatasetBean> getAllDataset() {
-        return BeanUtils.copyListProperties(datasetRepository.findAllByGblIsvalidOrderByGstrDatasetName(1), DatasetBean.class);
+        return BeanUtils.copyListProperties(datasetRepository.findAllByGblIsvalidOrderByGstrDatasetNameAsc(1), DatasetBean.class);
     }
 
     public List<SchemaBean> getSchemaWiseModuleList() {

@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface DatasetRepository extends JpaRepository<UmmtDatasetMst, Integer> {
 
-    List<UmmtDatasetMst> findAllByGblIsvalidOrderByGstrDatasetName(Integer gnumIsvalid);
+    List<UmmtDatasetMst> findAllByGblIsvalidOrderByGstrDatasetNameAsc(Integer datasetId);
 
     Optional<UmmtDatasetMst> findByGstrDatasetNameIgnoreCaseAndGblIsvalidNot(String gstrDatasetName, Integer i);
 
@@ -27,4 +27,8 @@ public interface DatasetRepository extends JpaRepository<UmmtDatasetMst, Integer
     Optional<UmmtDatasetMst> findByGstrDatasetNameIgnoreCaseAndGnumDatasetIdNotAndGblIsvalidNot(String datasetName, Integer datasetId, Integer isValid);
 
     List<UmmtDatasetMst> findAllByGnumDatasetIdInAndGblIsvalidNot(List<Integer> datasetId, Integer isValid);
+
+    UmmtDatasetMst findAllByGnumDatasetIdAndGblIsvalid(Integer datasetId,Integer isValid);
+
+    //  List<UmmtDatasetMst> findByGblIsvalidOrderByGstrRoleNameAsc(Integer isvalid);
 }

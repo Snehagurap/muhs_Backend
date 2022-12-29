@@ -28,6 +28,7 @@ public class DatasetBean extends GlobalBean{
     @ListColumn(order = 2, name = "Dataset Name")
     private String gstrDatasetName;
 
+    @ComboKey(index = 2)
     private Integer gnumModuleId;
 
 

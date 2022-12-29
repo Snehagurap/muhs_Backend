@@ -43,4 +43,5 @@ public interface UserRepository extends JpaRepository<UmmtUserMst, UmmtUserMstPK
     List<UmmtUserMst> findByGnumUserCatIdAndGnumIsvalid(Integer gnumUserCatId, Integer gnumIsvalid);
 
 
+    List<UmmtUserMst> findByGnumUserCatIdAndUniversityMstUnumUnivIdAndGnumIsvalidOrderByGstrUserFullNameAsc(Integer gnumUserCatId,Integer universityId,Integer isValid);
 }
