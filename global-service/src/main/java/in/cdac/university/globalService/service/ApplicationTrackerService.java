@@ -104,16 +104,21 @@ public class ApplicationTrackerService {
             return ServiceResponse.errorResponse(language.notFoundForId("NotificationId", notificationId));
         }
         
-        Long ApplicantId=gbltConfigApplicationTrackerDtlOptional.get().getUnumApplicantId(); 
-        Long FacultyId=gbltConfigApplicationTrackerDtlOptional.get().getUnumNdtlFacultyId(); 
-        
-        String Faculty_name =   facultyRepository.findByUnumCfacultyIdAndUnumIsvalid(FacultyId.intValue(), 1).getUstrCfacultyFname();
-		String Applicant_name =   applicantRepository.findByUnumApplicantIdAndUnumIsvalid(ApplicantId, 1 ).get().getUstrApplicantName();
-		gbltConfigApplicationTrackerDtlOptional.get().setFacultyName(Faculty_name);
-		
-		gbltConfigApplicationTrackerDtlOptional.get().setApplicantName(Applicant_name);		
-		return ServiceResponse.successObject(
+        GbltConfigApplicationTrackerDtl gbltConfigApplicationTrackerDtl = gbltConfigApplicationTrackerDtlOptional.get();
+        if(gbltConfigApplicationTrackerDtl.getUnumApplicantId() != null) {
+        		Long applicantId = gbltConfigApplicationTrackerDtl.getUnumApplicantId(); 
+        		Long facultyId   = gbltConfigApplicationTrackerDtl.getUnumNdtlFacultyId(); 
+        		String faculty_name   =   facultyRepository.findByUnumCfacultyIdAndUnumIsvalid(facultyId.intValue(), 1).getUstrCfacultyFname();
+        		String applicant_name =   applicantRepository.findByUnumApplicantIdAndUnumIsvalid(applicantId, 1 ).get().getUstrApplicantName();
+        		gbltConfigApplicationTrackerDtlOptional.get().setFacultyName(faculty_name);
+        		gbltConfigApplicationTrackerDtlOptional.get().setApplicantName(applicant_name);		
+        		return ServiceResponse.successObject(
                 BeanUtils.copyProperties(gbltConfigApplicationTrackerDtlOptional.get(), ApplicationTrackerDtlBean.class)
         );
+        }
+        else
+        {
+        	return ServiceResponse.errorResponse(language.notFoundForId("ApplicantId", null)); 
+        }
     }
 }

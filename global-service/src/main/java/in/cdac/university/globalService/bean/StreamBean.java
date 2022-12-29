@@ -20,7 +20,7 @@ public class StreamBean {
     @ListColumn(omit = true)
     private Long unumStreamId;
     
-    
+    @NotNull(message = "Status is mandatory")
     private Integer unumIsvalid;
 
     private Date udtEffFrom;
@@ -39,12 +39,12 @@ public class StreamBean {
 
     private String ustrDescription;
     
-   
+    @NotNull(message = "Stream Code is mandatory")
     @ListColumn(name = "Stream Code")
     private String ustrStreamCode;
     
     
-  
+    @NotNull(message = "Stream Name is mandatory")
     @ComboValue
     @ListColumn(name = "Stream Name", order = 2)
     private String ustrStreamFname;
