@@ -31,5 +31,8 @@ public interface EmployeeCurrentDetailRepository extends JpaRepository<GmstEmpCu
             "where u.unumEmpId in (:empId) and u.unumIsvalid in (1, 2) ")
     Integer createLog(@Param("empId") List<Long> empId);
 
+    List<GmstEmpCurDtl> findByUnumIsvalidAndUnumUnivId(Integer unumIsvalid, Integer unumUnivId);
+
+
 }
 

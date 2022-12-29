@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -38,4 +39,6 @@ public class CommitteeRulesetDtlBean {
     private Date udtEffFrom;
 
     private Date udtEffTo;
+
+    private List<ComboBean> teacherCombo;
 }
