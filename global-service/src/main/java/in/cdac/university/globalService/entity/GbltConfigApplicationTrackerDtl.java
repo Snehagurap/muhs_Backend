@@ -119,7 +119,7 @@ public class GbltConfigApplicationTrackerDtl implements Serializable {
 	private Integer unumNdtlDepartmentId;
 
 	@Column(name="unum_ndtl_faculty_id")
-	private Integer unumNdtlFacultyId;
+	private Long unumNdtlFacultyId;
 
 	@Column(name="unum_out_no")
 	private String unumOutNo;
@@ -171,4 +171,10 @@ public class GbltConfigApplicationTrackerDtl implements Serializable {
 
 	@Column(name="ustr_status_by")
 	private String ustrStatusBy;
+	
+	@Transient
+	private String facultyName;
+	@Transient
+	private String applicantName;
+	
 }

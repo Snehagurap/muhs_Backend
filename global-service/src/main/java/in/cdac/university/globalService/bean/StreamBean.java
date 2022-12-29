@@ -1,17 +1,19 @@
 package in.cdac.university.globalService.bean;
 
+ 
+import java.util.Date;
+
 import in.cdac.university.globalService.util.annotations.ComboKey;
 import in.cdac.university.globalService.util.annotations.ComboValue;
 import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
 
 @Getter
 @Setter
 public class StreamBean {
-
+	
     @ComboKey
     @ListColumn(omit = true)
     private Long unumStreamId;
@@ -42,4 +44,5 @@ public class StreamBean {
     private String ustrStreamFname;
 
     private String ustrStreamSname;
+
 }

@@ -40,6 +40,17 @@ public class ApplicationTrackerController {
                 applicationTrackerService.getScrutinyDetailPlanningBoard(applicationId, applicationStatus)
         );
     }
+    
+    @GetMapping("department/{NotificationId}/{NotificationDetailId}")
+    public ResponseEntity<?> getDepartment(@PathVariable("NotificationId") Long notificationId,
+            @PathVariable("NotificationDetailId") Long notificationDetailId) {
+    	 return ResponseHandler.generateResponse(  
+                 applicationTrackerService.getDepartmentDetails(notificationId, notificationDetailId)
+         );
+    }
+
+    
+    
 
 
 }

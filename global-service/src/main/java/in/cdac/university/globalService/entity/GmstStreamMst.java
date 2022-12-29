@@ -1,12 +1,20 @@
 package in.cdac.university.globalService.entity;
 
-import lombok.Getter;
-import lombok.Setter;
 
-import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -22,6 +30,7 @@ public class GmstStreamMst implements Serializable {
 
 	@Id
 	private Integer unumIsvalid;
+ 
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="udt_eff_from")
