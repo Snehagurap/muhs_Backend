@@ -7,15 +7,19 @@ import lombok.ToString;
 
 import java.util.Date;
 
+import in.cdac.university.globalService.util.annotations.ListColumn;
+
 @Getter
 @Setter
 @ToString
 public class ApplicationTrackerBean {
 
+	@ListColumn(order = 4, name = "Application No.")
     private Long unumApplicationId;
 
     private Long unumApplicantId;
-
+    
+    @ListColumn(order = 2, name = "Notification")
     private Long unumNid;
 
     private Long unumNdtlId;
@@ -51,4 +55,13 @@ public class ApplicationTrackerBean {
     private String ustrStatusBy;
 
     private Long unumCtypeId;
+    
+    @ListColumn(order = 3, name = "Faculty Name")
+    private String facultyName;
+	
+    @ListColumn(order = 6, name = "Applicant Name")
+	private String applicantName;
+    
+    @ListColumn(order = 5, name = "Applicant Date")
+    private Date udtApplicationDate;
 }

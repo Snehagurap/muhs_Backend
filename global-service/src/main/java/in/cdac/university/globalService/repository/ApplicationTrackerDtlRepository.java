@@ -22,13 +22,7 @@ public interface ApplicationTrackerDtlRepository extends JpaRepository<GbltConfi
     Optional<GbltConfigApplicationTrackerDtl> getScrutinyDetails(@Param("applicationId") Long applicationId, @Param("applicationStatus") Integer applicationStatus);
 	
 	
-	@Query("select c from GbltConfigApplicationTrackerDtl c " +
-            "where unum_ndtl_id = :notificationDetailId " +
-            "and unum_nid = :notificationId " +
-            "and unumIsvalid = 1 ")
-    Optional<GbltConfigApplicationTrackerDtl> getDepDetails(@Param("notificationId") Long notificationId,
-	@Param("notificationDetailId") Long notificationDetailId);
-
+	
 	
 	
 	
