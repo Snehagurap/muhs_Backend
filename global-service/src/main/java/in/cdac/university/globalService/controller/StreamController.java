@@ -1,13 +1,20 @@
 package in.cdac.university.globalService.controller;
 
  
+import java.util.Date;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import in.cdac.university.globalService.util.RequestUtility;
+import in.cdac.university.globalService.bean.StreamBean;
 import in.cdac.university.globalService.service.StreamService;
 import in.cdac.university.globalService.util.ComboUtility;
 import in.cdac.university.globalService.util.ResponseHandler;
@@ -36,17 +43,46 @@ public class StreamController {
     }
 	
 	
-	/*
+	
 	@PostMapping("save")
     public ResponseEntity<?> saveStreamDetails(@Valid @RequestBody StreamBean streamBean) throws Exception {
-        applicantBean.setUnumIsvalid(1);
-        applicantBean.setUdtEntryDate(new Date());
-        applicantBean.setUdtEffFrom(new Date());
-        applicantBean.setUnumEntryUid(RequestUtility.getUserId());
-        return ResponseHandler.generateResponse(
-                applicantService.saveApplicantDetails(applicantBean)
+		streamBean.setUnumIsvalid(1);
+		streamBean.setUdtEntryDate(new Date());
+		streamBean.setUdtEffFrom(new Date());
+		streamBean.setUnumEntryUid(RequestUtility.getUserId());
+		streamBean.setUnumUnivId(RequestUtility.getUniversityId());
+		System.out.println("here"+streamBean.getUstrDescription());
+		System.out.println("here 1"+streamBean.getUstrStreamCode());
+		//ustrStreamCode
+		return ResponseHandler.generateResponse(
+                streamService.save(streamBean)
+       );
+		//return null;
+    }
+	
+	@PostMapping("update")
+    public ResponseEntity<?> updateStreamDetails(@Valid @RequestBody StreamBean streamBean) throws Exception {
+		streamBean.setUnumIsvalid(1);
+		streamBean.setUnumEntryUid(RequestUtility.getUserId());
+		streamBean.setUnumUnivId(RequestUtility.getUniversityId());
+		streamBean.setUdtEntryDate(new Date());
+		System.out.println("here"+streamBean.getUstrDescription());
+		System.out.println("here 2"+streamBean.getUstrStreamCode());
+		
+		return ResponseHandler.generateResponse(
+                streamService.updateStreamDetails(streamBean)
         );
     }
-	*/
+	
+	@PostMapping("delete")
+    public ResponseEntity<?> deleteStreamDetails(@Valid @RequestBody StreamBean streamBean) throws Exception {
+		streamBean.setUnumIsvalid(1);
+		streamBean.setUnumEntryUid(RequestUtility.getUserId());
+		streamBean.setUnumUnivId(RequestUtility.getUniversityId());
+		streamBean.setUdtEntryDate(new Date());
+		return ResponseHandler.generateResponse(
+                streamService.deleteStreamDetails(streamBean)
+        );
+    }
 
 }
