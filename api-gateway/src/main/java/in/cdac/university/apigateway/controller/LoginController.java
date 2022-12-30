@@ -113,7 +113,8 @@ public class LoginController {
         headers.setBasicAuth(oauthClientId, oauthClientSecret);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.set("applicationType", userDetail.getApplicationType().toString());
-        headers.set("userCategory", userDetail.getUserCategory().toString());
+        if (userDetail.getUserCategory() != null)
+            headers.set("userCategory", userDetail.getUserCategory().toString());
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("username", userDetail.getUsername());
