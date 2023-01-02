@@ -36,8 +36,7 @@ public class StreamController {
     
 	@GetMapping("listPage/data/{IsValid}")
     public ResponseEntity<?> listStream(@PathVariable("IsValid") int IsValid) throws Exception {
-       
-		return ResponseHandler.generateOkResponse(
+        return ResponseHandler.generateOkResponse(
                 		streamService.getAllStream(IsValid)
         );
     }
@@ -51,13 +50,10 @@ public class StreamController {
 		streamBean.setUdtEffFrom(new Date());
 		streamBean.setUnumEntryUid(RequestUtility.getUserId());
 		streamBean.setUnumUnivId(RequestUtility.getUniversityId());
-		System.out.println("here"+streamBean.getUstrDescription());
-		System.out.println("here 1"+streamBean.getUstrStreamCode());
-		//ustrStreamCode
-		return ResponseHandler.generateResponse(
+	    return ResponseHandler.generateResponse(
                 streamService.save(streamBean)
        );
-		//return null;
+		
     }
 	
 	@PostMapping("update")
@@ -66,10 +62,7 @@ public class StreamController {
 		streamBean.setUnumEntryUid(RequestUtility.getUserId());
 		streamBean.setUnumUnivId(RequestUtility.getUniversityId());
 		streamBean.setUdtEntryDate(new Date());
-		System.out.println("here"+streamBean.getUstrDescription());
-		System.out.println("here 2"+streamBean.getUstrStreamCode());
-		
-		return ResponseHandler.generateResponse(
+	    return ResponseHandler.generateResponse(
                 streamService.updateStreamDetails(streamBean)
         );
     }

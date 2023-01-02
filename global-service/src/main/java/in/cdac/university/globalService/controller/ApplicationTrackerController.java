@@ -2,6 +2,7 @@ package in.cdac.university.globalService.controller;
 
 import in.cdac.university.globalService.bean.ApplicationTrackerDtlBean;
 import in.cdac.university.globalService.service.ApplicationTrackerService;
+import in.cdac.university.globalService.util.ListPageUtility;
 import in.cdac.university.globalService.util.RequestUtility;
 import in.cdac.university.globalService.util.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +44,10 @@ public class ApplicationTrackerController {
     
     @GetMapping("department/{NotificationId}/{NotificationDetailId}")
     public ResponseEntity<?> getDepartment(@PathVariable("NotificationId") Long notificationId,
-            @PathVariable("NotificationDetailId") Long notificationDetailId) {
-    	 return ResponseHandler.generateResponse(  
-                 applicationTrackerService.getDepartmentDetails(notificationId, notificationDetailId)
+            @PathVariable("NotificationDetailId") Long notificationDetailId) throws IllegalAccessException {
+    	return ResponseHandler.generateOkResponse(ListPageUtility.generateListPageData(
+                applicationTrackerService.getDepartmentDetails(notificationId, notificationDetailId))
+        
          );
     }
 

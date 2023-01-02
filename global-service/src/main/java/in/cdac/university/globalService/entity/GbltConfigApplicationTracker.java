@@ -146,4 +146,10 @@ public class GbltConfigApplicationTracker implements Serializable {
 
 	@Column(name="ustr_status_by")
 	private String ustrStatusBy;
+	
+	@Transient
+    private String facultyName;
+    
+	@Transient
+    private String applicantName;
 }
