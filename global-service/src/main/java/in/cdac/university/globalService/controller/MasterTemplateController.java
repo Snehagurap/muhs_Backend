@@ -21,12 +21,21 @@ public class MasterTemplateController {
     @Autowired
     private MasterTemplateService masterTemplateService;
 
-    @GetMapping("{templateId}/{notificationId}/{notificationDetailId}")
-    public ResponseEntity<?> getTemplate(@PathVariable("templateId") Long templateId,
+    @GetMapping("{masterTemplateId}/{notificationId}/{notificationDetailId}")
+    public ResponseEntity<?> getTemplate(@PathVariable("masterTemplateId") Long masterTemplateId,
                                          @PathVariable("notificationId") Long notificationId,
                                          @PathVariable("notificationDetailId") Long notificationDetailId) throws Exception {
         return ResponseHandler.generateResponse(
-                masterTemplateService.getTemplate(templateId, notificationId, notificationDetailId)
+                masterTemplateService.getTemplate(masterTemplateId, notificationId, notificationDetailId)
+        );
+    }
+
+    // To preview the added template from template master
+    @GetMapping("template/preview/{templateId}/{streamId}")
+    public ResponseEntity<?> previewTemplate(@PathVariable("templateId") Long templateId,
+                                             @PathVariable("streamId") Integer streamId) throws Exception {
+        return ResponseHandler.generateResponse(
+                masterTemplateService.getTemplate(templateId, streamId)
         );
     }
 
