@@ -70,9 +70,5 @@ public class ApplicationTrackerDtlBean {
 
     private Long unumCtypeId;
 	
-	private String facultyName;
-	
-	private String applicantName;
-
     private Date udtApplicationDate;
 }
