@@ -5,6 +5,7 @@ import in.cdac.university.globalService.bean.ApplicationTrackerDtlBean;
 
 import in.cdac.university.globalService.entity.GbltConfigApplicationTracker;
 import in.cdac.university.globalService.entity.GbltConfigApplicationTrackerDtl;
+import in.cdac.university.globalService.entity.GmstApplicantMst;
 import in.cdac.university.globalService.entity.GmstCoursefacultyMst;
 import in.cdac.university.globalService.exception.ApplicationException;
 import in.cdac.university.globalService.repository.ApplicantRepository;
@@ -18,7 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ApplicationTrackerService {
@@ -31,18 +34,13 @@ public class ApplicationTrackerService {
 
     @Autowired
     private ConfigApplicantDataMasterRepository applicantDataMasterRepository;
-	
-	@Autowired
-    private FacultyRepository facultyRepository;    
-	
-	@Autowired
-	private ApplicantRepository applicantRepository  ; 
-	
-	
-	
-	
-	
-	
+
+    @Autowired
+    private FacultyRepository facultyRepository;
+
+    @Autowired
+    private ApplicantRepository applicantRepository;
+
     @Autowired
     private Language language;
 
@@ -51,10 +49,10 @@ public class ApplicationTrackerService {
 
     @Transactional
     public ServiceResponse applicationScrutiny(ApplicationTrackerDtlBean applicationTrackerDtlBean) {
-        if(applicationTrackerDtlBean.getUnumApplicationId() == null && applicationTrackerDtlBean.getUnumApplicationStatusId() == null) {
+        if (applicationTrackerDtlBean.getUnumApplicationId() == null && applicationTrackerDtlBean.getUnumApplicationStatusId() == null) {
             return ServiceResponse.errorResponse(language.mandatory("Application Id && Application Status"));
         }
-        if(applicationTrackerDtlBean.getUstrDocPath() != null && !applicationTrackerDtlBean.getUstrDocPath().isBlank()){
+        if (applicationTrackerDtlBean.getUstrDocPath() != null && !applicationTrackerDtlBean.getUstrDocPath().isBlank()) {
             boolean isFileMoved = ftpUtility.moveFileFromTempToFinalDirectory(applicationTrackerDtlBean.getUstrDocPath());
             if (!isFileMoved) {
                 throw new ApplicationException("Unable to upload file");
@@ -65,7 +63,7 @@ public class ApplicationTrackerService {
         applicationTrackerDtlBean.setUnumApplicationStatusSno(maxApplicationStatusSno);
 
         applicantDataMasterRepository.updateApplicationEntryStatus(
-                applicationTrackerDtlBean.getUnumApplicationStatusId(),applicationTrackerDtlBean.getUnumApplicationId(), applicationTrackerDtlBean.getUnumApplicantId(), 1
+                applicationTrackerDtlBean.getUnumApplicationStatusId(), applicationTrackerDtlBean.getUnumApplicationId(), applicationTrackerDtlBean.getUnumApplicantId(), 1
         );
 
         GbltConfigApplicationTracker gbltConfigApplicationTracker = BeanUtils.copyProperties(applicationTrackerDtlBean, GbltConfigApplicationTracker.class);
@@ -78,16 +76,15 @@ public class ApplicationTrackerService {
     }
 
 
-
     public ServiceResponse getScrutinyDetailPlanningBoard(Long applicationId, Integer applicationStatus) {
-        if(applicationId == null) {
+        if (applicationId == null) {
             return ServiceResponse.errorResponse(language.mandatory("ApplicationId"));
         }
         Optional<GbltConfigApplicationTrackerDtl> gbltConfigApplicationTrackerDtlOptional = applicationTrackerDtlRepository.getScrutinyDetails(
                 applicationId, applicationStatus
         );
 
-        if(gbltConfigApplicationTrackerDtlOptional.isEmpty()) {
+        if (gbltConfigApplicationTrackerDtlOptional.isEmpty()) {
             return ServiceResponse.errorResponse(language.notFoundForId("ApplicationId", applicationId));
         }
 
@@ -95,34 +92,29 @@ public class ApplicationTrackerService {
                 BeanUtils.copyProperties(gbltConfigApplicationTrackerDtlOptional.get(), ApplicationTrackerDtlBean.class)
         );
     }
-	
-	
-	public List<ApplicationTrackerBean> getDepartmentDetails(Long notificationId, Long notificationDetailId) {
-       /* if(notificationId == null ) {
-            return ServiceResponse.errorResponse(language.mandatory("NotificationId"));
-        } */
-        Optional<GbltConfigApplicationTracker> gbltConfigApplicationTrackerOptional = applicationTrackerRepository.getDepDetails(
-        		notificationId, notificationDetailId
+
+
+    public List<ApplicationTrackerBean> getApplicationForDepartmentScrutiny(Long notificationId, Long notificationDetailId, Integer levelId) throws Exception {
+        List<GbltConfigApplicationTracker> applicationList = applicationTrackerRepository.getApplicationForDepartmentScrutiny(
+                notificationId, notificationDetailId, levelId
         );
 
-      /*  if(gbltConfigApplicationTrackerDtlOptional.isEmpty()) {
-            return ServiceResponse.errorResponse(language.notFoundForId("NotificationId", notificationId));
-        } */
-        
-        GbltConfigApplicationTracker gbltConfigApplicationTracker = gbltConfigApplicationTrackerOptional.get();
-        //if(gbltConfigApplicationTracker.getUnumApplicantId() != null) {
-        		Long applicantId = gbltConfigApplicationTracker.getUnumApplicantId(); 
-        		Integer facultyId = gbltConfigApplicationTracker.getUnumNdtlFacultyId(); 
-        		String faculty_name = facultyRepository.findByUnumCfacultyIdAndUnumIsvalid(facultyId.intValue(), 1).getUstrCfacultyFname();
-        		String applicant_name = applicantRepository.findByUnumApplicantIdAndUnumIsvalid(applicantId, 1 ).get().getUstrApplicantName();
-        		gbltConfigApplicationTracker.setFacultyName(faculty_name);
-        		gbltConfigApplicationTracker.setApplicantName(applicant_name);		
-        		return (
-                BeanUtils.copyListProperties(List.of(gbltConfigApplicationTracker),ApplicationTrackerBean.class)
-        );
-        }
-        /*else
-        {
-        	return ServiceResponse.errorResponse(language.notFoundForId("ApplicantId", null)); 
-        } */
+        Map<Integer, String> facultyNameMap = facultyRepository.getAllFaculty(RequestUtility.getUniversityId())
+                .stream()
+                .collect(Collectors.toMap(GmstCoursefacultyMst::getUnumCfacultyId, GmstCoursefacultyMst::getUstrCfacultyFname));
+
+        return applicationList.stream()
+                .map(application -> {
+                    ApplicationTrackerBean applicationTrackerBean = BeanUtils.copyProperties(application, ApplicationTrackerBean.class);
+                    applicationTrackerBean.setFacultyName(facultyNameMap.getOrDefault(application.getUnumNdtlFacultyId(), ""));
+
+                    String applicantName = applicantRepository.findByUnumApplicantIdAndUnumIsvalid(application.getUnumApplicantId(), 1)
+                            .map(GmstApplicantMst::getUstrApplicantName)
+                            .orElse("");
+
+                    applicationTrackerBean.setApplicantName(applicantName);
+                    return applicationTrackerBean;
+                })
+                .toList();
     }
+}

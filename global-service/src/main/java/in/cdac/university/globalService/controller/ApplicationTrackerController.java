@@ -41,18 +41,13 @@ public class ApplicationTrackerController {
                 applicationTrackerService.getScrutinyDetailPlanningBoard(applicationId, applicationStatus)
         );
     }
-    
-    @GetMapping("department/{NotificationId}/{NotificationDetailId}")
-    public ResponseEntity<?> getDepartment(@PathVariable("NotificationId") Long notificationId,
-            @PathVariable("NotificationDetailId") Long notificationDetailId) throws IllegalAccessException {
-    	return ResponseHandler.generateOkResponse(ListPageUtility.generateListPageData(
-                applicationTrackerService.getDepartmentDetails(notificationId, notificationDetailId))
-        
-         );
+
+    @GetMapping("department/{notificationId}/{notificationDetailId}/{levelId}")
+    public ResponseEntity<?> getApplicationForDepartmentScrutiny(@PathVariable("notificationId") Long notificationId,
+                                           @PathVariable("notificationDetailId") Long notificationDetailId,
+                                           @PathVariable("levelId") Integer levelId) throws Exception {
+        return ResponseHandler.generateOkResponse(ListPageUtility.generateListPageData(
+                applicationTrackerService.getApplicationForDepartmentScrutiny(notificationId, notificationDetailId, levelId))
+        );
     }
-
-    
-    
-
-
 }
