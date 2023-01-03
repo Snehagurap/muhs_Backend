@@ -81,4 +81,10 @@ public class TemplateMasterDtlsBean {
 	private String ustrItemPrintPrefixText;
 	private String controlTypeName;
 	private String ustrItemPrintPostText;
+	
+    private Integer unumHeaderOrderNo;
+    
+    private Integer unumComponentOrderNo;
+    
+    
 }

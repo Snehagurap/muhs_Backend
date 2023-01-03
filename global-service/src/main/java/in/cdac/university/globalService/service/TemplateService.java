@@ -93,6 +93,10 @@ public class TemplateService {
         List<GmstConfigTemplateDtl> gmstConfigTemplateDtlEntityList = new ArrayList<>();
         GmstConfigTemplateDtl gmstConfigTemplateDtl;
         int index = 1;
+        int headCount = 1;
+        int compCount = 1;
+        Map<Long, Integer> headCountMap = new HashMap<>();
+        Map<Long, Integer> compCountMap = new HashMap<>();
         for (TemplateMasterDtlsBean templateMasterDtls : templateMasterBean.getTemplateMasterDtlsBeanList()) {
             gmstConfigTemplateDtl = new GmstConfigTemplateDtl();
             gmstConfigTemplateDtlEntityList.add(gmstConfigTemplateDtl);
@@ -103,7 +107,25 @@ public class TemplateService {
             gmstConfigTemplateDtl.setUnumEntryUid(RequestUtility.getUserId());
             gmstConfigTemplateDtl.setUdtEffFrom(new Date());
             gmstConfigTemplateDtl.setUnumUnivId(RequestUtility.getUniversityId());
-            gmstConfigTemplateDtl.setUdtEntryDate(new Date());
+            gmstConfigTemplateDtl.setUdtEntryDate(new Date()); 
+            Long headId = gmstConfigTemplateDtl.getUnumTempleHeadId();
+            Long compId = gmstConfigTemplateDtl.getUnumTempleCompId();
+            if(!(headCountMap.containsKey(headId))) {
+            	headCountMap.put(headId, headCount);
+            	gmstConfigTemplateDtl.setUnumHeaderOrderNo(headCount);
+            	headCount++;
+            }
+            else {
+            	gmstConfigTemplateDtl.setUnumHeaderOrderNo(headCountMap.get(headId));
+            }
+            if(!(compCountMap.containsKey(compId))) { 
+            	compCountMap.put(compId, compCount);
+            	gmstConfigTemplateDtl.setUnumComponentOrderNo(compCount);
+            	compCount++;
+            }
+            else {
+            	gmstConfigTemplateDtl.setUnumComponentOrderNo(compCountMap.get(compId));
+            }
             if (gmstConfigTemplateDtl.getUnumDisplayOrder() == null)
                 gmstConfigTemplateDtl.setUnumDisplayOrder(index);
             index++;
