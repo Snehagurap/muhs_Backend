@@ -78,4 +78,11 @@ public class GmstConfigTemplateDtl implements Serializable {
 
 	@Column(name="unum_page_columns")
 	private Integer unumPageColumns;
+	
+	@Column(name="unum_header_order_no")
+    private Integer unumHeaderOrderNo;
+    
+	@Column(name="unum_component_order_no")
+    private Integer unumComponentOrderNo;
+    
 }

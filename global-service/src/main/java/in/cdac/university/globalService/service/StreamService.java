@@ -1,6 +1,10 @@
 package in.cdac.university.globalService.service;
 
+import in.cdac.university.globalService.bean.ApplicationTrackerBean;
+import in.cdac.university.globalService.bean.DocumentTypeBean;
 import in.cdac.university.globalService.bean.StreamBean;
+import in.cdac.university.globalService.entity.GbltConfigApplicationTracker;
+import in.cdac.university.globalService.entity.GmstCoursefacultyMst;
 import in.cdac.university.globalService.entity.GmstStreamMst;
 import in.cdac.university.globalService.exception.ApplicationException;
 import in.cdac.university.globalService.repository.StreamRepository;
@@ -14,6 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class StreamService {
@@ -25,7 +32,17 @@ public class StreamService {
     private Language language;
 
     public List<StreamBean> getAllStream(int status) {
-
+    	
+    	List<StreamBean> streamList = streamRepository.findAllByunumIsvalid(status).stream()
+                .map(gmstStreamMst -> {
+                    StreamBean streamBean = BeanUtils.copyProperties(gmstStreamMst, StreamBean.class);
+                    streamBean.setUnumStreamId(gmstStreamMst.getUnumStreamId());
+                    streamBean.setUstrStreamCode(gmstStreamMst.getUstrStreamCode());
+                    streamBean.setUstrStreamFname(gmstStreamMst.getUstrStreamFname());
+                    return streamBean;
+                })
+                .toList();
+    	
         return BeanUtils.copyListProperties(
                 streamRepository.findAllByunumIsvalid(status),
                 StreamBean.class
