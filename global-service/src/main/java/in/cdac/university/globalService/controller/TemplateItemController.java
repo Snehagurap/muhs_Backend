@@ -67,7 +67,7 @@ public class TemplateItemController {
     @GetMapping("combo")
     public ResponseEntity<?> getItemCombo() throws Exception {
         return ResponseHandler.generateOkResponse(
-                ComboUtility.generateComboData(
+                ComboUtility.generateComboDataWithSelectValue(
                         templateItemService.getAllActiveItems(RequestUtility.getUniversityId())
                 )
         );
