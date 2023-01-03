@@ -166,7 +166,7 @@ public class EmployeeService {
         // Create Log
         int noOfRecordsAffected = employeeRepository.createLog(List.of(employeeBean.getUnumEmpId()));
         if (noOfRecordsAffected == 0) {
-            throw new ApplicationException(language.notFoundForId("Teacher", employeeBean.getUnumEmpId()));
+            throw new ApplicationException(language.notFoundForId("Teacher ID ", employeeBean.getUnumEmpId()));
         }
 
         int noOfRowsAffectedCurDtl = employeeCurrentDetailRepository.createLog(List.of(employeeBean.getUnumEmpId()));
@@ -182,8 +182,9 @@ public class EmployeeService {
 
         // save new Record
         GmstEmpMst empMst = BeanUtils.copyProperties(employeeBean, GmstEmpMst.class);
-        Long empID = employeeRepository.getNextId();
-        empMst.setUnumEmpId(empID);
+        Long empID = empMst.getUnumEmpId();
+//        Long empID = employeeRepository.getNextId();
+//        empMst.setUnumEmpId(empID);
         employeeRepository.save(empMst);
 
 
