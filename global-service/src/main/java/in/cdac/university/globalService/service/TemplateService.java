@@ -156,9 +156,8 @@ public class TemplateService {
         List<TemplateMasterDtlsBean> templateMasterDtlsBeans = BeanUtils.copyListProperties(templateDetailRepository.findByUnumIsvalidAndUnumUnivIdAndUnumTempleId(1, RequestUtility.getUniversityId(), templateId), TemplateMasterDtlsBean.class);
         log.debug("templateMasterDtlsBeans {}", templateMasterDtlsBeans);
 
-        GmstCoursefacultyMst gmstCoursefacultyMst = facultyRepository.findByUnumCfacultyIdAndUnumIsvalid(templateMasterBean.getUnumFacultyId(), 1);
-        templateMasterBean.setUstrCfacultyFname(gmstCoursefacultyMst.getUstrCfacultyFname());
-        templateMasterBean.setUstrCfacultySname(gmstCoursefacultyMst.getUstrCfacultySname());
+        Optional<GmstCoursefacultyMst> gmstCoursefacultyMst = facultyRepository.findByUnumCfacultyIdAndUnumIsvalid(templateMasterBean.getUnumFacultyId(), 1);
+        gmstCoursefacultyMst.ifPresent(coursefacultyMst -> templateMasterBean.setUstrCfacultyFname(coursefacultyMst.getUstrCfacultyFname()));
 
 
         List<GmstConfigTemplateItemMst> gmstConfigTemplateItemMstList = templateItemRepository.findItemsByTemplateId(templateMasterBean.getUnumUnivId(), Collections.singletonList(templateId));
