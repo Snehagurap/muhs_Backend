@@ -94,7 +94,6 @@ public class TemplateService {
         GmstConfigTemplateDtl gmstConfigTemplateDtl;
         int index = 1;
         int headCount = 1;
-        int compCount = 1;
         Map<Long, List<Long>> headCompCountMap = new HashMap<>();
         Map<Long, Integer> headCountMap = new HashMap<>();
         for (TemplateMasterDtlsBean templateMasterDtls : templateMasterBean.getTemplateMasterDtlsBeanList()) {
