@@ -37,6 +37,7 @@ public class ApplicantController {
 
     @PostMapping("draft/validateOtp")
     public ResponseEntity<?> validateOtp(@RequestBody DraftApplicantBean draftApplicantBean) {
+        System.out.println("Hello");
         return ResponseHandler.generateResponse(
                 draftApplicantService.validateOtp(draftApplicantBean)
         );
