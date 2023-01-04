@@ -10,7 +10,6 @@ import lombok.ToString;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -45,7 +44,7 @@ public class TemplateHeaderBean {
 
     private Integer unumIsMergeWithParent;
 
-    private Long unumTemplParentHeadId;
+    private Long unumTempleParentHeadId;
 
     @JsonIgnore
     private Integer unumUnivId;
@@ -64,7 +63,7 @@ public class TemplateHeaderBean {
 
     @ListColumn( order = 2 , name = "Header Code")
     @NotBlank(message="Header Code is mandatory")
-    private String ustrTemplHeadCode;
+    private String ustrTempleHeadCode;
 
     @Range(min = 0, max = 1, message = "Is Hidden can be 0 or 1")
     private Integer unumIsHidden = 0;

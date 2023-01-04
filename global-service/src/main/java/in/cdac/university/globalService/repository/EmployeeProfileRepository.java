@@ -24,6 +24,8 @@ public interface EmployeeProfileRepository extends JpaRepository<GmstEmpProfileD
 
     List<GmstEmpProfileDtl> findByUnumIsvalidAndUnumEmpId(Integer unumIsvalid, Long unumEmpId);
 
+    List<GmstEmpProfileDtl> findByUnumIsvalidAndUnumUnivId(Integer unumIsvalid, Integer unumUnivId);
+
 
     @Modifying(clearAutomatically = true)
     @Query("update GmstEmpProfileDtl u set u.unumIsvalid = (select coalesce(max(a.unumIsvalid), 2) + 1 " +

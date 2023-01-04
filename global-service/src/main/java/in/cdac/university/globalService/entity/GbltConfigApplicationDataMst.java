@@ -88,4 +88,11 @@ public class GbltConfigApplicationDataMst implements Serializable {
 
 	@Column(name = "unum_mtemple_id")
 	private Long unumMtempleId;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="udt_lst_mod_date")
+	private Date udtLstModDate;
+
+	@Column(name="unum_lst_mod_uid")
+	private Long unumLstModUid;
 }

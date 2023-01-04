@@ -69,7 +69,7 @@ public class GbltNotificationMaster implements Serializable {
 	@Column(name="unum_n_style")
 	private Integer unumNStyle;
 
-	@Column(name="unum_ntype_id")
+	@Column(name="unum_npurpose_id")
 	private Integer unumNtypeId;
 
 	@Column(name="unum_univ_id")

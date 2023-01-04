@@ -47,7 +47,7 @@ public class DraftApplicantService {
         // Generate OTP
         String emailOtp = RandomStringUtils.randomNumeric(6);
         String mobileOtp = RandomStringUtils.randomNumeric(6);
-
+//        System.out.println("ID---"+draftApplicantRepository.getNextId());
         applicantDraftMst.setUnumApplicantDraftid(draftApplicantRepository.getNextId());
         System.out.println("draftApplicantRepository.getNextId()>>"+draftApplicantRepository.getNextId());
         applicantDraftMst.setUstrGeneratedEmailotp(emailOtp);
@@ -68,6 +68,7 @@ public class DraftApplicantService {
 
     @Transactional
     public ServiceResponse validateOtp(DraftApplicantBean draftApplicantBean) {
+        System.out.println("test - "+draftApplicantBean.getUnumApplicantDraftid());
         if (draftApplicantBean.getUnumApplicantDraftid() == null ||
                 draftApplicantBean.getUstrGeneratedEmailotp() == null ||
                 draftApplicantBean.getUstrGeneratedMotp() == null) {

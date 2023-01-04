@@ -29,7 +29,7 @@ public class TemplateDetailBean {
     @JsonIgnore
     private Long unumEntryUid;
 
-    private Long unumTemplCompItemId;
+    private Long unumTempleCompItemId;
 
     private Long unumTempleCompId;
 

@@ -82,12 +82,12 @@ public class CourseBean {
     private Integer unumIsscaledown = 0;
     private Integer unumUnivId;
 
-    @ListColumn(order = 3, name = "Course Code")
+    @ListColumn(order = 3, name = "Course Code", width = "5%")
     private String ustrCourseCode;
 
     @ComboValue
     @NotNull(message = "Course Full name is mandatory")
-    @ListColumn(order = 2, name = "Course Name")
+    @ListColumn(order = 2, name = "Course Name", width = "35%")
     private String ustrCourseFname;
 
     private String ustrCourseSname;
@@ -100,12 +100,12 @@ public class CourseBean {
     private String ustrStuMinreqCtypeids;
     private String ustrStuMinreqCourseids;
 
-    @ListColumn(order=6,name = "Institute Type")
+    @ListColumn(order=6,name = "Institute Type", width = "20%")
     private Integer unumEligibleInstituteType;
 
-    @ListColumn(order=5,name = "Faculty Type")
+    @ListColumn(order=5,name = "Faculty Type", width = "20%")
     private String ustrCfacultyName;
 
-    @ListColumn(order=4,name = "Course Type")
+    @ListColumn(order=4,name = "Course Type", width = "20%")
     private String ustrCtypeName;
 }

@@ -20,4 +20,10 @@ public interface ApplicationTrackerDtlRepository extends JpaRepository<GbltConfi
             "and unumApplicationId = :applicationId " +
             "and unumIsvalid = 1 ")
     Optional<GbltConfigApplicationTrackerDtl> getScrutinyDetails(@Param("applicationId") Long applicationId, @Param("applicationStatus") Integer applicationStatus);
+	
+	
+	
+	
+	
+	
 }

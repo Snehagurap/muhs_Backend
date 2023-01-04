@@ -77,4 +77,14 @@ public class TemplateMasterDtlsBean {
 	private String ustrHeadPrintText;
 	
 	private String ustrSubheadPrintText;
+	
+	private String ustrItemPrintPrefixText;
+	private String controlTypeName;
+	private String ustrItemPrintPostText;
+	
+    private Integer unumHeaderOrderNo;
+    
+    private Integer unumComponentOrderNo;
+    
+    
 }

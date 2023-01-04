@@ -12,7 +12,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class GmstNotificationTypeMstPK implements Serializable {
 
-	@Column(name="unum_ntype_id")
+	//@Column(name="unum_ntype_id")
+	@Column(name="unum_npurpose_id")
 	private Integer unumNtypeId;
 
 	@Column(name="unum_isvalid")

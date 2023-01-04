@@ -54,6 +54,8 @@ public interface ConfigApplicantDataMasterRepository extends JpaRepository<GbltC
                                       @Param("unumIsvalid") Integer unumIsvalid);
 
     List<GbltConfigApplicationDataMst> findByUnumIsvalidAndUnumUnivIdAndUnumApplicantId(Integer unumIsvalid, Integer unumUnivId, Long applicantId);
+	List<GbltConfigApplicationDataMst> getApplicationByUnumApplicationIdAndUnumUnivIdAndUnumIsvalid(
+			Long unumApplicationId, int i, int j);
 
 
 }

@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface FacultyRepository extends JpaRepository<GmstCoursefacultyMst, GmstCoursefacultyMstPK> {
@@ -20,9 +21,9 @@ public interface FacultyRepository extends JpaRepository<GmstCoursefacultyMst, G
             "order by ustrCfacultyFname")
     List<GmstCoursefacultyMst> getAllFaculty(@Param("universityId") Integer universityId);
 
-    List<GmstCoursefacultyMst> findByUnumIsvalid(Integer unumIsvalid);
+    List<GmstCoursefacultyMst> findByUnumIsvalidAndUnumUnivId(Integer unumIsvalid, Integer universityId);
 
-	GmstCoursefacultyMst findByUnumCfacultyIdAndUnumIsvalid(Integer unumFacultyId, int unumIsvalid);
+	Optional<GmstCoursefacultyMst> findByUnumCfacultyIdAndUnumIsvalid(Integer unumFacultyId, int unumIsvalid);
 
 
 }

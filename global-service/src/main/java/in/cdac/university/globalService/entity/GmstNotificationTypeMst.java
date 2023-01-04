@@ -10,7 +10,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-@Table(name="gmst_notification_type_mst", schema = "university")
+@Table(name="gmst_notification_purpose_mst", schema = "university")
 @IdClass(GmstNotificationTypeMstPK.class)
 public class GmstNotificationTypeMst implements Serializable {
 
@@ -38,9 +38,9 @@ public class GmstNotificationTypeMst implements Serializable {
 	@Column(name="ustr_description")
 	private String ustrDescription;
 
-	@Column(name="ustr_ntype_fname")
+	@Column(name="ustr_npurpose_fname")
 	private String ustrNtypeFname;
 
-	@Column(name="ustr_ntype_sname")
+	@Column(name="ustr_npurpose_sname")
 	private String ustrNtypeSname;
 }

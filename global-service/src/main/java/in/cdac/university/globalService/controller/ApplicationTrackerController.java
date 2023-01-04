@@ -2,6 +2,7 @@ package in.cdac.university.globalService.controller;
 
 import in.cdac.university.globalService.bean.ApplicationTrackerDtlBean;
 import in.cdac.university.globalService.service.ApplicationTrackerService;
+import in.cdac.university.globalService.util.ListPageUtility;
 import in.cdac.university.globalService.util.RequestUtility;
 import in.cdac.university.globalService.util.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,5 +42,12 @@ public class ApplicationTrackerController {
         );
     }
 
-
+    @GetMapping("department/{notificationId}/{notificationDetailId}/{levelId}")
+    public ResponseEntity<?> getApplicationForDepartmentScrutiny(@PathVariable("notificationId") Long notificationId,
+                                           @PathVariable("notificationDetailId") Long notificationDetailId,
+                                           @PathVariable("levelId") Integer levelId) throws Exception {
+        return ResponseHandler.generateOkResponse(ListPageUtility.generateListPageData(
+                applicationTrackerService.getApplicationForDepartmentScrutiny(notificationId, notificationDetailId, levelId))
+        );
+    }
 }

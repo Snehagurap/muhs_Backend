@@ -29,7 +29,7 @@ public class FacultyService {
     public ServiceResponse allFaculties() throws Exception {
         return ServiceResponse.successObject(
                 BeanUtils.copyListProperties(
-                        facultyRepository.findByUnumIsvalid(1),
+                        facultyRepository.findByUnumIsvalidAndUnumUnivId(1, RequestUtility.getUniversityId()),
                         FacultyBean.class
                 )
         );

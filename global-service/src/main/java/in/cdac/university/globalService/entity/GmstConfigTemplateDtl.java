@@ -37,8 +37,8 @@ public class GmstConfigTemplateDtl implements Serializable {
 	@Column(name="unum_entry_uid")
 	private Long unumEntryUid;
 
-	@Column(name="unum_templ_comp_item_id")
-	private Long unumTemplCompItemId;
+	@Column(name="unum_temple_comp_item_id")
+	private Long unumTempleCompItemId;
 
 	@Column(name="unum_temple_comp_id")
 	private Long unumTempleCompId;
@@ -78,4 +78,11 @@ public class GmstConfigTemplateDtl implements Serializable {
 
 	@Column(name="unum_page_columns")
 	private Integer unumPageColumns;
+	
+	@Column(name="unum_header_order_no")
+    private Integer unumHeaderOrderNo;
+    
+	@Column(name="unum_component_order_no")
+    private Integer unumComponentOrderNo;
+    
 }

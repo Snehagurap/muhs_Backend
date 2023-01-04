@@ -31,16 +31,16 @@ public class RequestBodyRewrite implements RewriteFunction<String, String> {
     }
 
     private void jsonToString(Object body, StringBuilder result) {
-        if (body instanceof Map bodyAsMap) {
+        if (body instanceof Map<?, ?> bodyAsMap) {
             for (Object key: bodyAsMap.keySet()) {
                 Object value = bodyAsMap.get(key);
                 if (value instanceof String valueAsString) {
                     checkValidCharacters(valueAsString);
                     result.append(valueAsString);
-                } else if (value instanceof List valueAsList) {
+                } else if (value instanceof List<?> valueAsList) {
                     for (Object o : valueAsList)
                         jsonToString(o, result);
-                } else if (value instanceof Map valueAsMap) {
+                } else if (value instanceof Map<?,?> valueAsMap) {
                     jsonToString(valueAsMap, result);
                 }
             }
@@ -74,7 +74,11 @@ public class RequestBodyRewrite implements RewriteFunction<String, String> {
                         log.error("Value: {}", values);
                         log.error("Server Token : {}", serverRequestSecurityToken);
                         log.error("Client Token : {}", this.clientRequestSecurityToken);
-                        throw new FormDataTamperedException("Form data tampered");
+                        FormDataTamperedException formDataTampered = new FormDataTamperedException("Form data tampered");
+                        formDataTampered.setServerToken(serverRequestSecurityToken);
+                        formDataTampered.setClientToken(this.clientRequestSecurityToken);
+                        formDataTampered.setServerValue(values);
+                        throw formDataTampered;
                     }
                 }
                 return Mono.just(gson.toJson(listbody, ArrayList.class));
@@ -90,7 +94,11 @@ public class RequestBodyRewrite implements RewriteFunction<String, String> {
                         log.error("Value: {}", values);
                         log.error("Server Token: {}", serverRequestSecurityToken);
                         log.error("Client Token: {}", this.clientRequestSecurityToken);
-                        throw new FormDataTamperedException("Form data tampered");
+                        FormDataTamperedException formDataTampered = new FormDataTamperedException("Form data tampered");
+                        formDataTampered.setServerToken(serverRequestSecurityToken);
+                        formDataTampered.setClientToken(this.clientRequestSecurityToken);
+                        formDataTampered.setServerValue(values);
+                        throw formDataTampered;
                     }
                 }
                 return Mono.just(gson.toJson(map, Map.class));
@@ -100,7 +108,7 @@ public class RequestBodyRewrite implements RewriteFunction<String, String> {
 
     private static final List<Pattern> scriptPatterns = new ArrayList<>();
     static {
-
+        scriptPatterns.add(Pattern.compile("<.*>", Pattern.CASE_INSENSITIVE));
         scriptPatterns.add(Pattern.compile("<script>(.*?)</script>", Pattern.CASE_INSENSITIVE));
         scriptPatterns.add(Pattern.compile("</script>", Pattern.CASE_INSENSITIVE));
         scriptPatterns.add(Pattern.compile("<script(.*?)>", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL));
@@ -124,18 +132,11 @@ public class RequestBodyRewrite implements RewriteFunction<String, String> {
         scriptPatterns.add(Pattern.compile("onselect(.*?)=", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL));
     }
 
-    private static final Pattern tablePattern = Pattern.compile("<.*>", Pattern.CASE_INSENSITIVE);
     private static final Pattern metaCharacterPattern = Pattern.compile("[!@#\\$+()\\[\\]%\\^&*]{3,}");
 
     private void checkValidCharacters(String value) {
 
         Matcher m;
-
-        m = tablePattern.matcher(value);
-        if (m.find()) {
-            throw new InvalidFormValuesException("Invalid characters found in the input: " + value);
-        }
-
         // Filter for 3 or more consecutive meta characters
         m = metaCharacterPattern.matcher(value);
         if (m.find()) {

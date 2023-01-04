@@ -37,7 +37,7 @@ public interface TemplateComponentDetailRepository
 	
 	@Query("select c from GmstConfigTemplateComponentDtl c " + "where c.unumIsvalid = 1 "
 			+ "and c.unumUnivId = :universityId "
-			+ "and c.unumTempleCompItemId in (select t.unumTemplCompItemId from GmstConfigTemplateDtl t "
+			+ "and c.unumTempleCompItemId in (select t.unumTempleCompItemId from GmstConfigTemplateDtl t "
 			+ "where t.unumIsvalid = 1 " + "and t.unumUnivId = :universityId "
 			+ "and t.unumTempleId in (:templateId) ) ")
 	List<GmstConfigTemplateComponentDtl> findComponentDtlsByTemplateId(@Param("universityId") Integer universityId,

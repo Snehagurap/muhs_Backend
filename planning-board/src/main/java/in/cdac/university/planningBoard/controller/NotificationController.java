@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.ws.rs.core.Response;
 import java.util.Date;
 
 @RestController
@@ -47,7 +46,7 @@ public class NotificationController {
     }
 
     // Put mapping replaced by POST
-@PostMapping("update")
+    @PostMapping("update")
     public ResponseEntity<?> updateNotification(@Valid @RequestBody NotificationBean notificationBean) throws Exception {
         notificationBean.setUnumIsvalid(1);
         notificationBean.setUdtEntryDate(new Date());
@@ -59,7 +58,7 @@ public class NotificationController {
     }
 
     // Delete mapping replaced by POST
-@PostMapping("delete")
+    @PostMapping("delete")
     public ResponseEntity<?> deleteNotification(@RequestBody Long[] idsToDelete) throws Exception {
         NotificationBean notificationBean = new NotificationBean();
         notificationBean.setUnumIsvalid(1);
@@ -78,13 +77,10 @@ public class NotificationController {
         );
     }
 
-    @GetMapping("notificationCombo/{year}/{courseId}/{facultyId}/{notificationTypeId}")
-    public ResponseEntity<?> getNotificationComboByYearCourseFacultyNotifyType(@PathVariable("year") String year,
-                                                                          @PathVariable("courseId") Integer courseId,
-                                                                          @PathVariable("facultyId") Integer facultyId,
-                                                                          @PathVariable("notificationTypeId") Integer notificationTypeId) throws IllegalAccessException {
+    @GetMapping("notificationCombo/{year}")
+    public ResponseEntity<?> getNotificationComboByYear(@PathVariable("year") String year) throws IllegalAccessException {
         return ResponseHandler.generateOkResponse(
-                ComboUtility.generateComboData(notificationService.getNotificationComboByYearCourseFacultyNotifyType(year, courseId, facultyId, notificationTypeId)
+                ComboUtility.generateComboData(notificationService.getNotificationComboByYear(year)
         ));
     }
 }

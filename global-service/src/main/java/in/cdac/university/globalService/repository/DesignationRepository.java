@@ -42,7 +42,8 @@ public interface DesignationRepository extends JpaRepository<GmstPostMst, GmstPo
     //for update
     @Modifying(clearAutomatically = true)
     @Query("update GmstPostMst u set u.unumIsvalid = (select coalesce(max(a.unumIsvalid), 2) + 1 " +
-            "from GmstPostMst a where a.unumPostId = u.unumPostId and a.unumIsvalid > 2) " +
+            "from GmstPostMst a where a.unumPostId = u.unumPostId and a.unumIsvalid > 2)," +
+            "u.udtEffTo = now() " +
             "where u.unumPostId in (:postId) and u.unumIsvalid in (1, 2) ")
     Integer createLog(@Param("postId") List<Integer> postId);
 
