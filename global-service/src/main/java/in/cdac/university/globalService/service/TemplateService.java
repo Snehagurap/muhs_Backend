@@ -1,9 +1,12 @@
 package in.cdac.university.globalService.service;
 
 import in.cdac.university.globalService.bean.CompHeadSubHeader;
+import in.cdac.university.globalService.bean.Components;
+import in.cdac.university.globalService.bean.HeadClass;
 import in.cdac.university.globalService.bean.TemplateMasterBean;
 import in.cdac.university.globalService.bean.TemplateMasterDtlsBean;
 import in.cdac.university.globalService.bean.TemplateMasterDtlsChildBean;
+import in.cdac.university.globalService.bean.TempleHeadCompBean;
 import in.cdac.university.globalService.entity.*;
 import in.cdac.university.globalService.exception.ApplicationException;
 import in.cdac.university.globalService.repository.*;
@@ -248,6 +251,19 @@ public class TemplateService {
 
         return ServiceResponse.successObject(
                 BeanUtils.copyListProperties(gmstConfigTemplateMsts, TemplateMasterBean.class));
+    }
+    
+    @Transactional
+    public ServiceResponse manageTemplateOrder(TempleHeadCompBean templeHeadCompBean) throws Exception {
+    	
+    	Long unumTempleId = templeHeadCompBean.getUnumTempleId();
+    	for( HeadClass headClass :  templeHeadCompBean.getHeadClass()  ){
+    		templateRepository.updateHeaderOrder(unumTempleId,headClass.getHeaderId(),headClass.getHeaderDisplayOrder());
+    		for(Components components : headClass.getComponents()) {
+    			templateRepository.updateCompOrder(unumTempleId,headClass.getHeaderId(),components.getUnumTempleCompId(),components.getComponentDisplayOrder());
+    		}
+    	}
+    	return ServiceResponse.builder().status(1).message(language.updateSuccess("Template")).build();
     }
 
 }

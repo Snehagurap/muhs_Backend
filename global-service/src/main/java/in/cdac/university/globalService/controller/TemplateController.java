@@ -1,6 +1,7 @@
 package in.cdac.university.globalService.controller;
 
 import in.cdac.university.globalService.bean.TemplateMasterBean;
+import in.cdac.university.globalService.bean.TempleHeadCompBean;
 import in.cdac.university.globalService.service.TemplateService;
 import in.cdac.university.globalService.util.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,5 +50,11 @@ public class TemplateController {
                 templateService.getAllTemplate()
         );
     }
-
+    
+    @PostMapping("manageTemplateOrder")
+    public ResponseEntity<?> updateHeadAndCompDisplayOrder(@Valid @RequestBody TempleHeadCompBean templeHeadCompBean) throws Exception {
+    	 return ResponseHandler.generateResponse(
+                 templateService.manageTemplateOrder(templeHeadCompBean)
+         );
+    }
 }
