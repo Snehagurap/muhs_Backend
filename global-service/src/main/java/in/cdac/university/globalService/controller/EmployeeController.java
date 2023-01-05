@@ -88,7 +88,6 @@ public class EmployeeController {
 
     @PostMapping("save")
     public ResponseEntity<?> save(@Valid @RequestBody EmployeeBean employeeBean) throws Exception {
-        employeeBean.setUnumIsvalid(1);
         employeeBean.setUdtEntryDate(new Date());
         employeeBean.setUnumUnivId(RequestUtility.getUniversityId());
         employeeBean.setUnumEntryUid(RequestUtility.getUserId());

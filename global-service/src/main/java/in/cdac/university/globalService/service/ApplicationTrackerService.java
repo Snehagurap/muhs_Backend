@@ -3,6 +3,7 @@ package in.cdac.university.globalService.service;
 import in.cdac.university.globalService.bean.ApplicationTrackerBean;
 import in.cdac.university.globalService.bean.ApplicationTrackerDtlBean;
 
+import in.cdac.university.globalService.bean.NotificationBean;
 import in.cdac.university.globalService.entity.GbltConfigApplicationTracker;
 import in.cdac.university.globalService.entity.GbltConfigApplicationTrackerDtl;
 import in.cdac.university.globalService.entity.GmstApplicantMst;
@@ -27,10 +28,10 @@ import java.util.stream.Collectors;
 public class ApplicationTrackerService {
 
     @Autowired
-    ApplicationTrackerRepository applicationTrackerRepository;
+    private ApplicationTrackerRepository applicationTrackerRepository;
 
     @Autowired
-    ApplicationTrackerDtlRepository applicationTrackerDtlRepository;
+    private ApplicationTrackerDtlRepository applicationTrackerDtlRepository;
 
     @Autowired
     private ConfigApplicantDataMasterRepository applicantDataMasterRepository;
@@ -46,6 +47,9 @@ public class ApplicationTrackerService {
 
     @Autowired
     private FtpUtility ftpUtility;
+
+    @Autowired
+    private RestUtility restUtility;
 
     @Transactional
     public ServiceResponse applicationScrutiny(ApplicationTrackerDtlBean applicationTrackerDtlBean) {
@@ -93,8 +97,10 @@ public class ApplicationTrackerService {
         );
     }
 
-
     public List<ApplicationTrackerBean> getApplicationForDepartmentScrutiny(Long notificationId, Long notificationDetailId, Integer levelId) throws Exception {
+
+        NotificationBean[] notificationBean = restUtility.get(RestUtility.SERVICE_TYPE.PLANNING_BOARD, Constants.URL_GET_NOTIFICATIONS_BY_YEAR + "", NotificationBean[].class);
+
         List<GbltConfigApplicationTracker> applicationList = applicationTrackerRepository.getApplicationForDepartmentScrutiny(
                 notificationId, notificationDetailId, levelId
         );

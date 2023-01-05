@@ -2,11 +2,13 @@ package in.cdac.university.committee.bean;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.sql.Date;
 
 @Getter
 @Setter
+@ToString
 public class ScrutinycommitteeMemberDtlBean {
 
     private Long unumScomMemberId;
@@ -31,29 +33,29 @@ public class ScrutinycommitteeMemberDtlBean {
 
     private Long unumScomPref1Empid;
 
-    private String unumScomPref1Empname;
+    private String ustrScomPref1Empname;
 
     private Long unumScomPref2Empid;
 
-    private String unumScomPref2Empname;
+    private String ustrScomPref2Empname;
 
     private Long unumScomPref3Empid;
 
-    private String unumScomPref3Empname;
+    private String ustrScomPref3Empname;
 
     private Long unumScomPref4Empid;
 
-    private String unumScomPref4Empname;
+    private String ustrScomPref4Empname;
 
     private Long unumScomPref5Empid;
 
-    private String unumScomPref5Empname;
+    private String ustrScomPref5Empname;
 
-    private Long unumScomRoleId;
+    private Long unumRoleId;
 
-    private Long unumScomRsDtlId;
+    private Long unumComRsDtlId;
 
-    private Long unumScomRsId;
+    private Long unumComRsId;
 
     private Integer unumUnivId;
 
@@ -61,7 +63,8 @@ public class ScrutinycommitteeMemberDtlBean {
 
     private String ustrScomDescription;
 
-    private String unumScomPrefOtherEmpid;
+    private Long unumScomPrefOtherEmpid;
+    private String ustrScomPrefOtherEmpname;
 
-    private String unumVcNominatedFlag;
+    private Integer unumVcNominatedFlag;
 }

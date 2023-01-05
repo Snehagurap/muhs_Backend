@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Date;
 
 @RestController
@@ -34,7 +35,7 @@ public class CommitteeRulesetController {
     }
 
     @PostMapping("save")
-    public ResponseEntity<?> saveCommitteeRuleset(@RequestBody CommitteeRulesetBean committeeRulesetBean) {
+    public ResponseEntity<?> saveCommitteeRuleset(@Valid @RequestBody CommitteeRulesetBean committeeRulesetBean) {
         committeeRulesetBean.setUnumUnivId(RequestUtility.getUniversityId());
         committeeRulesetBean.setUnumIsvalid(1);
         committeeRulesetBean.setUnumEntryUid(RequestUtility.getUserId());
@@ -53,7 +54,7 @@ public class CommitteeRulesetController {
     }
 
     @PostMapping("update")
-    public ResponseEntity<?> updateCommitteeRuleset(@RequestBody CommitteeRulesetBean committeeRulesetBean) {
+    public ResponseEntity<?> updateCommitteeRuleset(@Valid @RequestBody CommitteeRulesetBean committeeRulesetBean) {
         committeeRulesetBean.setUnumUnivId(RequestUtility.getUniversityId());
         committeeRulesetBean.setUnumIsvalid(1);
         committeeRulesetBean.setUnumEntryUid(RequestUtility.getUserId());

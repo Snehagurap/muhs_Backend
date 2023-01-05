@@ -9,6 +9,20 @@ import java.util.*;
 
 public class ComboUtility {
 
+    public static List<ComboBean> generateComboDataWithSelectValue(List<?> dataList) throws IllegalAccessException {
+        List<ComboBean> comboData = new ArrayList<>();
+        comboData.add(new ComboBean("", "Select Value"));
+        comboData.addAll(generateComboData(dataList));
+        return comboData;
+    }
+
+    public static List<ComboBean> generateComboDataWithAll(List<?> dataList) throws IllegalAccessException {
+        List<ComboBean> comboData = new ArrayList<>();
+        comboData.add(new ComboBean("0", "All"));
+        comboData.addAll(generateComboData(dataList));
+        return comboData;
+    }
+
     public static List<ComboBean> generateComboData(List<?> dataList) throws IllegalAccessException {
         Objects.requireNonNull(dataList, "List is empty");
 

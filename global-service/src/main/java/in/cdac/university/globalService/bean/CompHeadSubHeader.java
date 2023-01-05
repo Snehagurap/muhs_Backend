@@ -24,6 +24,10 @@ public class CompHeadSubHeader {
 	
 	private String ustrSubheadPrintText;
 	
+    private Integer unumHeaderOrderNo;
+    
+    private Integer unumComponentOrderNo;
+	
 	List<TemplateMasterDtlsChildBean> children;
 
 	@Override

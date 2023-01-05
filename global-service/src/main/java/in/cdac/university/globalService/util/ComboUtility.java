@@ -16,6 +16,13 @@ public class ComboUtility {
         return comboData;
     }
 
+    public static List<ComboBean> generateComboDataWithAll(List<?> dataList) throws IllegalAccessException {
+        List<ComboBean> comboData = new ArrayList<>();
+        comboData.add(new ComboBean("0", "All"));
+        comboData.addAll(generateComboData(dataList));
+        return comboData;
+    }
+
     public static List<ComboBean> generateComboData(List<?> dataList) throws IllegalAccessException {
         Objects.requireNonNull(dataList, "List is Null");
 

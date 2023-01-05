@@ -1,9 +1,12 @@
 package in.cdac.university.globalService.service;
 
 import in.cdac.university.globalService.bean.CompHeadSubHeader;
+import in.cdac.university.globalService.bean.Components;
+import in.cdac.university.globalService.bean.HeadClass;
 import in.cdac.university.globalService.bean.TemplateMasterBean;
 import in.cdac.university.globalService.bean.TemplateMasterDtlsBean;
 import in.cdac.university.globalService.bean.TemplateMasterDtlsChildBean;
+import in.cdac.university.globalService.bean.TempleHeadCompBean;
 import in.cdac.university.globalService.entity.*;
 import in.cdac.university.globalService.exception.ApplicationException;
 import in.cdac.university.globalService.repository.*;
@@ -94,9 +97,8 @@ public class TemplateService {
         GmstConfigTemplateDtl gmstConfigTemplateDtl;
         int index = 1;
         int headCount = 1;
-        int compCount = 1;
+        Map<Long, List<Long>> headCompCountMap = new HashMap<>();
         Map<Long, Integer> headCountMap = new HashMap<>();
-        Map<Long, Integer> compCountMap = new HashMap<>();
         for (TemplateMasterDtlsBean templateMasterDtls : templateMasterBean.getTemplateMasterDtlsBeanList()) {
             gmstConfigTemplateDtl = new GmstConfigTemplateDtl();
             gmstConfigTemplateDtlEntityList.add(gmstConfigTemplateDtl);
@@ -110,22 +112,31 @@ public class TemplateService {
             gmstConfigTemplateDtl.setUdtEntryDate(new Date()); 
             Long headId = gmstConfigTemplateDtl.getUnumTempleHeadId();
             Long compId = gmstConfigTemplateDtl.getUnumTempleCompId();
-            if(!(headCountMap.containsKey(headId))) {
+            if(!(headCountMap.containsKey(headId))) { 
             	headCountMap.put(headId, headCount);
+            	List<Long> list = new ArrayList<>();
+            	list.add(compId);
+            	headCompCountMap.put(headId, list);
             	gmstConfigTemplateDtl.setUnumHeaderOrderNo(headCount);
+            	gmstConfigTemplateDtl.setUnumComponentOrderNo(1);
             	headCount++;
             }
             else {
+            	List<Long> listComp = headCompCountMap.get(headId);
+            	boolean flag = true;
+            	for(Long comp : listComp) {
+            		if(comp == compId) {
+            			flag=false;
+            			break;
+            		}
+            	}
+            	if(flag == true) {
+            		listComp.add(compId);
+            	}
             	gmstConfigTemplateDtl.setUnumHeaderOrderNo(headCountMap.get(headId));
+            	gmstConfigTemplateDtl.setUnumComponentOrderNo(listComp.size());
             }
-            if(!(compCountMap.containsKey(compId))) { 
-            	compCountMap.put(compId, compCount);
-            	gmstConfigTemplateDtl.setUnumComponentOrderNo(compCount);
-            	compCount++;
-            }
-            else {
-            	gmstConfigTemplateDtl.setUnumComponentOrderNo(compCountMap.get(compId));
-            }
+           
             if (gmstConfigTemplateDtl.getUnumDisplayOrder() == null)
                 gmstConfigTemplateDtl.setUnumDisplayOrder(index);
             index++;
@@ -240,6 +251,24 @@ public class TemplateService {
 
         return ServiceResponse.successObject(
                 BeanUtils.copyListProperties(gmstConfigTemplateMsts, TemplateMasterBean.class));
+    }
+    
+    @Transactional
+    public ServiceResponse manageTemplateOrder(TempleHeadCompBean templeHeadCompBean) throws Exception {
+    	
+    	Long unumTempleId = templeHeadCompBean.getUnumTempleId();
+    	for( HeadClass headClass :  templeHeadCompBean.getHeadClass()  ){
+    		templateRepository.updateHeaderOrder(unumTempleId,
+    												headClass.getHeaderId(),
+    												headClass.getUnumHeaderOrderNo());
+    		for(Components components : headClass.getComponents()) {
+    			templateRepository.updateCompOrder(unumTempleId,
+    					headClass.getHeaderId(),
+    					components.getUnumTempleCompId(),
+    					components.getUnumComponentOrderNo());
+    		}
+    	}
+    	return ServiceResponse.builder().status(1).message(language.updateSuccess("Template")).build();
     }
 
 }

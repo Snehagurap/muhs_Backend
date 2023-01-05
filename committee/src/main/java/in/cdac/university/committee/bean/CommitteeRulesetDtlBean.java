@@ -27,6 +27,7 @@ public class CommitteeRulesetDtlBean {
     private Integer unumRoleDepartmentId;
 
     private Integer unumRoleId;
+    private String ustrRoleName;
 
     private Integer unumRolePostId;
 
@@ -39,6 +40,8 @@ public class CommitteeRulesetDtlBean {
     private Date udtEffFrom;
 
     private Date udtEffTo;
+
+    private Integer unumNoOfMembers;
 
     private List<ComboBean> teacherCombo;
 }

@@ -71,7 +71,7 @@ public class NotificationController {
     }
 
     @GetMapping("active")
-    public ResponseEntity<?> getActiveNotifications() throws Exception {
+    public ResponseEntity<?> getActiveNotifications() {
         return ResponseHandler.generateResponse(
                 notificationService.getActiveNotifications()
         );
@@ -80,7 +80,7 @@ public class NotificationController {
     @GetMapping("notificationCombo/{year}")
     public ResponseEntity<?> getNotificationComboByYear(@PathVariable("year") String year) throws IllegalAccessException {
         return ResponseHandler.generateOkResponse(
-                ComboUtility.generateComboData(notificationService.getNotificationComboByYear(year)
+                ComboUtility.generateComboDataWithAll(notificationService.getNotificationComboByYear(year)
         ));
     }
 }
