@@ -6,8 +6,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.sql.Date;
+import java.util.Date;
+
 
 @Getter
 @Setter
@@ -51,41 +51,41 @@ public class GbltScrutinycommitteeMemberDtl implements Serializable {
 	@Column(name="unum_scom_pref1_empid")
 	private Long unumScomPref1Empid;
 
-	@Column(name="unum_scom_pref1_empname")
-	private String unumScomPref1Empname;
+	@Column(name="ustr_scom_pref1_empname")
+	private String ustrScomPref1Empname;
 
 	@Column(name="unum_scom_pref2_empid")
 	private Long unumScomPref2Empid;
 
-	@Column(name="unum_scom_pref2_empname")
-	private String unumScomPref2Empname;
+	@Column(name="ustr_scom_pref2_empname")
+	private String ustrScomPref2Empname;
 
 	@Column(name="unum_scom_pref3_empid")
 	private Long unumScomPref3Empid;
 
-	@Column(name="unum_scom_pref3_empname")
-	private String unumScomPref3Empname;
+	@Column(name="ustr_scom_pref3_empname")
+	private String ustrScomPref3Empname;
 
 	@Column(name="unum_scom_pref4_empid")
 	private Long unumScomPref4Empid;
 
-	@Column(name="unum_scom_pref4_empname")
-	private String unumScomPref4Empname;
+	@Column(name="ustr_scom_pref4_empname")
+	private String ustrScomPref4Empname;
 
 	@Column(name="unum_scom_pref5_empid")
 	private Long unumScomPref5Empid;
 
-	@Column(name="unum_scom_pref5_empname")
-	private String unumScomPref5Empname;
+	@Column(name="ustr_scom_pref5_empname")
+	private String ustrScomPref5Empname;
 
-	@Column(name="unum_scom_role_id")
-	private Long unumScomRoleId;
+	@Column(name="unum_role_id")
+	private Long unumRoleId;
 
-	@Column(name="unum_scom_rs_dtl_id")
-	private Long unumScomRsDtlId;
+	@Column(name="unum_com_rs_dtl_id")
+	private Long unumComRsDtlId;
 
-	@Column(name="unum_scom_rs_id")
-	private Long unumScomRsId;
+	@Column(name="unum_com_rs_id")
+	private Long unumComRsId;
 
 	@Column(name="unum_univ_id")
 	private Integer unumUnivId;
@@ -97,8 +97,11 @@ public class GbltScrutinycommitteeMemberDtl implements Serializable {
 	private String ustrScomDescription;
 
 	@Column(name="unum_scom_pref_other_empid")
-	private String unumScomPrefOtherEmpid;
+	private Long unumScomPrefOtherEmpid;
 
 	@Column(name="unum_vc_nominated_flag")
-	private String unumVcNominatedFlag;
+	private Integer unumVcNominatedFlag;
+
+	@Column(name="ustr_scom_pref_other_empname")
+	private String ustrScomPrefOtherEmpname;
 }

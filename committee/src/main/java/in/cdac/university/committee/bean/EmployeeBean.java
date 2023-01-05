@@ -59,6 +59,5 @@ public class EmployeeBean {
     private Integer unumIsSelected;
     private List<Long> employeesToFlag;
 
-    private Integer unumEmpDesigid;
-    private Integer unumFacultyId;
+
 }

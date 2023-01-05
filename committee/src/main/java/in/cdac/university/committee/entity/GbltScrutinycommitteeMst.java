@@ -60,7 +60,7 @@ public class GbltScrutinycommitteeMst implements Serializable {
 	private Integer unumNoOfMembers;
 
 	@Column(name="unum_scom_cfaculty_id")
-	private Integer unumScomCfacultyId;
+	private Long unumScomCfacultyId;
 
 	@Column(name="unum_stream_id")
 	private Integer unumStreamId;
@@ -73,5 +73,8 @@ public class GbltScrutinycommitteeMst implements Serializable {
 
 	@Column(name="ustr_scom_name")
 	private String ustrScomName;
+
+	@Column(name="unum_sub_id")
+	private Long unumSubId;
 
 }
