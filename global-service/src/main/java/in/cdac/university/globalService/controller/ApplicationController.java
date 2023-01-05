@@ -26,7 +26,7 @@ public class ApplicationController {
     
     @GetMapping("/id/{Id}")
     public ResponseEntity<?> getApplicationByunumApplicationId(@PathVariable("Id") Long unumApplicationId) throws Exception {
-        return ResponseHandler.generateOkResponse(
+        return ResponseHandler.generateResponse(
                applicationService.getApplicationByunumApplicationId(unumApplicationId)
         );
     }

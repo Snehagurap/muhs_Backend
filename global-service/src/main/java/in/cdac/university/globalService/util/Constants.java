@@ -11,4 +11,6 @@ public class Constants {
     public static final String URL_GET_ALL_DISTRICTS = "/usm/district/all";
 
     public static final String URL_GET_NOTIFICATION_BY_ID = "/pb/notification/";
+
+    public static final String URL_GET_NOTIFICATIONS_BY_YEAR = "/pb/notification/notificationCombo/";
 }
