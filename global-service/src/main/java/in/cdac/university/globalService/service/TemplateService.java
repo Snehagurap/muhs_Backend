@@ -258,9 +258,14 @@ public class TemplateService {
     	
     	Long unumTempleId = templeHeadCompBean.getUnumTempleId();
     	for( HeadClass headClass :  templeHeadCompBean.getHeadClass()  ){
-    		templateRepository.updateHeaderOrder(unumTempleId,headClass.getHeaderId(),headClass.getHeaderDisplayOrder());
+    		templateRepository.updateHeaderOrder(unumTempleId,
+    												headClass.getHeaderId(),
+    												headClass.getUnumHeaderOrderNo());
     		for(Components components : headClass.getComponents()) {
-    			templateRepository.updateCompOrder(unumTempleId,headClass.getHeaderId(),components.getUnumTempleCompId(),components.getComponentDisplayOrder());
+    			templateRepository.updateCompOrder(unumTempleId,
+    					headClass.getHeaderId(),
+    					components.getUnumTempleCompId(),
+    					components.getUnumComponentOrderNo());
     		}
     	}
     	return ServiceResponse.builder().status(1).message(language.updateSuccess("Template")).build();
