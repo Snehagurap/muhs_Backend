@@ -35,4 +35,22 @@ public interface TemplateRepository extends JpaRepository<GmstConfigTemplateMst,
     
    GmstConfigTemplateMst findByUnumIsvalidAndUnumUnivIdAndUnumTempleId(Integer unumIsvalid, Integer unumUnivId,  Long unumTemplId);
    List<GmstConfigTemplateMst> findByUnumIsvalidAndUnumUnivId(Integer unumIsvalid, Integer unumUnivId);
+
+   
+   
+    @Modifying(clearAutomatically = true)
+	@Query(value = "update university.gmst_config_template_dtl a set "
+			+ " unum_header_order_no = :headerDisplayOrder"
+			+ " where unum_temple_head_id = :headerId and unum_isvalid =1 and unum_temple_id = :unumTempleId", nativeQuery = true)
+    void updateHeaderOrder(@Param("unumTempleId") Long unumTempleId,
+    		@Param("headerId") Integer headerId, @Param("headerDisplayOrder") Integer headerDisplayOrder);
+    
+    @Modifying(clearAutomatically = true)
+	@Query(value = "update university.gmst_config_template_dtl a set "
+			+ " unum_component_order_no = :componentDisplayOrder"
+			+ " where unum_temple_head_id = :headerId and unum_isvalid =1 and unum_temple_id = :unumTempleId and unum_temple_comp_id = :unumTempleCompId", nativeQuery = true)
+	void updateCompOrder(@Param("unumTempleId") Long unumTempleId, @Param("headerId") Integer headerId, 
+			@Param("unumTempleCompId") Long unumTempleCompId, @Param("componentDisplayOrder") Integer componentDisplayOrder);
+   
+
 }
