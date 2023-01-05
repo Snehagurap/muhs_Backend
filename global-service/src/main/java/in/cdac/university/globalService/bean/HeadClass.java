@@ -12,7 +12,7 @@ import lombok.ToString;
 public class HeadClass {
 	
 	private Integer headerId;
-	private Integer headerDisplayOrder;
+	private Integer unumHeaderOrderNo;
 	private List<Components> components;
 	
 
