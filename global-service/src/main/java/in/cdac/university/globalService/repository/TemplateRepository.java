@@ -54,7 +54,6 @@ public interface TemplateRepository extends JpaRepository<GmstConfigTemplateMst,
    
 	
 	@Modifying(clearAutomatically = true)
-	@Modifying
     @Query(value="update university.gmst_config_template_dtl  set "
 		+ " unum_checklist_id=null, ustr_checklist_name=null, ustr_checklist_item_name=null, unum_checklist_item_orderno=null "
    		+ " where unum_isvalid =1 "
@@ -62,7 +61,6 @@ public interface TemplateRepository extends JpaRepository<GmstConfigTemplateMst,
 	void updateChecklistData(@Param("unumTempleId")  Long unumTempleId);
    
    @Modifying(clearAutomatically = true)
-   @Modifying
    @Query(value="update university.gmst_config_template_dtl "
          +"set unum_checklist_id=:unum_checklist_id,ustr_checklist_name=:ustr_checklist_name,ustr_checklist_item_name=:ustr_checklist_Item_Name,unum_checklist_item_orderno=:unum_checklist_item_order "
 		 + "where unum_isvalid =1 "
