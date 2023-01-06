@@ -52,5 +52,24 @@ public interface TemplateRepository extends JpaRepository<GmstConfigTemplateMst,
 	void updateCompOrder(@Param("unumTempleId") Long unumTempleId, @Param("headerId") Integer headerId, 
 			@Param("unumTempleCompId") Long unumTempleCompId, @Param("componentDisplayOrder") Integer componentDisplayOrder);
    
-
+	
+	@Modifying(clearAutomatically = true)
+    @Query(value="update university.gmst_config_template_dtl  set "
+		+ " unum_checklist_id=null, ustr_checklist_name=null, ustr_checklist_item_name=null, unum_checklist_item_orderno=null "
+   		+ " where unum_isvalid =1 "
+   		+ " and unum_temple_id= :unumTempleId", nativeQuery = true)
+	void updateChecklistData(@Param("unumTempleId")  Long unumTempleId);
+   
+   @Modifying(clearAutomatically = true)
+   @Query(value="update university.gmst_config_template_dtl "
+         +"set unum_checklist_id=:unum_checklist_id,ustr_checklist_name=:ustr_checklist_name,ustr_checklist_item_name=:ustr_checklist_Item_Name,unum_checklist_item_orderno=:unum_checklist_item_order "
+		 + "where unum_isvalid =1 "
+         + "and unum_temple_id = :unumTempleId "
+		 + "and unum_temple_head_id= :unum_temple_head_id and unum_temple_comp_id= :unum_temple_comp_id "
+         + "and unum_temple_item_id=:unum_temple_item_id", nativeQuery = true)
+	void updateChecklist(@Param("unumTempleId") Long unumTempleId,@Param("unum_temple_head_id") Integer unum_temple_head_id, 
+		   @Param("unum_temple_comp_id") Long unum_temple_comp_id, @Param("unum_temple_item_id") Integer unum_temple_item_id,
+		   @Param("ustr_checklist_name") String ustr_checklist_name,@Param("unum_checklist_id")  Integer unum_checklist_id, 
+		   @Param("ustr_checklist_Item_Name") String ustr_checklist_Item_Name, @Param("unum_checklist_item_order") Integer unum_checklist_item_order);
+ 
 }
