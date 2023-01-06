@@ -19,6 +19,9 @@ public interface DocumentRepository extends JpaRepository<GmstDocumentMst, GmstD
     @Query("select (coalesce(max(a.unumDocId),0) + 1) from GmstDocumentMst a")
     Integer getNextId();
 
+    @Query("select ustrDocName from GmstDocumentMst p where p.unumDocId = :docId")
+    String getDocumentName(@Param("docId") Long docId);
+
     @Query("select p from GmstDocumentMst p " +
             "where p.unumIsvalid = 1 " +
             "and p.udtEffFrom <= current_date " +
@@ -46,4 +49,5 @@ public interface DocumentRepository extends JpaRepository<GmstDocumentMst, GmstD
 
     //for delete
     List<GmstDocumentMst> findByUnumIsvalidInAndUnumDocIdIn(Collection<Integer> unumIsvalids, List<Long> idsToDelete);
+
 }
