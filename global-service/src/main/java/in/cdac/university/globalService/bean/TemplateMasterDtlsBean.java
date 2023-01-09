@@ -1,14 +1,11 @@
 package in.cdac.university.globalService.bean;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Date;
 
 
 @Getter
@@ -85,6 +82,13 @@ public class TemplateMasterDtlsBean {
     private Integer unumHeaderOrderNo;
     
     private Integer unumComponentOrderNo;
-    
+
+	private Integer unumChecklistId;
+
+	private String ustrChecklistName;
+
+	private String ustrChecklistItemName;
+
+	private Integer unumChecklistItemOrderno;
     
 }

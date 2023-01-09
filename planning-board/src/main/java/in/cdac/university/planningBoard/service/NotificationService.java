@@ -335,8 +335,12 @@ public class NotificationService {
                 .collect(Collectors.toMap(CourseTypeBean::getUnumCtypeId, CourseTypeBean::getUstrCtypeFname));
 
         FacultyBean[] facultyBeans = restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_ALL_FACULTIES, FacultyBean[].class);
-        Map<Integer, String> mapFaculty = Arrays.stream(facultyBeans)
+        Map<Integer, String> mapFaculty;
+        if (facultyBeans != null)
+                mapFaculty = Arrays.stream(facultyBeans)
                 .collect(Collectors.toMap(FacultyBean::getUnumCfacultyId, FacultyBean::getUstrCfacultyFname));
+        else
+            mapFaculty = new HashMap<>();
 
         List<NotificationApplyBean> notificationApplyBeans = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat(Constants.dateFormat);

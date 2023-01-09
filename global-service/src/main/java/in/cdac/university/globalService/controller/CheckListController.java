@@ -23,16 +23,9 @@ public class CheckListController {
 	@Autowired
     private CheckListService checkListService;
 
-	@PostMapping("/save")
+	@PostMapping("save")
     public ResponseEntity<?> saveChecklist(@Valid @RequestBody CheckListBean checkListBean) throws Exception {
         return ResponseHandler.generateResponse(checkListService.saveChecklist(checkListBean));
     }
 
-    @PostMapping("update")
-    public ResponseEntity<?> updateChecklist(@Valid @RequestBody CheckListBean checkListBean) throws Exception {
-        return ResponseHandler.generateResponse(checkListService.updateChecklist(checkListBean));
-    }
-
-
-	
 }

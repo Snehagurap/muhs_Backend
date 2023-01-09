@@ -63,5 +63,7 @@ public class TemplateMasterBean {
     
     private String ustrCfacultySname; 
     private Integer unumCtypeId;
-    
+
+    private Integer unumChecklistId;
+    private String ustrChecklistName;
 }
