@@ -39,7 +39,7 @@ public class ProcessDocumentMappingService {
         Set<Long> mappedDocumentIds = processDocumentMappingRepository.findByUnumProcessIdAndUnumIsvalid(
                         processId, 1)
                 .stream().map(GmstProcDocDtl::getUnumDocId).collect(Collectors.toSet());
-        System.out.println("12345   "+mappedDocumentIds);
+        System.out.println("12345   " + mappedDocumentIds);
         List<ComboBean> mappedDocuments = new ArrayList<>();
         List<ComboBean> notMappedDocuments = new ArrayList<>();
 
@@ -64,17 +64,17 @@ public class ProcessDocumentMappingService {
         List<ProcessDocumentMappingBean> listPage = new ArrayList<>();
 
         Map<Long, String> map = mappingData.stream().collect(Collectors.groupingBy((GmstProcDocDtl::getUnumProcessId),
-                 Collectors.mapping(GmstProcDocDtl::getUstrDocFname,Collectors.joining(", "))));
+                Collectors.mapping(GmstProcDocDtl::getUstrDocFname, Collectors.joining(", "))));
 
         for (GmstProcessMst P : processList) {
-           String processWithDocNames = map.get(Long.valueOf(P.getUnumProcessId()));
-           if(!(processWithDocNames == null)){
-               ProcessDocumentMappingBean processDocumentMappingBean = new ProcessDocumentMappingBean();
-               processDocumentMappingBean.setProcessName(P.getUstrProcessName());
-               processDocumentMappingBean.setMappedDocumentsName(processWithDocNames);
-               processDocumentMappingBean.setUnumProcessId(Long.valueOf(P.getUnumProcessId()));
-               listPage.add(processDocumentMappingBean);
-           }
+            String processWithDocNames = map.get(Long.valueOf(P.getUnumProcessId()));
+            if (!(processWithDocNames == null)) {
+                ProcessDocumentMappingBean processDocumentMappingBean = new ProcessDocumentMappingBean();
+                processDocumentMappingBean.setProcessName(P.getUstrProcessName());
+                processDocumentMappingBean.setMappedDocumentsName(processWithDocNames);
+                processDocumentMappingBean.setUnumProcessId(Long.valueOf(P.getUnumProcessId()));
+                listPage.add(processDocumentMappingBean);
+            }
         }
         return listPage;
     }
@@ -99,8 +99,8 @@ public class ProcessDocumentMappingService {
 
         if (!documentsToDelete.isEmpty()) {
             List<Long> documentIdsToDelete = documentsToDelete.stream().map(GmstProcDocDtl::getUnumDocId).toList();
-                processDocumentMappingRepository.createLog(processDocumentMappingBean.getUnumProcessId(), documentIdsToDelete);
-            }
+            processDocumentMappingRepository.createLog(processDocumentMappingBean.getUnumProcessId(), documentIdsToDelete);
+        }
 
 
         // Documents to add

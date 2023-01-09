@@ -12,6 +12,10 @@ import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Getter
 @Setter
 public class TemplateMasterBean {
@@ -20,23 +24,22 @@ public class TemplateMasterBean {
     private Long unumTempleId;
 
     @JsonIgnore
-    
     private Integer unumIsvalid;
 
-//    @JsonIgnore
     @ListColumn(omit = true)
+    @NotNull(message = "Valid From is mandatory")
     private Date udtEffFrom;
 
-//    @JsonIgnore
     @ListColumn(omit = true)
     private Date udtEffTo;
 
-//    @JsonIgnore
+    @NotNull(message = "Template Date is mandatory")
     private Date udtEntryDate;
     
     @JsonIgnore
     private Long unumEntryUid;
 
+    @NotNull(message = "Faculty is mandatory")
     private Integer unumFacultyId;
     
     private Integer unumTemplateForYyyy;
@@ -49,19 +52,23 @@ public class TemplateMasterBean {
     private Integer unumUnivId;
     
     private String ustrTempDescription;
-    @ListColumn
+    @ListColumn(name = "Template Code")
     private String ustrTempleCode;
     @ComboValue
-    @ListColumn
+    @ListColumn(name = "Template Name")
+    @NotBlank(message = "Template Name is mandatory")
     private String ustrTempleName;
     
+    @Valid
     private List<TemplateMasterDtlsBean> templateMasterDtlsBeanList;
 
     private Set<CompHeadSubHeader> compHeadSubHeaders;
 
     private String ustrCfacultyFname;
     
-    private String ustrCfacultySname; 
+    private String ustrCfacultySname;
+
+    @NotNull(message = "Course Type is mandatory")
     private Integer unumCtypeId;
 
     private Integer unumChecklistId;

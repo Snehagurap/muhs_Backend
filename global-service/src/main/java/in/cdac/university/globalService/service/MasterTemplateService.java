@@ -231,7 +231,7 @@ public class MasterTemplateService {
                     templateHeaderBean.setUnumIsMergeWithParent(gmstConfigTemplateHeaderMst.getUnumIsMergeWithParent() == null ? 0 : gmstConfigTemplateHeaderMst.getUnumIsMergeWithParent());
 
                     // Replace constants
-                    templateHeaderBean.setUstrHeadPrintText(replaceFacultyNameAndPurpose(gmstConfigTemplateHeaderMst.getUstrHeadPrintText(), facultyName, purpose));
+                    templateHeaderBean.setUstrHeadPrintText(replaceFacultyNameAndPurpose(templateHeaderBean.getUstrHeadPrintText(), facultyName, purpose));
                     headerBeans.add(templateHeaderBean);
                     headerIdsAdded.put(configTemplateDtl.getUnumTempleHeadId(), templateHeaderBean);
                 } else {
