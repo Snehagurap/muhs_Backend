@@ -1,10 +1,13 @@
 package in.cdac.university.globalService.controller;
 
+import in.cdac.university.globalService.bean.CollegeBean;
 import in.cdac.university.globalService.bean.ComboBean;
+import in.cdac.university.globalService.bean.MasterTemplateBean;
 import in.cdac.university.globalService.bean.TemplateToSaveBean;
 import in.cdac.university.globalService.service.MasterTemplateService;
 import in.cdac.university.globalService.util.ComboUtility;
 import in.cdac.university.globalService.util.ListPageUtility;
+import in.cdac.university.globalService.util.RequestUtility;
 import in.cdac.university.globalService.util.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -75,5 +79,16 @@ public class MasterTemplateController {
                 masterTemplateService.getApplicationById(applicationId)
         );
     }
-
+    
+    // Delete mapping replaced by POST
+    @PostMapping("delete")
+        public ResponseEntity<?> delete(@RequestBody Long[] idsToDelete) throws Exception {
+    		MasterTemplateBean masterTemplateBean = new MasterTemplateBean();
+            
+    		masterTemplateBean.setUnumUnivId(RequestUtility.getUniversityId());
+    		masterTemplateBean.setUnumEntryUid(RequestUtility.getUserId());
+            return ResponseHandler.generateResponse(
+            		masterTemplateService.delete(masterTemplateBean, idsToDelete)
+            );
+        }
 }

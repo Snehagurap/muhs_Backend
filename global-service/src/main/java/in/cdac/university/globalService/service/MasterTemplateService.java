@@ -2,6 +2,7 @@ package in.cdac.university.globalService.service;
 
 import in.cdac.university.globalService.bean.*;
 import in.cdac.university.globalService.entity.*;
+import in.cdac.university.globalService.exception.ApplicationException;
 import in.cdac.university.globalService.repository.*;
 import in.cdac.university.globalService.util.*;
 import lombok.extern.slf4j.Slf4j;
@@ -699,7 +700,36 @@ public class MasterTemplateService {
         );
     }
 
+    @Transactional
+    public ServiceResponse delete(MasterTemplateBean masterTemplateBean, Long[] idsToDelete) {
+        if (idsToDelete == null || idsToDelete.length == 0) {
+            return ServiceResponse.errorResponse(language.mandatory("Master Template Id"));
+        }
 
+        List<GmstConfigMastertemplateMst> templateMmsts = masterTemplateRepository.findByUnumIsvalidInAndUnumMtempleIdIn(
+                List.of(1, 2), List.of(idsToDelete)
+        );
+
+        if (templateMmsts.size() != idsToDelete.length) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Master Template", Arrays.toString(idsToDelete)));
+        }
+
+        // Create Log
+        int noOfRowsAffected = masterTemplateRepository.createLog(List.of(idsToDelete));
+        if (noOfRowsAffected != idsToDelete.length) {
+            throw new ApplicationException(language.deleteError("Master Template"));
+        }
+
+        templateMmsts.forEach(mTemp -> {
+        	mTemp.setUnumIsvalid(0);
+        });
+
+        masterTemplateRepository.saveAll(templateMmsts);
+        return ServiceResponse.builder()
+                .status(1)
+                .message(language.deleteSuccess("Master Template"))
+                .build();
+    }
 
     public List<TemplateToSaveBean> scrutinyListPage(Long notificationId, Integer applicationStatus) throws Exception {
 
