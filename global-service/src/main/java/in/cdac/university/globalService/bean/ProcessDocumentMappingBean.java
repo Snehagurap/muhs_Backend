@@ -42,9 +42,9 @@ public class ProcessDocumentMappingBean {
     @NotNull(message = "Documents to map are mandatory")
     private List<Long> mappedDocuments;
 
-    @ListColumn(name = "Process Name" , order = 2)
+    @ListColumn(name = "Process Name" , order = 2, width = "20%")
     private String processName;
 
-    @ListColumn(name = "Documents Name" , order = 3)
+    @ListColumn(name = "Documents Name" , order = 3 , width = "80%")
     private String mappedDocumentsName;
 }
