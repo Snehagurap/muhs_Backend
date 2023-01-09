@@ -20,10 +20,7 @@ public interface ProcessDocumentMappingRepository extends JpaRepository<GmstProc
     Integer delete(@Param("processId") Long processId, @Param("documentIds") List<Long> documentIds);
     List<GmstProcDocDtl> findByUnumIsvalid(Integer unumIsvalid);
 
-//    GmstProcDocDtl findByUnumProcessIdAndUnumDocIdAndUnumIsvalid(Long processId,List<Long> docId, Integer unumIsvalid);
-
     @Modifying(clearAutomatically = true)
-
     @Query("update GmstProcDocDtl u set u.unumIsvalid = (select coalesce(max(a.unumIsvalid), 2) + 1 " +
             "from GmstProcDocDtl a where a.unumProcessId = u.unumProcessId and a.unumIsvalid > 1) " +
             "where u.unumProcessId = :processId and u.unumDocId in (:docIds) and u.unumIsvalid = 1 ")
