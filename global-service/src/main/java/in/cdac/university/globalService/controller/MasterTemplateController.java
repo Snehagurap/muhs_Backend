@@ -80,6 +80,13 @@ public class MasterTemplateController {
         );
     }
     
+    @PostMapping("saveMasterTemplate")
+    public ResponseEntity<?> saveMasterTemplate(@Valid @RequestBody MasterTemplateBean masterTemplateBean) throws Exception {
+        return ResponseHandler.generateResponse(
+                masterTemplateService.saveMasterTemplate(masterTemplateBean)
+        );
+    }
+    
     // Delete mapping replaced by POST
     @PostMapping("delete")
         public ResponseEntity<?> delete(@RequestBody Long[] idsToDelete) throws Exception {
@@ -91,4 +98,6 @@ public class MasterTemplateController {
             		masterTemplateService.delete(masterTemplateBean, idsToDelete)
             );
         }
+    
+    
 }

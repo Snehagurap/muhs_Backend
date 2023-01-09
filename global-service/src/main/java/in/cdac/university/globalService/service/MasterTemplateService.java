@@ -14,6 +14,8 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 @Slf4j
 @Service
 public class MasterTemplateService {
@@ -698,6 +700,41 @@ public class MasterTemplateService {
                 masterTemplateRepository.findByUnumIsvalidAndUnumUnivId(1, RequestUtility.getUniversityId()),
                 MasterTemplateBean.class
         );
+    }
+    
+    @Transactional
+    public ServiceResponse saveMasterTemplate(@Valid MasterTemplateBean masterTemplateBean) throws Exception {
+		
+		GmstConfigMastertemplateMst gmstConfigMasterTemplateMst = new GmstConfigMastertemplateMst();
+        BeanUtils.copyProperties(masterTemplateBean, gmstConfigMasterTemplateMst);
+        
+        gmstConfigMasterTemplateMst.setUnumMtempleId(masterTemplateRepository.getNextId());
+        
+        masterTemplateRepository.save(gmstConfigMasterTemplateMst);
+        
+        List<GmstConfigMastertemplateTemplatedtl> gmstConfigMastertemplateTemplatedtlEntityList = new ArrayList<>();
+        GmstConfigMastertemplateTemplatedtl gmstConfigMastertemplateTemplatedtl;
+        int count = 1;
+        
+        for (TemplateBean masterTemplate : masterTemplateBean.getTemplateList()) {
+        	gmstConfigMastertemplateTemplatedtl = new GmstConfigMastertemplateTemplatedtl();
+        	gmstConfigMastertemplateTemplatedtlEntityList.add(gmstConfigMastertemplateTemplatedtl);
+            BeanUtils.copyProperties(masterTemplate, gmstConfigMastertemplateTemplatedtl);
+            gmstConfigMastertemplateTemplatedtl.setUnumMtempledtlId(Long.parseLong(
+            		gmstConfigMasterTemplateMst.getUnumMtempleId() + StringUtility.padLeftZeros(count++ + "", 5)));
+            gmstConfigMastertemplateTemplatedtl.setUnumMtempleId(gmstConfigMasterTemplateMst.getUnumMtempleId());
+            //gmstConfigMastertemplateTemplatedtl.setUnumTempleId(gmstConfigMasterTemplateMst.getUnu);
+            gmstConfigMastertemplateTemplatedtl.setUnumIsvalid(1);
+            gmstConfigMastertemplateTemplatedtl.setUnumEntryUid(RequestUtility.getUserId());
+            gmstConfigMastertemplateTemplatedtl.setUdtEffFrom(new Date());
+            gmstConfigMastertemplateTemplatedtl.setUnumUnivId(RequestUtility.getUniversityId());
+            gmstConfigMastertemplateTemplatedtl.setUdtEntryDate(new Date()); 
+
+           
+	    }
+        masterTemplateDetailRepository.saveAll(gmstConfigMastertemplateTemplatedtlEntityList);
+        return ServiceResponse.builder().status(1).message(language.updateSuccess("Template")).build();
+
     }
 
     @Transactional
