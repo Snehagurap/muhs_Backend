@@ -39,7 +39,6 @@ public class ProcessDocumentMappingService {
         Set<Long> mappedDocumentIds = processDocumentMappingRepository.findByUnumProcessIdAndUnumIsvalid(
                         processId, 1)
                 .stream().map(GmstProcDocDtl::getUnumDocId).collect(Collectors.toSet());
-        System.out.println("12345   " + mappedDocumentIds);
         List<ComboBean> mappedDocuments = new ArrayList<>();
         List<ComboBean> notMappedDocuments = new ArrayList<>();
 
@@ -57,8 +56,6 @@ public class ProcessDocumentMappingService {
 
 
     public List<ProcessDocumentMappingBean> getListPageDtl() {
-
-        //Second Method with ( O(m+n) complexity)
         List<GmstProcDocDtl> mappingData = processDocumentMappingRepository.findByUnumIsvalid(1);
         List<GmstProcessMst> processList = processRepository.findByUnumIsvalid(1);
         List<ProcessDocumentMappingBean> listPage = new ArrayList<>();
@@ -88,20 +85,11 @@ public class ProcessDocumentMappingService {
 
         Set<Long> mappedDocumentsSet = new HashSet<>(processDocumentMappingBean.getMappedDocuments());
 
-        // Documents to delete
-        List<GmstProcDocDtl> documentsToDelete = new ArrayList<>();
-        for (GmstProcDocDtl documentDtl : alreadyMappedDocuments) {
-            if (mappedDocumentsSet.contains(documentDtl.getUnumDocId())) {
-                mappedDocumentsSet.remove(documentDtl.getUnumDocId());
-            } else
-                documentsToDelete.add(documentDtl);
-        }
+        List<Long> mappedIds = alreadyMappedDocuments.stream().map(GmstProcDocDtl::getUnumDocId).toList();
 
-        if (!documentsToDelete.isEmpty()) {
-            List<Long> documentIdsToDelete = documentsToDelete.stream().map(GmstProcDocDtl::getUnumDocId).toList();
-            processDocumentMappingRepository.createLog(processDocumentMappingBean.getUnumProcessId(), documentIdsToDelete);
+        if (!mappedIds.isEmpty()) {
+            processDocumentMappingRepository.createLog(processDocumentMappingBean.getUnumProcessId(), mappedIds);
         }
-
 
         // Documents to add
         List<GmstProcDocDtl> documentsToAdd = new ArrayList<>();

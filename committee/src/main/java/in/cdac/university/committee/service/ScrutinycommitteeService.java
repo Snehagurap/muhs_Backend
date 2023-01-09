@@ -38,6 +38,38 @@ public class ScrutinycommitteeService {
     @Autowired
     RestUtility restUtility;
 
+
+    public List<ScrutinycommitteeBean> getScrutinyCommitteeList() {
+        List<GbltScrutinycommitteeMst> gbltScrutinycommitteeMstList = scrutinycommitteeMstRepository.findByUnumIsvalidAndUnumUnivId(1,RequestUtility.getUniversityId());
+
+        List<GbltCommitteeRulesetMst> gbltCommitteeRulesetMstList = committeeRulesetMstRepository.findByUnumUnivIdAndUnumIsvalid(RequestUtility.getUniversityId(), 1);
+
+        Map<Long, String> committeeRsMap = gbltCommitteeRulesetMstList.stream().collect(Collectors.toMap(
+                GbltCommitteeRulesetMst::getUnumComRsId, GbltCommitteeRulesetMst::getUstrComRsName
+        ));
+
+        StreamBean[] streamBean = restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_ALL_STREAMS,  StreamBean[].class);
+
+        Map<Long, String> streamMap = Arrays.stream(streamBean).collect(Collectors.toMap(
+                StreamBean::getUnumStreamId, StreamBean::getUstrStreamFname
+        ));
+
+        FacultyBean[] facultyBeans = restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_ALL_FACULTY, FacultyBean[].class);
+        Map<Long, String> facultyMap = Arrays.stream(facultyBeans).collect(Collectors.toMap(
+                FacultyBean::getUnumCfacultyId, FacultyBean::getUstrCfacultyFname
+        ));
+
+        List<ScrutinycommitteeBean> scrutinycommitteeBeanList = gbltScrutinycommitteeMstList.stream().map(gbltScrutinycommitteeMst -> {
+            ScrutinycommitteeBean scrutinycommitteeBean  = BeanUtils.copyProperties(gbltScrutinycommitteeMst, ScrutinycommitteeBean.class);
+            scrutinycommitteeBean.setUstrComRsName(committeeRsMap.getOrDefault(scrutinycommitteeBean.getUnumComRsId(),""));
+            scrutinycommitteeBean.setUstrCfacultyName(facultyMap.getOrDefault(scrutinycommitteeBean.getUnumScomCfacultyId(), ""));
+            scrutinycommitteeBean.setUstrStreamName(streamMap.getOrDefault(scrutinycommitteeBean.getUnumStreamId(),""));
+            return scrutinycommitteeBean;
+        }).toList();
+        return scrutinycommitteeBeanList;
+    }
+
+
     public ServiceResponse getComRsDataForScrutinyComCreation(Long committeeRsId, Integer facultyId) {
         if(committeeRsId == null || facultyId == null) {
             return ServiceResponse.errorResponse(language.mandatory("Committee Ruleset Id & Faculty Id"));
@@ -74,32 +106,32 @@ public class ScrutinycommitteeService {
             return ServiceResponse.errorResponse("Unable to get Teacher Profiles");
         }
 
-        Map<Long, Set<Integer>> facultyWiseTeachers = new HashMap<>();
+//        Map<Long, Set<Integer>> facultyWiseTeachers = new HashMap<>();
 
-//        Map<Long, Set<Integer>> facultyWiseTeachers = Arrays.stream(teacherProfiles)
-//                .filter(employeeProfileBean -> employeeProfileBean.getUnumFacultyId()!=null)
-//                .collect(Collectors.toList());
-
-        Arrays.stream(teacherProfiles).filter(employeeProfileBean -> employeeProfileBean.getUnumFacultyId()!=null)
-                .forEach(employeeProfileBean -> {
-                    Set<Integer> facultyIds = new HashSet<>();
-                    if(facultyWiseTeachers.containsKey(employeeProfileBean.getUnumEmpId())){
-                        facultyIds = facultyWiseTeachers.get(employeeProfileBean.getUnumEmpId());
-                    }
-                    facultyIds.add(employeeProfileBean.getUnumFacultyId());
-                    facultyWiseTeachers.put(employeeProfileBean.getUnumEmpId(), facultyIds);
-                });
+//        Arrays.stream(teacherProfiles).filter(employeeProfileBean -> employeeProfileBean.getUnumFacultyId()!=null)
+//                .forEach(employeeProfileBean -> {
+//                    Set<Integer> facultyIds = new HashSet<>();
+//                    if(facultyWiseTeachers.containsKey(employeeProfileBean.getUnumEmpId())){
+//                        facultyIds = facultyWiseTeachers.get(employeeProfileBean.getUnumEmpId());
+//                    }
+//                    facultyIds.add(employeeProfileBean.getUnumFacultyId());
+//                    facultyWiseTeachers.put(employeeProfileBean.getUnumEmpId(), facultyIds);
+//                });
 
 
 
-//        Map<Long, Set<Integer>> facultyWiseTeachers = Arrays.stream(teacherProfiles).filter(employeeProfileBean -> employeeProfileBean.getUnumFacultyId()!=null)
-//                .collect(Collectors.toMap(EmployeeProfileBean::getUnumEmpId,EmployeeProfileBean::getFacultyIds,(e1,e2)-> {
-//                    Set<Integer> ids = new HashSet<>();
-//                    //ids.add((Integer) e1);
-//                   // ids.add(e2);
-//                    System.out.println(e1);
-//                    return e1;
-//                }));
+        Map<Long, Set<Integer>> facultyWiseTeachers = Arrays.stream(teacherProfiles).filter(employeeProfileBean -> employeeProfileBean.getUnumFacultyId()!=null)
+                .collect(Collectors.toMap(EmployeeProfileBean::getUnumEmpId, EmployeeProfileBean -> {
+                        Set<Integer> ids = new HashSet<>();
+                        ids.add(EmployeeProfileBean.getUnumFacultyId());
+                        return ids;
+                }, (e1, e2) -> {
+                        e1.addAll(e2);
+                        return e1;
+
+                }));
+
+
 
         // Get Teachers current Details
         EmployeeCurrentDetailBean[] teacherCurrentDetails = restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_ALL_TEACHER_CURRENT_DETAILS,  EmployeeCurrentDetailBean[].class);
@@ -111,11 +143,6 @@ public class ScrutinycommitteeService {
                 .filter(employeeCurrentDetailBean -> employeeCurrentDetailBean.getUnumEmpDesigid()!=null)
                 .collect(Collectors.toMap(EmployeeCurrentDetailBean::getUnumEmpId, EmployeeCurrentDetailBean::getUnumEmpDesigid));
 
-
-//        teachers.forEach(employeeBean -> {
-//            employeeBean.setUnumEmpDesigid(DesignationWiseTeachers.getOrDefault(employeeBean.getUnumEmpId(),null));
-//            employeeBean.setUnumFacultyId(facultyWiseTeachers.getOrDefault(employeeBean.getUnumEmpId(), null));
-//        });
 
         List<CommitteeRulesetDtlBean> committeeRulesetDtlBeanList =gbltCommitteeRulesetDtlList.stream().map(committerulesetDtl -> {
             CommitteeRulesetDtlBean committeeRulesetDtlBean = BeanUtils.copyProperties(committerulesetDtl, CommitteeRulesetDtlBean.class);
@@ -162,7 +189,6 @@ public class ScrutinycommitteeService {
     public ServiceResponse saveScrutinyCommittee(ScrutinycommitteeBean scrutinycommitteeBean) {
         int slNo = 1;
         Set<Long> members = new HashSet<>();
-        System.out.println(scrutinycommitteeBean.getScrutinyComMemberDtl());
         for(ScrutinycommitteeMemberDtlBean sComMemberDtlBean : scrutinycommitteeBean.getScrutinyComMemberDtl()) {
             if(sComMemberDtlBean.getUnumScomPref1Empid()==null &&
                     sComMemberDtlBean.getUnumScomPref2Empid()==null &&
@@ -193,11 +219,57 @@ public class ScrutinycommitteeService {
 
             slNo++;
         }
+        Long scomId = null;
+        // Save
+        if(scrutinycommitteeBean.getIsSave().equals(1)){
+            scomId = scrutinycommitteeMstRepository.getNextId();
+            GbltScrutinycommitteeMst gbltScrutinycommitteeMst = BeanUtils.copyProperties(scrutinycommitteeBean, GbltScrutinycommitteeMst.class);
+            gbltScrutinycommitteeMst.setUnumScomId(scomId);
+            scrutinycommitteeMstRepository.save(gbltScrutinycommitteeMst);
+        }
+        // Modify
+        else {
+            if(scrutinycommitteeBean.getIsSave().equals(0)){
+                if(scrutinycommitteeBean.getUnumScomId() == null) {
+                    return ServiceResponse.errorResponse(language.mandatory("Srutiny Committee Id "));
+                }
+                // create Log Scrutiny committee Mst
+                scomId = scrutinycommitteeBean.getUnumScomId();
+                int noOfRecordsAffected = scrutinycommitteeMstRepository.createLog(List.of(scomId));
+                if(noOfRecordsAffected == 0) {
+                    throw new ApplicationException(language.notFoundForId("Scrutiny Committee", scomId));
+                }
 
-        Long SComId = scrutinycommitteeMstRepository.getNextId();
-        GbltScrutinycommitteeMst gbltScrutinycommitteeMst = BeanUtils.copyProperties(scrutinycommitteeBean, GbltScrutinycommitteeMst.class);
-        gbltScrutinycommitteeMst.setUnumScomId(SComId);
-        scrutinycommitteeMstRepository.save(gbltScrutinycommitteeMst);
+                // create Log Scrutiny Committee Member Dtl
+                int noOfRecordsAffectedDTL = scrutinycommitteeMemberDtlRepository.createLog(List.of(scomId));
+                if(noOfRecordsAffectedDTL == 0) {
+                    throw new ApplicationException(language.notFoundForId("Scrutiny Committee Members", scomId));
+                }
+
+                //save new data
+                GbltScrutinycommitteeMst gbltScrutinycommitteeMst = BeanUtils.copyProperties(scrutinycommitteeBean, GbltScrutinycommitteeMst.class);
+                scrutinycommitteeMstRepository.save(gbltScrutinycommitteeMst);
+            }
+
+        }
+
+        // Scrutiny Committee Member
+
+        // Modify
+        if(scrutinycommitteeBean.getIsSave().equals(0)){
+            if(scomId == null) {
+                return ServiceResponse.errorResponse(language.mandatory("Srutiny Committee Id "));
+            }
+            // create Log
+//            int noOfRecordsAffected = scrutinycommitteeMemberDtlRepository.createLog(List.of(scomId));
+//            if(noOfRecordsAffected == 0) {
+//                throw new ApplicationException(language.notFoundForId("Scrutiny Committee Members", scomId));
+//            }
+
+        }
+
+
+
 
         slNo = 1;
         List<GbltScrutinycommitteeMemberDtl> membersToSave = new ArrayList<>();
@@ -250,10 +322,11 @@ public class ScrutinycommitteeService {
                 committeeMembers.add(sComMemberDtlBean.getUnumScomPrefOtherEmpid());
             }
 
+
             gbltScrutinycommitteeMemberDtl.setUnumScomMemberId(scrutinycommitteeMemberDtlRepository.getNextId());
             gbltScrutinycommitteeMemberDtl.setUnumIsvalid(scrutinycommitteeBean.getUnumIsvalid());
             gbltScrutinycommitteeMemberDtl.setUdtEntryDate(scrutinycommitteeBean.getUdtEntryDate());
-            gbltScrutinycommitteeMemberDtl.setUnumScomId(SComId);
+            gbltScrutinycommitteeMemberDtl.setUnumScomId(scomId);
             gbltScrutinycommitteeMemberDtl.setUnumEntryUid(scrutinycommitteeBean.getUnumEntryUid());
 
             gbltScrutinycommitteeMemberDtl.setUnumScomMemberSno(slNo++);
@@ -318,10 +391,12 @@ public class ScrutinycommitteeService {
             }
         }
 
-        return ServiceResponse.builder()
-                .status(1)
-                .message(language.saveSuccess("Scrutiny Committee Member Mapping"))
-                .build();
+        if(scrutinycommitteeBean.getIsSave().equals(1)) {
+            return ServiceResponse.successMessage(language.saveSuccess("Scrutiny Committee Member Mapping"));
+        }
+        else{
+            return ServiceResponse.successMessage(language.updateSuccess("Scrutiny Committee Member Mapping"));
+        }
     }
 
     private void addMember(List<Long> members, Long employeeId) {
@@ -329,6 +404,46 @@ public class ScrutinycommitteeService {
             members.add(employeeId);
     }
 
+
+    public ServiceResponse getScrutinyCommitteeById(Long scomId) {
+        if(scomId == null){
+            return ServiceResponse.errorResponse(language.mandatory("Scrutiny Committee Id "));
+        }
+
+        Optional<GbltScrutinycommitteeMst> gbltScrutinycommitteeMstOptional = scrutinycommitteeMstRepository.findByUnumScomIdAndUnumIsvalidAndUnumUnivId(
+                scomId, 1, RequestUtility.getUniversityId()
+        );
+
+        if(gbltScrutinycommitteeMstOptional.isEmpty()) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Scrutiny Committee", scomId));
+        }
+
+        ScrutinycommitteeBean scrutinycommitteeBean = BeanUtils.copyProperties(gbltScrutinycommitteeMstOptional.get(), ScrutinycommitteeBean.class);
+
+        List<GbltScrutinycommitteeMemberDtl> gbltScrutinycommitteeMemberDtlList = scrutinycommitteeMemberDtlRepository.findByUnumScomIdAndUnumIsvalidAndUnumUnivId(
+                scomId, 1, RequestUtility.getUniversityId()
+        );
+
+        if(gbltScrutinycommitteeMemberDtlList.isEmpty()) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Scrutiny Committee Members", scomId));
+        }
+
+
+        // committee title/role data
+        Map<Integer, String> committeeRoleMapList = committeeRoleRepository.getAllCommitteeRoles(RequestUtility.getUniversityId()).stream()
+                .collect(Collectors.toMap(GmstCommitteeRoleMst::getUnumRoleId,GmstCommitteeRoleMst::getUstrRoleFname));
+
+        List<ScrutinycommitteeMemberDtlBean> scomMemberDtlBeanList = gbltScrutinycommitteeMemberDtlList.stream().map(gbltScrutinycommitteeMemberDtl -> {
+            ScrutinycommitteeMemberDtlBean scommitteeMemberDtlBean = BeanUtils.copyProperties(gbltScrutinycommitteeMemberDtl, ScrutinycommitteeMemberDtlBean.class);
+            scommitteeMemberDtlBean.setUstrRoleName(committeeRoleMapList.getOrDefault(scommitteeMemberDtlBean.getUnumRoleId(),""));
+            return scommitteeMemberDtlBean;
+        }).toList();
+
+
+        scrutinycommitteeBean.setScrutinyComMemberDtl(scomMemberDtlBeanList);
+
+        return ServiceResponse.successObject(scrutinycommitteeBean);
+    }
 
 }
 
