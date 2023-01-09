@@ -11,7 +11,6 @@ import java.util.Date;
 @Setter
 public class FacultyStreamDtlBean {
 
-    @ComboKey
     private Long unumFacStreamId;
 
     private Integer unumIsvalid;
@@ -30,13 +29,13 @@ public class FacultyStreamDtlBean {
 
     private Long unumLstModUid;
 
+    @ComboKey
     private Long unumStreamId;
 
     private Integer unumUnivId;
 
     private String ustrDescription;
 
-    @ComboValue(order = 1)
     private String ustrFacStreamCode;
 
     @ComboValue(order = 2)
