@@ -79,7 +79,7 @@ public class GbltScrutinycommitteeMemberDtl implements Serializable {
 	private String ustrScomPref5Empname;
 
 	@Column(name="unum_role_id")
-	private Long unumRoleId;
+	private Integer unumRoleId;
 
 	@Column(name="unum_com_rs_dtl_id")
 	private Long unumComRsDtlId;

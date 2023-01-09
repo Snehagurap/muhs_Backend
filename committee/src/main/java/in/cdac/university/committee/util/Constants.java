@@ -22,4 +22,6 @@ public class Constants {
 
     public static final String HeaderEnglish = "Maharashtra University of Health Sciences, Nashik";
     public static final String HeaderHindi = "महाराष्ट्र आरोग्य विज्ञान विद्यापीठ, नाशिक";
+    public static final String URL_GET_ALL_STREAMS = "/global/stream/all";
+    public static final String URL_GET_ALL_FACULTY = "/global/faculty/all";
 }

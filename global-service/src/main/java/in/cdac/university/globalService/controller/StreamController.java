@@ -79,4 +79,10 @@ public class StreamController {
                 streamService.deleteStreamDetails(streamBean, idsToDelete)
         );
     }
+
+    @GetMapping("all")
+    public ResponseEntity<?> getAllStreams() throws Exception {
+        return ResponseHandler.generateOkResponse(streamService.getStreamCombo());
+    }
+
 }
