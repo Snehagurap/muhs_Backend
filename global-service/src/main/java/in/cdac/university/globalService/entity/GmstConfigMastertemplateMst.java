@@ -61,5 +61,11 @@ public class GmstConfigMastertemplateMst implements Serializable {
 
 	@Column(name="ustr_mtemple_name")
 	private String ustrMtempleName;
+	
+	@Column(name="ustr_mtemplate_header")
+	private String ustrMtempleHeader;
+
+	@Column(name="ustr_mtemplate_footer")
+	private String ustrMtempleFooter;
 
 }

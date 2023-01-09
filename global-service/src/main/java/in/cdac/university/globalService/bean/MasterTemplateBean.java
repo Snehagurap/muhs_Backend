@@ -59,4 +59,19 @@ public class MasterTemplateBean {
     private Long unumApplicationId;
 
     private List<TemplateBean> templateList;
+    
+    private Long unumMtempledtlId;
+    
+    private Long unumTempleId;
+    
+    private String ustrMtempdtlDescription;
+    
+    private Integer unumTemplateOrderNo;
+    
+    private String ustrMtemplateHeader;
+    
+    private String ustrMtemplateFooter;
+    
+    
+    
 }
