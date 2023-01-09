@@ -44,13 +44,13 @@ public class FacultyStreamDtlBean {
     private String ustrFacStreamCode;
 
     @ComboValue(order = 2)
-    @ListColumn(order = 3, name=" Stream Names")
+    @ListColumn(order = 3, name=" Stream Names", width="80%")
     private String ustrFacStreamFname;
 
     private String ustrFacStreamSname;
 
     private List<Long> mappedStreamIds;
 
-    @ListColumn(order = 2, name="Faculty Name")
+    @ListColumn(order = 2, name="Faculty Name", width="20%")
     private String gstrFacultyName;
 }
