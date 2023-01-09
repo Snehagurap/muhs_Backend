@@ -43,7 +43,7 @@ public class FacultyStreamDtlBean {
     private String ustrFacStreamCode;
 
     @ComboValue(order = 2)
-    @ListColumn(order = 3, name=" Stream Names", width="80%")
+    @ListColumn(order = 3, name="Stream Names", width="80%")
     private String ustrFacStreamFname;
 
     private String ustrFacStreamSname;

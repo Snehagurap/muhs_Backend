@@ -5,6 +5,7 @@ import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 
@@ -30,13 +31,11 @@ public class TemplateMasterDtlsBean {
 	@JsonIgnore
 	private Long unumEntryUid;
 
-
 	private Long unumTempleCompItemId;
 
-	
 	private Long unumTempleCompId;
 
-	
+	@NotNull(message = "Template Head Id is mandatory")
 	private Long unumTempleHeadId;
 
 	@JsonIgnore
