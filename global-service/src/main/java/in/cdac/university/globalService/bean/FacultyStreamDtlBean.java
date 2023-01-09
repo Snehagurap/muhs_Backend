@@ -2,10 +2,12 @@ package in.cdac.university.globalService.bean;
 
 import in.cdac.university.globalService.util.annotations.ComboKey;
 import in.cdac.university.globalService.util.annotations.ComboValue;
+import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import javax.validation.constraints.NotNull;
+import java.util.*;
 
 @Getter
 @Setter
@@ -23,6 +25,8 @@ public class FacultyStreamDtlBean {
 
     private Date udtLstModDate;
 
+    @NotNull(message = "Faculty is mandatory")
+    @ListColumn(omit = true)
     private Integer unumCfacultyId;
 
     private Long unumEntryUid;
@@ -39,7 +43,13 @@ public class FacultyStreamDtlBean {
     private String ustrFacStreamCode;
 
     @ComboValue(order = 2)
+    @ListColumn(order = 3, name=" Stream Names")
     private String ustrFacStreamFname;
 
     private String ustrFacStreamSname;
+
+    private List<Long> mappedStreamIds;
+
+    @ListColumn(order = 2, name="Faculty Name")
+    private String gstrFacultyName;
 }

@@ -15,7 +15,7 @@ import java.util.Optional;
 @Repository
 public interface CommitteeRoleRepository extends JpaRepository<GmstCommitteeRoleMst, GmstCommitteeRoleMstPK> {
 
-    @Query("select max(a.unumRoleId) + 1 from GmstCommitteeRoleMst a")
+    @Query("select colesce(max(a.unumRoleId),0) + 1 from GmstCommitteeRoleMst a")
     Integer getNextId();
 
     @Query("select c from GmstCommitteeRoleMst c " +
