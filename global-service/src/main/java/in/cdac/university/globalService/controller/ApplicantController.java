@@ -37,6 +37,7 @@ public class ApplicantController {
 
     @PostMapping("draft/validateOtp")
     public ResponseEntity<?> validateOtp(@RequestBody DraftApplicantBean draftApplicantBean) {
+        System.out.println("Hello");
         return ResponseHandler.generateResponse(
                 draftApplicantService.validateOtp(draftApplicantBean)
         );
@@ -79,7 +80,7 @@ public class ApplicantController {
 
     // Put mapping replaced by POST
 @PostMapping("verify")
-    public ResponseEntity<?> verifyApplicant(@RequestBody ApplicantBean applicantBean) throws Exception {
+    public ResponseEntity<?> verifyApplicant(@Valid @RequestBody ApplicantBean applicantBean) throws Exception {
         applicantBean.setUnumVerifiedBy(RequestUtility.getUserId());
         applicantBean.setUdtVerifiedDate(new Date());
         return ResponseHandler.generateResponse(

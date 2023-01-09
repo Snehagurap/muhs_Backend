@@ -1,16 +1,22 @@
 package in.cdac.university.globalService.bean;
 
-import lombok.Getter;
-import lombok.Setter;
+import in.cdac.university.globalService.util.annotations.ComboKey;
+import in.cdac.university.globalService.util.annotations.ComboValue;
+import lombok.*;
 
 import java.util.Date;
 
+@EqualsAndHashCode(callSuper = true)
 @Getter
 @Setter
+@Data
+@ToString
 public class DistrictBean extends GlobalBean {
 
+    @ComboKey
     private Integer numDistId;
     private String strDistCode;
+    @ComboValue
     private String strDistName;
     private String strDistStName;
     private Integer gnumSlno;
@@ -26,4 +32,5 @@ public class DistrictBean extends GlobalBean {
     private Double hstnumLongitude;
     private Double hstnumLatitude;
     private String hststrMapFeatureId;
+
 }

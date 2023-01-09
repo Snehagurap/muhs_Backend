@@ -2,7 +2,6 @@ package in.cdac.university.globalService.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-
 import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
@@ -64,5 +63,6 @@ public class GmstFacultyStreamDtl implements Serializable {
 
 	@Column(name="ustr_fac_stream_sname")
 	private String ustrFacStreamSname;
+
 
 }

@@ -2,6 +2,7 @@ package in.cdac.university.usm.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -13,8 +14,6 @@ import java.util.Date;
 public class UmmtDatasetMst implements java.io.Serializable {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ummt_dataset_mst")
-	@SequenceGenerator(name = "ummt_dataset_mst", sequenceName = "usm.seq_ummt_dataset_mst", allocationSize = 1)
 	@Column(name = "gnum_dataset_id", unique = true, nullable = false)
 	private Integer gnumDatasetId;
 	 
@@ -49,4 +48,11 @@ public class UmmtDatasetMst implements java.io.Serializable {
 	
 	@Column(name = "gnum_lstmod_by", precision = 8)
 	private Integer gnumLstmodBy;
+
+	@Formula("(select m.gstr_module_schema from usm.umst_db_schema_mst m where m.gbl_isvalid=1 and m.gnum_module_id=gnum_module_id)")
+	private String gstrSchemaName;
+
+	@Formula("coalesce((select string_agg(udf.gstr_filter_column_name , ', ' order by udf.gstr_filter_order) from usm.ummt_dataset_filter_mst udf  where udf.gstr_filter_column_name <> '1' and udf.gnum_dataset_id = gnum_dataset_id),'-')")
+	private String gstrFilterColumnName;
+
 }

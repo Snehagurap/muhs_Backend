@@ -21,7 +21,7 @@ public interface FacultyRepository extends JpaRepository<GmstCoursefacultyMst, G
             "order by ustrCfacultyFname")
     List<GmstCoursefacultyMst> getAllFaculty(@Param("universityId") Integer universityId);
 
-    List<GmstCoursefacultyMst> findByUnumIsvalid(Integer unumIsvalid);
+    List<GmstCoursefacultyMst> findByUnumIsvalidAndUnumUnivId(Integer unumIsvalid, Integer universityId);
 
 	Optional<GmstCoursefacultyMst> findByUnumCfacultyIdAndUnumIsvalid(Integer unumFacultyId, int unumIsvalid);
 

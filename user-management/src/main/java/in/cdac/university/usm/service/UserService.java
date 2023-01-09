@@ -261,4 +261,7 @@ public class UserService {
                 UserBean.class
         );
     }
+    public List<UserBean> getUserCombo(Integer userCategoryId, Integer universityId){
+        return BeanUtils.copyListProperties(userRepository.findByGnumUserCatIdAndUniversityMstUnumUnivIdAndGnumIsvalidOrderByGstrUserFullNameAsc(userCategoryId,universityId,1),UserBean.class);
+    }
 }

@@ -49,6 +49,7 @@ public class DraftApplicantService {
         String mobileOtp = RandomStringUtils.randomNumeric(6);
 //        System.out.println("ID---"+draftApplicantRepository.getNextId());
         applicantDraftMst.setUnumApplicantDraftid(draftApplicantRepository.getNextId());
+        System.out.println("draftApplicantRepository.getNextId()>>"+draftApplicantRepository.getNextId());
         applicantDraftMst.setUstrGeneratedEmailotp(emailOtp);
         applicantDraftMst.setUstrGeneratedMotp(mobileOtp);
         draftApplicantRepository.save(applicantDraftMst);

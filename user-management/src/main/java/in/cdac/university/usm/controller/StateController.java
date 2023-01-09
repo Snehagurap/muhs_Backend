@@ -25,4 +25,11 @@ public class StateController {
         comboBeans.addAll(ComboUtility.generateComboData(stateService.getAllStates(countryCode)));
         return ResponseHandler.generateOkResponse(comboBeans);
     }
+
+    @GetMapping("stateCombo")
+    public @ResponseBody ResponseEntity<?> getStateByStateCode() throws IllegalAccessException {
+        return ResponseHandler.generateOkResponse(
+                ComboUtility.generateComboData(stateService.getStateByStateCode())
+        );
+    }
 }

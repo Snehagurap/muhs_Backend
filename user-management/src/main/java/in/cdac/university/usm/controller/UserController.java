@@ -65,4 +65,13 @@ public class UserController {
         userBean.setGnumLstmodBy(RequestUtility.getUserId());
         return ResponseHandler.generateResponse(userService.delete(userBean));
     }
+
+    //user list on the basis of universityId and userCategoryID
+    @GetMapping("combo/{userCategoryId}/{universityId}")
+    public @ResponseBody ResponseEntity<?> getUserCombo(@PathVariable("userCategoryId") Integer userCategoryId,
+    @PathVariable("universityId") Integer universityId) throws IllegalAccessException {
+        return ResponseHandler.generateOkResponse(
+                ComboUtility.generateComboData(userService.getUserCombo(userCategoryId,universityId))
+        );
+    }
 }

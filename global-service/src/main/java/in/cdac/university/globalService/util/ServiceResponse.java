@@ -4,10 +4,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+
 @Getter
 @Builder
 @ToString
-public class ServiceResponse {
+public class ServiceResponse  {
 
     private final Integer status;
     private String message;

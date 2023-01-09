@@ -17,7 +17,7 @@ import java.util.Date;
 public class ApplicationTrackerController {
 
     @Autowired
-    ApplicationTrackerService applicationTrackerService;
+    private ApplicationTrackerService applicationTrackerService;
 
     @PostMapping("scrutiny")
     public ResponseEntity<?> applicationScrutiny(@Valid @RequestBody ApplicationTrackerDtlBean applicationTrackerDtlBean) throws Exception {

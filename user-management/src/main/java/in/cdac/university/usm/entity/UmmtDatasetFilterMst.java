@@ -9,11 +9,15 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
+@IdClass(UmmtDatasetFilterPK.class)
 @Table(name = "ummt_dataset_filter_mst", schema = "usm")
 public class UmmtDatasetFilterMst implements java.io.Serializable {
 
-	@EmbeddedId
-	private UmmtDatasetFilterPK datasetFilterPK;
+	@Id
+	private Integer gnumDatasetId;
+
+	@Id
+	private Integer gnumSlNo;
 	
 	@Column(name = "gstr_table_name", length = 100)
 	private String gstrTableName;
@@ -39,4 +43,5 @@ public class UmmtDatasetFilterMst implements java.io.Serializable {
 	
 	@Column(name = "gstr_filter_display", nullable = false, length = 50)
 	private String gstrFilterDisplay;
+
 }

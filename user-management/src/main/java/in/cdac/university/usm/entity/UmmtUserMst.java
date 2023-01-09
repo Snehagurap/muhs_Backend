@@ -114,4 +114,8 @@ public class UmmtUserMst implements java.io.Serializable {
 			"else 'Locked' end))")
 	private String lockStatus;
 
+	@Formula("(select a.gstr_dataset_name from usm.ummt_dataset_mst a where a.gnum_dataset_id = gnum_dataset_id)")
+	private String defaultDataSetName;
+
+
 }

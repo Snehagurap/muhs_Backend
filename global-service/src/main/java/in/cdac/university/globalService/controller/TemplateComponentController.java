@@ -23,47 +23,46 @@ import in.cdac.university.globalService.util.ResponseHandler;
 @RequestMapping("/global/template/component")
 public class TemplateComponentController {
 
-	@Autowired
-	private TemplateComponentService templateComponentService;
+    @Autowired
+    private TemplateComponentService templateComponentService;
 
-	@GetMapping("listPage")
-	public ResponseEntity<?> listPage() throws Exception {
-		return ResponseHandler
-				.generateOkResponse(ListPageUtility.generateListPageData(templateComponentService.listPage()));
-	}
+    @GetMapping("listPage")
+    public ResponseEntity<?> listPage() throws Exception {
+        return ResponseHandler
+                .generateOkResponse(ListPageUtility.generateListPageData(templateComponentService.listPage()));
+    }
 
-	@PostMapping("save")
-	public ResponseEntity<?> save(@Valid @RequestBody TemplateComponentBean templateBean) throws Exception {
+    @PostMapping("save")
+    public ResponseEntity<?> save(@Valid @RequestBody TemplateComponentBean templateBean) throws Exception {
 
-		return ResponseHandler.generateResponse(templateComponentService.save(templateBean));
-	}
+        return ResponseHandler.generateResponse(templateComponentService.save(templateBean));
+    }
 
-	// Put mapping replaced by POST
-@PostMapping("update")
-	public ResponseEntity<?> update(@Valid @RequestBody TemplateComponentBean templateBean) throws Exception {
-		return ResponseHandler.generateResponse(templateComponentService.update(templateBean));
-	}
+    // Put mapping replaced by POST
+    @PostMapping("update")
+    public ResponseEntity<?> update(@Valid @RequestBody TemplateComponentBean templateBean) throws Exception {
+        return ResponseHandler.generateResponse(templateComponentService.update(templateBean));
+    }
 
-	// Delete mapping replaced by POST
-@PostMapping("delete")
-	public ResponseEntity<?> delete(@RequestBody List<Long> idsToDelete) throws Exception {
-		return ResponseHandler.generateOkResponse(templateComponentService.delete(idsToDelete));
+    // Delete mapping replaced by POST
+    @PostMapping("delete")
+    public ResponseEntity<?> delete(@RequestBody List<Long> idsToDelete) throws Exception {
+        return ResponseHandler.generateOkResponse(templateComponentService.delete(idsToDelete));
 
-	}
-	
-	@GetMapping("getCompDetailsByParentID/{unumTempleCompId}")
-	public ResponseEntity<?> getCompDetailsByParentID(@PathVariable("unumTempleCompId") Long unumTempleCompId) throws Exception {
-		return ResponseHandler.generateOkResponse(
-				templateComponentService.getCompDetailsByParentID(unumTempleCompId)
+    }
+
+    @GetMapping("getCompDetailsByParentID/{unumTempleCompId}")
+    public ResponseEntity<?> getCompDetailsByParentID(@PathVariable("unumTempleCompId") Long unumTempleCompId) throws Exception {
+        return ResponseHandler.generateOkResponse(
+                templateComponentService.getCompDetailsByParentID(unumTempleCompId)
         );
-	}
-	
-	@GetMapping("getAllCompMst")
-	public ResponseEntity<?> getAllCompDetailsByParentID() throws Exception {
-		 return ResponseHandler.generateOkResponse(
-	                ComboUtility.generateComboData(templateComponentService.getUnumTempleCompIds())
-	        );
-	}
-	
-	
+    }
+
+    @GetMapping("getAllCompMst")
+    public ResponseEntity<?> getAllCompDetailsByParentID() throws Exception {
+        return ResponseHandler.generateOkResponse(
+                ComboUtility.generateComboDataWithSelectValue(templateComponentService.getUnumTempleCompIds())
+        );
+    }
+
 }

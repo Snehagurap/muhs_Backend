@@ -42,6 +42,7 @@ public class UserBean extends GlobalBean {
     private Date gdtExpiryDate;
 
     @NotNull(message = "Dataset is mandatory")
+    @ComboKey(index = 2)
     private Integer gnumDatasetId;
 
     private Integer gnumDefaultDataId;
@@ -104,6 +105,7 @@ public class UserBean extends GlobalBean {
     @NotBlank(message = "Email Id is mandatory")
     private String gstrEmailId;
 
+    @ComboKey(index = 3)
     private String defaultDataSetName;
     private String defaultRoleName;
 
