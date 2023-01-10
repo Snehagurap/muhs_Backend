@@ -2,7 +2,7 @@ package in.cdac.university.globalService.util;
 
 public class Constants {
 
-    public static final Integer APPLICATION_STATUS_FINAL_SAVE = 2;
+    public static final Integer APPLICATION_STATUS_FINAL_SAVE = 3;
 
     public static final String dateFormat = "dd-MM-yyyy";
 

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ConfigApplicantDataMasterRepository extends JpaRepository<GbltConfigApplicationDataMst, GbltConfigApplicationDataMstPK> {
+public interface ConfigApplicationDataMasterRepository extends JpaRepository<GbltConfigApplicationDataMst, GbltConfigApplicationDataMstPK> {
 
     @Query(value = "select to_char(current_date, 'yymm') || lpad(nextval('templedata.seq_gblt_config_application_data_mst')\\:\\:text, 6, '0')", nativeQuery = true)
     Long getNextId();

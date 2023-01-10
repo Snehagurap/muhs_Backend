@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
 
@@ -74,7 +75,7 @@ public class FacultyStreamDtlService {
 
         // Streams to delete
         List<GmstFacultyStreamDtl> streamsToDelete = new ArrayList<>();
-        System.out.println("already Map "+ alreadyMappedStreams);
+
         for(GmstFacultyStreamDtl gmstFacultyStreamDtl : alreadyMappedStreams){
 
             if(mappedStreamsSet.contains(gmstFacultyStreamDtl.getUnumStreamId()))
@@ -87,7 +88,7 @@ public class FacultyStreamDtlService {
             facultyStreamDtlRepository.delete(facultyStreamDtlBean.getUnumCfacultyId(),facultyStreamDtlBean.getUnumUnivId(),streamIdsToDelete);
         }
 
-        System.out.println(mappedStreamsSet);
+
         //Streams to add
         List<GmstFacultyStreamDtl> streamsToAdd = new ArrayList<>();
         for (Long streamId: mappedStreamsSet) {
@@ -96,10 +97,10 @@ public class FacultyStreamDtlService {
             gmstFacultyStreamDtl.setUnumStreamId(streamId);
            GmstStreamMst gmstStreamMst = streamRepository.findByUnumStreamIdAndUnumIsvalid(streamId,1);
             gmstFacultyStreamDtl.setUstrFacStreamFname(gmstStreamMst.getUstrStreamFname());
-            System.out.println("gmstFacultyStreamDtl.setUnumStreamId()>>>"+gmstFacultyStreamDtl.getUnumStreamId());
+
             streamsToAdd.add(gmstFacultyStreamDtl);
         }
-        System.out.println("Size>>>"+streamsToAdd);
+
         if (!streamsToAdd.isEmpty()){
             facultyStreamDtlRepository.saveAll(streamsToAdd);
         }
@@ -117,20 +118,26 @@ public class FacultyStreamDtlService {
         List<GmstFacultyStreamDtl> gmstFacultyStreamDtls = facultyStreamDtlRepository.findByUnumIsvalidAndUnumUnivId(1,RequestUtility.getUniversityId());
 
         List<FacultyStreamDtlBean> l3 = new ArrayList<>();
-        for(GmstCoursefacultyMst coursefacultyMst :  facultyList){
 
-            String streamName = gmstFacultyStreamDtls.stream()
-                    .filter(a -> a.getUnumCfacultyId().equals(coursefacultyMst.getUnumCfacultyId()))
-                    .map(GmstFacultyStreamDtl::getUstrFacStreamFname).collect(joining(","));
-
-                if(!streamName.isEmpty()){
-                    FacultyStreamDtlBean facultyStreamDtlBean = new FacultyStreamDtlBean();
-                    facultyStreamDtlBean.setUnumCfacultyId(coursefacultyMst.getUnumCfacultyId());
-                    facultyStreamDtlBean.setUstrFacStreamFname(streamName);
-                    facultyStreamDtlBean.setGstrFacultyName(coursefacultyMst.getUstrCfacultyFname());
-                    l3.add(facultyStreamDtlBean);
-                }
+        Map<Integer, String> result =
+                gmstFacultyStreamDtls.stream().collect(
+                        Collectors.groupingBy(GmstFacultyStreamDtl::getUnumCfacultyId,
+                                Collectors.mapping(GmstFacultyStreamDtl::getUstrFacStreamFname, Collectors.joining(","))
+                        )
+                );
+        if(!result.isEmpty()){
+          for(GmstCoursefacultyMst gmstCoursefacultyMst : facultyList ){
+              String facultyWitnStream = result.get(gmstCoursefacultyMst.getUnumCfacultyId());
+              if(facultyWitnStream != null){
+                  FacultyStreamDtlBean facultyStreamDtlBean = new FacultyStreamDtlBean();
+                    facultyStreamDtlBean.setUnumCfacultyId(gmstCoursefacultyMst.getUnumCfacultyId());
+                    facultyStreamDtlBean.setUstrFacStreamFname(facultyWitnStream);
+                    facultyStreamDtlBean.setGstrFacultyName(gmstCoursefacultyMst.getUstrCfacultyFname());
+                  l3.add(facultyStreamDtlBean);
+              }
+          }
         }
+
         return l3;
     }
 }

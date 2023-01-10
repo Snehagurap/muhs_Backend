@@ -13,6 +13,9 @@ public class HeadClass {
 	
 	private Integer headerId;
 	private Integer unumHeaderOrderNo;
+
+	private String ustrHeadPrintText;
+
 	private List<Components> components;
 	
 

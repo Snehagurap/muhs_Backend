@@ -4,30 +4,33 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
 @Getter
 @Setter
-@IdClass(GbltConfigApplicationTrackerDtlPK.class)
 @Entity
-@Table(name="gblt_config_application_tracker_dtl", schema = "templedata")
+@Table(name="gblt_config_application_tracker_dtl")
+@IdClass(GbltConfigApplicationTrackerDtlPK.class)
 public class GbltConfigApplicationTrackerDtl implements Serializable {
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	@Id
-	private Long unumApplicationId;
+	private long unumApplicationId;
 
 	@Id
-	private Long unumApplicantId;
+	private long unumApplicantId;
 
 	@Id
-	private Long unumNid;
+	private long unumNid;
 
 	@Id
-	private Long unumNdtlId;
+	private long unumNdtlId;
 
 	@Id
-	private Integer unumApplicationStatusSno;
+	private long unumApplicationStatusSno;
 
 	@Id
 	private Integer unumIsvalid;
@@ -85,13 +88,16 @@ public class GbltConfigApplicationTrackerDtl implements Serializable {
 	private Date udtOutDate;
 
 	@Column(name="unum_application_doc_id")
-	private Integer unumApplicationDocId;
+	private Long unumApplicationDocId;
 
 	@Column(name="unum_application_level_id")
 	private Integer unumApplicationLevelId;
 
 	@Column(name="unum_application_status_id")
 	private Integer unumApplicationStatusId;
+
+	@Column(name="unum_approval_statusid")
+	private Integer unumApprovalStatusid;
 
 	@Column(name="unum_decision_status_id")
 	private Integer unumDecisionStatusId;
@@ -119,7 +125,7 @@ public class GbltConfigApplicationTrackerDtl implements Serializable {
 	private Integer unumNdtlDepartmentId;
 
 	@Column(name="unum_ndtl_faculty_id")
-	private Long unumNdtlFacultyId;
+	private Integer unumNdtlFacultyId;
 
 	@Column(name="unum_out_no")
 	private String unumOutNo;
@@ -171,10 +177,5 @@ public class GbltConfigApplicationTrackerDtl implements Serializable {
 
 	@Column(name="ustr_status_by")
 	private String ustrStatusBy;
-	
-	@Transient
-	private String facultyName;
-	@Transient
-	private String applicantName;
-	
+
 }

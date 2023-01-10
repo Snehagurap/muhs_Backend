@@ -1,6 +1,5 @@
 package in.cdac.university.globalService.repository;
 
-import in.cdac.university.globalService.bean.TemplateItemBean;
 import in.cdac.university.globalService.entity.GmstConfigTemplateItemMst;
 import in.cdac.university.globalService.entity.GmstConfigTemplateItemMstPK;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -57,20 +56,11 @@ public interface TemplateItemRepository extends JpaRepository<GmstConfigTemplate
             "where u.unumTempleItemId in (:templItemId) and u.unumIsvalid in (1, 2) ")
     Integer createLog(@Param("templItemId") List<Long> unumTempleItemId);
 
- 
-	List<GmstConfigTemplateItemMst> findByUnumTempleItemIdInAndUnumIsvalid(List<Long> unumTempleCompItemIdlist,Integer unumIsvalid);
-	
-	@Query("select c from GmstConfigTemplateItemMst c " +
+    @Query("select c from GmstConfigTemplateItemMst c " +
             "where c.unumIsvalid = :unumIsvalid " +
-            "and c.unumTempleItemId in (select t.unumTempleItemId from GmstConfigTemplateDtl t " +
+            "and c.unumTempleItemId in (select t.unumTempleItemId from GmstConfigTemplateComponentDtl t " +
             "where t.unumIsvalid = :unumIsvalid " +
-            "and t.unumTempleCompId in (:unumTempleCompItemIdlist) ) ")
-	List<GmstConfigTemplateItemMst> findAllByUnumTempleItemIdInAndUnumIsvalid(@Param("unumTempleCompItemIdlist") List<Long> unumTempleCompItemIdlist,@Param("unumIsvalid") Integer unumIsvalid);
-	
-	@Query("select c from GmstConfigTemplateItemMst c " +
-            "where c.unumIsvalid = :unumIsvalid " +
-            "and c.unumTempleItemId in (select t.unumTempleItemId from GmstConfigTemplateDtl t " +
-            "where t.unumIsvalid = :unumIsvalid " +
-            "and t.unumTempleCompId = :unumTempleCompItemId ) order by c.unumItemDisplayOrder,c.unumTempleItemId")
-	List<GmstConfigTemplateItemMst> findAllByUnumTempleItemIdAndUnumIsvalid(@Param("unumTempleCompItemId") Long unumTempleCompItemIdlist,@Param("unumIsvalid") Integer unumIsvalid);
+            "and t.unumTempleCompId = :unumTempleCompId ) order by c.unumItemDisplayOrder, c.unumTempleItemId")
+    List<GmstConfigTemplateItemMst> findAllByUnumTempleItemIdAndUnumIsvalid(@Param("unumTempleCompId") Long unumTempleCompIdlist,
+                                                                            @Param("unumIsvalid") Integer unumIsvalid);
 }

@@ -42,6 +42,8 @@ public class RequestBodyRewrite implements RewriteFunction<String, String> {
                         jsonToString(o, result);
                 } else if (value instanceof Map<?,?> valueAsMap) {
                     jsonToString(valueAsMap, result);
+                } else {
+                    result.append(value == null ? "" : value.toString());
                 }
             }
         } else if(body instanceof ArrayList<?> bodyAsList) {

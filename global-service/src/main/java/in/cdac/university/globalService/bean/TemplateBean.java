@@ -43,4 +43,6 @@ public class TemplateBean {
     private Integer noOfPages;
 
     private List<TemplateHeaderBean> headers;
+
+    CheckListBean checkList;
 }

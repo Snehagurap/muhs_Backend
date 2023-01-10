@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
 @Service
 public class ProcessDocumentMappingService {
 
@@ -38,7 +39,6 @@ public class ProcessDocumentMappingService {
         Set<Long> mappedDocumentIds = processDocumentMappingRepository.findByUnumProcessIdAndUnumIsvalid(
                         processId, 1)
                 .stream().map(GmstProcDocDtl::getUnumDocId).collect(Collectors.toSet());
-
         List<ComboBean> mappedDocuments = new ArrayList<>();
         List<ComboBean> notMappedDocuments = new ArrayList<>();
 
@@ -59,13 +59,16 @@ public class ProcessDocumentMappingService {
         List<GmstProcDocDtl> mappingData = processDocumentMappingRepository.findByUnumIsvalid(1);
         List<GmstProcessMst> processList = processRepository.findByUnumIsvalid(1);
         List<ProcessDocumentMappingBean> listPage = new ArrayList<>();
+
+        Map<Long, String> map = mappingData.stream().collect(Collectors.groupingBy((GmstProcDocDtl::getUnumProcessId),
+                Collectors.mapping(GmstProcDocDtl::getUstrDocFname, Collectors.joining(", "))));
+
         for (GmstProcessMst P : processList) {
-            String docNames = mappingData.stream().filter(p -> p.getUnumProcessId().equals(Long.valueOf(P.getUnumProcessId())))
-                    .map(GmstProcDocDtl::getUstrDocFname).collect(Collectors.joining(", "));
-            if (!docNames.isEmpty()) {
+            String processWithDocNames = map.get(Long.valueOf(P.getUnumProcessId()));
+            if (!(processWithDocNames == null)) {
                 ProcessDocumentMappingBean processDocumentMappingBean = new ProcessDocumentMappingBean();
                 processDocumentMappingBean.setProcessName(P.getUstrProcessName());
-                processDocumentMappingBean.setMappedDocumentsName(docNames);
+                processDocumentMappingBean.setMappedDocumentsName(processWithDocNames);
                 processDocumentMappingBean.setUnumProcessId(Long.valueOf(P.getUnumProcessId()));
                 listPage.add(processDocumentMappingBean);
             }
@@ -82,18 +85,10 @@ public class ProcessDocumentMappingService {
 
         Set<Long> mappedDocumentsSet = new HashSet<>(processDocumentMappingBean.getMappedDocuments());
 
-        // Documents to delete
-        List<GmstProcDocDtl> documentsToDelete = new ArrayList<>();
-        for (GmstProcDocDtl documentDtl : alreadyMappedDocuments) {
-            if (mappedDocumentsSet.contains(documentDtl.getUnumDocId())) {
-                mappedDocumentsSet.remove(documentDtl.getUnumDocId());
-            } else
-                documentsToDelete.add(documentDtl);
-        }
+        List<Long> mappedIds = alreadyMappedDocuments.stream().map(GmstProcDocDtl::getUnumDocId).toList();
 
-        if (!documentsToDelete.isEmpty()) {
-            List<Long> documentIdsToDelete = documentsToDelete.stream().map(GmstProcDocDtl::getUnumDocId).toList();
-            processDocumentMappingRepository.delete(processDocumentMappingBean.getUnumProcessId(), documentIdsToDelete);
+        if (!mappedIds.isEmpty()) {
+            processDocumentMappingRepository.createLog(processDocumentMappingBean.getUnumProcessId(), mappedIds);
         }
 
         // Documents to add

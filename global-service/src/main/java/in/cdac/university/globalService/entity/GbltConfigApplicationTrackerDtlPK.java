@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 import javax.persistence.*;
 
@@ -11,21 +12,24 @@ import javax.persistence.*;
 @Setter
 @EqualsAndHashCode
 public class GbltConfigApplicationTrackerDtlPK implements Serializable {
+	//default serial version id, required for serializable classes.
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	@Column(name="unum_application_id")
-	private Long unumApplicationId;
+	private long unumApplicationId;
 
 	@Column(name="unum_applicant_id")
-	private Long unumApplicantId;
+	private long unumApplicantId;
 
 	@Column(name="unum_nid")
-	private Long unumNid;
+	private long unumNid;
 
 	@Column(name="unum_ndtl_id")
-	private Long unumNdtlId;
+	private long unumNdtlId;
 
 	@Column(name="unum_application_status_sno")
-	private Integer unumApplicationStatusSno;
+	private long unumApplicationStatusSno;
 
 	@Column(name="unum_isvalid")
 	private Integer unumIsvalid;

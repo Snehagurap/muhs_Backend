@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+<title>Student Details</title>
+
+
+</head>
+
+<body>
+
+<img class="logo" src="images/logo.png"/>
+
+<div>
+
+
+<div th:each="header: ${headers}" th:if="${header.unumTempleHeadId lt 0}" th:style="'text-align:' + ${header.ustrHeadAllignment}">
+	<h6 th:text="${ header.ustrHeadPrintText}" th:if="${header.ustrTempleHeadCode eq 'h6'}"></h6>
+	<h1 th:text="${ header.ustrHeadPrintText}" th:if="${header.ustrTempleHeadCode eq 'h1'}"></h1>
+	<h2 th:text="${ header.ustrHeadPrintText}" th:if="${header.ustrTempleHeadCode eq 'h2'}"></h2>
+	<h3 th:text="${ header.ustrHeadPrintText}" th:if="${header.ustrTempleHeadCode eq 'h3'}"></h3>
+	<h4 th:text="${ header.ustrHeadPrintText}" th:if="${header.ustrTempleHeadCode eq 'h4'}"></h4>
+	<h5 th:text="${ header.ustrHeadPrintText}" th:if="${header.ustrTempleHeadCode eq 'h5'}"></h5>
+</div>
+
+<div th:each="header: ${headers}" th:if="${header.unumTempleHeadId ge 0 && header.unumTempleHeadId ne 27}" th:style="'text-align:' + ${header.ustrHeadAllignment}">
+	<span style="white-space: pre-line" th:text="${ header.ustrHeadPrintText}"></span>
+	<div th:each="component: ${header.components}" >  
+		<div th:each="item: ${component.items}">
+			<span style="white-space: pre-line" th:text="${ item.ustrItemPrintPrefixText}"></span>
+			<span style="white-space: pre-line" th:text="${ item.ustrItemPrintPreText}"></span>
+			<span style="white-space: pre-line" th:text="${ item.ustrItemValue}"></span>
+			<span style="white-space: pre-line" th:text="${ item.ustrItemPrintPostText}"></span>
+			
+			
+		</div>
+	</div>
+</div>
+
+</div>
+
+</body>
+
+</html>

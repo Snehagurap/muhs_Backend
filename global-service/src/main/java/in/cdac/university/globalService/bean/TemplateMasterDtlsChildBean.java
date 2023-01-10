@@ -64,4 +64,7 @@ public class TemplateMasterDtlsChildBean {
 	private String ustrItemPrintPrefixText;
 	private String controlTypeName;
 	private String ustrItemPrintPostText;
+
+	private String ustrChecklistItemName;
+	private Integer unumChecklistItemOrderno;
 }

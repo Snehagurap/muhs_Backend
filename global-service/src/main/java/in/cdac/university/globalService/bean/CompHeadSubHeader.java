@@ -27,6 +27,8 @@ public class CompHeadSubHeader {
     private Integer unumHeaderOrderNo;
     
     private Integer unumComponentOrderNo;
+
+	private String ustrTempledtlDescription;
 	
 	List<TemplateMasterDtlsChildBean> children;
 

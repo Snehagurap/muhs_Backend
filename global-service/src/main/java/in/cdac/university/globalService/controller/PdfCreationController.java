@@ -1,14 +1,11 @@
 package in.cdac.university.globalService.controller;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
+import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +18,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import in.cdac.university.globalService.service.MasterTemplateService;
 import in.cdac.university.globalService.util.PdfGenaratorUtil;
-import in.cdac.university.globalService.util.ResponseHandler;
 import in.cdac.university.globalService.util.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,59 +25,32 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/global/pdf/creation")
 @Slf4j
 public class PdfCreationController {
-	@Autowired
+    @Autowired
     private MasterTemplateService masterTemplateService;
-	@Autowired
-	private PdfGenaratorUtil pdfGenaratorUtil;
+    @Autowired
+    private PdfGenaratorUtil pdfGenaratorUtil;
 
 
-	@GetMapping("{templateId}/{notificationId}/{notificationDetailId}")
-    public ResponseEntity<?> getTemplate(@PathVariable("templateId") Long templateId,
-                                         @PathVariable("notificationId") Long notificationId,
-                                         @PathVariable("notificationDetailId") Long notificationDetailId) throws Exception {
-		
-		ServiceResponse serviceResponse = masterTemplateService.getTemplate(templateId, notificationId, notificationDetailId);
-		final ObjectMapper mapper = new ObjectMapper();
-		Map<String,Object> templateComponentMap = new HashMap<>();
-		templateComponentMap = mapper.convertValue(serviceResponse.getResponseObject(),Map.class); 
-		
-		List<Map<String,Object>> templateList = (List<Map<String,Object>>)templateComponentMap.get("templateList");
-		log.info("templateList::: {}",templateList);
-//		List<Map<String,Map>> headers = (List<Map<String,Map>> )templateList.get(0);
-		
-//		templateComponentMap.put("ID",100);
-//		templateComponentMap.put("firstName","subhankar");
-//		templateComponentMap.put("lastName","mitra");
-//		templateComponentMap.put("class","MCA");
-		Resource resource = null;
+    @GetMapping("application/{applicationId}")
+    public ResponseEntity<?> getTemplate(@PathVariable("applicationId") Long applicationId) throws Exception {
 
-		try {
+        ServiceResponse serviceResponse = masterTemplateService.getTemplate(applicationId);
+        final ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> templateComponentMap = mapper.convertValue(serviceResponse.getResponseObject(), Map.class);
 
-		String property = "java.io.tmpdir";
+        List<Map<String, Object>> templateList = (List<Map<String, Object>>) templateComponentMap.get("templateList");
 
-		String tempDir = System.getProperty(property);
+        byte[] pdfBytes = pdfGenaratorUtil.createPdfBytes("application", templateList.get(0));
+        InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(pdfBytes));
+        String fileName = "Application.pdf";
 
-		String fileNameUrl = pdfGenaratorUtil.createPdf("planingBoard", templateList.get(0));
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(pdfBytes.length)
+                .body(resource);
 
-		Path path = Paths.get(tempDir+"/" + fileNameUrl);
 
-		resource = new UrlResource(path.toUri());
-
-		} catch (Exception e) {
-
-		e.printStackTrace();
-
-		}
-
-		return ResponseEntity.ok()
-
-		.contentType(MediaType.parseMediaType(MediaType.APPLICATION_PDF_VALUE))
-
-		.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-
-		.body(resource);
-		
-		
     }
 
 }

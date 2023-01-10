@@ -3,11 +3,9 @@ package in.cdac.university.globalService.entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.Serializable;
 import javax.persistence.*;
-import java.math.BigDecimal;
+import java.io.Serializable;
 import java.util.Date;
-import java.sql.Timestamp;
 
 @Getter
 @Setter
@@ -84,5 +82,16 @@ public class GmstConfigTemplateDtl implements Serializable {
     
 	@Column(name="unum_component_order_no")
     private Integer unumComponentOrderNo;
-    
+
+	@Column(name="unum_checklist_id")
+	private Integer unumChecklistId;
+
+	@Column(name="ustr_checklist_name")
+	private String ustrChecklistName;
+
+	@Column(name="ustr_checklist_item_name")
+	private String ustrChecklistItemName;
+
+	@Column(name="unum_checklist_item_orderno")
+	private Integer unumChecklistItemOrderno;
 }

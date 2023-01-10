@@ -2,6 +2,7 @@ package in.cdac.university.committee.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serial;
@@ -10,6 +11,7 @@ import java.util.Date;
 
 @Getter
 @Setter
+@ToString
 @IdClass(GbltScrutinycommitteeMstPK.class)
 @Entity
 @Table(name="gblt_scrutinycommittee_mst", schema = "ucom")
@@ -63,7 +65,7 @@ public class GbltScrutinycommitteeMst implements Serializable {
 	private Long unumScomCfacultyId;
 
 	@Column(name="unum_stream_id")
-	private Integer unumStreamId;
+	private Long unumStreamId;
 
 	@Column(name="unum_univ_id")
 	private Integer unumUnivId;
