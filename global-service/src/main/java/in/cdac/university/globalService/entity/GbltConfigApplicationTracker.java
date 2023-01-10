@@ -4,35 +4,36 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
 @Getter
 @Setter
-@IdClass(GbltConfigApplicationTrackerPK.class)
 @Entity
-@Table(name="gblt_config_application_tracker", schema = "templedata")
+@Table(name="gblt_config_application_tracker")
+@IdClass(GbltConfigApplicationTrackerPK.class)
 public class GbltConfigApplicationTracker implements Serializable {
-	@Id
-	private Long unumApplicationId;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	@Id
-	private Long unumApplicantId;
+	private long unumApplicationId;
 
 	@Id
-	private Long unumNid;
+	private long unumApplicantId;
 
 	@Id
-	private Long unumNdtlId;
+	private long unumNid;
 
 	@Id
-	private Integer unumApplicationStatusSno;
+	private long unumNdtlId;
+
+	@Id
+	private long unumApplicationStatusSno;
 
 	@Id
 	private Integer unumIsvalid;
-
-	@Column(name="decision_status_id")
-	private Integer decisionStatusId;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="udt_application_date")
@@ -83,6 +84,9 @@ public class GbltConfigApplicationTracker implements Serializable {
 	@Column(name="unum_application_status_id")
 	private Integer unumApplicationStatusId;
 
+	@Column(name="unum_approval_statusid")
+	private Integer unumApprovalStatusid;
+
 	@Column(name="unum_centre_govt_approval_type_id")
 	private Integer unumCentreGovtApprovalTypeId;
 
@@ -91,6 +95,9 @@ public class GbltConfigApplicationTracker implements Serializable {
 
 	@Column(name="unum_ctype_id")
 	private Integer unumCtypeId;
+
+	@Column(name="unum_decision_status_id")
+	private Integer unumDecisionStatusId;
 
 	@Column(name="unum_entry_uid")
 	private Long unumEntryUid;
@@ -109,13 +116,13 @@ public class GbltConfigApplicationTracker implements Serializable {
 	private Long unumNdtlCourseId;
 
 	@Column(name="unum_ndtl_department_id")
-	private Integer unumNdtlDepartmentId;
+	private Long unumNdtlDepartmentId;
 
 	@Column(name="unum_ndtl_faculty_id")
-	private Integer unumNdtlFacultyId;
+	private Long unumNdtlFacultyId;
 
 	@Column(name="unum_state_govt_approval_type_id")
-	private Integer unumStateGovtApprovalTypeId;
+	private Long unumStateGovtApprovalTypeId;
 
 	@Column(name="unum_stream_id")
 	private Long unumStreamId;
@@ -146,10 +153,4 @@ public class GbltConfigApplicationTracker implements Serializable {
 
 	@Column(name="ustr_status_by")
 	private String ustrStatusBy;
-	
-	@Transient
-    private String facultyName;
-    
-	@Transient
-    private String applicantName;
 }
