@@ -11,5 +11,5 @@ import java.util.List;
 public interface MasterTemplateDetailRepository extends JpaRepository<GmstConfigMastertemplateTemplatedtl, GmstConfigMastertemplateTemplatedtlPK> {
     List<GmstConfigMastertemplateTemplatedtl> findByUnumIsvalidAndUnumUnivIdAndUnumMtempleId(Integer unumIsvalid, Integer unumUnivId, Long unumMtempleId);
 
-
+	List<GmstConfigMastertemplateTemplatedtl> findByUnumIsvalidInAndUnumMtempleId(List<Integer> of, Long unumMtempleId);
 }

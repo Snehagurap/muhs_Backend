@@ -86,7 +86,20 @@ public class MasterTemplateController {
                 masterTemplateService.saveMasterTemplate(masterTemplateBean)
         );
     }
-    
+	
+    @GetMapping("getAllMasterTemplate")
+    public ResponseEntity<?> getAllMasterTemplate() throws IllegalAccessException
+    {
+    	return ResponseHandler
+    			.generateResponse(masterTemplateService.getAllMasterTemplate());
+    }
+	
+    @GetMapping("getMasterTemplateByIdCombo/{masterId}")
+    public ResponseEntity<?> getMasterTemplateById(@PathVariable("masterId") Long masterId ) throws Exception
+    {
+    	return ResponseHandler
+    			.generateResponse(masterTemplateService.getMasterTemplateById(masterId));
+    }
     // Delete mapping replaced by POST
     @PostMapping("delete")
         public ResponseEntity<?> delete(@RequestBody Long[] idsToDelete) throws Exception {
