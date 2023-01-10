@@ -224,7 +224,9 @@ public class TemplateService {
             BeanUtils.copyProperties(templateMasterDtlsBean, key);
             if (key.getUnumTempleHeadId() == 27) {
                 key.setUnumTempleCompId(pageBreakHeadCompSeq--);
-                key.setUstrHeadPrintText(templateMasterDtlsBean.getUstrTempledtlDescription());
+                String description = templateMasterDtlsBean.getUstrTempledtlDescription();
+                if (description != null && !description.isBlank())
+                key.setUstrHeadPrintText(description);
             }
 
             List<TemplateMasterDtlsChildBean> children = resultmap.getOrDefault(key, new ArrayList<>());

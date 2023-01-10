@@ -48,7 +48,7 @@ public class MasterTemplateService {
     private RestUtility restUtility;
 
     @Autowired
-    private ConfigApplicantDataMasterRepository applicantDataMasterRepository;
+    private ConfigApplicationDataMasterRepository applicationDataMasterRepository;
 
     @Autowired
     private ConfigApplicationDataDetailRepository applicationDataDetailRepository;
@@ -99,7 +99,7 @@ public class MasterTemplateService {
         final String purpose = notificationBean.getUstrNSubHeading() == null ? "" : notificationBean.getUstrNSubHeading();
         // Check if application already exists
         Map<Long, String> mapItemValues = new HashMap<>();
-        Optional<GbltConfigApplicationDataMst> applicationOptional = applicantDataMasterRepository.getApplication(universityId, RequestUtility.getUserId(), notificationId, notificationDetailId);
+        Optional<GbltConfigApplicationDataMst> applicationOptional = applicationDataMasterRepository.getApplication(universityId, RequestUtility.getUserId(), notificationId, notificationDetailId);
         if (applicationOptional.isPresent()) {
             GbltConfigApplicationDataMst applicationDataMst = applicationOptional.get();
             masterTemplateBean.setUnumApplicationEntryStatus(applicationDataMst.getUnumApplicationEntryStatus());
@@ -161,6 +161,79 @@ public class MasterTemplateService {
 
         // Get Template details
         processTemplateItems(facultyId, universityId, facultyName, purpose, itemMap, templateIds, templateBeans);
+
+        return ServiceResponse.successObject(masterTemplateBean);
+    }
+
+    public ServiceResponse getTemplate(Long applicationId) throws Exception {
+        Integer universityId = RequestUtility.getUniversityId();
+
+        Optional<GbltConfigApplicationDataMst> applicationOptional = applicationDataMasterRepository.findByUnumApplicationIdAndUnumIsvalidAndUnumUnivId(applicationId, 1, universityId);
+        if (applicationOptional.isEmpty()) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Application", applicationId));
+        }
+        GbltConfigApplicationDataMst application = applicationOptional.get();
+
+        long masterTemplateId = application.getUnumMtempleId();
+        Optional<GmstConfigMastertemplateMst> templateByIdOptional = masterTemplateRepository.findById(new GmstConfigMastertemplateMstPK(masterTemplateId, 1));
+        if (templateByIdOptional.isEmpty()) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Master Template", masterTemplateId));
+        }
+        MasterTemplateBean masterTemplateBean = BeanUtils.copyProperties(templateByIdOptional.get(), MasterTemplateBean.class);
+
+        long notificationId = application.getUnumNid();
+        long notificationDetailId = application.getUnumNdtlId();
+
+        // Get Notification Detail
+        NotificationBean notificationBean = restUtility.get(RestUtility.SERVICE_TYPE.PLANNING_BOARD, Constants.URL_GET_NOTIFICATION_BY_ID + notificationId, NotificationBean.class);
+        if (notificationBean == null)
+            return ServiceResponse.errorResponse(language.notFoundForId("Notification", notificationId));
+
+        NotificationDetailBean notificationDetailBean = notificationBean.getNotificationDetails().stream()
+                .filter(bean -> bean.getUnumNdtlId().equals(notificationDetailId))
+                .findFirst()
+                .orElse(null);
+
+        if (notificationDetailBean == null)
+            return ServiceResponse.errorResponse(language.notFoundForId("Notification Detail", notificationDetailId));
+
+        Optional<GmstCoursefacultyMst> facultyById = facultyRepository.findById(new GmstCoursefacultyMstPK(notificationDetailBean.getUnumFacultyId(), 1));
+        String tempFacultyName = "";
+        if (facultyById.isPresent()) {
+            tempFacultyName = facultyById.get().getUstrCfacultyFname();
+        }
+
+        final String facultyName = tempFacultyName;
+        final String purpose = notificationBean.getUstrNSubHeading() == null ? "" : notificationBean.getUstrNSubHeading();
+        // Check if application already exists
+
+        GbltConfigApplicationDataMst applicationDataMst = applicationOptional.get();
+        masterTemplateBean.setUnumApplicationEntryStatus(applicationDataMst.getUnumApplicationEntryStatus());
+        masterTemplateBean.setUnumApplicationId(applicationDataMst.getUnumApplicationId());
+
+        // Get details of application item wise
+        List<GbltConfigApplicationDataDtl> applicationDetails = applicationDataDetailRepository.findByUnumIsvalidAndUnumUnivIdAndUnumApplicationId(1, universityId, applicationDataMst.getUnumApplicationId());
+        Map<Long, String> itemMap = applicationDetails.stream()
+                .collect(Collectors.toMap(GbltConfigApplicationDataDtl::getUnumTempleItemId,
+                        applicationDetail -> applicationDetail.getUstrItemValue() == null ? "" : applicationDetail.getUstrItemValue(),
+                        (v1, v2) -> v2));
+
+        List<GmstConfigMastertemplateTemplatedtl> masterTemplateDetails = masterTemplateDetailRepository.findByUnumIsvalidAndUnumUnivIdAndUnumMtempleId(1, universityId, masterTemplateBean.getUnumMtempleId());
+
+        // Template ids for the given Master template
+        Map<Long, Long> masterTemplateDetailIds = masterTemplateDetails.stream()
+                .collect(Collectors.toMap(GmstConfigMastertemplateTemplatedtl::getUnumTempleId, GmstConfigMastertemplateTemplatedtl::getUnumMtempledtlId));
+        log.debug("Master Templates Map: {}", masterTemplateDetailIds);
+
+        List<Long> templateIds = new ArrayList<>(masterTemplateDetailIds.keySet());
+        log.debug("Templates on the basis of Master template: {}", templateIds);
+
+        // Get the template on the basis of master template
+        List<TemplateBean> templateBeans = getTemplateBeans(masterTemplateDetailIds, templateIds);
+        masterTemplateBean.setTemplateList(templateBeans);
+
+        // Get Template details
+        processTemplateItems(notificationDetailBean.getUnumFacultyId(), universityId, facultyName, purpose, itemMap, templateIds, templateBeans);
 
         return ServiceResponse.successObject(masterTemplateBean);
     }
@@ -432,13 +505,13 @@ public class MasterTemplateService {
         Long applicationId = templateToSaveBean.getUnumApplicationId();
         if (applicationId == null || applicationId == 0L) {
             // Check if Application already exists
-            Optional<GbltConfigApplicationDataMst> applicationOptional = applicantDataMasterRepository.getApplication(
+            Optional<GbltConfigApplicationDataMst> applicationOptional = applicationDataMasterRepository.getApplication(
                     RequestUtility.getUniversityId(), RequestUtility.getUserId(), notificationBean.getUnumNid(), notificationDetailBean.getUnumNdtlId());
             if (applicationOptional.isPresent()) {
                 return ServiceResponse.errorResponse(language.message("Application already saved"));
             }
 
-            applicationId = applicantDataMasterRepository.getNextId();
+            applicationId = applicationDataMasterRepository.getNextId();
 
             GmstConfigMastertemplateMst mastertemplateMst = mastertemplateMstOptional.get();
 
@@ -468,13 +541,13 @@ public class MasterTemplateService {
                 applicationDataMst.setUnumCtypeId(notificationDetailBean.getUnumCoursetypeId());
             applicationDataMst.setUnumMtempleId(mastertemplateMst.getUnumMtempleId());
 
-            applicantDataMasterRepository.save(applicationDataMst);
+            applicationDataMasterRepository.save(applicationDataMst);
         } else {
             // Delete all entries
             applicationDataDetailRepository.delete(1, universityId, applicationId);
 
             // Update master table
-            Optional<GbltConfigApplicationDataMst> applicationDataMstOptional = applicantDataMasterRepository.findById(new GbltConfigApplicationDataMstPK(
+            Optional<GbltConfigApplicationDataMst> applicationDataMstOptional = applicationDataMasterRepository.findById(new GbltConfigApplicationDataMstPK(
                     applicationId, applicantId, notificationBean.getUnumNid(), notificationDetailBean.getUnumNdtlId(), 1
             ));
             if (applicationDataMstOptional.isEmpty())
@@ -488,7 +561,7 @@ public class MasterTemplateService {
             applicationDataMst.setUdtApplicationDate(currentDate);
             applicationDataMst.setUdtApplicationSubmitDate(currentDate);
             applicationDataMst.setUdtEntryDate(currentDate);
-            applicantDataMasterRepository.save(applicationDataMst);
+            applicationDataMasterRepository.save(applicationDataMst);
         }
 
         List<GbltConfigApplicationDataDtl> itemDetailList = new ArrayList<>();
@@ -554,7 +627,7 @@ public class MasterTemplateService {
 
     public List<TemplateToSaveBean> scrutinyListPage(Long notificationId, Integer applicationStatus) throws Exception {
 
-        List<GbltConfigApplicationDataMst> applicationDataList = applicantDataMasterRepository.getApplicationByNotification(
+        List<GbltConfigApplicationDataMst> applicationDataList = applicationDataMasterRepository.getApplicationByNotification(
                 RequestUtility.getUniversityId(), applicationStatus, notificationId
         );
 
@@ -574,7 +647,7 @@ public class MasterTemplateService {
 
     public List<ApplicationStatusBean> getApplicationStatusCombo() {
         return(BeanUtils.copyListProperties(
-                applicantDataMasterRepository.getAllApplicationStatus() , ApplicationStatusBean.class)
+                applicationDataMasterRepository.getAllApplicationStatus() , ApplicationStatusBean.class)
         );
     }
 
@@ -583,7 +656,7 @@ public class MasterTemplateService {
             return ServiceResponse.errorResponse(language.mandatory("Application Id"));
         }
 
-        Optional<GbltConfigApplicationDataMst> applicationDataMstOptional = applicantDataMasterRepository.findByUnumApplicationIdAndUnumIsvalidAndUnumUnivId(
+        Optional<GbltConfigApplicationDataMst> applicationDataMstOptional = applicationDataMasterRepository.findByUnumApplicationIdAndUnumIsvalidAndUnumUnivId(
                 applicationId, 1, RequestUtility.getUniversityId()
         );
 

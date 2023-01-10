@@ -12,7 +12,7 @@ import in.cdac.university.globalService.exception.ApplicationException;
 import in.cdac.university.globalService.repository.ApplicantRepository;
 import in.cdac.university.globalService.repository.ApplicationTrackerDtlRepository;
 import in.cdac.university.globalService.repository.ApplicationTrackerRepository;
-import in.cdac.university.globalService.repository.ConfigApplicantDataMasterRepository;
+import in.cdac.university.globalService.repository.ConfigApplicationDataMasterRepository;
 import in.cdac.university.globalService.repository.FacultyRepository;
 import in.cdac.university.globalService.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class ApplicationTrackerService {
     private ApplicationTrackerDtlRepository applicationTrackerDtlRepository;
 
     @Autowired
-    private ConfigApplicantDataMasterRepository applicantDataMasterRepository;
+    private ConfigApplicationDataMasterRepository applicantDataMasterRepository;
 
     @Autowired
     private FacultyRepository facultyRepository;

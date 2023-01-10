@@ -5,7 +5,7 @@ import in.cdac.university.globalService.bean.NotificationBean;
 import in.cdac.university.globalService.entity.GbltConfigApplicationDataMst;
 import in.cdac.university.globalService.entity.GmstApplicationStatusMst;
 import in.cdac.university.globalService.entity.GmstNotificationTypeMst;
-import in.cdac.university.globalService.repository.ConfigApplicantDataMasterRepository;
+import in.cdac.university.globalService.repository.ConfigApplicationDataMasterRepository;
 import in.cdac.university.globalService.repository.NotificationTypeRepository;
 import in.cdac.university.globalService.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class ApplicationService {
 
     @Autowired
-    private ConfigApplicantDataMasterRepository applicantDataMasterRepository;
+    private ConfigApplicationDataMasterRepository applicantDataMasterRepository;
 
     @Autowired
     private RestUtility restUtility;

@@ -30,6 +30,13 @@ public class MasterTemplateController {
         );
     }
 
+    @GetMapping("applicationWithTemplate/{applicationId}")
+    public ResponseEntity<?> getTemplateByApplicationId(@PathVariable("applicationId") Long applicationId) throws Exception {
+        return ResponseHandler.generateResponse(
+                masterTemplateService.getTemplate(applicationId)
+        );
+    }
+
     // To preview the added template from template master
     @GetMapping("template/preview/{templateId}/{streamId}")
     public ResponseEntity<?> previewTemplate(@PathVariable("templateId") Long templateId,
