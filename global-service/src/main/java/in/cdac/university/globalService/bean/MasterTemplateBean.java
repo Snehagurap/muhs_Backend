@@ -72,6 +72,8 @@ public class MasterTemplateBean {
     
     private String ustrMtemplateFooter;
     
-    
+    private List<Long> mappedTemplates;
+
+
     
 }

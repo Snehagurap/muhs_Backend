@@ -29,5 +29,8 @@ public interface MasterTemplateRepository extends JpaRepository<GmstConfigMaster
             "from GmstConfigMastertemplateMst a where a.unumMtempleId = u.unumMtempleId and a.unumIsvalid > 2) " +
             "where u.unumMtempleId in (:masterTempIds) and u.unumIsvalid in (1, 2) ")
     Integer createLog(@Param("masterTempIds") List<Long> masterTempIds);
+	
+		List<GmstConfigMastertemplateMst> findByUnumIsvalidInAndUstrMtempleNameIgnoreCase(List<Integer> of,
+			String ustrMtempleName);
 
 }
