@@ -119,19 +119,19 @@ public class FacultyStreamDtlService {
 
         List<FacultyStreamDtlBean> l3 = new ArrayList<>();
 
-        Map<Integer, Set<String>> result =
+        Map<Integer, String> result =
                 gmstFacultyStreamDtls.stream().collect(
                         Collectors.groupingBy(GmstFacultyStreamDtl::getUnumCfacultyId,
-                                Collectors.mapping(GmstFacultyStreamDtl::getUstrFacStreamFname, Collectors.toSet())
+                                Collectors.mapping(GmstFacultyStreamDtl::getUstrFacStreamFname, Collectors.joining(","))
                         )
                 );
         if(!result.isEmpty()){
           for(GmstCoursefacultyMst gmstCoursefacultyMst : facultyList ){
-              Set<String> facultyWitnStream = result.get(gmstCoursefacultyMst.getUnumCfacultyId());
+              String facultyWitnStream = result.get(gmstCoursefacultyMst.getUnumCfacultyId());
               if(facultyWitnStream != null){
                   FacultyStreamDtlBean facultyStreamDtlBean = new FacultyStreamDtlBean();
                     facultyStreamDtlBean.setUnumCfacultyId(gmstCoursefacultyMst.getUnumCfacultyId());
-                    facultyStreamDtlBean.setUstrFacStreamFname(facultyWitnStream.toString().replace("[", " ").replace("]"," "));
+                    facultyStreamDtlBean.setUstrFacStreamFname(facultyWitnStream);
                     facultyStreamDtlBean.setGstrFacultyName(gmstCoursefacultyMst.getUstrCfacultyFname());
                   l3.add(facultyStreamDtlBean);
               }

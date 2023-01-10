@@ -2,6 +2,7 @@ package in.cdac.university.globalService.service;
 
 import in.cdac.university.globalService.bean.*;
 import in.cdac.university.globalService.entity.*;
+import in.cdac.university.globalService.exception.ApplicationException;
 import in.cdac.university.globalService.repository.*;
 import in.cdac.university.globalService.util.*;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import javax.validation.Valid;
 
 @Slf4j
 @Service
@@ -622,8 +625,72 @@ public class MasterTemplateService {
                 MasterTemplateBean.class
         );
     }
+    
+    @Transactional
+    public ServiceResponse saveMasterTemplate(@Valid MasterTemplateBean masterTemplateBean) throws Exception {
+		
+		GmstConfigMastertemplateMst gmstConfigMasterTemplateMst = new GmstConfigMastertemplateMst();
+        BeanUtils.copyProperties(masterTemplateBean, gmstConfigMasterTemplateMst);
+        
+        gmstConfigMasterTemplateMst.setUnumMtempleId(masterTemplateRepository.getNextId());
+        
+        masterTemplateRepository.save(gmstConfigMasterTemplateMst);
+        
+        List<GmstConfigMastertemplateTemplatedtl> gmstConfigMastertemplateTemplatedtlEntityList = new ArrayList<>();
+        GmstConfigMastertemplateTemplatedtl gmstConfigMastertemplateTemplatedtl;
+        int count = 1;
+        
+        for (TemplateBean masterTemplate : masterTemplateBean.getTemplateList()) {
+        	gmstConfigMastertemplateTemplatedtl = new GmstConfigMastertemplateTemplatedtl();
+        	gmstConfigMastertemplateTemplatedtlEntityList.add(gmstConfigMastertemplateTemplatedtl);
+            BeanUtils.copyProperties(masterTemplate, gmstConfigMastertemplateTemplatedtl);
+            gmstConfigMastertemplateTemplatedtl.setUnumMtempledtlId(Long.parseLong(
+            		gmstConfigMasterTemplateMst.getUnumMtempleId() + StringUtility.padLeftZeros(count++ + "", 5)));
+            gmstConfigMastertemplateTemplatedtl.setUnumMtempleId(gmstConfigMasterTemplateMst.getUnumMtempleId());
+            //gmstConfigMastertemplateTemplatedtl.setUnumTempleId(gmstConfigMasterTemplateMst.getUnu);
+            gmstConfigMastertemplateTemplatedtl.setUnumIsvalid(1);
+            gmstConfigMastertemplateTemplatedtl.setUnumEntryUid(RequestUtility.getUserId());
+            gmstConfigMastertemplateTemplatedtl.setUdtEffFrom(new Date());
+            gmstConfigMastertemplateTemplatedtl.setUnumUnivId(RequestUtility.getUniversityId());
+            gmstConfigMastertemplateTemplatedtl.setUdtEntryDate(new Date()); 
 
+           
+	    }
+        masterTemplateDetailRepository.saveAll(gmstConfigMastertemplateTemplatedtlEntityList);
+        return ServiceResponse.builder().status(1).message(language.updateSuccess("Template")).build();
 
+    }
+
+    @Transactional
+    public ServiceResponse delete(MasterTemplateBean masterTemplateBean, Long[] idsToDelete) {
+        if (idsToDelete == null || idsToDelete.length == 0) {
+            return ServiceResponse.errorResponse(language.mandatory("Master Template Id"));
+        }
+
+        List<GmstConfigMastertemplateMst> templateMmsts = masterTemplateRepository.findByUnumIsvalidInAndUnumMtempleIdIn(
+                List.of(1, 2), List.of(idsToDelete)
+        );
+
+        if (templateMmsts.size() != idsToDelete.length) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Master Template", Arrays.toString(idsToDelete)));
+        }
+
+        // Create Log
+        int noOfRowsAffected = masterTemplateRepository.createLog(List.of(idsToDelete));
+        if (noOfRowsAffected != idsToDelete.length) {
+            throw new ApplicationException(language.deleteError("Master Template"));
+        }
+
+        templateMmsts.forEach(mTemp -> {
+        	mTemp.setUnumIsvalid(0);
+        });
+
+        masterTemplateRepository.saveAll(templateMmsts);
+        return ServiceResponse.builder()
+                .status(1)
+                .message(language.deleteSuccess("Master Template"))
+                .build();
+    }
 
     public List<TemplateToSaveBean> scrutinyListPage(Long notificationId, Integer applicationStatus) throws Exception {
 
