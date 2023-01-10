@@ -271,9 +271,18 @@ public class MasterTemplateService {
                 })
                 .collect(Collectors.toList());
 
+        Map<Long, Integer> itemControlMap = itemsByTemplateId.stream()
+                .collect(Collectors.toMap(GmstConfigTemplateItemMst::getUnumTempleItemId, GmstConfigTemplateItemMst::getUnumUiControlId));
+
         for (TemplateBean templateBean: templateBeans) {
             Long templateId = templateBean.getUnumTempleId();
             log.debug("Template Id: {}", templateId);
+
+            CheckListBean checkList = new CheckListBean();
+            checkList.setUnumTempleId(templateId);
+            List<CheckListItems> checkListItems = new ArrayList<>();
+            checkList.setCheckListItems(checkListItems);
+
             List<GmstConfigTemplateDtl> templateDetailByTemplateId = mapTemplateDetails.get(templateId);
             if (templateDetailByTemplateId == null)
                 continue;
@@ -281,6 +290,7 @@ public class MasterTemplateService {
             Map<Long, TemplateHeaderBean> headerIdsAdded = new HashMap<>();
             Map<Long, Integer> mapNoOfPageColumns = new HashMap<>();
             List<TemplateHeaderBean> headerBeans = new ArrayList<>();
+            boolean isCheckListPresent = false;
             for (GmstConfigTemplateDtl configTemplateDtl: templateDetailByTemplateId) {
                 if (configTemplateDtl.getUnumTempleHeadId() == 27 || !headerIdsAdded.containsKey(configTemplateDtl.getUnumTempleHeadId())) {
                     GmstConfigTemplateHeaderMst gmstConfigTemplateHeaderMst = headersByTemplateId.stream()
@@ -316,6 +326,24 @@ public class MasterTemplateService {
                         templateHeaderBean.setUnumPageColumns(configTemplateDtl.getUnumPageColumns());
                     }
                 }
+
+                // Process checklist items
+                if (configTemplateDtl.getUnumChecklistId() != null) {
+                    checkList.setUnumChecklistId(configTemplateDtl.getUnumChecklistId());
+                    checkList.setUstrChecklistName(configTemplateDtl.getUstrChecklistName());
+                    CheckListItems checkListItem = new CheckListItems();
+                    checkListItem.setUnumTempleItemId(configTemplateDtl.getUnumTempleItemId());
+                    checkListItem.setUstrChecklistItemName(configTemplateDtl.getUstrChecklistItemName());
+                    checkListItem.setUnumChecklistItemOrderno(configTemplateDtl.getUnumChecklistItemOrderno());
+                    checkListItem.setUnumUiControlId(itemControlMap.getOrDefault(configTemplateDtl.getUnumTempleItemId(), 0));
+                    checkListItem.setUstrItemValue(itemMap.getOrDefault(configTemplateDtl.getUnumTempleItemId(), ""));
+                    checkListItems.add(checkListItem);
+                    isCheckListPresent = true;
+                }
+            }
+            if (isCheckListPresent) {
+                checkListItems.sort(Comparator.comparing(CheckListItems::getUnumChecklistItemOrderno));
+                templateBean.setCheckList(checkList);
             }
             headerBeans.sort(Comparator.comparing(TemplateHeaderBean::getUnumHeadDisplayOrder, Comparator.nullsLast(Comparator.naturalOrder())));
 
@@ -683,6 +711,8 @@ public class MasterTemplateService {
 
         templateMmsts.forEach(mTemp -> {
         	mTemp.setUnumIsvalid(0);
+            mTemp.setUdtEntryDate(masterTemplateBean.getUdtEntryDate());
+            mTemp.setUnumUnivId(masterTemplateBean.getUnumUnivId());
         });
 
         masterTemplateRepository.saveAll(templateMmsts);

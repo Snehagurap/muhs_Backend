@@ -1,6 +1,5 @@
 package in.cdac.university.globalService.controller;
 
-import in.cdac.university.globalService.bean.CollegeBean;
 import in.cdac.university.globalService.bean.ComboBean;
 import in.cdac.university.globalService.bean.MasterTemplateBean;
 import in.cdac.university.globalService.bean.TemplateToSaveBean;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @RestController

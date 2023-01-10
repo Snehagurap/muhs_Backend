@@ -116,10 +116,10 @@ public class GbltConfigApplicationTracker implements Serializable {
 	private Long unumNdtlCourseId;
 
 	@Column(name="unum_ndtl_department_id")
-	private Long unumNdtlDepartmentId;
+	private Integer unumNdtlDepartmentId;
 
 	@Column(name="unum_ndtl_faculty_id")
-	private Long unumNdtlFacultyId;
+	private Integer unumNdtlFacultyId;
 
 	@Column(name="unum_state_govt_approval_type_id")
 	private Long unumStateGovtApprovalTypeId;

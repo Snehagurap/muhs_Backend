@@ -1,10 +1,6 @@
 package in.cdac.university.globalService.service;
 
-import in.cdac.university.globalService.bean.ApplicationTrackerBean;
-import in.cdac.university.globalService.bean.DocumentTypeBean;
 import in.cdac.university.globalService.bean.StreamBean;
-import in.cdac.university.globalService.entity.GbltConfigApplicationTracker;
-import in.cdac.university.globalService.entity.GmstCoursefacultyMst;
 import in.cdac.university.globalService.entity.GmstStreamMst;
 import in.cdac.university.globalService.exception.ApplicationException;
 import in.cdac.university.globalService.repository.StreamRepository;
@@ -18,9 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class StreamService {
