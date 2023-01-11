@@ -9,6 +9,11 @@ import java.util.Date;
 
 import in.cdac.university.globalService.util.annotations.ListColumn;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 @Getter
 @Setter
 @ToString
@@ -29,6 +34,8 @@ public class ApplicationTrackerBean {
     private Integer unumIsvalid;
 
     private Date udtApplicationStatusDt;
+
+    private Integer unumApplicationLevelId;
 
     private Date udtEffFrom;
 
@@ -64,4 +71,46 @@ public class ApplicationTrackerBean {
     
     @ListColumn(order = 5, name = "Applicant Date")
     private Date udtApplicationDate;
+
+    private Date udtCentreGovtApprovalDate;
+
+    private Date udtCentreOutdate;
+
+    private Date udtCoaDate;
+
+    private Date udtFtaDate;
+
+    private Date udtStateGovtApprovalDate;
+
+    private String udtStateOutdate;
+
+    private Integer unumApprovalStatusid;
+
+    private Integer unumCentreGovtApprovalTypeId;
+
+    private Integer unumCoaStatusId;
+
+    private Integer unumDecisionStatusId;
+
+    private Date unumLstModDate;
+
+    private Long unumLstModUid;
+
+    private Long unumStateGovtApprovalTypeId;
+
+    private Long unumStreamId;
+
+    private String ustrCentreGovtApprovalDocPath;
+
+    private String ustrCentreOutno;
+
+    private String ustrCoaNo;
+
+    private String ustrFtaNo;
+
+    private String ustrStateGovtApprovalDocPath;
+
+    private String ustrStateOutnoStategovt;
+
+
 }

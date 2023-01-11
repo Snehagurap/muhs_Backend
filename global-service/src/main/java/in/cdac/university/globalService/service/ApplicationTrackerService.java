@@ -15,10 +15,12 @@ import in.cdac.university.globalService.repository.ApplicationTrackerRepository;
 import in.cdac.university.globalService.repository.ConfigApplicationDataMasterRepository;
 import in.cdac.university.globalService.repository.FacultyRepository;
 import in.cdac.university.globalService.util.*;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -63,7 +65,7 @@ public class ApplicationTrackerService {
             }
         }
 
-        Integer maxApplicationStatusSno = applicationTrackerDtlRepository.getApplicationStatusSno(applicationTrackerDtlBean.getUnumApplicationId());
+        Long maxApplicationStatusSno = applicationTrackerDtlRepository.getApplicationStatusSno(applicationTrackerDtlBean.getUnumApplicationId());
         applicationTrackerDtlBean.setUnumApplicationStatusSno(maxApplicationStatusSno);
 
         applicantDataMasterRepository.updateApplicationEntryStatus(
@@ -122,5 +124,89 @@ public class ApplicationTrackerService {
                     return applicationTrackerBean;
                 })
                 .toList();
+    }
+
+    @Transactional
+    public ServiceResponse updateStatusForApplicationReceived(Long applicationId, Integer levelId) throws Exception {
+        if(applicationId == null){
+            return ServiceResponse.errorResponse(language.mandatory("Unable to update status as Application Id"));
+        }
+
+        Optional<GbltConfigApplicationTracker> gbltConfigApplicationTracker = applicationTrackerRepository.findByUnumApplicationIdAndUnumIsvalidAndUnumUnivId(
+                applicationId, 1, RequestUtility.getUniversityId()
+        );
+        if(gbltConfigApplicationTracker.isEmpty()){
+            throw new ApplicationException(language.message("Unable to update status"));
+        }
+
+        Long applicationStatusSno  = applicationTrackerDtlRepository.getApplicationStatusSno(applicationId);
+ //       if(gbltConfigApplicationTracker.get().getUnumApplicationLevelId() == 3){
+            int noOfRowsAffected = applicationTrackerRepository.updateApplicationLevelAndStatusSNo(applicationId,levelId,applicationStatusSno);
+            if(noOfRowsAffected == 0){
+                throw new ApplicationException(language.notFoundForId("Application Id", applicationId));
+            }
+            Integer previousLevelId = levelId-1;
+            Optional<GbltConfigApplicationTrackerDtl> gbltConfigApplicationTrackerDtlOptional = applicationTrackerDtlRepository.findByUnumApplicationIdAndUnumApplicationLevelIdAndUnumIsvalidAndUnumUnivId(
+                    applicationId, previousLevelId ,1,RequestUtility.getUniversityId()
+            );
+            if(gbltConfigApplicationTrackerDtlOptional.isEmpty()){
+                throw new ApplicationException(language.message("Unable to update status"));
+            }
+
+            GbltConfigApplicationTrackerDtl gbltConfigApplicationTrackerDtl = BeanUtils.copyProperties(gbltConfigApplicationTrackerDtlOptional.get(), GbltConfigApplicationTrackerDtl.class);
+            gbltConfigApplicationTrackerDtl.setUnumApplicationLevelId(levelId);
+            gbltConfigApplicationTrackerDtl.setUnumApplicationStatusSno(applicationStatusSno);
+            gbltConfigApplicationTrackerDtl.setUnumEntryUid(RequestUtility.getUserId());
+            gbltConfigApplicationTrackerDtl.setUdtEntryDate(new Date());
+
+            applicationTrackerDtlRepository.save(gbltConfigApplicationTrackerDtl);
+//        }
+
+
+        return ServiceResponse.successMessage("Status updated for Application received by Department");
+    }
+
+    @Transactional
+    public ServiceResponse verifyApplication(ApplicationTrackerDtlBean applicationTrackerDtlBean) throws Exception {
+        Long applicationId = applicationTrackerDtlBean.getUnumApplicationId();
+        if (applicationId == null && applicationTrackerDtlBean.getUnumApplicationStatusId() == null) {
+            return ServiceResponse.errorResponse(language.mandatory("Application Id && Application Status"));
+        }
+
+        if(applicationTrackerDtlBean.getUstrDocPath()!=null && !applicationTrackerDtlBean.getUstrDocPath().isBlank()){
+            boolean isFileMoved = ftpUtility.moveFileFromTempToFinalDirectory(applicationTrackerDtlBean.getUstrDocPath());
+            if (!isFileMoved) {
+                throw new ApplicationException("Unable to upload file");
+            }
+        }
+
+        Long applicationStatusSno  = applicationTrackerDtlRepository.getApplicationStatusSno(applicationId);
+
+        int noOfRowsAffected = applicationTrackerRepository.updateApplicationOnVerification(
+                applicationId, applicationStatusSno, applicationTrackerDtlBean.getUnumApplicationLevelId(),
+                applicationTrackerDtlBean.getUnumApplicationStatusId(), applicationTrackerDtlBean.getUnumDecisionStatusId()
+        );
+        if(noOfRowsAffected == 0){
+            throw new ApplicationException(language.notFoundForId("Application Id", applicationId));
+        }
+
+        GbltConfigApplicationTrackerDtl gbltConfigApplicationTrackerDtl = BeanUtils.copyProperties(applicationTrackerDtlBean, GbltConfigApplicationTrackerDtl.class);
+       applicationTrackerDtlRepository.save(gbltConfigApplicationTrackerDtl);
+
+        return ServiceResponse.successMessage(language.message("Verified Successfully"));
+    }
+
+    public ServiceResponse getApplicationTrackerDtl(Long applicationId, Integer levelId) throws Exception {
+        if(applicationId != null) {
+            return ServiceResponse.errorResponse(language.mandatory("Application Id"));
+        }
+
+        Optional<GbltConfigApplicationTrackerDtl> gbltConfigApplicationTrackerDtlOptional = applicationTrackerDtlRepository.findByUnumApplicationIdAndUnumApplicationLevelIdAndUnumIsvalidAndUnumUnivId(
+                applicationId, levelId ,1,RequestUtility.getUniversityId()
+        );
+        if(gbltConfigApplicationTrackerDtlOptional.isEmpty()){
+            throw new ApplicationException(language.message("Unable to update status"));
+        }
+        return ServiceResponse.successObject(BeanUtils.copyProperties(gbltConfigApplicationTrackerDtlOptional.get(), ApplicationTrackerDtlBean.class));
     }
 }

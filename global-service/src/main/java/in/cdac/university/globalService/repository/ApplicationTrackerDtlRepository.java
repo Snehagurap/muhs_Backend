@@ -13,13 +13,15 @@ import java.util.Optional;
 public interface ApplicationTrackerDtlRepository extends JpaRepository<GbltConfigApplicationTrackerDtl, GbltConfigApplicationTrackerDtlPK> {
     @Query("select coalesce(max(unumApplicationStatusSno), 0) + 1 from GbltConfigApplicationTrackerDtl c  " +
             "where c.unumApplicationId = :applicantionId")
-    Integer getApplicationStatusSno(@Param("applicantionId") Long applicantionId);
+    Long getApplicationStatusSno(@Param("applicantionId") Long applicantionId);
 
     @Query("select c from GbltConfigApplicationTrackerDtl c " +
             "where unumApplicationStatusId = :applicationStatus " +
             "and unumApplicationId = :applicationId " +
             "and unumIsvalid = 1 ")
     Optional<GbltConfigApplicationTrackerDtl> getScrutinyDetails(@Param("applicationId") Long applicationId, @Param("applicationStatus") Integer applicationStatus);
+
+    Optional<GbltConfigApplicationTrackerDtl> findByUnumApplicationIdAndUnumApplicationLevelIdAndUnumIsvalidAndUnumUnivId(Long unumApplicationId, Integer unumApplicationLevelId, Integer unumIsvalid, Integer unumUnivId);
 	
 	
 	

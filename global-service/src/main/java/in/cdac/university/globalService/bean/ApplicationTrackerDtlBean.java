@@ -4,6 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -25,7 +29,7 @@ public class ApplicationTrackerDtlBean {
     @NotNull(message = "Notification Detail Id is mandatory")
     private Long unumNdtlId;
 
-    private Integer unumApplicationStatusSno;
+    private Long unumApplicationStatusSno;
 
     private Integer unumIsvalid;
 
@@ -71,4 +75,57 @@ public class ApplicationTrackerDtlBean {
     private Long unumCtypeId;
 	
     private Date udtApplicationDate;
+
+    private Date udtCoaDate;
+
+    private Date udtDocDate;
+
+    private Date udtEcDate;
+
+    private Date udtFtaDate;
+
+    private Date udtGrDate;
+
+    private Date udtLoiDate;
+
+    private Date udtLopDate;
+
+    private Date udtNocDate;
+
+    private Date udtOutDate;
+
+    private Long unumApplicationDocId;
+
+    private Integer unumApplicationLevelId;
+
+    private Integer unumApprovalStatusid;
+
+    private Integer unumDecisionStatusId;
+
+    private Date unumLstModDate;
+
+    private Long unumLstModUid;
+
+    @Column(name="unum_out_no")
+    private String unumOutNo;
+
+    @Column(name="unum_stream_id")
+    private Long unumStreamId;
+
+    private String ustrApplicationDocNo;
+
+    private String ustrCoaNo;
+
+    private String ustrEcNo;
+
+    private String ustrFtaNo;
+
+    private String ustrGrNo;
+
+    private String ustrLoiNo;
+
+    private String ustrLopNo;
+
+    private String ustrNocNo;
+
 }
