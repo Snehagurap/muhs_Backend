@@ -3,20 +3,17 @@ package in.cdac.university.globalService.service;
 import com.google.common.hash.Hashing;
 import in.cdac.university.globalService.bean.FtpBean;
 import in.cdac.university.globalService.util.FtpUtility;
+import in.cdac.university.globalService.util.ResponseHandler;
 import in.cdac.university.globalService.util.ServiceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -164,15 +161,7 @@ public class FtpService {
 
     public ResponseEntity<?> downloadFile(String fileName) {
         byte[] fileBytes = ftpUtility.downloadFile(fileName);
-        if (fileBytes == null) {
-            return null;
-        }
-        InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(fileBytes));
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName)
-                .contentLength(fileBytes.length)
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(resource);
+        return ResponseHandler.generateFileResponse(fileBytes, fileName);
     }
 
     public ServiceResponse isFileExists(String fileName) {
