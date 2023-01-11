@@ -1,6 +1,7 @@
 package in.cdac.university.usm.controller;
 
 
+import in.cdac.university.usm.bean.ComboBean;
 import in.cdac.university.usm.service.DistrictService;
 import in.cdac.university.usm.util.ComboUtility;
 import in.cdac.university.usm.util.ListPageUtility;
@@ -8,6 +9,9 @@ import in.cdac.university.usm.util.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/usm/district")
@@ -18,9 +22,10 @@ public class DistrictController {
 
     @GetMapping("/list/{stateCode}")
     public @ResponseBody ResponseEntity<?> getList(@PathVariable("stateCode") Integer stateCode) throws IllegalAccessException {
-        return ResponseHandler.generateOkResponse(
-                ComboUtility.generateComboData(districtService.getAllDistricts(stateCode))
-        );
+        List<ComboBean> comboBeans = new ArrayList<>();
+        comboBeans.add(new ComboBean("", "Select Value"));
+        comboBeans.addAll(ComboUtility.generateComboData(districtService.getAllDistricts(stateCode)));
+        return ResponseHandler.generateOkResponse(comboBeans);
     }
 
     @GetMapping("/all")

@@ -66,11 +66,11 @@ public class TemplateService {
     public void saveAndUpdateTemplateMaster(TemplateMasterBean templateMasterBean, boolean isSave) throws Exception {
         GmstConfigTemplateMst gmstConfigTemplateMst = new GmstConfigTemplateMst();
         BeanUtils.copyProperties(templateMasterBean, gmstConfigTemplateMst);
-        Map<Long, GmstConfigTemplateDtl> checkListItemDetails = new HashMap<>();
+        Map<Long, GmstConfigTemplateDtl> existingItemDetails = new HashMap<>();
 
         Integer universityId = RequestUtility.getUniversityId();
         if (!isSave) {
-            checkListItemDetails = templateDetailRepository.findByUnumIsvalidAndUnumUnivIdAndUnumTempleId(1, universityId, templateMasterBean.getUnumTempleId())
+            existingItemDetails = templateDetailRepository.findByUnumIsvalidAndUnumUnivIdAndUnumTempleId(1, universityId, templateMasterBean.getUnumTempleId())
                     .stream()
                     .filter(templateDetail -> templateDetail.getUnumChecklistId() != null)
                     .collect(Collectors.toMap(GmstConfigTemplateDtl::getUnumTempleItemId, Function.identity()));
@@ -110,12 +110,12 @@ public class TemplateService {
             gmstConfigTemplateDtl.setUdtEffFrom(currentDate);
             gmstConfigTemplateDtl.setUnumUnivId(universityId);
             gmstConfigTemplateDtl.setUdtEntryDate(currentDate);
-            if (checkListItemDetails.containsKey(gmstConfigTemplateDtl.getUnumTempleItemId())) {
-                GmstConfigTemplateDtl checkListItem = checkListItemDetails.get(gmstConfigTemplateDtl.getUnumTempleItemId());
-                gmstConfigTemplateDtl.setUnumChecklistId(checkListItem.getUnumChecklistId());
-                gmstConfigTemplateDtl.setUstrChecklistName(checkListItem.getUstrChecklistName());
-                gmstConfigTemplateDtl.setUnumChecklistItemOrderno(checkListItem.getUnumChecklistItemOrderno());
-                gmstConfigTemplateDtl.setUstrChecklistItemName(checkListItem.getUstrChecklistItemName());
+            if (existingItemDetails.containsKey(gmstConfigTemplateDtl.getUnumTempleItemId())) {
+                GmstConfigTemplateDtl existingItem = existingItemDetails.get(gmstConfigTemplateDtl.getUnumTempleItemId());
+                gmstConfigTemplateDtl.setUnumChecklistId(existingItem.getUnumChecklistId());
+                gmstConfigTemplateDtl.setUstrChecklistName(existingItem.getUstrChecklistName());
+                gmstConfigTemplateDtl.setUnumChecklistItemOrderno(existingItem.getUnumChecklistItemOrderno());
+                gmstConfigTemplateDtl.setUstrChecklistItemName(existingItem.getUstrChecklistItemName());
             }
 
             Long headId = gmstConfigTemplateDtl.getUnumTempleHeadId();
@@ -208,7 +208,8 @@ public class TemplateService {
         Map<Long, String> compMstMap = gmstConfigTemplateComponentMstList.stream().collect(Collectors.toMap(GmstConfigTemplateComponentMst::getUnumTempleCompId, GmstConfigTemplateComponentMst::getUstrCompPrintText));
 
         List<GmstConfigTemplateComponentDtl> gmstConfigTemplateComponentDtlList = templateComponentDetailRepository.findComponentDtlsByTemplateId(templateMasterBean.getUnumUnivId(), Collections.singletonList(templateId));
-        Map<Long, String> compDtlsMap = gmstConfigTemplateComponentDtlList.stream().collect(Collectors.toMap(GmstConfigTemplateComponentDtl::getUnumTempleCompItemId, GmstConfigTemplateComponentDtl::getUstrDescription));
+        Map<Long, String> compDtlsMap = gmstConfigTemplateComponentDtlList.stream()
+                .collect(Collectors.toMap(GmstConfigTemplateComponentDtl::getUnumTempleCompItemId, component -> component.getUstrDescription() == null ? "" : component.getUstrDescription()));
 
         List<GmstConfigTemplateHeaderMst> gmstConfigTemplateHeaderMstList = templateHeaderRepository.findHeadersByTemplateId(templateMasterBean.getUnumUnivId(), Collections.singletonList(templateId));
         Map<Long, String> headMstMap = gmstConfigTemplateHeaderMstList.stream().collect(Collectors.toMap(GmstConfigTemplateHeaderMst::getUnumTempleHeadId, v -> v.getUstrHeadPrintText() == null ? "-" : v.getUstrHeadPrintText()));
@@ -237,7 +238,7 @@ public class TemplateService {
                 key.setUnumTempleCompId(pageBreakHeadCompSeq--);
                 String description = templateMasterDtlsBean.getUstrTempledtlDescription();
                 if (description != null && !description.isBlank())
-                key.setUstrHeadPrintText(description);
+                    key.setUstrHeadPrintText(description);
             }
 
             List<TemplateMasterDtlsChildBean> children = resultmap.getOrDefault(key, new ArrayList<>());
@@ -264,13 +265,13 @@ public class TemplateService {
         return ServiceResponse.successObject(BeanUtils.copyListProperties(gmstConfigTemplateMsts, TemplateMasterBean.class));
     }
 
-    
+
     public List<TemplateMasterBean> getAllTemplateCombo() throws Exception {
-    	List<GmstConfigTemplateMst> gmstConfigTemplateMsts = templateRepository.findByUnumIsvalidAndUnumUnivId(1, RequestUtility.getUniversityId());
-        return 
+        List<GmstConfigTemplateMst> gmstConfigTemplateMsts = templateRepository.findByUnumIsvalidAndUnumUnivId(1, RequestUtility.getUniversityId());
+        return
                 BeanUtils.copyListProperties(gmstConfigTemplateMsts, TemplateMasterBean.class);
     }
-	
+
 
     @Transactional
     public ServiceResponse manageTemplateOrder(TempleHeadCompBean templeHeadCompBean) {
