@@ -17,6 +17,7 @@ import java.util.List;
 public class MasterTemplateBean {
 
     @ComboKey
+    @ListColumn(omit = true)
     private Long unumMtempleId;
 
     @JsonIgnore
@@ -52,6 +53,7 @@ public class MasterTemplateBean {
     private String ustrMtempleCode;
 
     @ComboValue
+    @ListColumn(name = "Master Template Name", order = 2)
     private String ustrMtempleName;
 
     private Integer unumApplicationEntryStatus;
@@ -73,6 +75,9 @@ public class MasterTemplateBean {
     private String ustrMtemplateFooter;
     
     private List<Long> mappedTemplates;
+    
+    @ListColumn(name = "Template Name", order = 3)
+    private String ustrtempleName;
 
 
     
