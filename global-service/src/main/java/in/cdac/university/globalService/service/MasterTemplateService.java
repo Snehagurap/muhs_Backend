@@ -742,7 +742,7 @@ public class MasterTemplateService {
 	@Transactional
     public ServiceResponse saveMasterTemplate(MasterTemplateBean masterTemplateBean) throws Exception {
 		
-    	 List<GmstConfigMastertemplateMst> configMastertemplateMsts = masterTemplateRepository.findByUnumIsvalidInAndUstrMtempleNameIgnoreCase(
+    	List<GmstConfigMastertemplateMst> configMastertemplateMsts = masterTemplateRepository.findByUnumIsvalidInAndUstrMtempleNameIgnoreCase(
                  List.of(1), masterTemplateBean.getUstrMtempleName());
     	 
     	 if (!configMastertemplateMsts.isEmpty()) {
@@ -776,7 +776,7 @@ public class MasterTemplateService {
         if (!templatesToAdd.isEmpty())
         masterTemplateDetailRepository.saveAll(templatesToAdd);
         
-        return ServiceResponse.builder().status(1).message(language.saveSuccess("Templatedtl Mapping")).build();
+        return ServiceResponse.builder().status(1).message(language.saveSuccess("Master Template Save")).build();
 
     }
     @Transactional
@@ -784,16 +784,10 @@ public class MasterTemplateService {
 		
     	GmstConfigMastertemplateMst gmstConfigMasterTemplateMst = new GmstConfigMastertemplateMst();
         BeanUtils.copyProperties(masterTemplateBean, gmstConfigMasterTemplateMst);
-        
-      
-        //master
         masterTemplateRepository.createLog(List.of(masterTemplateBean.getUnumMtempleId()));
-        //dtl
         masterTemplateDetailRepository.createLog(List.of(masterTemplateBean.getUnumMtempleId()));
         masterTemplateRepository.save(gmstConfigMasterTemplateMst);
-        
     	Set<Long> mappedTemplateSet = new HashSet<>(masterTemplateBean.getMappedTemplates());
-    	
     	List<GmstConfigMastertemplateTemplatedtl> TemplatesToAdd = new ArrayList<>();
         int count = 1;
         for (Long templateId: mappedTemplateSet) {
@@ -809,59 +803,55 @@ public class MasterTemplateService {
         	configMastertemplateTemplatedtl.setUdtEntryDate(new Date());  
         	TemplatesToAdd.add(configMastertemplateTemplatedtl);
         }
-
         if (!TemplatesToAdd.isEmpty())
         masterTemplateDetailRepository.saveAll(TemplatesToAdd);
-        
         return ServiceResponse.builder().status(1).message(language.saveSuccess("Templatedtl Mapping")).build();
-
     }
-	public ServiceResponse getAllMasterTemplate() throws IllegalAccessException {
+	public List<MasterTemplateBean> getAllMasterTemplate() throws Exception {
 		List<GmstConfigMastertemplateMst> masterTemplateList = masterTemplateRepository.findByUnumIsvalidIn(List.of(1));
 		List<MasterTemplateBean> masterTemplateBeanRes = new ArrayList<>();
+		StringBuffer templeNameList = new StringBuffer();
 		for(GmstConfigMastertemplateMst gmstConfigMastertemplateMst : masterTemplateList)
 		{
 			MasterTemplateBean masterTemplateBean = BeanUtils.copyProperties(gmstConfigMastertemplateMst, MasterTemplateBean.class);
-			List<GmstConfigMastertemplateTemplatedtl> masterTemplateDtlList = masterTemplateDetailRepository.findByUnumIsvalidInAndUnumMtempleId(List.of(1),masterTemplateBean.getUnumMtempleId());
+			masterTemplateBean.setUnumMtempleId(gmstConfigMastertemplateMst.getUnumMtempleId());
+			masterTemplateBean.setUstrMtempleName(gmstConfigMastertemplateMst.getUstrMtempleName());
+	        List<GmstConfigMastertemplateTemplatedtl> masterTemplateDtlList = masterTemplateDetailRepository.findByUnumIsvalidInAndUnumMtempleId(List.of(1),masterTemplateBean.getUnumMtempleId());
 			List<TemplateBean> templateBean = BeanUtils.copyListProperties(masterTemplateDtlList, TemplateBean.class);
 			templateBean.stream().map( tempBean -> {
 							List<GmstConfigTemplateMst> gmstConfigTemplateMst = templateRepository.findByUnumIsvalidAndUnumTempleId(1, tempBean.getUnumTempleId());
-							if(!gmstConfigTemplateMst.isEmpty())
-								tempBean.setUstrTempleName(gmstConfigTemplateMst.get(0).getUstrTempleName());
+							if(!gmstConfigTemplateMst.isEmpty()) {
+								templeNameList.append(gmstConfigTemplateMst.get(0).getUstrTempleName());
+								templeNameList.append(","); 
+						     }
 							return tempBean;
-				
 			}).toList();
-			masterTemplateBean.setTemplateList(templateBean);
+			masterTemplateBean.setUstrtempleName(templeNameList.toString());
 			masterTemplateBeanRes.add(masterTemplateBean);
 		}
-	  
-	  return ServiceResponse.successObject(
-				BeanUtils.copyListProperties(masterTemplateBeanRes, MasterTemplateBean.class));
+	   return BeanUtils.copyListProperties(masterTemplateBeanRes, MasterTemplateBean.class);
 	}
 	
 	public ServiceResponse getMasterTemplateById(Long masterId) throws Exception {
-		List<GmstConfigMastertemplateMst> masterTemplateList = masterTemplateRepository.findByUnumIsvalidInAndUnumMtempleId(List.of(1),masterId);
-		List<MasterTemplateBean> masterTemplateBeanRes = new ArrayList<>();
-		for(GmstConfigMastertemplateMst gmstConfigMastertemplateMst : masterTemplateList)
-		{
-			MasterTemplateBean masterTemplateBean = BeanUtils.copyProperties(gmstConfigMastertemplateMst, MasterTemplateBean.class);
-			List<GmstConfigMastertemplateTemplatedtl> masterTemplateDtlList = masterTemplateDetailRepository.findByUnumIsvalidInAndUnumMtempleId(List.of(1),masterId);
-			List<TemplateBean> templateBean = BeanUtils.copyListProperties(masterTemplateDtlList, TemplateBean.class);
-			templateBean.stream().map( tempBean -> {
+		List<GmstConfigMastertemplateTemplatedtl> masterTemplateDtlList = masterTemplateDetailRepository.findByUnumIsvalidInAndUnumMtempleId(List.of(1),masterId);
+		List<TemplateBean> templateBean = BeanUtils.copyListProperties(masterTemplateDtlList, TemplateBean.class);
+		List<TemplateMasterBean> templateMasterBean = templateService.getAllTemplateCombo();
+		templateBean.stream().map( tempBean -> {
 							List<GmstConfigTemplateMst> gmstConfigTemplateMst = templateRepository.findByUnumIsvalidAndUnumTempleId(1, tempBean.getUnumTempleId());
 							if(!gmstConfigTemplateMst.isEmpty())
 								tempBean.setUstrTempleName(gmstConfigTemplateMst.get(0).getUstrTempleName());
 							return tempBean;
-				
 			}).toList();
-			masterTemplateBean.setTemplateList(templateBean);
-			masterTemplateBeanRes.add(masterTemplateBean);
-		}
-		
-		List<TemplateMasterBean> templateMasterBean = templateService.getAllTemplateCombo().stream().filter( t -> (!masterTemplateBeanRes.contains(t))).collect(Collectors.toList());
-		
-		MappedComboBean mappedComboBean = new MappedComboBean( ComboUtility.generateComboData(masterTemplateBeanRes), ComboUtility.generateComboData(templateMasterBean));
-	  
+		List<TemplateMasterBean> templateMasterAdd = new ArrayList<>();
+			for(TemplateMasterBean templateMasterBeanT : templateMasterBean){
+				for(TemplateBean templateBeanT : templateBean ) {
+					if(templateBeanT.getUnumTempleId().equals(templateMasterBeanT.getUnumTempleId())) {
+						templateMasterAdd.add(templateMasterBeanT);
+					}
+				}
+			}
+		templateMasterBean.removeAll(templateMasterAdd);
+		MappedComboBean mappedComboBean = new MappedComboBean( ComboUtility.generateComboData(templateBean), ComboUtility.generateComboData(templateMasterBean));
 		return ServiceResponse.successObject(mappedComboBean);
 	}
 }

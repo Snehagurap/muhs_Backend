@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -89,10 +91,9 @@ public class MasterTemplateController {
 
 	
     @GetMapping("getAllMasterTemplate")
-    public ResponseEntity<?> getAllMasterTemplate() throws IllegalAccessException
+    public ResponseEntity<?> getAllMasterTemplate() throws Exception
     {
-    	return ResponseHandler
-    			.generateResponse(masterTemplateService.getAllMasterTemplate());
+    	return ResponseHandler.generateOkResponse(ListPageUtility.generateListPageData(masterTemplateService.getAllMasterTemplate()));
     }
 	
     @GetMapping("getMasterTemplateByIdCombo/{masterId}")
