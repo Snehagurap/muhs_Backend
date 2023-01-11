@@ -26,6 +26,13 @@ public class ProcessDocumentMappingController {
         );
     }
 
+    @GetMapping("mapped/{processId}")
+    public ResponseEntity<?> getMappedDetails(@PathVariable("processId") Long processId) {
+        return ResponseHandler.generateResponse(
+                processDocumentMappingService.getMappedDetails(processId)
+        );
+    }
+
     @PostMapping("mapping/save")
     public ResponseEntity<?> saveMappingDetails(@Valid @RequestBody ProcessDocumentMappingBean processDocumentMappingBean) throws Exception {
         processDocumentMappingBean.setUnumIsvalid(1);

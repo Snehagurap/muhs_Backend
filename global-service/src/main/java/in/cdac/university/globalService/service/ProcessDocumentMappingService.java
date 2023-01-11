@@ -54,6 +54,22 @@ public class ProcessDocumentMappingService {
         return ServiceResponse.successObject(new MappedComboBean(mappedDocuments, notMappedDocuments));
     }
 
+    public ServiceResponse getMappedDetails(Long processId) {
+        List<GmstDocumentMst> allDocuments = documentRepository.getAllDocuments();
+
+        Set<Long> mappedDocumentIds = processDocumentMappingRepository.findByUnumProcessIdAndUnumIsvalid(
+                        processId, 1)
+                .stream().map(GmstProcDocDtl::getUnumDocId).collect(Collectors.toSet());
+        List<ComboBean> mappedDocuments = new ArrayList<>();
+        for (GmstDocumentMst documentMst : allDocuments) {
+            if (mappedDocumentIds.contains(documentMst.getUnumDocId())) {
+                ComboBean comboBean = new ComboBean(documentMst.getUnumDocId().toString(), documentMst.getUstrDocName());
+                mappedDocuments.add(comboBean);
+            }
+        }
+        return ServiceResponse.successObject(mappedDocuments);
+    }
+
 
     public List<ProcessDocumentMappingBean> getListPageDtl() {
         List<GmstProcDocDtl> mappingData = processDocumentMappingRepository.findByUnumIsvalid(1);
@@ -107,5 +123,4 @@ public class ProcessDocumentMappingService {
         }
         return ServiceResponse.successMessage(language.saveSuccess("Process Document Mapping"));
     }
-
 }
