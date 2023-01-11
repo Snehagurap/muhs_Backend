@@ -20,11 +20,17 @@ public interface MasterTemplateRepository extends JpaRepository<GmstConfigMaster
 
 	List<GmstConfigMastertemplateMst> findByUnumIsvalidInAndUnumMtempleIdIn(List<Integer> of, List<Long> of2);
 	
+	List<GmstConfigMastertemplateMst> findByUnumIsvalidIn(List<Integer> of);
+
+	List<GmstConfigMastertemplateMst> findByUnumIsvalidInAndUnumMtempleId(List<Integer> of, Long masterId);
 	
 	@Modifying(clearAutomatically = true)
     @Query("update GmstConfigMastertemplateMst u set u.unumIsvalid = (select coalesce(max(a.unumIsvalid), 2) + 1 " +
             "from GmstConfigMastertemplateMst a where a.unumMtempleId = u.unumMtempleId and a.unumIsvalid > 2) " +
             "where u.unumMtempleId in (:masterTempIds) and u.unumIsvalid in (1, 2) ")
     Integer createLog(@Param("masterTempIds") List<Long> masterTempIds);
+	
+		List<GmstConfigMastertemplateMst> findByUnumIsvalidInAndUstrMtempleNameIgnoreCase(List<Integer> of,
+			String ustrMtempleName);
 
 }

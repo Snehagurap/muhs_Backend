@@ -265,6 +265,14 @@ public class TemplateService {
         return ServiceResponse.successObject(BeanUtils.copyListProperties(gmstConfigTemplateMsts, TemplateMasterBean.class));
     }
 
+    
+    public List<TemplateMasterBean> getAllTemplateCombo() throws Exception {
+    	List<GmstConfigTemplateMst> gmstConfigTemplateMsts = templateRepository.findByUnumIsvalidAndUnumUnivId(1, RequestUtility.getUniversityId());
+        return 
+                BeanUtils.copyListProperties(gmstConfigTemplateMsts, TemplateMasterBean.class);
+    }
+	
+
     @Transactional
     public ServiceResponse manageTemplateOrder(TempleHeadCompBean templeHeadCompBean) {
 

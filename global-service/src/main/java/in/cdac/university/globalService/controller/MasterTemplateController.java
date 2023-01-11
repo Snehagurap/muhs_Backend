@@ -85,13 +85,45 @@ public class MasterTemplateController {
         );
     }
     
-    @PostMapping("saveMasterTemplate")
+
+	
+    @GetMapping("getAllMasterTemplate")
+    public ResponseEntity<?> getAllMasterTemplate() throws IllegalAccessException
+    {
+    	return ResponseHandler
+    			.generateResponse(masterTemplateService.getAllMasterTemplate());
+    }
+	
+    @GetMapping("getMasterTemplateByIdCombo/{masterId}")
+    public ResponseEntity<?> getMasterTemplateById(@PathVariable("masterId") Long masterId ) throws Exception
+    {
+    	return ResponseHandler
+    			.generateResponse(masterTemplateService.getMasterTemplateById(masterId));
+    }
+	@PostMapping("saveMasterTemplate")
     public ResponseEntity<?> saveMasterTemplate(@Valid @RequestBody MasterTemplateBean masterTemplateBean) throws Exception {
+    	 
+		masterTemplateBean.setUnumUnivId(RequestUtility.getUniversityId());
+		masterTemplateBean.setUnumEntryUid(RequestUtility.getUserId());
+		masterTemplateBean.setUdtEffFrom(new Date());
+		masterTemplateBean.setUdtEntryDate(new Date());
+        masterTemplateBean.setUnumIsvalid(1);
         return ResponseHandler.generateResponse(
                 masterTemplateService.saveMasterTemplate(masterTemplateBean)
         );
     }
-    
+    @PostMapping("updateMasterTemplate")
+    public ResponseEntity<?> updateMasterTemplate(@Valid @RequestBody MasterTemplateBean masterTemplateBean) throws Exception {
+    	 
+		masterTemplateBean.setUnumUnivId(RequestUtility.getUniversityId());
+		masterTemplateBean.setUnumEntryUid(RequestUtility.getUserId());
+		masterTemplateBean.setUdtEffFrom(new Date());
+		masterTemplateBean.setUdtEntryDate(new Date());
+        masterTemplateBean.setUnumIsvalid(1);
+        return ResponseHandler.generateResponse(
+                masterTemplateService.updateMasterTemplate(masterTemplateBean)
+        );
+    }
     // Delete mapping replaced by POST
     @PostMapping("delete")
         public ResponseEntity<?> delete(@RequestBody Long[] idsToDelete) throws Exception {
