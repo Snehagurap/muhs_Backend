@@ -132,6 +132,7 @@ public class MasterTemplateController {
     		MasterTemplateBean masterTemplateBean = new MasterTemplateBean();
             
     		masterTemplateBean.setUnumUnivId(RequestUtility.getUniversityId());
+    		masterTemplateBean.setUdtEntryDate(new Date());
     		masterTemplateBean.setUnumEntryUid(RequestUtility.getUserId());
             return ResponseHandler.generateResponse(
             		masterTemplateService.delete(masterTemplateBean, idsToDelete)
