@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -89,6 +91,7 @@ public class GbltLicCommitteeRuleSetDtl {
 	@Column(name="unum_univ_id")
 	private Integer unumUnivId;
 	
+	@Temporal(TemporalType.DATE)
 	@Column(name="udt_entry_date")
 	private Date udtEntryDate;
 	
