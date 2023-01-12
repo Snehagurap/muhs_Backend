@@ -9,10 +9,6 @@ import java.util.Date;
 
 import in.cdac.university.globalService.util.annotations.ListColumn;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 @Getter
 @Setter
@@ -43,6 +39,7 @@ public class ApplicationTrackerBean {
 
     private Date udtEntryDate;
 
+    @ListColumn(omit = true)
     private Integer unumApplicationStatusId;
 
     private Long unumEntryUid;

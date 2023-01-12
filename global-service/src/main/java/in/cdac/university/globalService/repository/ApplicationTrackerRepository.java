@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,9 +38,10 @@ public interface ApplicationTrackerRepository extends JpaRepository<GbltConfigAp
 	@Query("update GbltConfigApplicationTracker u set u.unumApplicationLevelId = :levelId ,  " +
 			"u.unumApplicationStatusSno = :applicationStatusSno ,  " +
 			"u.unumApplicationStatusId = :applicationStatusId , " +
-			"u.unumDecisionStatusId = :decisionStatusId " +
+			"u.unumDecisionStatusId = :decisionStatusId , " +
+			"u.udtApplicationStatusDt = :applicationStatusDate " +
 			"where u.unumApplicationId = :applicationId ")
-	Integer updateApplicationOnVerification(@Param("applicationId") Long applicationId,@Param("applicationStatusSno") Long applicationStatusSno,
-											@Param("levelId") Integer levelId,@Param("applicationStatusId") Integer applicationStatusId,
-											@Param("decisionStatusId") Integer decisionStatusId);
+	Integer updateApplicationOnVerification(@Param("applicationId") Long applicationId, @Param("applicationStatusSno") Long applicationStatusSno,
+											@Param("levelId") Integer levelId, @Param("applicationStatusId") Integer applicationStatusId,
+											@Param("decisionStatusId") Integer decisionStatusId,@Param("applicationStatusDate") Date applicationStatusDate);
 }

@@ -11,7 +11,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-@Table(name="gblt_config_application_tracker")
+@Table(name="gblt_config_application_tracker",schema ="templedata")
 @IdClass(GbltConfigApplicationTrackerPK.class)
 public class GbltConfigApplicationTracker implements Serializable {
 	@Serial

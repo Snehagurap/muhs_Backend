@@ -11,7 +11,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-@Table(name="gblt_config_application_tracker_dtl")
+@Table(name="gblt_config_application_tracker_dtl",schema ="templedata")
 @IdClass(GbltConfigApplicationTrackerDtlPK.class)
 public class GbltConfigApplicationTrackerDtl implements Serializable {
 	@Serial
@@ -95,6 +95,10 @@ public class GbltConfigApplicationTrackerDtl implements Serializable {
 
 	@Column(name="unum_application_status_id")
 	private Integer unumApplicationStatusId;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name="udt_application_status_dt")
+	private Date udtApplicationStatusDt;
 
 	@Column(name="unum_approval_statusid")
 	private Integer unumApprovalStatusid;

@@ -6,7 +6,6 @@ import in.cdac.university.globalService.service.ApplicationTrackerService;
 import in.cdac.university.globalService.util.ListPageUtility;
 import in.cdac.university.globalService.util.RequestUtility;
 import in.cdac.university.globalService.util.ResponseHandler;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,18 +47,13 @@ public class ApplicationTrackerController {
     public ResponseEntity<?> getApplicationForDepartmentScrutiny(@PathVariable("notificationId") Long notificationId,
                                            @PathVariable("notificationDetailId") Long notificationDetailId,
                                            @PathVariable("levelId") Integer levelId) throws Exception {
-        return ResponseHandler.generateOkResponse(ListPageUtility.generateListPageData(
-                applicationTrackerService.getApplicationForDepartmentScrutiny(notificationId, notificationDetailId, levelId))
+        return ResponseHandler.generateOkResponse(
+                ListPageUtility.generateListPageData(
+                    applicationTrackerService.getApplicationForDepartmentScrutiny(notificationId, notificationDetailId, levelId))
         );
     }
 
-    @GetMapping("trackerDtl/{applicationId}/{levelId}")
-    public ResponseEntity<?> getApplicationTrackerDtl(@PathVariable("applicationId") Long applicationId,
-                                                      @PathVariable("levelId") Integer levelId) throws Exception {
-        return ResponseHandler.generateResponse(
-                applicationTrackerService.getApplicationTrackerDtl(applicationId, levelId)
-        );
-    }
+
     @PostMapping("update/status/receivedBy")
     public ResponseEntity<?> updateStatusForApplicationReceived(@RequestBody ApplicationTrackerBean applicationTrackerBean) throws Exception {
         return ResponseHandler.generateResponse(
@@ -69,10 +63,6 @@ public class ApplicationTrackerController {
 
     @PostMapping("verify/application")
     public ResponseEntity<?> verifyApplication(@RequestBody ApplicationTrackerDtlBean applicationTrackerDtlBean) throws Exception {
-        applicationTrackerDtlBean.setUdtEntryDate(new Date());
-        applicationTrackerDtlBean.setUnumEntryUid(RequestUtility.getUserId());
-        applicationTrackerDtlBean.setUnumIsvalid(1);
-        applicationTrackerDtlBean.setUnumUnivId(RequestUtility.getUniversityId());
         return ResponseHandler.generateResponse(
                 applicationTrackerService.verifyApplication(applicationTrackerDtlBean)
         );
