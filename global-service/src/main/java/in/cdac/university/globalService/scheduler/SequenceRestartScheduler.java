@@ -44,7 +44,7 @@ public class SequenceRestartScheduler {
             "ucom.seq_gblt_committee_mst",
             "ucom.seq_gblt_event_mst",
             "ucom.seq_gblt_committee_member_dtl",
-
+            "ucom.seq_gblt_lic_committee_ruleset_mst",
             // University
             "university.seq_gmst_subject_mst",
             "university.seq_gmst_college_mst",
