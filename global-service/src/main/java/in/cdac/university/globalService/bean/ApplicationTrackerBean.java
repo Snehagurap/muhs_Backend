@@ -31,6 +31,7 @@ public class ApplicationTrackerBean {
 
     private Date udtApplicationStatusDt;
 
+    @ListColumn(omit = true)
     private Integer unumApplicationLevelId;
 
     private Date udtEffFrom;
@@ -39,7 +40,7 @@ public class ApplicationTrackerBean {
 
     private Date udtEntryDate;
 
-    @ListColumn(omit = true)
+
     private Integer unumApplicationStatusId;
 
     private Long unumEntryUid;

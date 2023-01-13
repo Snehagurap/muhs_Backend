@@ -177,10 +177,10 @@ public class ApplicationTrackerService {
             }
         }
 
-        if(!applicationTrackerDtlBean.getCheckList().isEmpty()){
+        if(applicationTrackerDtlBean.getCheckList() != null && !applicationTrackerDtlBean.getCheckList().isEmpty()){
             applicationTrackerDtlBean.getCheckList().forEach(checkListBean -> {
                 Integer noOfRowsAffected = checkListRepository.updateDepartmentVerification(
-                                                        checkListBean.getUnumApplicationId(),checkListBean.getUnumTempleItemId(),
+                                                        applicationId,checkListBean.getUnumTempleItemId(),
                                                         checkListBean.getUnumOfcScrutinyIsitemverified(),checkListBean.getUstrOfcScrutinyRemarks()
                                             );
                 if(noOfRowsAffected == 0){
