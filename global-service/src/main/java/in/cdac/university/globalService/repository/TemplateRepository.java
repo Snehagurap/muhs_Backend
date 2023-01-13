@@ -34,6 +34,8 @@ public interface TemplateRepository extends JpaRepository<GmstConfigTemplateMst,
 
     GmstConfigTemplateMst findByUnumIsvalidAndUnumUnivIdAndUnumTempleId(Integer unumIsvalid, Integer unumUnivId, Long unumTemplId);
 
+    List<GmstConfigTemplateMst> findByUnumIsvalidAndUnumUnivIdOrderByUdtEntryDateDesc(Integer unumIsvalid, Integer unumUnivId);
+
     List<GmstConfigTemplateMst> findByUnumIsvalidAndUnumUnivId(Integer unumIsvalid, Integer unumUnivId);
 
     @Modifying(clearAutomatically = true)
