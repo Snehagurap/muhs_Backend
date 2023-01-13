@@ -7,9 +7,9 @@ import javax.persistence.Column;
 public class GbltLicCommitteeRuleSetMstPk implements Serializable {
 
 	@Column(name="unum_com_rs_id")
-	private Integer unumComRsId;
+	private Long unumComRsId;
 
 	@Column(name="unum_isvalid")
-	private Integer unumIsvalid;
+	private Integer unumIsValid;
 	
 }
