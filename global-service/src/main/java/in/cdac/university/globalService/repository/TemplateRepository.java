@@ -81,7 +81,7 @@ public interface TemplateRepository extends JpaRepository<GmstConfigTemplateMst,
             + "and unum_temple_item_id=:unum_temple_item_id", nativeQuery = true)
     void updateChecklist(@Param("unumTempleId") Long unumTempleId, @Param("unum_temple_head_id") Integer unum_temple_head_id,
                          @Param("unum_temple_comp_id") Long unum_temple_comp_id, @Param("unum_temple_item_id") Long unum_temple_item_id,
-                         @Param("ustr_checklist_name") String ustr_checklist_name, @Param("unum_checklist_id") Integer unum_checklist_id,
+                         @Param("ustr_checklist_name") String ustr_checklist_name, @Param("unum_checklist_id") Long unum_checklist_id,
                          @Param("ustr_checklist_Item_Name") String ustr_checklist_Item_Name, @Param("unum_checklist_item_order") Integer unum_checklist_item_order);
 
 	List<GmstConfigTemplateMst>findByUnumIsvalidAndUnumTempleId(int i, Long unumTempleId);

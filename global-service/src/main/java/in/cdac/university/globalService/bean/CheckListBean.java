@@ -31,7 +31,7 @@ public class CheckListBean {
 
 	private Long unumNdtlId;
 
-	private Integer unumChecklistId;
+	private Long unumChecklistId;
 
 	private Long unumMtempleId;
 

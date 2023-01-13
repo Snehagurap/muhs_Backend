@@ -33,7 +33,7 @@ public class GbltConfigApplicationChklstDataDtl implements Serializable {
 	private Long unumNdtlId;
 
 	@Id
-	private Integer unumChecklistId;
+	private Long unumChecklistId;
 
 	@Id
 	private Long unumMtempleId;
