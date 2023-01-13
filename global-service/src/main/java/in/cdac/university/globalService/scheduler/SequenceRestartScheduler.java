@@ -58,6 +58,7 @@ public class SequenceRestartScheduler {
             "university.seq_gmst_config_mastertemplate_mst",
             "university.seq_gmst_config_template_component_mst",
             "university.seq_gmst_faculty_stream_dtl",
+            "university.seq_gmst_config_template_item_api_mst",
             // Planning Board
             "upb.seq_gblt_notification_master",
 
@@ -71,7 +72,7 @@ public class SequenceRestartScheduler {
     @Scheduled(cron = "0 0 0 1 * *")
     public void restartSequenceEveryMonth() {
         log.info("Resetting sequence on " + new Date());
-        for (String sequenceName: sequenceList) {
+        for (String sequenceName : sequenceList) {
             log.info("Sequence Name {}", sequenceName);
             jdbcTemplate.execute("ALTER SEQUENCE if exists " + sequenceName + " RESTART;");
         }
