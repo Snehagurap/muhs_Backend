@@ -10,6 +10,6 @@ public class GbltLicCommitteeRuleSetMstPk implements Serializable {
 	private Integer unumComRsId;
 
 	@Column(name="unum_isvalid")
-	private Integer unumIsvalid;
+	private Integer unumIsValid;
 	
 }

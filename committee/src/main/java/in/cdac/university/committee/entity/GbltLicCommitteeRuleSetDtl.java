@@ -1,5 +1,7 @@
 package in.cdac.university.committee.entity;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -20,10 +22,13 @@ import lombok.ToString;
 @ToString
 @Table(name="gblt_lic_committee_ruleset_dtl", schema = "ucom")
 @IdClass(GbltLicCommitteeRuleSetDtlPK.class)
-public class GbltLicCommitteeRuleSetDtl {
+public class GbltLicCommitteeRuleSetDtl implements Serializable {
+
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	@Id
-	private long unumComRsDtlId;
+	private Long unumComRsDtlId;
 	
 	@Id
     private Integer unumIsValid; 
@@ -99,6 +104,6 @@ public class GbltLicCommitteeRuleSetDtl {
 	private Integer unumRoleId;
 	
 	@Column(name="unum_entry_uid")
-	private Integer unumEntryUid;
+	private Long unumEntryUid;
 	
 }

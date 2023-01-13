@@ -64,5 +64,5 @@ public class LicCommitteeRuleSetDtlBean {
 
 	private Integer unumRoleId;
 	
-	private Integer unumEntryUid;
+	private Long unumEntryUid;
 }

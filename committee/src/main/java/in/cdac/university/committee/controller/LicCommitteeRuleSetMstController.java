@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import in.cdac.university.committee.bean.LicCommitteeRuleSetBeanMst;
@@ -15,7 +16,10 @@ import in.cdac.university.committee.service.LicCommitteeRuleSetMstService;
 import in.cdac.university.committee.util.RequestUtility;
 import in.cdac.university.committee.util.ResponseHandler;
 
+
+
 @RestController
+@RequestMapping("/licCommittee/ruleset")
 public class LicCommitteeRuleSetMstController {
 
 	@Autowired
