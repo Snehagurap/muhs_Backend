@@ -33,7 +33,7 @@ public class GbltConfigApplicationChklstDataDtl implements Serializable {
 	private Long unumNdtlId;
 
 	@Id
-	private Long unumChecklistId;
+	private Integer unumChecklistId;
 
 	@Id
 	private Long unumMtempleId;
@@ -112,7 +112,7 @@ public class GbltConfigApplicationChklstDataDtl implements Serializable {
 	private Long unumStreamId;
 
 	@Column(name="unum_univ_id")
-	private Long unumUnivId;
+	private Integer unumUnivId;
 
 	@Column(name="ustr_checklist_item_name")
 	private String ustrChecklistItemName;
