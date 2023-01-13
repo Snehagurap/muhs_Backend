@@ -13,7 +13,6 @@ import java.util.Date;
 @NoArgsConstructor
 public class TemplateItemApiBean {
 
-    @ComboKey
     @ListColumn(omit = true)
     private Long unumApiId;
 
@@ -33,10 +32,11 @@ public class TemplateItemApiBean {
 
     private String ustrApiFunctionName;
 
-    @ComboValue
     @ListColumn(name = "Api Name", order = 2)
     private String ustrApiName;
 
+    @ComboKey
+    @ComboValue
     @ListColumn(name = "Api Url", order = 3)
     private String ustrApiUrl;
 
