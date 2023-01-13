@@ -24,7 +24,7 @@ import lombok.ToString;
 public class GbltLicCommitteeRuleSetMst {
 
 	@Id
-	private Integer unumComRsId;
+	private Long unumComRsId;
 	
 	@Id
 	private Integer unumIsValid;

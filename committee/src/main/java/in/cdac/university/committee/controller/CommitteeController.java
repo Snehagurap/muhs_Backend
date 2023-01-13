@@ -3,7 +3,9 @@ package in.cdac.university.committee.controller;
 import com.itextpdf.text.DocumentException;
 import in.cdac.university.committee.bean.CommitteeBean;
 import in.cdac.university.committee.bean.CommitteeMemberBean;
+import in.cdac.university.committee.bean.LicCommitteeRuleSetBeanMst;
 import in.cdac.university.committee.service.CommitteeService;
+import in.cdac.university.committee.service.LicCommitteeRuleSetMstService;
 import in.cdac.university.committee.util.ComboUtility;
 import in.cdac.university.committee.util.ListPageUtility;
 import in.cdac.university.committee.util.RequestUtility;
@@ -24,6 +26,9 @@ public class CommitteeController {
 
     @Autowired
     private CommitteeService committeeService;
+    
+    @Autowired
+	private LicCommitteeRuleSetMstService licCommitteeRuleSetMstService;
 
     @PostMapping("creator/save")
     public ResponseEntity<?> createCommittee(@Valid @RequestBody CommitteeBean committeeBean) throws Exception {
@@ -93,5 +98,17 @@ public class CommitteeController {
         byte[] pdfBytes = committeeService.generateCommitteeReport(eventId);
 
         return ResponseHandler.generateFileResponse(pdfBytes, "committee_report.pdf");
+    }
+    
+    @PostMapping("saveLicCommitteeRule")
+    public ResponseEntity<?> saveLicCommitteeRule(@Valid @RequestBody LicCommitteeRuleSetBeanMst licCommitteeRuleSetBeanMst) throws Exception {
+    	
+    	licCommitteeRuleSetBeanMst.setUnumIsValid(1);
+		licCommitteeRuleSetBeanMst.setUnumUnivId(RequestUtility.getUniversityId());
+		licCommitteeRuleSetBeanMst.setUnumEntryUid(RequestUtility.getUserId());
+		licCommitteeRuleSetBeanMst.setUdtEntryDate(new Date());
+        return ResponseHandler.generateResponse(
+        		licCommitteeRuleSetMstService.saveLicCommitteeRule(licCommitteeRuleSetBeanMst)
+        );
     }
 }

@@ -14,11 +14,11 @@ import lombok.ToString;
 public class LicCommitteeRuleSetDtlBean {
 
 	
-	private long unumComRsDtlId;
+	private Long unumComRsDtlId;
 	
 	private Integer unumComrolsno;
 	
-	private Integer unumComRsId;
+	private Long unumComRsId;
 	
 	private Integer unumCtypeid;
 	

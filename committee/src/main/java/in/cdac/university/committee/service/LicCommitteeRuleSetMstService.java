@@ -47,10 +47,12 @@ public class LicCommitteeRuleSetMstService {
         }
         GbltLicCommitteeRuleSetMst gbltLicCommitteeRuleSetMst = new GbltLicCommitteeRuleSetMst();
         BeanUtils.copyProperties(licCommitteeRuleSetBeanMst, gbltLicCommitteeRuleSetMst);
-
-        gbltLicCommitteeRuleSetMst.setUnumComRsId(licCommitteeRuleSetMstRespository.getNextId());
+        Long data = licCommitteeRuleSetMstRespository.getNextId();
+        
+        gbltLicCommitteeRuleSetMst.setUnumComRsId(data);
+        
         licCommitteeRuleSetMstRespository.save(gbltLicCommitteeRuleSetMst);
-        StringUtils.padLeftZeros(null, 0);
+        
         
         List<LicCommitteeRuleSetDtlBean> committeeRuleList = licCommitteeRuleSetBeanMst.getCommitteeRuleList() ;
         if (!committeeRuleList.isEmpty())

@@ -37,7 +37,7 @@ public class GbltLicCommitteeRuleSetDtl implements Serializable {
 	private Integer unumComrolsno;
 	
 	@Column(name="unum_com_rs_id")
-	private Integer unumComRsId;
+	private Long unumComRsId;
 	
 	@Column(name="unum_ctypeid ")
 	private Integer unumCtypeid;

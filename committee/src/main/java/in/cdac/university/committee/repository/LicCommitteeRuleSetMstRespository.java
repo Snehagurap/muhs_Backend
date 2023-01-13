@@ -16,7 +16,7 @@ public interface LicCommitteeRuleSetMstRespository extends JpaRepository<GbltLic
 
 	
 	@Query(value = "select to_char(current_date, 'yymm') || lpad(nextval('ucom.seq_gblt_lic_committee_ruleset_mst')\\:\\:text, 6, '0')", nativeQuery = true)
-    Integer getNextId();
+    Long getNextId();
 
 
 
