@@ -9,11 +9,7 @@ import in.cdac.university.globalService.entity.GbltConfigApplicationTrackerDtl;
 import in.cdac.university.globalService.entity.GmstApplicantMst;
 import in.cdac.university.globalService.entity.GmstCoursefacultyMst;
 import in.cdac.university.globalService.exception.ApplicationException;
-import in.cdac.university.globalService.repository.ApplicantRepository;
-import in.cdac.university.globalService.repository.ApplicationTrackerDtlRepository;
-import in.cdac.university.globalService.repository.ApplicationTrackerRepository;
-import in.cdac.university.globalService.repository.ConfigApplicationDataMasterRepository;
-import in.cdac.university.globalService.repository.FacultyRepository;
+import in.cdac.university.globalService.repository.*;
 import in.cdac.university.globalService.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +32,9 @@ public class ApplicationTrackerService {
 
     @Autowired
     private ConfigApplicationDataMasterRepository applicantDataMasterRepository;
+
+    @Autowired
+    private CheckListRepository checkListRepository;
 
     @Autowired
     private FacultyRepository facultyRepository;
@@ -176,6 +175,18 @@ public class ApplicationTrackerService {
             if (!isFileMoved) {
                 throw new ApplicationException("Unable to upload file");
             }
+        }
+
+        if(!applicationTrackerDtlBean.getCheckList().isEmpty()){
+            applicationTrackerDtlBean.getCheckList().forEach(checkListBean -> {
+                Integer noOfRowsAffected = checkListRepository.updateDepartmentVerification(
+                                                        checkListBean.getUnumApplicationId(),checkListBean.getUnumTempleItemId(),
+                                                        checkListBean.getUnumOfcScrutinyIsitemverified(),checkListBean.getUstrOfcScrutinyRemarks()
+                                            );
+                if(noOfRowsAffected == 0){
+                    throw new ApplicationException("Unable to update CheckList");
+                }
+            });
         }
 
         Optional<GbltConfigApplicationTracker> gbltConfigApplicationTracker = applicationTrackerRepository.findByUnumApplicationIdAndUnumIsvalidAndUnumUnivId(
