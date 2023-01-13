@@ -53,7 +53,7 @@ spring:
     multipart:
       enabled: true
       file-size-threshold: 2KB
-      max-file-size: 5MB
+      max-file-size: 50MB
       max-request-size: 200MB
   cloud:
     gateway:

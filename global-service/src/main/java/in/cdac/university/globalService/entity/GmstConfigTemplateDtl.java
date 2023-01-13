@@ -84,7 +84,7 @@ public class GmstConfigTemplateDtl implements Serializable {
     private Integer unumComponentOrderNo;
 
 	@Column(name="unum_checklist_id")
-	private Integer unumChecklistId;
+	private Long unumChecklistId;
 
 	@Column(name="ustr_checklist_name")
 	private String ustrChecklistName;
