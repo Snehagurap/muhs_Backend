@@ -48,7 +48,6 @@ public class TemplateItemApiController {
         templateItemApiBean.setUnumEntryUid(RequestUtility.getUserId());
         templateItemApiBean.setUnumApiTypeId(1);
         templateItemApiBean.setUnumIsvalid(1);
-        System.out.println("--->>> Bean " + templateItemApiBean);
         return ResponseHandler.generateResponse(templateItemApiService.save(templateItemApiBean));
     }
 
