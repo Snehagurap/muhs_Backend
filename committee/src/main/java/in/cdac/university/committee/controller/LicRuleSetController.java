@@ -16,24 +16,22 @@ import in.cdac.university.committee.service.LicCommitteeRuleSetMstService;
 import in.cdac.university.committee.util.RequestUtility;
 import in.cdac.university.committee.util.ResponseHandler;
 
-
-
 @RestController
-@RequestMapping("/licCommittee/ruleset")
-public class LicCommitteeRuleSetMstController {
+@RequestMapping("/committee/licRuleset")
+public class LicRuleSetController {
 
-	@Autowired
+    @Autowired
 	private LicCommitteeRuleSetMstService licCommitteeRuleSetMstService;
-	
-	@PostMapping("saveLicCommitteeRule")
-    public ResponseEntity<?> saveLicCommitteeRule(@Valid @RequestBody LicCommitteeRuleSetBeanMst licCommitteeRuleSetBeanMst) throws Exception {
-    	 
-		licCommitteeRuleSetBeanMst.setUnumUnivId(RequestUtility.getUniversityId());
-		licCommitteeRuleSetBeanMst.setUnumEntryUid(RequestUtility.getUserId());
-		licCommitteeRuleSetBeanMst.setUdtEntryDate(new Date());
-        return ResponseHandler.generateResponse(
-        		licCommitteeRuleSetMstService.saveLicCommitteeRule(licCommitteeRuleSetBeanMst)
-        );
-    }
-	
+
+    @PostMapping("saveLicCommitteeRule")
+	    public ResponseEntity<?> saveLicCommitteeRule(@Valid @RequestBody LicCommitteeRuleSetBeanMst licCommitteeRuleSetBeanMst) throws Exception {
+	    	
+	    	licCommitteeRuleSetBeanMst.setUnumIsValid(1);
+			licCommitteeRuleSetBeanMst.setUnumUnivId(RequestUtility.getUniversityId());
+			licCommitteeRuleSetBeanMst.setUnumEntryUid(RequestUtility.getUserId());
+			licCommitteeRuleSetBeanMst.setUdtEntryDate(new Date());
+	        return ResponseHandler.generateResponse(
+	        		licCommitteeRuleSetMstService.saveLicCommitteeRule(licCommitteeRuleSetBeanMst)
+	        );
+	    }
 }
