@@ -59,6 +59,7 @@ public class FtpUtility {
                 return ftpClient;
             }
         } catch (Exception e) {
+            log.error("Unable to connect to FTP Server: {}", ftpUrl);
             e.printStackTrace();
         }
         return null;

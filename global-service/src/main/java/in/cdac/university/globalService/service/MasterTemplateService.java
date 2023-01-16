@@ -43,6 +43,9 @@ public class MasterTemplateService {
     private ApplicantRepository applicantRepository;
 
     @Autowired
+    private CheckListService checkListService;
+
+    @Autowired
     private Language language;
 
     @Autowired
@@ -535,8 +538,11 @@ public class MasterTemplateService {
             return ServiceResponse.errorResponse(language.notFoundForId("Notification Detail", templateToSaveBean.getUnumNdtlId()));
 
         // Upload all the file to main directory
-        if (Objects.equals(templateToSaveBean.getUnumApplicationEntryStatus(), Constants.APPLICATION_STATUS_FINAL_SAVE)) {
+        boolean isFinalSave = Objects.equals(templateToSaveBean.getUnumApplicationEntryStatus(), Constants.APPLICATION_STATUS_FINAL_SAVE);
+        Set<Long> templatesToSave = new HashSet<>();
+        if (isFinalSave) {
             for (TemplateToSaveDetailBean templateToSaveDetailBean : templateToSaveBean.getItemDetails()) {
+                templatesToSave.add(templateToSaveDetailBean.getUnumTempleId());
                 if (templateToSaveDetailBean.getUnumUiControlId() == 9) {
                     if (templateToSaveDetailBean.getUstrItemValue() != null && !templateToSaveDetailBean.getUstrItemValue().isBlank()) {
                         if (!ftpUtility.isFileExists(templateToSaveDetailBean.getUstrItemValue())) {
@@ -612,11 +618,22 @@ public class MasterTemplateService {
             applicationDataMasterRepository.save(applicationDataMst);
         }
 
+        Map<String, GmstConfigTemplateDtl> checklistItemsToSave = new HashMap<>();
+        if (isFinalSave) {
+            checklistItemsToSave = templateDetailRepository.findByUnumIsvalidAndUnumUnivIdAndUnumTempleIdIn(1, universityId, templatesToSave.stream().toList())
+                    .stream()
+                    .filter(gmstConfigTemplateDtl -> gmstConfigTemplateDtl.getUnumChecklistId() != null && gmstConfigTemplateDtl.getUstrChecklistName() != null &&
+                            gmstConfigTemplateDtl.getUstrChecklistItemName() != null && gmstConfigTemplateDtl.getUnumChecklistItemOrderno() != null)
+                    .collect(Collectors.toMap(gmstConfigTemplateDtl -> gmstConfigTemplateDtl.getUnumTempleId() + "-" + gmstConfigTemplateDtl.getUnumTempleItemId(),
+                            Function.identity()));
+        }
+
         List<GbltConfigApplicationDataDtl> itemDetailList = new ArrayList<>();
+        List<GbltConfigApplicationChklstDataDtl> applicationChecklist = new ArrayList<>();
         long index = 1L;
         for (TemplateToSaveDetailBean templateToSaveDetailBean : templateToSaveBean.getItemDetails()) {
             GbltConfigApplicationDataDtl applicationDataDtl = BeanUtils.copyProperties(templateToSaveDetailBean, GbltConfigApplicationDataDtl.class);
-            applicationDataDtl.setUnumApplicationdtlId(index++);
+            applicationDataDtl.setUnumApplicationdtlId(index);
             applicationDataDtl.setUnumApplicationId(applicationId);
             applicationDataDtl.setUnumApplicantId(applicantId);
             applicationDataDtl.setUnumNid(notificationBean.getUnumNid());
@@ -627,11 +644,42 @@ public class MasterTemplateService {
             applicationDataDtl.setUnumEntryUid(userId);
             applicationDataDtl.setUdtEntryDate(currentDate);
             itemDetailList.add(applicationDataDtl);
+
+            if (isFinalSave && checklistItemsToSave.containsKey(templateToSaveDetailBean.getUnumTempleId() + "-" + templateToSaveDetailBean.getUnumTempleItemId())) {
+                GmstConfigTemplateDtl checklistItem = checklistItemsToSave.get(templateToSaveDetailBean.getUnumTempleId() + "-" + templateToSaveDetailBean.getUnumTempleItemId());
+                GbltConfigApplicationChklstDataDtl applicationChklstDataDtl = BeanUtils.copyProperties(templateToSaveDetailBean, GbltConfigApplicationChklstDataDtl.class);
+                applicationChklstDataDtl.setUnumApplicationId(applicationId);
+                applicationChklstDataDtl.setUnumApplicationdtlId(index);
+                applicationChklstDataDtl.setUnumApplicantId(applicantId);
+                applicationChklstDataDtl.setUnumNid(notificationBean.getUnumNid());
+                applicationChklstDataDtl.setUnumNdtlId(notificationDetailBean.getUnumNdtlId());
+                applicationChklstDataDtl.setUnumChecklistId(checklistItem.getUnumChecklistId());
+                applicationChklstDataDtl.setUnumIsvalid(1);
+                applicationChklstDataDtl.setUdtEffFrom(currentDate);
+                applicationChklstDataDtl.setUdtEntryDate(currentDate);
+                applicationChklstDataDtl.setUnumApplicationStatusSno(Constants.APPLICATION_STATUS_FINAL_SAVE.longValue());
+                applicationChklstDataDtl.setUnumApprovalStatusid(9);
+                applicationChklstDataDtl.setUnumChecklistItemOrderno(checklistItem.getUnumChecklistItemOrderno());
+                applicationChklstDataDtl.setUnumComponentOrderNo(checklistItem.getUnumComponentOrderNo());
+                applicationChklstDataDtl.setUnumEntryUid(userId);
+                applicationChklstDataDtl.setUnumHeaderOrderNo(checklistItem.getUnumHeaderOrderNo());
+                applicationChklstDataDtl.setUnumOfcScrutinyIsitemverified(0);
+                applicationChklstDataDtl.setUnumUnivId(universityId);
+                applicationChklstDataDtl.setUstrChecklistName(checklistItem.getUstrChecklistName());
+                applicationChklstDataDtl.setUstrChecklistItemName(checklistItem.getUstrChecklistItemName());
+                applicationChklstDataDtl.setUstrTempleItemValue(templateToSaveDetailBean.getUstrItemValue());
+                applicationChecklist.add(applicationChklstDataDtl);
+            }
+
+            index++;
         }
+        long startTime = System.currentTimeMillis();
         applicationDataDetailRepository.saveAll(itemDetailList);
+        long endTime = System.currentTimeMillis();
+        log.info("Total time taken for saving: {} ms", (endTime - startTime));
 
         // Final save: insert record in tracker detail
-        if (Objects.equals(templateToSaveBean.getUnumApplicationEntryStatus(), Constants.APPLICATION_STATUS_FINAL_SAVE)) {
+        if (isFinalSave) {
             GbltConfigApplicationTracker applicationTracker = new GbltConfigApplicationTracker();
             applicationTracker.setUnumApplicationId(applicationId);
             applicationTracker.setUnumApplicantId(applicantId);
@@ -657,6 +705,9 @@ public class MasterTemplateService {
 
             GbltConfigApplicationTrackerDtl trackerDtl = BeanUtils.copyProperties(applicationTracker, GbltConfigApplicationTrackerDtl.class);
             applicationTrackerDtlRepository.save(trackerDtl);
+
+            // Save checklist Details
+            checkListService.saveApplicationChecklist(applicationChecklist);
         }
 
         TemplateToSaveBean responseObject = new TemplateToSaveBean();
@@ -822,7 +873,7 @@ public class MasterTemplateService {
         return ServiceResponse.builder().status(1).message(language.saveSuccess("Templatedtl Mapping")).build();
     }
 
-    public List<MasterTemplateBean> getAllMasterTemplate() throws Exception {
+    public List<MasterTemplateBean> getAllMasterTemplate() {
         List<GmstConfigMastertemplateMst> masterTemplateList = masterTemplateRepository.findByUnumIsvalidIn(List.of(1));
         List<MasterTemplateBean> masterTemplateBeanRes = new ArrayList<>();
         StringBuffer templeNameList = new StringBuffer();
@@ -832,14 +883,14 @@ public class MasterTemplateService {
             masterTemplateBean.setUstrMtempleName(gmstConfigMastertemplateMst.getUstrMtempleName());
             List<GmstConfigMastertemplateTemplatedtl> masterTemplateDtlList = masterTemplateDetailRepository.findByUnumIsvalidInAndUnumMtempleId(List.of(1), masterTemplateBean.getUnumMtempleId());
             List<TemplateBean> templateBean = BeanUtils.copyListProperties(masterTemplateDtlList, TemplateBean.class);
-            templateBean.stream().map(tempBean -> {
+            templateBean.forEach(tempBean -> {
                 List<GmstConfigTemplateMst> gmstConfigTemplateMst = templateRepository.findByUnumIsvalidAndUnumTempleId(1, tempBean.getUnumTempleId());
                 if (!gmstConfigTemplateMst.isEmpty()) {
                     templeNameList.append(gmstConfigTemplateMst.get(0).getUstrTempleName());
                     templeNameList.append(",");
                 }
-                return tempBean;
-            }).toList();
+            });
+
             masterTemplateBean.setUstrtempleName(templeNameList.toString());
             masterTemplateBeanRes.add(masterTemplateBean);
         }
@@ -850,12 +901,12 @@ public class MasterTemplateService {
         List<GmstConfigMastertemplateTemplatedtl> masterTemplateDtlList = masterTemplateDetailRepository.findByUnumIsvalidInAndUnumMtempleId(List.of(1), masterId);
         List<TemplateBean> templateBean = BeanUtils.copyListProperties(masterTemplateDtlList, TemplateBean.class);
         List<TemplateMasterBean> templateMasterBean = templateService.getAllTemplateCombo();
-        templateBean.stream().map(tempBean -> {
+        templateBean.forEach(tempBean -> {
             List<GmstConfigTemplateMst> gmstConfigTemplateMst = templateRepository.findByUnumIsvalidAndUnumTempleId(1, tempBean.getUnumTempleId());
             if (!gmstConfigTemplateMst.isEmpty())
                 tempBean.setUstrTempleName(gmstConfigTemplateMst.get(0).getUstrTempleName());
-            return tempBean;
-        }).toList();
+        });
+
         List<TemplateMasterBean> templateMasterAdd = new ArrayList<>();
         for (TemplateMasterBean templateMasterBeanT : templateMasterBean) {
             for (TemplateBean templateBeanT : templateBean) {
