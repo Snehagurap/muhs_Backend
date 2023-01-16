@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import in.cdac.university.committee.bean.LicCommitteeRuleSetBeanMst;
 import in.cdac.university.committee.service.LicCommitteeRuleSetMstService;
+import in.cdac.university.committee.util.ComboUtility;
 import in.cdac.university.committee.util.RequestUtility;
 import in.cdac.university.committee.util.ResponseHandler;
 
@@ -23,7 +25,7 @@ public class LicRuleSetController {
     @Autowired
 	private LicCommitteeRuleSetMstService licCommitteeRuleSetMstService;
 
-    @PostMapping("saveLicCommitteeRule")
+    	@PostMapping("saveLicCommitteeRule")
 	    public ResponseEntity<?> saveLicCommitteeRule(@Valid @RequestBody LicCommitteeRuleSetBeanMst licCommitteeRuleSetBeanMst) throws Exception {
 	    	
 	    	licCommitteeRuleSetBeanMst.setUnumIsValid(1);
@@ -34,4 +36,13 @@ public class LicRuleSetController {
 	        		licCommitteeRuleSetMstService.saveLicCommitteeRule(licCommitteeRuleSetBeanMst)
 	        );
 	    }
+    	
+    	@GetMapping("combo")
+    	    public ResponseEntity<?> getLicCommitteeRuleCombo() throws Exception {
+    	        return ResponseHandler.generateOkResponse(
+    	                ComboUtility.generateComboData(
+    	                		licCommitteeRuleSetMstService.getCommitteeCombo()
+    	                )
+    	        );
+    	    }
 }

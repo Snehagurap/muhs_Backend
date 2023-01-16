@@ -23,4 +23,8 @@ public interface LicCommitteeRuleSetMstRespository extends JpaRepository<GbltLic
 	List<GbltLicCommitteeRuleSetMst> findByUnumIsValidInAndUstrComRsNameIgnoreCase(List<Integer> of,
 			String ustrComRsName);
 
+
+
+	List<GbltLicCommitteeRuleSetMst> findByUnumIsValid(int i);
+
 }
