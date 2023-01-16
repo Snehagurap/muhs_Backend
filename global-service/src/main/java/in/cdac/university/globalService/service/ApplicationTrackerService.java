@@ -106,16 +106,18 @@ public class ApplicationTrackerService {
             notificationList = List.of(notificationId + "," + notificationDetailId);
         }
 
-        int status = Integer.parseInt(levelId.split("\\^")[0]);
-        List<Integer> levelIds = Arrays.stream(levelId.split("\\^")[1].split(","))
+        String[] levels = levelId.split("\\^");
+        int status = Integer.parseInt(levels[0]);
+        List<Integer> levelIds = Arrays.stream(levels[1].split(","))
                 .map(Integer::valueOf)
                 .toList();
+        int minLevel = levelIds.get(0);
 
         List<GbltConfigApplicationTracker> applicationList;
         if (status == 0) {
-            applicationList = applicationTrackerRepository.getApplicationForDepartmentScrutiny(notificationList, levelIds);
+            applicationList = applicationTrackerRepository.getApplicationForDepartmentScrutiny(notificationList, levelIds, minLevel);
         } else {
-            applicationList = applicationTrackerRepository.getProcessedApplication(notificationList, levelIds);
+            applicationList = applicationTrackerRepository.getProcessedApplication(notificationList, levelIds, minLevel);
         }
 
         Map<Integer, String> facultyNameMap = facultyRepository.getAllFaculty(RequestUtility.getUniversityId())

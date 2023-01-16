@@ -17,19 +17,21 @@ public interface ApplicationTrackerRepository extends JpaRepository<GbltConfigAp
 
     @Query("select c from GbltConfigApplicationTracker c " +
             "where unumIsvalid = 1 " +
-			"and unumApplicationLevelId > 2 " +
+			"and unumApplicationLevelId >= (:minLevel) " +
 			"and unumApplicationLevelId in (:levelIds) " +
 			"and concat(unum_nid, ',', unum_ndtl_id) in (:notificationId) ")
 	List<GbltConfigApplicationTracker> getApplicationForDepartmentScrutiny(@Param("notificationId") List<String> notificationId,
-																		   @Param("levelIds") List<Integer> levelIds);
+																		   @Param("levelIds") List<Integer> levelIds,
+																		   @Param("minLevel") Integer minLevel);
 
 	@Query("select c from GbltConfigApplicationTracker c " +
 			"where unumIsvalid = 1 " +
-			"and unumApplicationLevelId > 2 " +
+			"and unumApplicationLevelId >= (:minLevel) " +
 			"and unumApplicationLevelId not in (:levelIds) " +
 			"and concat(unum_nid, ',', unum_ndtl_id) in (:notificationId) ")
 	List<GbltConfigApplicationTracker> getProcessedApplication(@Param("notificationId") List<String> notificationId,
-																		   @Param("levelIds") List<Integer> levelIds);
+															   @Param("levelIds") List<Integer> levelIds,
+															   @Param("minLevel") Integer minLevel);
 
 	Optional<GbltConfigApplicationTracker> findByUnumApplicationIdAndUnumIsvalidAndUnumUnivId(Long unumApplicationId, Integer unumIsvalid, Integer unumUnivId);
 
