@@ -93,5 +93,27 @@ public class LicCommitteeRuleSetMstService {
 	}
 	
 
+	public ServiceResponse getCommitteeRuleSetByUnumComRsId(int i, Integer universityId,
+			Long unumComRsId) throws Exception {
+		
+		LicCommitteeRuleSetBeanMst committeeMasterBean=new LicCommitteeRuleSetBeanMst();
+		//unum_com_rs_id
+		List<GbltLicCommitteeRuleSetMst> ruleSetMst = licCommitteeRuleSetMstRespository.getByUnumIsValidAndUnumUnivIdAndUnumComRsId(1,RequestUtility.getUniversityId(), unumComRsId);
+        if (ruleSetMst.isEmpty())
+            return ServiceResponse.errorResponse(language.notFoundForId("Committee", unumComRsId));
+        BeanUtils.copyProperties(ruleSetMst.get(0), committeeMasterBean);
+        
+        List<GbltLicCommitteeRuleSetDtl> ruleSetDtl = licCommitteeRuleSetDtlRespository.findByUnumIsValidAndUnumUnivIdAndUnumComRsId(1,RequestUtility.getUniversityId(),unumComRsId); // and rsid=i
+                
+        if(!ruleSetDtl.isEmpty()) {
+            List<LicCommitteeRuleSetDtlBean> committeeRulesetDtlBeanList = BeanUtils.copyListProperties(ruleSetDtl, LicCommitteeRuleSetDtlBean.class);
+            committeeMasterBean.setCommitteeRuleList(committeeRulesetDtlBeanList);
+        }
+        
+        return ServiceResponse.successObject(
+        		committeeMasterBean
+        );
+		// TODO Auto-generated method stub
+	}
 	
 }
