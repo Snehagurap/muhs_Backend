@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import in.cdac.university.committee.bean.LicCommitteeRuleSetBeanMst;
 import in.cdac.university.committee.service.LicCommitteeRuleSetMstService;
 import in.cdac.university.committee.util.ComboUtility;
+import in.cdac.university.committee.util.ListPageUtility;
 import in.cdac.university.committee.util.RequestUtility;
 import in.cdac.university.committee.util.ResponseHandler;
 
@@ -45,4 +46,11 @@ public class LicRuleSetController {
     	                )
     	        );
     	    }
+    	
+    	@GetMapping("listPage")
+        public ResponseEntity<?> getListPage() throws IllegalAccessException {
+            return ResponseHandler.generateOkResponse(
+                    ListPageUtility.generateListPageData(licCommitteeRuleSetMstService.getListPageData())
+            );
+        }
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import in.cdac.university.committee.bean.CommitteeBean;
+import in.cdac.university.committee.bean.CommitteeRulesetBean;
 import in.cdac.university.committee.bean.LicCommitteeRuleSetBeanMst;
 import in.cdac.university.committee.bean.LicCommitteeRuleSetDtlBean;
 import in.cdac.university.committee.entity.GbltLicCommitteeRuleSetDtl;
@@ -81,10 +82,15 @@ public class LicCommitteeRuleSetMstService {
     public List<LicCommitteeRuleSetBeanMst> getCommitteeCombo() {
 
         return BeanUtils.copyListProperties(
-        		licCommitteeRuleSetMstRespository.findByUnumIsValid(1),
-        		LicCommitteeRuleSetBeanMst.class
-        );
+        		licCommitteeRuleSetMstRespository.findByUnumUnivIdAndUnumIsValid(RequestUtility.getUniversityId(), 1), LicCommitteeRuleSetBeanMst.class);
+       
     }
+
+	public List<LicCommitteeRuleSetBeanMst> getListPageData() {
+		return BeanUtils.copyListProperties(
+				licCommitteeRuleSetMstRespository.findByUnumUnivIdAndUnumIsValid(RequestUtility.getUniversityId(), 1), LicCommitteeRuleSetBeanMst.class);
+		
+	}
 	
 
 	
