@@ -10,7 +10,9 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import in.cdac.university.committee.bean.CommitteeBean;
 import in.cdac.university.committee.bean.LicCommitteeRuleSetBeanMst;
 import in.cdac.university.committee.bean.LicCommitteeRuleSetDtlBean;
 import in.cdac.university.committee.entity.GbltLicCommitteeRuleSetDtl;
@@ -37,6 +39,7 @@ public class LicCommitteeRuleSetMstService {
 	@Autowired
 	LicCommitteeRuleSetDtlRespository licCommitteeRuleSetDtlRespository;
 
+	@Transactional
 	public ServiceResponse saveLicCommitteeRule(LicCommitteeRuleSetBeanMst licCommitteeRuleSetBeanMst) throws Exception{
 	    
 		List<GbltLicCommitteeRuleSetMst> licCommitteeRuleSetMst = licCommitteeRuleSetMstRespository.findByUnumIsValidInAndUstrComRsNameIgnoreCase(
@@ -74,6 +77,15 @@ public class LicCommitteeRuleSetMstService {
         return ServiceResponse.builder().status(1).message(language.saveSuccess("Lic Committee Rule Set Save")).build();
 
 	}
+
+    public List<LicCommitteeRuleSetBeanMst> getCommitteeCombo() {
+
+        return BeanUtils.copyListProperties(
+        		licCommitteeRuleSetMstRespository.findByUnumIsValid(1),
+        		LicCommitteeRuleSetBeanMst.class
+        );
+    }
+	
 
 	
 }
