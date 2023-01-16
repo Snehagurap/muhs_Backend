@@ -28,9 +28,9 @@ public class ApplicantTypeBean {
 
     private String ustrApplicantTypeCode;
 
-    @ComboValue
     private String ustrApplicantTypeFname;
 
+    @ComboValue
     private String ustrApplicantTypeSname;
 
     private String ustrDescription;

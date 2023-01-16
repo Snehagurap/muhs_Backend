@@ -82,7 +82,7 @@ public class TemplateMasterDtlsBean {
     
     private Integer unumComponentOrderNo;
 
-	private Integer unumChecklistId;
+	private Long unumChecklistId;
 
 	private String ustrChecklistName;
 

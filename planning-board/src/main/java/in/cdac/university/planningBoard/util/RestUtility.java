@@ -77,7 +77,7 @@ public class RestUtility {
                 int status = actualObject.get("status").asInt();
                 if (status == 0) {
                     String message = actualObject.get("message").asText();
-                    log.error("Unable to call Web Service: {}", message);
+                    log.error("Unable to call Web Service: {}, Error: {}", serviceType.url + "/" + url, message);
                     return null;
                 }
                 return objectMapper.convertValue(actualObject.get("data"), returnType);

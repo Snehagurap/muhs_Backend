@@ -114,7 +114,7 @@ public class FacultyStreamDtlService {
     }
 
     public List<FacultyStreamDtlBean> getFacultyStreamList() throws Exception{
-        List<GmstCoursefacultyMst> facultyList = facultyRepository.findByUnumIsvalidAndUnumUnivId(1,RequestUtility.getUniversityId());
+        List<GmstCoursefacultyMst> facultyList = facultyRepository.findByUnumIsvalid(1);
         List<GmstFacultyStreamDtl> gmstFacultyStreamDtls = facultyStreamDtlRepository.findByUnumIsvalidAndUnumUnivId(1,RequestUtility.getUniversityId());
 
         List<FacultyStreamDtlBean> l3 = new ArrayList<>();

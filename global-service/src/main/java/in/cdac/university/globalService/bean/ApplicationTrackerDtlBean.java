@@ -11,6 +11,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -128,4 +129,5 @@ public class ApplicationTrackerDtlBean {
 
     private String ustrNocNo;
 
+    private List<CheckListBean> checkList;
 }

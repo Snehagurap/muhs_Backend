@@ -260,7 +260,7 @@ public class TemplateService {
     }
 
     public ServiceResponse getAllTemplate() throws Exception {
-        List<GmstConfigTemplateMst> gmstConfigTemplateMsts = templateRepository.findByUnumIsvalidAndUnumUnivId(1, RequestUtility.getUniversityId());
+        List<GmstConfigTemplateMst> gmstConfigTemplateMsts = templateRepository.findByUnumIsvalidAndUnumUnivIdOrderByUdtEntryDateDesc(1, RequestUtility.getUniversityId());
 
         return ServiceResponse.successObject(BeanUtils.copyListProperties(gmstConfigTemplateMsts, TemplateMasterBean.class));
     }

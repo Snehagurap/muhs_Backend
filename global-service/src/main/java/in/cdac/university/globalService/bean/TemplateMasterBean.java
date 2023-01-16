@@ -71,6 +71,6 @@ public class TemplateMasterBean {
     @NotNull(message = "Course Type is mandatory")
     private Integer unumCtypeId;
 
-    private Integer unumChecklistId;
+    private Long unumChecklistId;
     private String ustrChecklistName;
 }

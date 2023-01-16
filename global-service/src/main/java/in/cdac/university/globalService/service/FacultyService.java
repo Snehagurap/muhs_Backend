@@ -26,10 +26,10 @@ public class FacultyService {
         );
     }
 
-    public ServiceResponse allFaculties() throws Exception {
+    public ServiceResponse allFaculties() {
         return ServiceResponse.successObject(
                 BeanUtils.copyListProperties(
-                        facultyRepository.findByUnumIsvalidAndUnumUnivId(1, RequestUtility.getUniversityId()),
+                        facultyRepository.findByUnumIsvalid(1),
                         FacultyBean.class
                 )
         );

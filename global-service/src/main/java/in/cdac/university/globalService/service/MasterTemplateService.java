@@ -337,7 +337,10 @@ public class MasterTemplateService {
                 }
 
                 // Process checklist items
-                if (configTemplateDtl.getUnumChecklistId() != null) {
+                if (configTemplateDtl.getUnumChecklistId() != null
+                        && configTemplateDtl.getUstrChecklistName() != null
+                        && configTemplateDtl.getUstrChecklistItemName() != null
+                        && configTemplateDtl.getUnumChecklistItemOrderno() != null) {
                     checkList.setUnumChecklistId(configTemplateDtl.getUnumChecklistId());
                     checkList.setUstrChecklistName(configTemplateDtl.getUstrChecklistName());
                     CheckListItems checkListItem = new CheckListItems();
@@ -412,7 +415,8 @@ public class MasterTemplateService {
                                 templateItemBean.setUnumTempledtlId(templateDtl.getUnumTempledtlId());
                                 templateItemBean.setUnumTempleCompItemId(templateDtl.getUnumTempleCompItemId());
                                 templateItemBean.setUstrItemValue(itemMap.getOrDefault(gmstConfigTemplateItemMst.getUnumTempleItemId(), ""));
-
+                                if (templateDtl.getUnumTempleIsmandy() != null)
+                                    templateItemBean.setUnumItemIsmandy(templateDtl.getUnumTempleIsmandy());
                                 // replace constants
                                 templateItemBean.setUstrItemPrintPreText(
                                         replaceConstantString(gmstConfigTemplateItemMst.getUstrItemPrintPreText(), facultyName, purpose, academicYear));
@@ -431,7 +435,7 @@ public class MasterTemplateService {
                     }
                 }
             }
-            templateBean.setNoOfPages(noOfPages + 1);
+            templateBean.setNoOfPages(noOfPages);
         }
     }
 
@@ -476,6 +480,8 @@ public class MasterTemplateService {
                         itemBean.setUnumTempledtlId(gmstConfigTemplateDtl.getUnumTempledtlId());
                         itemBean.setUnumTempleCompItemId(gmstConfigTemplateDtl.getUnumTempleCompItemId());
                         itemBean.setUstrItemValue(itemMap.getOrDefault(gmstConfigTemplateItemMst.getUnumTempleItemId(), ""));
+                        if (gmstConfigTemplateDtl.getUnumTempleIsmandy() != null)
+                            itemBean.setUnumItemIsmandy(gmstConfigTemplateDtl.getUnumTempleIsmandy());
 
                         // Replace constants
                         itemBean.setUstrItemPrintPreText(
