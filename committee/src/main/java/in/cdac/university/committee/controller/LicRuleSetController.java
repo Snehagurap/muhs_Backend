@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,6 +52,13 @@ public class LicRuleSetController {
         public ResponseEntity<?> getListPage() throws IllegalAccessException {
             return ResponseHandler.generateOkResponse(
                     ListPageUtility.generateListPageData(licCommitteeRuleSetMstService.getListPageData())
+            );
+        }
+    	
+    	@GetMapping("/id/{Id}")
+    	public ResponseEntity<?> getCommitteeRuleSetByunumComRsId(@PathVariable("Id") Long unumComRsId) throws Exception {
+            return ResponseHandler.generateResponse(
+            		licCommitteeRuleSetMstService.getCommitteeRuleSetByUnumComRsId(1,RequestUtility.getUniversityId(),unumComRsId)
             );
         }
 }
