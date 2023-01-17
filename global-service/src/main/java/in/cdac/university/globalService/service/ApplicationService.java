@@ -2,11 +2,10 @@ package in.cdac.university.globalService.service;
 
 import in.cdac.university.globalService.bean.ApplicationDataBean;
 import in.cdac.university.globalService.bean.NotificationBean;
-import in.cdac.university.globalService.entity.GbltConfigApplicationDataMst;
-import in.cdac.university.globalService.entity.GmstApplicationStatusMst;
-import in.cdac.university.globalService.entity.GmstNotificationTypeMst;
-import in.cdac.university.globalService.repository.ConfigApplicationDataMasterRepository;
-import in.cdac.university.globalService.repository.NotificationTypeRepository;
+import in.cdac.university.globalService.bean.NotificationDetailBean;
+import in.cdac.university.globalService.controller.GmstCourseTypeMst;
+import in.cdac.university.globalService.entity.*;
+import in.cdac.university.globalService.repository.*;
 import in.cdac.university.globalService.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 public class ApplicationService {
 
     @Autowired
-    private ConfigApplicationDataMasterRepository applicantDataMasterRepository;
+    private ConfigApplicationDataMasterRepository applicationDataMasterRepository;
 
     @Autowired
     private RestUtility restUtility;
@@ -31,15 +30,24 @@ public class ApplicationService {
 
     @Autowired
     private Language language;
+    @Autowired
+    private FacultyRepository facultyRepository;
+    @Autowired
+    private ApplicantRepository applicantRepository;
+
+    @Autowired
+    private ApplicantTypeRepository applicantTypeRepository;
+    @Autowired
+    private CourseTypeRepository courseTypeRepository;
 
 
     public List<ApplicationDataBean> getApplicationsByUser(Long userId) throws Exception {
 
-        Map<Integer, String> statusMap = applicantDataMasterRepository.getAllApplicationStatus().stream().collect(Collectors.toMap(GmstApplicationStatusMst::getUnumApplicationStatusId, GmstApplicationStatusMst::getUstrApplicationStatusName));
+        Map<Integer, String> statusMap = applicationDataMasterRepository.getAllApplicationStatus().stream().collect(Collectors.toMap(GmstApplicationStatusMst::getUnumApplicationStatusId, GmstApplicationStatusMst::getUstrApplicationStatusName));
 
         Map<Integer, String> notificationTypeMap = notificationTypeRepository.getAllValidNotificationTypes(RequestUtility.getUniversityId()).stream().collect(Collectors.toMap(GmstNotificationTypeMst::getUnumNtypeId, GmstNotificationTypeMst::getUstrNtypeFname));
 
-        List<GbltConfigApplicationDataMst> applications = applicantDataMasterRepository.findByUnumIsvalidAndUnumUnivIdAndUnumApplicantId(1, RequestUtility.getUniversityId(), userId);
+        List<GbltConfigApplicationDataMst> applications = applicationDataMasterRepository.findByUnumIsvalidAndUnumUnivIdAndUnumApplicantId(1, RequestUtility.getUniversityId(), userId);
         List<ApplicationDataBean> applicationData = new ArrayList<>();
         for (GbltConfigApplicationDataMst application : applications) {
             ApplicationDataBean applicationDataBean = BeanUtils.copyProperties(application, ApplicationDataBean.class);
@@ -64,13 +72,43 @@ public class ApplicationService {
 
     public ServiceResponse getApplicationByunumApplicationId(Long unumApplicationId) throws Exception {
 
-        Optional<GbltConfigApplicationDataMst> application = applicantDataMasterRepository.getApplicationByUnumApplicationIdAndUnumUnivIdAndUnumIsvalid(
+        Optional<GbltConfigApplicationDataMst> application = applicationDataMasterRepository.getApplicationByUnumApplicationIdAndUnumUnivIdAndUnumIsvalid(
                 unumApplicationId, RequestUtility.getUniversityId(), 1);
+
         if (application.isEmpty())
             return ServiceResponse.errorResponse(language.notFoundForId("Application", unumApplicationId));
 
-        return ServiceResponse.successObject(
-                BeanUtils.copyProperties(application.get(), ApplicationDataBean.class)
-        );
+        ApplicationDataBean applicationDataBean = BeanUtils.copyProperties(application.get(), ApplicationDataBean.class);
+
+        Optional<GmstCoursefacultyMst> faculty = facultyRepository.findByUnumCfacultyIdAndUnumIsvalid(Math.toIntExact(applicationDataBean.getUnumNdtlFacultyId()), 1);
+        faculty.ifPresent(gmstCoursefacultyMst -> applicationDataBean.setFacultyName(gmstCoursefacultyMst.getUstrCfacultyFname()));
+
+        Optional<GmstApplicantMst> applicantOptional = applicantRepository.findByUnumApplicantIdAndUnumIsvalid(applicationDataBean.getUnumApplicantId(), 1);
+        if (applicantOptional.isEmpty()) {
+            return ServiceResponse.errorResponse(language.notFoundForId("Applicant", applicationDataBean.getUnumApplicantId()));
+        }
+
+        GmstApplicantMst applicant = applicantOptional.get();
+        applicationDataBean.setUstrApplicantName(applicant.getUstrApplicantName());
+        Optional<GmstApplicantTypeMst> applicantType = applicantTypeRepository.findById(new GmstApplicantTypeMstPK(applicant.getUnumApplicantTypeId(), 1));
+        applicantType.ifPresent(aType -> applicationDataBean.setApplicantTypeName(aType.getUstrApplicantTypeFname()));
+
+        NotificationBean notificationBean = restUtility.get(RestUtility.SERVICE_TYPE.PLANNING_BOARD, Constants.URL_GET_NOTIFICATION_BY_ID + applicationDataBean.getUnumNid(), NotificationBean.class);
+        if (notificationBean == null)
+            return ServiceResponse.errorResponse(language.notFoundForId("Notification", applicationDataBean.getUnumNid()));
+        applicationDataBean.setUdtNDt(notificationBean.getUdtNDt());
+
+        Optional<NotificationDetailBean> notificationDetail = notificationBean.getNotificationDetails()
+                .stream()
+                .filter(notificationDetailBean -> notificationDetailBean.getUnumNdtlId().equals(applicationDataBean.getUnumNdtlId()))
+                .findFirst();
+        if (notificationDetail.isEmpty())
+            return ServiceResponse.errorResponse(language.notFoundForId("Notification Detail", applicationDataBean.getUnumNdtlId()));
+
+        int courseTypeId = notificationDetail.get().getUnumCoursetypeId();
+        Optional<GmstCourseTypeMst> courseTypeMst = courseTypeRepository.findByUnumIsvalidAndUnumCtypeId(1, (long) courseTypeId);
+        courseTypeMst.ifPresent(courseType -> applicationDataBean.setCourseTypeName(courseType.getUstrCtypeFname()));
+
+        return ServiceResponse.successObject(applicationDataBean);
     }
 }

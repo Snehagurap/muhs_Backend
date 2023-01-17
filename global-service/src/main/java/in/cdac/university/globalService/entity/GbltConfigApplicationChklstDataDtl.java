@@ -2,6 +2,7 @@ package in.cdac.university.globalService.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serial;
@@ -12,6 +13,7 @@ import java.util.Date;
 @Setter
 @IdClass(GbltConfigApplicationChklstDataDtlPK.class)
 @Entity
+@ToString
 @Table(name="gblt_config_application_chklst_data_dtl", schema = "templedata")
 public class GbltConfigApplicationChklstDataDtl implements Serializable {
 	@Serial
@@ -49,9 +51,6 @@ public class GbltConfigApplicationChklstDataDtl implements Serializable {
 
 	@Id
 	private Long unumTempleHeadId;
-
-	@Id
-	private Long unumTempleSubheadId;
 
 	@Id
 	private Long unumTempleCompItemId;
@@ -129,4 +128,6 @@ public class GbltConfigApplicationChklstDataDtl implements Serializable {
 	@Column(name="ustr_temple_item_value")
 	private String ustrTempleItemValue;
 
+	@Column(name="unum_temple_subhead_id")
+	private Long unumTempleSubheadId;
 }

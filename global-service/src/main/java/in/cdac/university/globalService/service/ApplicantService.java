@@ -3,7 +3,10 @@ package in.cdac.university.globalService.service;
 import com.google.common.hash.Hashing;
 import in.cdac.university.globalService.bean.ApplicantBean;
 import in.cdac.university.globalService.bean.ApplicantDetailBean;
-import in.cdac.university.globalService.entity.*;
+import in.cdac.university.globalService.entity.GmstApplicantDraftMst;
+import in.cdac.university.globalService.entity.GmstApplicantDtl;
+import in.cdac.university.globalService.entity.GmstApplicantMst;
+import in.cdac.university.globalService.entity.GmstApplicantTypeMst;
 import in.cdac.university.globalService.exception.ApplicationException;
 import in.cdac.university.globalService.repository.ApplicantDetailRepository;
 import in.cdac.university.globalService.repository.ApplicantRepository;
@@ -144,7 +147,7 @@ public class ApplicantService {
 
     public ServiceResponse getApplicant(Long applicantId) {
         if(applicantId == null) {
-            return ServiceResponse.errorResponse(language.notFoundForId("Applicant id", applicantId));
+            return ServiceResponse.errorResponse(language.mandatory("Applicant Id"));
         }
         Optional<GmstApplicantMst> gmstApplicantMst = applicantRepository.findByUnumApplicantIdAndUnumIsvalid(applicantId, 1);
         if(gmstApplicantMst.isEmpty()) {
@@ -165,7 +168,7 @@ public class ApplicantService {
     @Transactional
     public ServiceResponse verifyApplicant(ApplicantBean applicantBean) {
         if(applicantBean.getUnumApplicantId() == null) {
-            return ServiceResponse.errorResponse(language.notFoundForId("Applicant id", applicantBean.getUnumApplicantId()));
+            return ServiceResponse.errorResponse(language.mandatory("Applicant Id"));
         }
         Long applicantId = applicantBean.getUnumApplicantId();
 
@@ -289,5 +292,17 @@ public class ApplicantService {
             applicantDetailRepository.saveAll(applicantDtls);
         }
         return ServiceResponse.successMessage(language.updateSuccess("Applicant"));
+    }
+
+    public ServiceResponse getApplicantDocument(Integer documentId) throws Exception {
+        Long applicantId = RequestUtility.getUserId();
+        Optional<GmstApplicantDtl> applicantDtl = applicantDetailRepository.findByUnumIsvalidAndUnumDocIdAndUnumApplicantId(
+                1, documentId, applicantId
+        );
+
+        if (applicantDtl.isEmpty())
+            return ServiceResponse.successObject(language.message("No Document uploaded"));
+
+        return ServiceResponse.successObject(applicantDtl.get().getUstrDocPath());
     }
 }

@@ -78,10 +78,10 @@ public class GmstConfigTemplateDtl implements Serializable {
 	private Integer unumPageColumns;
 	
 	@Column(name="unum_header_order_no")
-    private Integer unumHeaderOrderNo;
+    private Double unumHeaderOrderNo;
     
 	@Column(name="unum_component_order_no")
-    private Integer unumComponentOrderNo;
+    private Double unumComponentOrderNo;
 
 	@Column(name="unum_checklist_id")
 	private Long unumChecklistId;
@@ -93,7 +93,7 @@ public class GmstConfigTemplateDtl implements Serializable {
 	private String ustrChecklistItemName;
 
 	@Column(name="unum_checklist_item_orderno")
-	private Integer unumChecklistItemOrderno;
+	private Double unumChecklistItemOrderno;
 
 	@Override
 	public String toString() {

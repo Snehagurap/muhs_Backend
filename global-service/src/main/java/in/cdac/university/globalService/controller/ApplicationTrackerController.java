@@ -67,4 +67,11 @@ public class ApplicationTrackerController {
                 applicationTrackerService.verifyApplication(applicationTrackerDtlBean)
         );
     }
+
+    @GetMapping("verified/detail/{applicationId}/{levelId}")
+    public ResponseEntity<?> getVerifiedDepartmentDtl(@PathVariable("applicationId") Long applicationId, @PathVariable("levelId") Integer levelId) throws Exception {
+        return ResponseHandler.generateResponse(
+                applicationTrackerService.getVerifiedDetails(applicationId,levelId)
+        );
+    }
 }

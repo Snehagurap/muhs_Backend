@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ApplicantDetailRepository extends JpaRepository<GmstApplicantDtl, GmstApplicantDtlPK> {
@@ -18,6 +19,9 @@ public interface ApplicantDetailRepository extends JpaRepository<GmstApplicantDt
     Long getMaxApplicantDocId(@Param("applicantId") Long applicantId);
 
     List<GmstApplicantDtl> findByUnumApplicantIdAndUnumIsvalid(Long unumApplicantId, Integer unumIsvalid);
+
+    Optional<GmstApplicantDtl> findByUnumIsvalidAndUnumDocIdAndUnumApplicantId(Integer unumIsvalid, Integer unumDocId, Long unumApplicantId);
+
 
 
     @Modifying(clearAutomatically = true)
