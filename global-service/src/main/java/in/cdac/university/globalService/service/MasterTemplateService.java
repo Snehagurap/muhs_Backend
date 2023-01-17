@@ -876,8 +876,9 @@ public class MasterTemplateService {
     public List<MasterTemplateBean> getAllMasterTemplate() {
         List<GmstConfigMastertemplateMst> masterTemplateList = masterTemplateRepository.findByUnumIsvalidIn(List.of(1));
         List<MasterTemplateBean> masterTemplateBeanRes = new ArrayList<>();
-        StringBuffer templeNameList = new StringBuffer();
+        
         for (GmstConfigMastertemplateMst gmstConfigMastertemplateMst : masterTemplateList) {
+        	StringBuffer templeNameList = new StringBuffer();
             MasterTemplateBean masterTemplateBean = BeanUtils.copyProperties(gmstConfigMastertemplateMst, MasterTemplateBean.class);
             masterTemplateBean.setUnumMtempleId(gmstConfigMastertemplateMst.getUnumMtempleId());
             masterTemplateBean.setUstrMtempleName(gmstConfigMastertemplateMst.getUstrMtempleName());
