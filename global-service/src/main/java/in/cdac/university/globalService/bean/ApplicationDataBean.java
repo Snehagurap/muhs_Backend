@@ -66,4 +66,12 @@ public class ApplicationDataBean {
 
     @ListColumn(name = "Notification")
     private String notificationName;
+
+    private String facultyName;
+
+    private String applicantTypeName;
+
+    private Date udtNDt;
+
+    private String courseTypeName;
 }

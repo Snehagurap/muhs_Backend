@@ -10,7 +10,7 @@ import lombok.ToString;
 public class CheckListItems {
 	
 	private String ustrChecklistItemName;
-	private Integer unumChecklistItemOrderno;
+	private Double unumChecklistItemOrderno;
 	private Long unumTempleItemId;
 
 	private Integer unumUiControlId;

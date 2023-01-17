@@ -49,9 +49,6 @@ public class GbltConfigApplicationChklstDataDtlPK implements Serializable {
 	@Column(name="unum_temple_head_id")
 	private Long unumTempleHeadId;
 
-	@Column(name="unum_temple_subhead_id")
-	private Long unumTempleSubheadId;
-
 	@Column(name="unum_temple_comp_item_id")
 	private Long unumTempleCompItemId;
 

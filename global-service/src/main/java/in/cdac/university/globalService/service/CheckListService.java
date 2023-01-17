@@ -5,7 +5,6 @@ import in.cdac.university.globalService.bean.CheckListItems;
 import in.cdac.university.globalService.bean.HeadClassCheckList;
 import in.cdac.university.globalService.entity.GbltConfigApplicationChklstDataDtl;
 import in.cdac.university.globalService.repository.CheckListRepository;
-import in.cdac.university.globalService.repository.TemplateDetailRepository;
 import in.cdac.university.globalService.repository.TemplateRepository;
 import in.cdac.university.globalService.util.BeanUtils;
 import in.cdac.university.globalService.util.Language;
@@ -24,9 +23,6 @@ public class CheckListService {
 
 	@Autowired
     private TemplateRepository templateRepository;
-	
-	@Autowired
-    private TemplateDetailRepository templateDetailRepository;
 
 	@Autowired
 	private CheckListRepository checkListRepository;
@@ -63,5 +59,9 @@ public class CheckListService {
 		);
 
 		return ServiceResponse.successObject(BeanUtils.copyListProperties(gbltChecklstDataDtlList, CheckListBean.class));
+	}
+
+	public List<GbltConfigApplicationChklstDataDtl> saveApplicationChecklist(List<GbltConfigApplicationChklstDataDtl> checklist) {
+		return checkListRepository.saveAll(checklist);
 	}
 }
