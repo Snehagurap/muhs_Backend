@@ -13,6 +13,6 @@ public class Components {
 	
 	
 	private Long unumTempleCompId;
-	private Integer unumComponentOrderNo;
+	private Double unumComponentOrderNo;
 
 }

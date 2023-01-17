@@ -67,4 +67,6 @@ public class TemplateMasterDtlsChildBean {
 
 	private String ustrChecklistItemName;
 	private Integer unumChecklistItemOrderno;
+
+	private Integer unumUiControlId;
 }

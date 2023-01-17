@@ -116,6 +116,8 @@ public class TemplateService {
                 gmstConfigTemplateDtl.setUstrChecklistName(existingItem.getUstrChecklistName());
                 gmstConfigTemplateDtl.setUnumChecklistItemOrderno(existingItem.getUnumChecklistItemOrderno());
                 gmstConfigTemplateDtl.setUstrChecklistItemName(existingItem.getUstrChecklistItemName());
+                gmstConfigTemplateDtl.setUnumHeaderOrderNo(existingItem.getUnumHeaderOrderNo());
+                gmstConfigTemplateDtl.setUnumComponentOrderNo(existingItem.getUnumComponentOrderNo());
             }
 
             Long headId = gmstConfigTemplateDtl.getUnumTempleHeadId();
@@ -254,7 +256,11 @@ public class TemplateService {
                 templateMasterBean.setUnumChecklistId(templateMasterDtlsBean.getUnumChecklistId());
             }
         }
-        templateMasterBean.setCompHeadSubHeaders(resultmap.keySet());
+        templateMasterBean.setCompHeadSubHeaders(
+                resultmap.keySet()
+                        .stream()
+                        .sorted(Comparator.comparing(CompHeadSubHeader::getUnumHeaderOrderNo, Comparator.nullsLast(Comparator.naturalOrder())))
+                        .toList());
 
         return ServiceResponse.successObject(templateMasterBean);
     }

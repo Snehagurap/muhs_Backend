@@ -4,8 +4,10 @@ import in.cdac.university.globalService.util.annotations.ComboKey;
 import in.cdac.university.globalService.util.annotations.ComboValue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class ComboBean {
     @ComboKey
