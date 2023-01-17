@@ -42,7 +42,7 @@ public class LicCommitteeBean {
 	
 	private Integer	unumIsValid  ;
 	
-	private Integer	unumEntryUid ;
+	private Long	unumEntryUid ;
 	
 	private Date	udtRevalidationDate ; 
 	
@@ -51,4 +51,6 @@ public class LicCommitteeBean {
 	private Integer	unumCtypeId ;
 	
 	private Integer	unumSubId ;
+	
+	private List<LicCommitteeDtlBean> licCommitteeDtlBean;
 }
