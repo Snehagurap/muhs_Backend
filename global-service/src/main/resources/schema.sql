@@ -5,6 +5,8 @@ CREATE SEQUENCE IF NOT EXISTS ucom.seq_gblt_committee_ruleset_mst increment by 1
 CREATE SEQUENCE IF NOT EXISTS ucom.seq_gblt_scrutinycommittee_mst increment by 1 minvalue 1 start 1 cache 1 no cycle;
 CREATE SEQUENCE IF NOT EXISTS ucom.seq_gblt_scrutinycommittee_member_dtl increment by 1 minvalue 1 start 1 cache 1 no cycle;
 CREATE SEQUENCE IF NOT EXISTS ucom.seq_gblt_lic_committee_ruleset_mst increment by 1 minvalue 1 start 1 cache 1 no cycle;
+CREATE SEQUENCE IF NOT EXISTS ucom.seq_gblt_lic_committee_mst increment by 1 minvalue 1 start 1 cache 1 no cycle;
+CREATE SEQUENCE IF NOT EXISTS ucom.seq_gblt_lic_committee_dtl increment by 1 minvalue 1 start 1 cache 1 no cycle;
 
 
 CREATE SEQUENCE IF NOT EXISTS university.seq_gmst_subject_mst increment by 1 minvalue 1 start 1 cache 1 no cycle;
