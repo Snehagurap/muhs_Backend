@@ -19,12 +19,12 @@ public interface LicCommitteeRuleSetMstRespository extends JpaRepository<GbltLic
     Long getNextId();
 
 
-
 	List<GbltLicCommitteeRuleSetMst> findByUnumIsValidInAndUstrComRsNameIgnoreCase(List<Integer> of,
 			String ustrComRsName);
 
 
+	List<GbltLicCommitteeRuleSetMst> findByUnumUnivIdAndUnumIsValid(Integer universityId, int i);
 
-	List<GbltLicCommitteeRuleSetMst> findByUnumIsValid(int i);
-
+	List<GbltLicCommitteeRuleSetMst> getByUnumIsValidAndUnumUnivIdAndUnumComRsId(int i, Integer universityId,
+			Long unumComRsId);
 }
