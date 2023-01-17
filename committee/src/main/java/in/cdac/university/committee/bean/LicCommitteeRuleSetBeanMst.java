@@ -20,9 +20,9 @@ public class LicCommitteeRuleSetBeanMst {
 	
 	@ComboKey
 	@NotNull(message = "Lic Committee Master ID is mandatory")
+	@ListColumn(omit = true)
 	private Long unumComRsId;
 	
-	@ListColumn(name = "Category Ruleset Id")
 	private Integer unumComRsCatId;
 
 	private Integer unumComdurationDays;
@@ -31,11 +31,11 @@ public class LicCommitteeRuleSetBeanMst {
 
 	private Date udtComEndDate;
 	
-	@ListColumn(name = "Ruleset Name")
+	@ListColumn(name = "Ruleset Name", order= 3)
 	@ComboValue
 	private String ustrComRsName;
 	
-	@ListColumn(name = "No Of Members")
+	@ListColumn(name = "No Of Members", order= 4)
 	private Integer unumNoOfMembers;
 
 	private Integer unumComCfacultyId;
@@ -62,9 +62,10 @@ public class LicCommitteeRuleSetBeanMst {
 
 	private Integer unumStreamId;
 
-	@ListColumn(name = "Ctype ids")
 	private String ustrCtypeids;
 
+	@ListColumn(name = "Category Name", order= 2)
+	private String ustrCatName="LIC1 Committee";
 	List<LicCommitteeRuleSetDtlBean> committeeRuleList;
 
 }

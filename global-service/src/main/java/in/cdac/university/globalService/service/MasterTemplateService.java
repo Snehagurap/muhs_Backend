@@ -893,7 +893,7 @@ public class MasterTemplateService {
                 }
             });
 
-            masterTemplateBean.setUstrtempleName(templeNameList.toString());
+            masterTemplateBean.setUstrtempleName(templeNameList.toString().substring(0,templeNameList.length()-1));
             masterTemplateBeanRes.add(masterTemplateBean);
         }
         return BeanUtils.copyListProperties(masterTemplateBeanRes, MasterTemplateBean.class);
