@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CourseTypeRepository extends JpaRepository<GmstCourseTypeMst, Long> {
@@ -20,5 +21,7 @@ public interface CourseTypeRepository extends JpaRepository<GmstCourseTypeMst, L
     List<GmstCourseTypeMst> getAllCourseTypes(@Param("universityId") int universityId);
 
     List<GmstCourseTypeMst> findByUnumIsvalid(Integer unumIsvalid);
+
+    Optional<GmstCourseTypeMst> findByUnumIsvalidAndUnumCtypeId(Integer unumIsvalid, Long unumCtypeId);
 
 }

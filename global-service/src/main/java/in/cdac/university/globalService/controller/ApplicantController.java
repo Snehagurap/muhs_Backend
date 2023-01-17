@@ -73,13 +73,13 @@ public class ApplicantController {
     @GetMapping("getApplicant/{applicantId}")
     public ResponseEntity<?> getApplicant(@PathVariable("applicantId") Long applicantId) {
         return ResponseHandler.generateResponse(
-          applicantService.getApplicant(applicantId)
+                applicantService.getApplicant(applicantId)
         );
     }
 
 
     // Put mapping replaced by POST
-@PostMapping("verify")
+    @PostMapping("verify")
     public ResponseEntity<?> verifyApplicant(@Valid @RequestBody ApplicantBean applicantBean) throws Exception {
         applicantBean.setUnumVerifiedBy(RequestUtility.getUserId());
         applicantBean.setUdtVerifiedDate(new Date());
@@ -89,7 +89,7 @@ public class ApplicantController {
     }
 
     // Put mapping replaced by POST
-@PostMapping("update")
+    @PostMapping("update")
     public ResponseEntity<?> update(@Valid @RequestBody ApplicantBean applicantBean) throws Exception {
         applicantBean.setUnumIsvalid(1);
         applicantBean.setUdtEntryDate(new Date());
@@ -97,6 +97,13 @@ public class ApplicantController {
         applicantBean.setUnumEntryUid(RequestUtility.getUserId());
         return ResponseHandler.generateResponse(
                 applicantService.updateApplicant(applicantBean)
+        );
+    }
+
+    @GetMapping("document/{documentId}")
+    public ResponseEntity<?> getApplicantDocument(@PathVariable("documentId") Integer documentId) throws Exception {
+        return ResponseHandler.generateResponse(
+                applicantService.getApplicantDocument(documentId)
         );
     }
 }

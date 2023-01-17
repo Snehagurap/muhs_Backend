@@ -37,7 +37,7 @@ public class TemplateHeaderBean {
     @JsonIgnore
     private Long unumEntryUid;
 
-    private Integer unumHeadDisplayOrder;
+    private Double unumHeadDisplayOrder;
 
     @Range(min = 0, max = 1, message = "Is Mandatory can be 0 or 1")
     private Integer unumHeadIsmandy = 0;

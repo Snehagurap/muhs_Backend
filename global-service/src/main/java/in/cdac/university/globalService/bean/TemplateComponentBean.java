@@ -33,7 +33,7 @@ public class TemplateComponentBean {
     @JsonIgnore
     private Date udtEntryDate;
 
-    private Integer unumCompDisplayOrder;
+    private Double unumCompDisplayOrder;
 
     private Integer unumCompIsmandy;
 

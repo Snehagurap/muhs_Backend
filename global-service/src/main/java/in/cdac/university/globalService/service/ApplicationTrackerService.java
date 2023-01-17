@@ -242,5 +242,18 @@ public class ApplicationTrackerService {
     }
 
 
-
+    public ServiceResponse getVerifiedDetails(Long applicationId, Integer levelId) throws Exception {
+        if(applicationId == null && levelId == null) {
+            return ServiceResponse.errorResponse(language.mandatory("Application Id & LevelId"));
+        }
+        Optional<GbltConfigApplicationTrackerDtl> gbltConfigApplicationTrackerDtlOptional = applicationTrackerDtlRepository.findByUnumApplicationIdAndUnumApplicationLevelIdAndUnumIsvalidAndUnumUnivId(
+                applicationId, levelId,1,RequestUtility.getUniversityId()
+        );
+        if(gbltConfigApplicationTrackerDtlOptional.isEmpty()){
+            return ServiceResponse.errorResponse(language.notFoundForId("Application tracker Detail",applicationId));
+        }
+        return ServiceResponse.successObject(
+                BeanUtils.copyProperties(gbltConfigApplicationTrackerDtlOptional.get(), ApplicationTrackerDtlBean.class)
+        );
+    }
 }
