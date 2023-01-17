@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 
 import in.cdac.university.committee.util.annotations.ComboKey;
 import in.cdac.university.committee.util.annotations.ComboValue;
+import in.cdac.university.committee.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -16,10 +17,12 @@ import lombok.ToString;
 @ToString
 public class LicCommitteeRuleSetBeanMst {
 	
+	
 	@ComboKey
 	@NotNull(message = "Lic Committee Master ID is mandatory")
 	private Long unumComRsId;
-
+	
+	@ListColumn(name = "Category Ruleset Id")
 	private Integer unumComRsCatId;
 
 	private Integer unumComdurationDays;
@@ -28,9 +31,11 @@ public class LicCommitteeRuleSetBeanMst {
 
 	private Date udtComEndDate;
 	
+	@ListColumn(name = "Ruleset Name")
 	@ComboValue
 	private String ustrComRsName;
-
+	
+	@ListColumn(name = "No Of Members")
 	private Integer unumNoOfMembers;
 
 	private Integer unumComCfacultyId;
@@ -57,6 +62,7 @@ public class LicCommitteeRuleSetBeanMst {
 
 	private Integer unumStreamId;
 
+	@ListColumn(name = "Ctype ids")
 	private String ustrCtypeids;
 
 	List<LicCommitteeRuleSetDtlBean> committeeRuleList;

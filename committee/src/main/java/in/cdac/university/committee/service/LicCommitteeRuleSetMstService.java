@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import in.cdac.university.committee.bean.CommitteeBean;
+import in.cdac.university.committee.bean.CommitteeRulesetBean;
 import in.cdac.university.committee.bean.LicCommitteeRuleSetBeanMst;
 import in.cdac.university.committee.bean.LicCommitteeRuleSetDtlBean;
 import in.cdac.university.committee.entity.GbltLicCommitteeRuleSetDtl;
@@ -81,11 +82,38 @@ public class LicCommitteeRuleSetMstService {
     public List<LicCommitteeRuleSetBeanMst> getCommitteeCombo() {
 
         return BeanUtils.copyListProperties(
-        		licCommitteeRuleSetMstRespository.findByUnumIsValid(1),
-        		LicCommitteeRuleSetBeanMst.class
-        );
+        		licCommitteeRuleSetMstRespository.findByUnumUnivIdAndUnumIsValid(RequestUtility.getUniversityId(), 1), LicCommitteeRuleSetBeanMst.class);
+       
     }
+
+	public List<LicCommitteeRuleSetBeanMst> getListPageData() {
+		return BeanUtils.copyListProperties(
+				licCommitteeRuleSetMstRespository.findByUnumUnivIdAndUnumIsValid(RequestUtility.getUniversityId(), 1), LicCommitteeRuleSetBeanMst.class);
+		
+	}
 	
 
+	public ServiceResponse getCommitteeRuleSetByUnumComRsId(int i, Integer universityId,
+			Long unumComRsId) throws Exception {
+		
+		LicCommitteeRuleSetBeanMst committeeMasterBean=new LicCommitteeRuleSetBeanMst();
+		//unum_com_rs_id
+		List<GbltLicCommitteeRuleSetMst> ruleSetMst = licCommitteeRuleSetMstRespository.getByUnumIsValidAndUnumUnivIdAndUnumComRsId(1,RequestUtility.getUniversityId(), unumComRsId);
+        if (ruleSetMst.isEmpty())
+            return ServiceResponse.errorResponse(language.notFoundForId("Committee", unumComRsId));
+        BeanUtils.copyProperties(ruleSetMst.get(0), committeeMasterBean);
+        
+        List<GbltLicCommitteeRuleSetDtl> ruleSetDtl = licCommitteeRuleSetDtlRespository.findByUnumIsValidAndUnumUnivIdAndUnumComRsId(1,RequestUtility.getUniversityId(),unumComRsId); // and rsid=i
+                
+        if(!ruleSetDtl.isEmpty()) {
+            List<LicCommitteeRuleSetDtlBean> committeeRulesetDtlBeanList = BeanUtils.copyListProperties(ruleSetDtl, LicCommitteeRuleSetDtlBean.class);
+            committeeMasterBean.setCommitteeRuleList(committeeRulesetDtlBeanList);
+        }
+        
+        return ServiceResponse.successObject(
+        		committeeMasterBean
+        );
+		// TODO Auto-generated method stub
+	}
 	
 }
