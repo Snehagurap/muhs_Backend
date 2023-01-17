@@ -14,6 +14,7 @@ import lombok.ToString;
 @ToString
 public class LicCommitteeBean {
 	
+	@NotNull(message = "Lic Id is mandatory")
 	private Long	unumLicId ;
 	
 	private String	ustrLicName ;

@@ -2,6 +2,7 @@ package in.cdac.university.committee.bean;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,10 +13,12 @@ import lombok.ToString;
 @ToString
 public class LicCommitteeDtlBean {
 	
+	@NotNull(message = "Lic Member Id is mandatory")
 	private	Long unumLicMemberId;
 	
 	private	Long unumLicId ;
 	
+	@NotNull(message = "Rule Set Id is mandatory")
 	private	Long unumLicRsId ;
 	
 	private	Long unumLicRsDtlId ;
