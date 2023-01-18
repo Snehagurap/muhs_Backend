@@ -36,6 +36,7 @@ public class PdfCreationController {
         templateList.get(0).forEach((key, value) -> {
             if (key != null && key.equals("headers")) {
                 List<Map<String, Object>> headers = (List<Map<String, Object>>) value;
+                System.out.println(headers);
             }
         });
 
