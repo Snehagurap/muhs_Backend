@@ -38,6 +38,17 @@ public class LicRuleSetController {
 	        		licCommitteeRuleSetMstService.saveLicCommitteeRule(licCommitteeRuleSetBeanMst)
 	        );
 	    }
+    	@PostMapping("updateLicCommitteeRule")
+	    public ResponseEntity<?> updateLicCommitteeRule(@Valid @RequestBody LicCommitteeRuleSetBeanMst licCommitteeRuleSetBeanMst) throws Exception {
+	    	
+	    	licCommitteeRuleSetBeanMst.setUnumIsValid(1);
+			licCommitteeRuleSetBeanMst.setUnumUnivId(RequestUtility.getUniversityId());
+			licCommitteeRuleSetBeanMst.setUnumEntryUid(RequestUtility.getUserId());
+			licCommitteeRuleSetBeanMst.setUdtEntryDate(new Date());
+	        return ResponseHandler.generateResponse(
+	        		licCommitteeRuleSetMstService.updateLicCommitteeRule(licCommitteeRuleSetBeanMst)
+	        );
+	    }
     	
     	@GetMapping("combo")
     	    public ResponseEntity<?> getLicCommitteeRuleCombo() throws Exception {
