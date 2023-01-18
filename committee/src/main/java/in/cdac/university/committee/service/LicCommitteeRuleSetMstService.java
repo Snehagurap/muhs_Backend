@@ -1,24 +1,20 @@
 package in.cdac.university.committee.service;
 
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
 import java.util.stream.Collectors;
 
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import in.cdac.university.committee.bean.ComboBean;
-import in.cdac.university.committee.bean.CommitteeBean;
-import in.cdac.university.committee.bean.CommitteeRulesetBean;
-import in.cdac.university.committee.bean.EmployeeCurrentDetailBean;
+
 import in.cdac.university.committee.bean.LicCommitteeRuleSetBeanMst;
 import in.cdac.university.committee.bean.LicCommitteeRuleSetDtlBean;
 import in.cdac.university.committee.entity.GbltLicCommitteeRuleSetDtl;
@@ -33,7 +29,7 @@ import in.cdac.university.committee.util.RestUtility;
 import in.cdac.university.committee.util.ServiceResponse;
 import in.cdac.university.committee.util.StringUtils;
 
-import in.cdac.university.globalService.exception.ApplicationException;
+import in.cdac.university.committee.exception.*;
 
 
 
@@ -176,7 +172,6 @@ public class LicCommitteeRuleSetMstService {
         return ServiceResponse.successObject(
         		committeeMasterBean
         );
-		// TODO Auto-generated method stub
 	}
 	
 }

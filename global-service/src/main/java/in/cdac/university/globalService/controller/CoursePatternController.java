@@ -2,7 +2,6 @@ package in.cdac.university.globalService.controller;
 
 import in.cdac.university.globalService.bean.CoursePatternBean;
 import in.cdac.university.globalService.service.CoursePatternService;
-import in.cdac.university.globalService.util.ComboUtility;
 import in.cdac.university.globalService.util.ListPageUtility;
 import in.cdac.university.globalService.util.RequestUtility;
 import in.cdac.university.globalService.util.ResponseHandler;
@@ -19,13 +18,6 @@ public class CoursePatternController {
 
     @Autowired
     private CoursePatternService coursePatternService;
-
-    @GetMapping("combo")
-    public ResponseEntity<?> getCoursePatternCombo() throws Exception {
-        return ResponseHandler.generateOkResponse(
-                ComboUtility.generateComboData(coursePatternService.getAllCoursePatterns())
-        );
-    }
 
     @GetMapping("{coursePatId}")
     public ResponseEntity<?> getCoursePattern(@PathVariable("coursePatId") Long coursePatId) {

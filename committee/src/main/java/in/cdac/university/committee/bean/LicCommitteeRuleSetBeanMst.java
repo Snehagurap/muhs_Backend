@@ -63,6 +63,7 @@ public class LicCommitteeRuleSetBeanMst {
 
 	private Integer unumStreamId;
 
+	@ListColumn(name = "Course Type Name", order= 3)
 	private String ustrCtypeids;
 
 	@ListColumn(name = "Category Name", order= 2)

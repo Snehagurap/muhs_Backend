@@ -39,7 +39,7 @@ public class LicRuleSetController {
 	        );
 	    }
     	@PostMapping("updateLicCommitteeRule")
-	    public ResponseEntity<?> updateLicCommitteeRule(@Valid @RequestBody LicCommitteeRuleSetBeanMst licCommitteeRuleSetBeanMst)  {
+	    public ResponseEntity<?> updateLicCommitteeRule(@Valid @RequestBody LicCommitteeRuleSetBeanMst licCommitteeRuleSetBeanMst) throws Exception {
 	    	
 	    	licCommitteeRuleSetBeanMst.setUnumIsValid(1);
 			System.out.println("isValid>>"+licCommitteeRuleSetBeanMst.getUnumIsValid());
