@@ -15,6 +15,7 @@ public interface LicCommitteetMstRespository extends JpaRepository<GbltLicCommit
 	@Query(value = "select to_char(current_date, 'yymm') || lpad(nextval('ucom.seq_gblt_lic_committee_mst')\\:\\:text, 6, '0')", nativeQuery = true)
     Long getNextId();
 	
-	List<GbltLicCommitteeMst> findByUnumIsValidInAndUstrLicNameIgnoreCase(List<Integer> of, String ustrLicName);
+	List<GbltLicCommitteeMst> findByUnumIsValidInAndUstrLicNameIgnoreCaseAndUnumUnivId(List<Integer> of,
+			String ustrLicName, Integer unumUnivId);
 
 }
