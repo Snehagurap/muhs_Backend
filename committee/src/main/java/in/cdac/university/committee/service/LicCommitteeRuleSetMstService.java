@@ -45,8 +45,8 @@ public class LicCommitteeRuleSetMstService {
 	@Transactional
 	public ServiceResponse saveLicCommitteeRule(LicCommitteeRuleSetBeanMst licCommitteeRuleSetBeanMst) throws Exception{
 	    
-		List<GbltLicCommitteeRuleSetMst> licCommitteeRuleSetMst = licCommitteeRuleSetMstRespository.findByUnumIsValidInAndUstrComRsNameIgnoreCase(
-                List.of(1), licCommitteeRuleSetBeanMst.getUstrComRsName());
+		List<GbltLicCommitteeRuleSetMst> licCommitteeRuleSetMst = licCommitteeRuleSetMstRespository.findByUnumIsValidInAndUstrComRsNameIgnoreCaseAndUnumUnivId(
+                List.of(1), licCommitteeRuleSetBeanMst.getUstrComRsName(),RequestUtility.getUniversityId());
 
         if (!licCommitteeRuleSetMst.isEmpty()) {
             return ServiceResponse.errorResponse(language.duplicate("Lic Committee Rule Set", licCommitteeRuleSetBeanMst.getUstrComRsName()));
@@ -83,8 +83,8 @@ public class LicCommitteeRuleSetMstService {
 	@Transactional
 	public ServiceResponse updateLicCommitteeRule(LicCommitteeRuleSetBeanMst licCommitteeRuleSetBeanMst) throws Exception{
 
-        List<GbltLicCommitteeRuleSetMst> licRuleSet = licCommitteeRuleSetMstRespository.findByUnumIsValidInAndUstrComRsNameIgnoreCaseAndUnumComRsIdNot(
-                List.of(1, 2), licCommitteeRuleSetBeanMst.getUstrComRsName(), licCommitteeRuleSetBeanMst.getUnumComRsId());
+        List<GbltLicCommitteeRuleSetMst> licRuleSet = licCommitteeRuleSetMstRespository.findByUnumIsValidInAndUstrComRsNameIgnoreCaseAndUnumComRsIdNotAndUnumUnivId(
+                List.of(1, 2), licCommitteeRuleSetBeanMst.getUstrComRsName(), licCommitteeRuleSetBeanMst.getUnumComRsId(),RequestUtility.getUniversityId());
 
         if (!licRuleSet.isEmpty()) {
             return ServiceResponse.errorResponse(language.duplicate("Lic Rule Set", licCommitteeRuleSetBeanMst.getUstrComRsName()));
