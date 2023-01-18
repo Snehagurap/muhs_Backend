@@ -12,7 +12,7 @@ import java.util.Date;
 @ToString
 public class ApplicationDataBean {
 
-    @ListColumn(name = "Application No.", order = 2)
+    @ListColumn(name = "Application No.", order = 3)
     private Long unumApplicationId;
 
     private Long unumApplicantId;
@@ -61,12 +61,13 @@ public class ApplicationDataBean {
 
     private Long unumMtempleId;
 
-    @ListColumn(name = "Status", order = 3)
+    @ListColumn(name = "Status", order = 4)
     private String statusName;
 
     @ListColumn(name = "Notification")
     private String notificationName;
 
+    @ListColumn(name = "Faculty Name", order = 2)
     private String facultyName;
 
     private String applicantTypeName;

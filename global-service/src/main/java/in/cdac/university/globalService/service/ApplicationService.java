@@ -52,6 +52,8 @@ public class ApplicationService {
         for (GbltConfigApplicationDataMst application : applications) {
             ApplicationDataBean applicationDataBean = BeanUtils.copyProperties(application, ApplicationDataBean.class);
             applicationDataBean.setStatusName(statusMap.getOrDefault(application.getUnumApplicationEntryStatus(), ""));
+            Optional<GmstCoursefacultyMst> faculty = facultyRepository.findByUnumCfacultyIdAndUnumIsvalid(Math.toIntExact(applicationDataBean.getUnumNdtlFacultyId()), 1);
+            faculty.ifPresent(gmstCoursefacultyMst -> applicationDataBean.setFacultyName(gmstCoursefacultyMst.getUstrCfacultyFname()));
 
             // Get Notification Detail
             NotificationBean notificationBean = restUtility.get(RestUtility.SERVICE_TYPE.PLANNING_BOARD, Constants.URL_GET_NOTIFICATION_BY_ID + application.getUnumNid(), NotificationBean.class);
