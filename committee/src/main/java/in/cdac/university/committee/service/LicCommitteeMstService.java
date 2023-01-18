@@ -152,7 +152,7 @@ public class LicCommitteeMstService {
             LicCommitteeRuleSetDtlBean licCommitteeRuleSetDtlBean = BeanUtils.copyProperties(licCommitterulesetDtl, LicCommitteeRuleSetDtlBean.class);
             licCommitteeRuleSetDtlBean.setUstrRoleName(committeeRoleMapList.getOrDefault(licCommitteeRuleSetDtlBean.getUnumRoleId(), ""));
             licCommitteeRuleSetDtlBean.setUnumNoOfMembers(gbltLicCommitteeRuleSetMst.get(0).getUnumNoOfMembers());
-            Integer comRsFacultyId = licCommitterulesetDtl.getUnumRoleCfacultyId();
+            int comRsFacultyId = licCommitterulesetDtl.getUnumRoleCfacultyId();
             List<EmployeeBean> finalTeacherList = teachers;
 
             if(comRsFacultyId != 0){
