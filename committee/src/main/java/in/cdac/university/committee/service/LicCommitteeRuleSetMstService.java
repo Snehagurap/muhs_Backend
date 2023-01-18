@@ -26,6 +26,8 @@ import in.cdac.university.committee.util.RequestUtility;
 import in.cdac.university.committee.util.ServiceResponse;
 import in.cdac.university.committee.util.StringUtils;
 
+import in.cdac.university.globalService.exception.ApplicationException;
+
 
 
 @Service
@@ -51,9 +53,8 @@ public class LicCommitteeRuleSetMstService {
         }
         GbltLicCommitteeRuleSetMst gbltLicCommitteeRuleSetMst = new GbltLicCommitteeRuleSetMst();
         BeanUtils.copyProperties(licCommitteeRuleSetBeanMst, gbltLicCommitteeRuleSetMst);
-        Long data = licCommitteeRuleSetMstRespository.getNextId();
-        
-        gbltLicCommitteeRuleSetMst.setUnumComRsId(data);
+
+        gbltLicCommitteeRuleSetMst.setUnumComRsId(licCommitteeRuleSetMstRespository.getNextId());
         
         licCommitteeRuleSetMstRespository.save(gbltLicCommitteeRuleSetMst);
         
@@ -79,6 +80,36 @@ public class LicCommitteeRuleSetMstService {
 
 	}
 
+	@Transactional
+	public ServiceResponse updateLicCommitteeRule(LicCommitteeRuleSetBeanMst licCommitteeRuleSetBeanMst) throws Exception{
+
+        List<GbltLicCommitteeRuleSetMst> licRuleSet = licCommitteeRuleSetMstRespository.findByUnumIsValidInAndUstrComRsNameIgnoreCaseAndUnumComRsIdNot(
+                List.of(1, 2), licCommitteeRuleSetBeanMst.getUstrComRsName(), licCommitteeRuleSetBeanMst.getUnumComRsId());
+
+        if (!licRuleSet.isEmpty()) {
+            return ServiceResponse.errorResponse(language.duplicate("Lic Rule Set", licCommitteeRuleSetBeanMst.getUstrComRsName()));
+        }
+		
+        // Create Log
+        Integer noOfRecordsAffected = licCommitteeRuleSetMstRespository.createLog(licCommitteeRuleSetBeanMst.getUnumComRsId());
+        if (noOfRecordsAffected == 0) {
+            throw new ApplicationException(language.notFoundForId("Lic Rule Set", licCommitteeRuleSetBeanMst.getUnumComRsId()));
+        }
+        GbltLicCommitteeRuleSetMst gbltLicCommitteeRuleSetMst =  BeanUtils.copyProperties(licCommitteeRuleSetBeanMst, GbltLicCommitteeRuleSetMst.class);
+        gbltLicCommitteeRuleSetMst.setUnumIsValid(1);
+        licCommitteeRuleSetMstRespository.saveAndFlush(gbltLicCommitteeRuleSetMst);
+
+        List<LicCommitteeRuleSetDtlBean> committeeRuleList = licCommitteeRuleSetBeanMst.getCommitteeRuleList() ;
+        if (!committeeRuleList.isEmpty())
+        {
+       		licCommitteeRuleSetDtlRespository.createLog(licCommitteeRuleSetBeanMst.getUnumComRsId());
+            List<GbltLicCommitteeRuleSetDtl> gbltLicCommitteeRuleSetDtl = BeanUtils.copyListProperties(committeeRuleList, GbltLicCommitteeRuleSetDtl.class);
+        	licCommitteeRuleSetDtlRespository.saveAll(gbltLicCommitteeRuleSetDtl);
+        }
+
+        return ServiceResponse.builder().status(1).message(language.saveSuccess("Lic Committee Rule Set Save")).build();
+
+	}
     public List<LicCommitteeRuleSetBeanMst> getCommitteeCombo() {
 
         return BeanUtils.copyListProperties(

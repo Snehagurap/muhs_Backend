@@ -51,6 +51,7 @@ public class LicCommitteeMstService {
         if(!licCommitteeDtlBean.isEmpty()) {
         	for(LicCommitteeDtlBean licCommitteeDtl : licCommitteeDtlBean) {
         		licCommitteeDtl.setUnumLicMemberId(licCommitteetDtlRespository.getNextId());
+        		licCommitteeDtl.setUnumLicRsId(licCommitteeBean.getUnumComRsId());
         		licCommitteeDtl.setUnumIsValid(1);
         		licCommitteeDtl.setUnumEntryUid(RequestUtility.getUserId());
         		licCommitteeDtl.setUnumUnivId(RequestUtility.getUniversityId());
