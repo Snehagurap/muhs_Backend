@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import in.cdac.university.committee.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -15,6 +16,7 @@ import lombok.ToString;
 public class LicCommitteeBean {
 	
 	@NotNull(message = "Lic Id is mandatory")
+	@ListColumn(name = "Category Ruleset Id")
 	private Long	unumLicId ;
 	
 	private String	ustrLicName ;

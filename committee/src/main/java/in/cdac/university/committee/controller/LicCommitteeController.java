@@ -17,6 +17,7 @@ import in.cdac.university.committee.bean.LicCommitteeBean;
 import in.cdac.university.committee.bean.LicCommitteeRuleSetBeanMst;
 import in.cdac.university.committee.service.LicCommitteeMstService;
 import in.cdac.university.committee.service.LicCommitteeRuleSetMstService;
+import in.cdac.university.committee.util.ListPageUtility;
 import in.cdac.university.committee.util.RequestUtility;
 import in.cdac.university.committee.util.ResponseHandler;
 
@@ -48,5 +49,9 @@ public class LicCommitteeController {
         );
     }
 
-
+    @GetMapping("allLicCommittee")
+    public ResponseEntity<?> getAllLicCommittee() throws IllegalAccessException {
+    	return ResponseHandler.generateOkResponse(
+                ListPageUtility.generateListPageData (licCommitteeMstService.getAllLicCommitee()) );
+    }
 }

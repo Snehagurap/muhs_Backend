@@ -178,4 +178,22 @@ public class LicCommitteeMstService {
         
         return ServiceResponse.successObject(licCommitteeRulesetDtlBeanList);
 	}
+
+	public List<LicCommitteeBean> getAllLicCommitee() {
+		List<GbltLicCommitteeMst> gbltLicCommitteeRuleSetMst = licCommitteetMstRespository.findByUnumIsValidAndUnumUnivId(
+                1, RequestUtility.getUniversityId()
+        );
+		List<LicCommitteeBean> licCommitteeBeans = BeanUtils.copyListProperties(gbltLicCommitteeRuleSetMst, LicCommitteeBean.class);
+		
+		licCommitteeBeans.stream().forEach(  licCommitteeBean ->{
+			List<GbltLicCommitteeRuleSetMst> gbltLicCommitteeRule = licCommitteeRuleSetMstRespository.findByUnumComRsIdAndUnumIsValidAndUnumUnivId(
+					licCommitteeBean.getUnumLicId(), 1, RequestUtility.getUniversityId()
+	        );
+			List<LicCommitteeDtlBean> licCommitteeDtlsBeans = BeanUtils.copyListProperties(gbltLicCommitteeRuleSetMst, LicCommitteeDtlBean.class);
+			licCommitteeBean.setLicCommitteeDtlBean(licCommitteeDtlsBeans);
+			
+		});
+		
+		return licCommitteeBeans;
+	}
 }

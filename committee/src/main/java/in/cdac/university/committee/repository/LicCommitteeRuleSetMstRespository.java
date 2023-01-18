@@ -51,4 +51,6 @@ public interface LicCommitteeRuleSetMstRespository extends JpaRepository<GbltLic
 
 
 
+
+
 }
