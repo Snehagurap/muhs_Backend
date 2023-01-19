@@ -37,10 +37,10 @@ public class GbltLicCommitteeMst {
 	private Date	udtLicCreateDate ;
 
 	@Column(name="unum_lic_cfaculty_id")  
-	private Integer	unumLicCfacultyId ;
+	private Long	unumLicCfacultyId ;
 
 	@Column(name="unum_stream_id")  
-	private Integer	unumStreamId ; 
+	private Long	unumStreamId ; 
 
 	@Column(name="udt_lic_from_date")  
 	private Date	udtLicFromDate ; 

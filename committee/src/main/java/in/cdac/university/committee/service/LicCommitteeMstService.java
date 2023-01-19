@@ -9,6 +9,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.NotNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,10 +19,12 @@ import in.cdac.university.committee.bean.ComboBean;
 import in.cdac.university.committee.bean.EmployeeBean;
 import in.cdac.university.committee.bean.EmployeeCurrentDetailBean;
 import in.cdac.university.committee.bean.EmployeeProfileBean;
+import in.cdac.university.committee.bean.FacultyBean;
 import in.cdac.university.committee.bean.LicCommitteeBean;
 import in.cdac.university.committee.bean.LicCommitteeDtlBean;
 import in.cdac.university.committee.bean.LicCommitteeRuleSetBeanMst;
 import in.cdac.university.committee.bean.LicCommitteeRuleSetDtlBean;
+import in.cdac.university.committee.bean.StreamBean;
 import in.cdac.university.committee.entity.GbltLicCommitteeMemberDtl;
 import in.cdac.university.committee.entity.GbltLicCommitteeMst;
 import in.cdac.university.committee.entity.GbltLicCommitteeRuleSetDtl;
@@ -185,15 +189,33 @@ public class LicCommitteeMstService {
         );
 		List<LicCommitteeBean> licCommitteeBeans = BeanUtils.copyListProperties(gbltLicCommitteeRuleSetMst, LicCommitteeBean.class);
 		
-		licCommitteeBeans.stream().forEach(  licCommitteeBean ->{
-			List<GbltLicCommitteeRuleSetMst> gbltLicCommitteeRule = licCommitteeRuleSetMstRespository.findByUnumComRsIdAndUnumIsValidAndUnumUnivId(
-					licCommitteeBean.getUnumLicId(), 1, RequestUtility.getUniversityId()
-	        );
-			List<LicCommitteeDtlBean> licCommitteeDtlsBeans = BeanUtils.copyListProperties(gbltLicCommitteeRuleSetMst, LicCommitteeDtlBean.class);
-			licCommitteeBean.setLicCommitteeDtlBean(licCommitteeDtlsBeans);
-			
-		});
-		
+        // Get All Stream Data
+        List<StreamBean> streamData = List.of(restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_ALL_STREAMS, StreamBean[].class));
+        Map<Long, @NotNull(message = "Stream Name is mandatory") String> streamDataMap = streamData.stream().collect(Collectors.toMap(StreamBean::getUnumStreamId, StreamBean::getUstrStreamFname));
+        
+        // Get All Stream Data
+        List<FacultyBean> facultyBean = List.of(restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_ALL_FACULTY, FacultyBean[].class));
+        Map<Long, String> facultyDataMap  = facultyBean.stream().collect(Collectors.toMap(FacultyBean::getUnumCfacultyId, FacultyBean::getUstrCfacultyFname));
+        
+        List<GbltLicCommitteeRuleSetMst> licRuleSetDtl = licCommitteeRuleSetMstRespository.findByUnumUnivIdAndUnumIsValid(RequestUtility.getUniversityId(),1);
+        Map<Long, String> licRuleSetNameMap = licRuleSetDtl.stream().collect(Collectors.toMap(GbltLicCommitteeRuleSetMst::getUnumComRsId, GbltLicCommitteeRuleSetMst::getUstrComRsName));   
+
+		for( LicCommitteeBean licCommitteeBean: licCommitteeBeans){
+			licCommitteeBean.setUstrLicRsName(licRuleSetNameMap.getOrDefault(licCommitteeBean.getUnumComRsId(),""));
+			licCommitteeBean.setUstrLicCfacultyName(facultyDataMap.getOrDefault(licCommitteeBean.getUnumLicCfacultyId(),""));
+			licCommitteeBean.setUstrStreamName(streamDataMap.getOrDefault(licCommitteeBean.getUnumStreamId(), ""));
+		}
 		return licCommitteeBeans;
 	}
+	
+	
+	@Transactional
+	public ServiceResponse updateLicCommittee(LicCommitteeBean licCommitteeBean) throws Exception{
+		
+		return null;
+
+	}
+
 }
+		
+

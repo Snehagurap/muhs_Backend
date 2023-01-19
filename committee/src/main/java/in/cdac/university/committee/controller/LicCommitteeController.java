@@ -41,6 +41,14 @@ public class LicCommitteeController {
         );
     }
     
+    @PostMapping("updateLicCommittee")
+    public ResponseEntity<?> updateLicCommittee(@Valid @RequestBody LicCommitteeBean licCommitteeBean) throws Exception {
+    	
+         return ResponseHandler.generateResponse(
+        		licCommitteeMstService.updateLicCommittee(licCommitteeBean)
+        );
+    }
+    
     @GetMapping("/licCommitteeRuleset/data/{licCommitteeRsId}/{facultyId}")
     public ResponseEntity<?> getComRsDataForScrutinyComCreation(@PathVariable("licCommitteeRsId") Long licCommitteeRsId,
                                                                 @PathVariable("facultyId") Integer facultyId) {
