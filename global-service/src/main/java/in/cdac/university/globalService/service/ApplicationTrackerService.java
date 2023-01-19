@@ -177,6 +177,11 @@ public class ApplicationTrackerService {
         gbltConfigApplicationTrackerDtl.setUnumApplicationStatusSno(applicationStatusSno);
         gbltConfigApplicationTrackerDtl.setUnumEntryUid(RequestUtility.getUserId());
         gbltConfigApplicationTrackerDtl.setUdtEntryDate(new Date());
+        gbltConfigApplicationTrackerDtl.setUstrStatusBy(String.valueOf(RequestUtility.getUserId()));
+        gbltConfigApplicationTrackerDtl.setUdtApplicationStatusDt(null);
+        gbltConfigApplicationTrackerDtl.setUnumDecisionStatusId(null);
+        gbltConfigApplicationTrackerDtl.setUstrDocPath(null);
+        gbltConfigApplicationTrackerDtl.setUstrRemarks(null);
 
         applicationTrackerDtlRepository.save(gbltConfigApplicationTrackerDtl);
 
@@ -186,7 +191,7 @@ public class ApplicationTrackerService {
     @Transactional
     public ServiceResponse verifyApplication(ApplicationTrackerDtlBean applicationTrackerDtlBean) throws Exception {
         Long applicationId = applicationTrackerDtlBean.getUnumApplicationId();
-        if (applicationId == null && applicationTrackerDtlBean.getUnumApplicationStatusId() == null && applicationTrackerDtlBean.getUnumDecisionStatusId() == null) {
+        if (applicationId == null || applicationTrackerDtlBean.getUnumApplicationStatusId() == null || applicationTrackerDtlBean.getUnumDecisionStatusId() == null) {
             return ServiceResponse.errorResponse(language.mandatory("Application Id && Application Status && Decision Status"));
         }
 
@@ -263,7 +268,7 @@ public class ApplicationTrackerService {
 
 
     public ServiceResponse getVerifiedDetails(Long applicationId, Integer levelId) throws Exception {
-        if (applicationId == null && levelId == null) {
+        if (applicationId == null || levelId == null) {
             return ServiceResponse.errorResponse(language.mandatory("Application Id & LevelId"));
         }
         Optional<GbltConfigApplicationTrackerDtl> gbltConfigApplicationTrackerDtlOptional = applicationTrackerDtlRepository.findByUnumApplicationIdAndUnumApplicationLevelIdAndUnumIsvalidAndUnumUnivId(
