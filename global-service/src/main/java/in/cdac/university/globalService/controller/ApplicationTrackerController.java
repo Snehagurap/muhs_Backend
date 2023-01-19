@@ -43,13 +43,13 @@ public class ApplicationTrackerController {
         );
     }
 
-    @GetMapping("department/{notificationId}/{notificationDetailId}/{levelId}")
+    @GetMapping("department/{notificationId}/{notificationDetailId}/{levelId}/{finYear}")
     public ResponseEntity<?> getApplicationForDepartmentScrutiny(@PathVariable("notificationId") Long notificationId,
                                            @PathVariable("notificationDetailId") Long notificationDetailId,
-                                           @PathVariable("levelId") Integer levelId) throws Exception {
+                                           @PathVariable("levelId") String levelId, @PathVariable("finYear") String finYear) throws Exception {
         return ResponseHandler.generateOkResponse(
                 ListPageUtility.generateListPageData(
-                    applicationTrackerService.getApplicationForDepartmentScrutiny(notificationId, notificationDetailId, levelId))
+                    applicationTrackerService.getApplicationForDepartmentScrutiny(notificationId, notificationDetailId, levelId, finYear))
         );
     }
 

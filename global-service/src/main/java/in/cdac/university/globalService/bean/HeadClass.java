@@ -12,7 +12,7 @@ import lombok.ToString;
 public class HeadClass {
 	
 	private Integer headerId;
-	private Integer unumHeaderOrderNo;
+	private Double unumHeaderOrderNo;
 
 	private String ustrHeadPrintText;
 

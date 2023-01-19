@@ -74,4 +74,6 @@ public class ApplicationDataBean {
     private Date udtNDt;
 
     private String courseTypeName;
+
+    private String applicantUserName;
 }

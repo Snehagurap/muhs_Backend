@@ -24,9 +24,9 @@ public class CompHeadSubHeader {
 	
 	private String ustrSubheadPrintText;
 	
-    private Integer unumHeaderOrderNo;
+    private Double unumHeaderOrderNo;
     
-    private Integer unumComponentOrderNo;
+    private Double unumComponentOrderNo;
 
 	private String ustrTempledtlDescription;
 	

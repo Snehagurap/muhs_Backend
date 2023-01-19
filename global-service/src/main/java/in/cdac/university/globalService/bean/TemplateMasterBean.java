@@ -1,11 +1,6 @@
 package in.cdac.university.globalService.bean;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import in.cdac.university.globalService.util.annotations.ComboKey;
 import in.cdac.university.globalService.util.annotations.ComboValue;
 import in.cdac.university.globalService.util.annotations.ListColumn;
@@ -15,6 +10,8 @@ import lombok.Setter;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -62,7 +59,7 @@ public class TemplateMasterBean {
     @Valid
     private List<TemplateMasterDtlsBean> templateMasterDtlsBeanList;
 
-    private Set<CompHeadSubHeader> compHeadSubHeaders;
+    private List<CompHeadSubHeader> compHeadSubHeaders;
 
     private String ustrCfacultyFname;
     
