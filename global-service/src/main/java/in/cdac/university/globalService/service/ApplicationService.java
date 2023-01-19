@@ -112,4 +112,17 @@ public class ApplicationService {
 
         return ServiceResponse.successObject(applicationDataBean);
     }
+
+    public ServiceResponse getApplicationDetailByNotificationId(Long notificationId) throws Exception {
+
+        List<GbltConfigApplicationDataMst> application = applicationDataMasterRepository.getApplicationByUnumNidAndUnumUnivIdAndUnumIsvalid(
+                notificationId, RequestUtility.getUniversityId(), 1);
+
+        if (application.isEmpty())
+            return ServiceResponse.errorResponse(language.notFoundForId("Application", notificationId));
+
+        ApplicationDataBean applicationDataBean = BeanUtils.copyProperties(application.get(0), ApplicationDataBean.class);
+
+        return ServiceResponse.successObject(applicationDataBean);
+    }
 }
