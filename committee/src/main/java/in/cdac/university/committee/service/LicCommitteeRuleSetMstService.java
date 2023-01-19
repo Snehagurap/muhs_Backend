@@ -86,7 +86,7 @@ public class LicCommitteeRuleSetMstService {
         List<GbltLicCommitteeRuleSetMst> licRuleSet = licCommitteeRuleSetMstRespository.findByUnumIsValidInAndUstrComRsNameIgnoreCaseAndUnumComRsIdNotAndUnumUnivId(
                 List.of(1, 2), licCommitteeRuleSetBeanMst.getUstrComRsName(), licCommitteeRuleSetBeanMst.getUnumComRsId(),RequestUtility.getUniversityId());
 
-        if (!licRuleSet.isEmpty()) {
+        if (licRuleSet.isEmpty()) {
             return ServiceResponse.errorResponse(language.duplicate("Lic Rule Set", licCommitteeRuleSetBeanMst.getUstrComRsName()));
         }
 		

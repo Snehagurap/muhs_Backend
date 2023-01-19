@@ -17,6 +17,7 @@ import in.cdac.university.committee.bean.LicCommitteeBean;
 import in.cdac.university.committee.bean.LicCommitteeRuleSetBeanMst;
 import in.cdac.university.committee.service.LicCommitteeMstService;
 import in.cdac.university.committee.service.LicCommitteeRuleSetMstService;
+import in.cdac.university.committee.util.ListPageUtility;
 import in.cdac.university.committee.util.RequestUtility;
 import in.cdac.university.committee.util.ResponseHandler;
 
@@ -40,6 +41,14 @@ public class LicCommitteeController {
         );
     }
     
+    @PostMapping("updateLicCommittee")
+    public ResponseEntity<?> updateLicCommittee(@Valid @RequestBody LicCommitteeBean licCommitteeBean) throws Exception {
+    	
+         return ResponseHandler.generateResponse(
+        		licCommitteeMstService.updateLicCommittee(licCommitteeBean)
+        );
+    }
+    
     @GetMapping("/licCommitteeRuleset/data/{licCommitteeRsId}/{facultyId}")
     public ResponseEntity<?> getComRsDataForScrutinyComCreation(@PathVariable("licCommitteeRsId") Long licCommitteeRsId,
                                                                 @PathVariable("facultyId") Integer facultyId) {
@@ -48,5 +57,9 @@ public class LicCommitteeController {
         );
     }
 
-
+    @GetMapping("allLicCommittee")
+    public ResponseEntity<?> getAllLicCommittee() throws IllegalAccessException {
+    	return ResponseHandler.generateOkResponse(
+                ListPageUtility.generateListPageData (licCommitteeMstService.getAllLicCommitee()) );
+    }
 }
