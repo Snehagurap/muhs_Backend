@@ -177,6 +177,11 @@ public class ApplicationTrackerService {
         gbltConfigApplicationTrackerDtl.setUnumApplicationStatusSno(applicationStatusSno);
         gbltConfigApplicationTrackerDtl.setUnumEntryUid(RequestUtility.getUserId());
         gbltConfigApplicationTrackerDtl.setUdtEntryDate(new Date());
+        gbltConfigApplicationTrackerDtl.setUstrStatusBy(String.valueOf(RequestUtility.getUserId()));
+        gbltConfigApplicationTrackerDtl.setUdtApplicationStatusDt(null);
+        gbltConfigApplicationTrackerDtl.setUnumDecisionStatusId(null);
+        gbltConfigApplicationTrackerDtl.setUstrDocPath(null);
+        gbltConfigApplicationTrackerDtl.setUstrRemarks(null);
 
         applicationTrackerDtlRepository.save(gbltConfigApplicationTrackerDtl);
 
