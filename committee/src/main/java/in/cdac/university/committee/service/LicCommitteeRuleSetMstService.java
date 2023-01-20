@@ -1,19 +1,11 @@
 package in.cdac.university.committee.service;
 
-import java.util.ArrayList;
+
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import in.cdac.university.committee.bean.CommitteeBean;
-import in.cdac.university.committee.bean.CommitteeRulesetBean;
 import in.cdac.university.committee.bean.LicCommitteeRuleSetBeanMst;
 import in.cdac.university.committee.bean.LicCommitteeRuleSetDtlBean;
 import in.cdac.university.committee.entity.GbltLicCommitteeRuleSetDtl;
@@ -81,7 +73,7 @@ public class LicCommitteeRuleSetMstService {
 	}
 
 	@Transactional
-	public ServiceResponse updateLicCommitteeRule(LicCommitteeRuleSetBeanMst licCommitteeRuleSetBeanMst) throws Exception{
+	public ServiceResponse updateLicCommitteeRule(LicCommitteeRuleSetBeanMst licCommitteeRuleSetBeanMst) {
 
         List<GbltLicCommitteeRuleSetMst> licRuleSet = licCommitteeRuleSetMstRespository.findByUnumIsValidInAndUstrComRsNameIgnoreCaseAndUnumComRsIdNotAndUnumUnivId(
                 List.of(1, 2), licCommitteeRuleSetBeanMst.getUstrComRsName(), licCommitteeRuleSetBeanMst.getUnumComRsId(),RequestUtility.getUniversityId());
@@ -92,12 +84,12 @@ public class LicCommitteeRuleSetMstService {
 		
         // Create Log
         Integer noOfRecordsAffected = licCommitteeRuleSetMstRespository.createLog(licCommitteeRuleSetBeanMst.getUnumComRsId());
-        licCommitteeRuleSetBeanMst.setUnumIsValid(1);
+       // licCommitteeRuleSetBeanMst.setUnumIsValid(1);
         if (noOfRecordsAffected == 0) {
             throw new ApplicationException(language.notFoundForId("Lic Rule Set", licCommitteeRuleSetBeanMst.getUnumComRsId()));
         }
         GbltLicCommitteeRuleSetMst gbltLicCommitteeRuleSetMst =  BeanUtils.copyProperties(licCommitteeRuleSetBeanMst, GbltLicCommitteeRuleSetMst.class);
-        gbltLicCommitteeRuleSetMst.setUnumIsValid(1);
+       // gbltLicCommitteeRuleSetMst.setUnumIsValid(1);
         licCommitteeRuleSetMstRespository.saveAndFlush(gbltLicCommitteeRuleSetMst);
 
         List<LicCommitteeRuleSetDtlBean> committeeRuleList = licCommitteeRuleSetBeanMst.getCommitteeRuleList() ;

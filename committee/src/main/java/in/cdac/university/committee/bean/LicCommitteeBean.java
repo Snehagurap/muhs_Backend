@@ -16,6 +16,7 @@ import lombok.ToString;
 public class LicCommitteeBean {
 	
 	@NotNull(message = "Lic Id is mandatory")
+	@ListColumn(omit = true)
 	private Long	unumLicId ;
 	
 	@ListColumn(name = "Lic Committee Name")
