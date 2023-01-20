@@ -37,19 +37,19 @@ public class CourseService {
 
     public List<CourseBean> listPageData(int status) throws Exception {
         List<GmstCourseMst> gmstCourseMstList = courseRepository.listPageData(status, RequestUtility.getUniversityId());
-        if(!gmstCourseMstList.isEmpty()) {
+        if (!gmstCourseMstList.isEmpty()) {
             Map<Integer, String> courseFaculty = facultyRepository.getAllFaculty(RequestUtility.getUniversityId()).stream()
                     .collect(Collectors.toMap(GmstCoursefacultyMst::getUnumCfacultyId, GmstCoursefacultyMst::getUstrCfacultyFname));
 
             Map<Long, String> courseType = courseTypeRepository.getAllCourseTypes(RequestUtility.getUniversityId()).stream()
                     .collect(Collectors.toMap(GmstCourseTypeMst::getUnumCtypeId, GmstCourseTypeMst::getUstrCtypeFname));
 
-            return  gmstCourseMstList.stream().map(
-                    gmstCourseMst ->  {
+            return gmstCourseMstList.stream().map(
+                    gmstCourseMst -> {
                         CourseBean courseBean1 = BeanUtils.copyProperties(gmstCourseMst, CourseBean.class);
-                        if(gmstCourseMst.getUnumCfacultyId() != null)
+                        if (gmstCourseMst.getUnumCfacultyId() != null)
                             courseBean1.setUstrCfacultyName(courseFaculty.getOrDefault(gmstCourseMst.getUnumCfacultyId(), ""));
-                        if(gmstCourseMst.getUnumCtypeId() != null)
+                        if (gmstCourseMst.getUnumCtypeId() != null)
                             courseBean1.setUstrCtypeName(courseType.getOrDefault(Long.valueOf(gmstCourseMst.getUnumCtypeId()), ""));
                         return courseBean1;
                     }
@@ -162,7 +162,7 @@ public class CourseService {
     public List<CourseBean> getCousreByFacultyId(Integer facultyId) throws Exception {
         return BeanUtils.copyListProperties(
                 courseRepository.findByUnumCfacultyIdAndUnumIsvalidAndUnumUnivId(
-                        facultyId, 1,RequestUtility.getUniversityId()), CourseBean.class
+                        facultyId, 1, RequestUtility.getUniversityId()), CourseBean.class
         );
     }
 
@@ -170,6 +170,13 @@ public class CourseService {
 
         return BeanUtils.copyListProperties(
                 courseRepository.getMinReqCourseByCourseType(courseTypeIds, 1, RequestUtility.getUniversityId()), CourseBean.class
+        );
+    }
+
+    public List<CourseBean> getCousreByCourseTypeId(Integer courseTypeId) throws Exception {
+        return BeanUtils.copyListProperties(
+                courseRepository.findByUnumCtypeIdAndUnumIsvalidAndUnumUnivId(
+                        courseTypeId, 1, RequestUtility.getUniversityId()), CourseBean.class
         );
     }
 }
