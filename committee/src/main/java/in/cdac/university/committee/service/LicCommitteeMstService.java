@@ -72,7 +72,7 @@ public class LicCommitteeMstService {
 	public ServiceResponse saveLicCommittee(LicCommitteeBean licCommitteeBean) throws Exception{
 		
     	List<GbltLicCommitteeMst> licCommitteeMst = licCommitteetMstRespository.findByUnumIsValidInAndUstrLicNameIgnoreCaseAndUnumUnivId(
-                List.of(1), licCommitteeBean.getUstrLicName(),licCommitteeBean.getUnumUnivId());
+                List.of(1,2), licCommitteeBean.getUstrLicName(),licCommitteeBean.getUnumUnivId());
         if (!licCommitteeMst.isEmpty()) {
             return ServiceResponse.errorResponse(language.duplicate("Lic Committee", licCommitteeBean.getUstrLicName()));
         }
@@ -219,9 +219,29 @@ public class LicCommitteeMstService {
 	
 	@Transactional
 	public ServiceResponse updateLicCommittee( LicCommitteeBean licCommitteeBean )throws Exception{
-	//	List<GbltLicCommitteeMst>  gbltLicCommitteeMst = licCommitteetMstRespository.findByUnumIsValidAndUnumUnivIdAndUnumLicId( 1, RequestUtility.getUniversityId(),UnumLicId);
-		
-		return null;
+    	List<GbltLicCommitteeMst> licCommitteeMst = licCommitteetMstRespository.findByUnumIsValidInAndUstrLicNameIgnoreCaseAndUnumUnivId(
+                List.of(1,2), licCommitteeBean.getUstrLicName(),licCommitteeBean.getUnumUnivId());
+    	if (!licCommitteeMst.isEmpty()) {
+            return ServiceResponse.errorResponse(language.duplicate("Lic Committee ", licCommitteeBean.getUstrLicName()));
+        }
+    	// Create Log
+        Integer noOfRecordsAffected = licCommitteetMstRespository.createLog(licCommitteeBean.getUnumLicId());
+        if (noOfRecordsAffected == 0) {
+            throw new ApplicationException(language.notFoundForId("Lic Rule Set", licCommitteeBean.getUnumLicId()));
+        }
+        licCommitteeBean.setUnumIsValid(1);
+        GbltLicCommitteeMst gbltLicCommitteeMst =  BeanUtils.copyProperties(licCommitteeBean, GbltLicCommitteeMst.class);
+        licCommitteetMstRespository.saveAndFlush(gbltLicCommitteeMst);
+        List<LicCommitteeDtlBean> committeeList = licCommitteeBean.getLicCommitteeDtlBean() ;
+        if (!committeeList.isEmpty()){
+        	committeeList.forEach( commList->{
+        		commList.setUnumIsValid(1);
+        	});
+        	licCommitteetDtlRespository.createLog(licCommitteeBean.getUnumLicId());
+            List<GbltLicCommitteeMemberDtl> gbltLicCommitteeMemberDtl = BeanUtils.copyListProperties(committeeList, GbltLicCommitteeMemberDtl.class);
+            licCommitteetDtlRespository.saveAll(gbltLicCommitteeMemberDtl);
+        }
+        return ServiceResponse.builder().status(1).message(language.saveSuccess("Lic Committee Save")).build();
 
 	}
 
