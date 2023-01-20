@@ -236,6 +236,9 @@ public class LicCommitteeMstService {
         if (!committeeList.isEmpty()){
         	committeeList.forEach( commList->{
         		commList.setUnumIsValid(1);
+        		commList.setUnumUnivId(RequestUtility.getUniversityId());
+        		commList.setUnumEntryUid(RequestUtility.getUserId());
+        		commList.setUdtEntryDate(new Date());
         	});
         	licCommitteetDtlRespository.createLog(licCommitteeBean.getUnumLicId());
             List<GbltLicCommitteeMemberDtl> gbltLicCommitteeMemberDtl = BeanUtils.copyListProperties(committeeList, GbltLicCommitteeMemberDtl.class);
