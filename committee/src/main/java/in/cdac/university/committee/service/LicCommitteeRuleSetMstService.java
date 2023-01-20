@@ -113,8 +113,11 @@ public class LicCommitteeRuleSetMstService {
         List<LicCommitteeRuleSetDtlBean> committeeRuleList = licCommitteeRuleSetBeanMst.getCommitteeRuleList() ;
         if (!committeeRuleList.isEmpty())
         {
-        	committeeRuleList.stream().forEach( DtlBean ->{
-            	DtlBean.setUnumIsValid(1);
+        	committeeRuleList.stream().forEach( dtlBean ->{
+            	dtlBean.setUnumIsValid(1);
+            	dtlBean.setUnumUnivId(RequestUtility.getUniversityId());
+            	dtlBean.setUnumEntryUid(RequestUtility.getUserId());
+            	dtlBean.setUdtEntryDate(new Date());
             });
        		licCommitteeRuleSetDtlRespository.createLog(licCommitteeRuleSetBeanMst.getUnumComRsId());
             List<GbltLicCommitteeRuleSetDtl> gbltLicCommitteeRuleSetDtl = BeanUtils.copyListProperties(committeeRuleList, GbltLicCommitteeRuleSetDtl.class);
