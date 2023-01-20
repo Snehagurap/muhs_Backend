@@ -62,4 +62,10 @@ public class LicCommitteeController {
     	return ResponseHandler.generateOkResponse(
                 ListPageUtility.generateListPageData (licCommitteeMstService.getAllLicCommitee()) );
     }
+    
+    @GetMapping("getLicCommitteeByid/{Id}")
+    public ResponseEntity<?> getLicCommitteeByid(@PathVariable("Id") Long UnumLicId) throws IllegalAccessException {
+    	return ResponseHandler.generateResponse(
+                licCommitteeMstService.getLicCommitteeByid(UnumLicId)) ;
+    }
 }

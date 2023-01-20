@@ -20,4 +20,7 @@ public interface LicCommitteetMstRespository extends JpaRepository<GbltLicCommit
 
 	List<GbltLicCommitteeMst> findByUnumIsValidAndUnumUnivId(int i, Integer universityId);
 
+	GbltLicCommitteeMst findByUnumIsValidAndUnumUnivIdAndUnumLicId(int i, Integer universityId, Long unumLicId);
+
+
 }

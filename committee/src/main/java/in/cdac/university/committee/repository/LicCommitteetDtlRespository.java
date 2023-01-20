@@ -1,5 +1,7 @@
 package in.cdac.university.committee.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -15,5 +17,8 @@ public interface LicCommitteetDtlRespository extends JpaRepository<GbltLicCommit
 
 	@Query(value = "select to_char(current_date, 'yymm') || lpad(nextval('ucom.seq_gblt_lic_committee_dtl')\\:\\:text, 6, '0')", nativeQuery = true)
     Long getNextId();
+
+	List<GbltLicCommitteeMemberDtl> findByUnumIsValidAndUnumUnivIdAndUnumLicId(int i, Integer universityId,
+			Long unumLicId);
 	
 }
