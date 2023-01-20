@@ -1,6 +1,5 @@
 package in.cdac.university.globalService.service;
 
-import in.cdac.university.globalService.bean.CourseBean;
 import in.cdac.university.globalService.bean.SubjectBean;
 import in.cdac.university.globalService.entity.GmstSubjectMst;
 import in.cdac.university.globalService.exception.ApplicationException;
@@ -27,6 +26,7 @@ public class SubjectService {
     private Language language;
 
     public List<SubjectBean> getAllSubjects(int status) throws Exception {
+
         return BeanUtils.copyListProperties(
                 subjectRepository.listPageData(status, RequestUtility.getUniversityId()),
                 SubjectBean.class

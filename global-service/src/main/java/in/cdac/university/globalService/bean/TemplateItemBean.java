@@ -148,4 +148,6 @@ public class TemplateItemBean {
     private String ustrItemValue;
 
     List<TemplateItemBean> children;
+
+    List<DataBeanForTemplateItem> dataBean; //bean added
 }

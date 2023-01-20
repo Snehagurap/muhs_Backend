@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 @RequestMapping("/global/pdf/creation")
@@ -25,8 +26,8 @@ public class PdfCreationController {
     @Autowired
     private PdfGenaratorUtil pdfGenaratorUtil;
 
-
     @GetMapping("application/{applicationId}")
+    @SuppressWarnings("unchecked")
     public ResponseEntity<?> getTemplate(@PathVariable("applicationId") Long applicationId) throws Exception {
 
         ServiceResponse serviceResponse = masterTemplateService.getTemplate(applicationId);
@@ -34,10 +35,38 @@ public class PdfCreationController {
         Map<String, Object> templateComponentMap = mapper.convertValue(serviceResponse.getResponseObject(), Map.class);
 
         List<Map<String, Object>> templateList = (List<Map<String, Object>>) templateComponentMap.get("templateList");
+        AtomicInteger index = new AtomicInteger(1);
+        templateList.get(0).forEach((key, value) -> {
+            if (key != null && key.equals("headers")) {
+                List<Map<String, Object>> headers = (List<Map<String, Object>>) value;
+                headers.forEach((header) -> {
+                    header.forEach((headerKey, headerValue) -> {
+                        if (headerKey.equals("components")) {
+                            List<Map<String, Object>> components = (List<Map<String, Object>>) headerValue;
+                            components.forEach((component) -> {
+                                component.forEach((componentKey, componentValue) -> {
+                                    if (componentKey.equals("items")) {
+                                        List<Map<String, Object>> items = (List<Map<String, Object>>) componentValue;
+                                        processItems(items);
+                                    }
+                                });
+                            });
+                            System.out.println(index.getAndAdd(1) + ": " + headerKey + " = " + headerValue);
+                        }
+                    });
+                });
+            }
+        });
 
         byte[] pdfBytes = pdfGenaratorUtil.createPdfBytes("application", templateList.get(0));
         String fileName = "Application.pdf";
 
         return ResponseHandler.generateFileResponse(pdfBytes, fileName);
+    }
+
+    private void processItems(List<Map<String, Object>> items) {
+        items.forEach((item) -> {
+
+        });
     }
 }

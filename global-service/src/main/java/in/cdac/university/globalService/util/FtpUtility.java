@@ -19,11 +19,12 @@ import java.util.Arrays;
 public class FtpUtility {
 
     public enum FTP_DIRECTORY {
-        COMMITTEE ("com"),
-        NOTIFICATION ("notification"),
-        REGISTRATION ("registration"),
-        APPLICANT ("applicant"),
-        APPLICATION ("application");
+        COMMITTEE("com"),
+        NOTIFICATION("notification"),
+        REGISTRATION("registration"),
+        APPLICANT("applicant"),
+        APPLICATION("application"),
+        UNIVERSITY("university");
 
         public final String folderName;
 
@@ -75,7 +76,7 @@ public class FtpUtility {
                 return false;
             }
         }
-        return  true;
+        return true;
     }
 
     public boolean uploadFileToTempDirectory(FTP_DIRECTORY fileDirectory, MultipartFile file, String fileNameToSave) {
@@ -130,13 +131,13 @@ public class FtpUtility {
         try {
             log.debug("Current Directory {}", ftpClient.printWorkingDirectory());
             String[] directories = fileName.split("/");
-            for (int i=0;i<directories.length - 1;++i) {
+            for (int i = 0; i < directories.length - 1; ++i) {
                 log.debug("Changing directory {}", directories[i]);
                 boolean result = changeOrCreateDirectory(ftpClient, directories[i]);
                 if (!result)
                     return false;
             }
-            for (int i=0;i<directories.length - 1;++i) {
+            for (int i = 0; i < directories.length - 1; ++i) {
                 log.debug("Current Directory {}", ftpClient.printWorkingDirectory());
                 boolean result = ftpClient.changeToParentDirectory();
                 if (!result)

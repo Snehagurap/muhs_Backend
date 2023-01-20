@@ -15,12 +15,12 @@ import in.cdac.university.globalService.util.annotations.ListColumn;
 @ToString
 public class ApplicationTrackerBean {
 
-	@ListColumn(order = 4, name = "Application No.")
+	@ListColumn(order = 4, name = "Application No.", width = "15%")
     private Long unumApplicationId;
 
     private Long unumApplicantId;
     
-    @ListColumn(order = 2, name = "Notification")
+    @ListColumn(order = 2, name = "Notification No.", omit = true)
     private Long unumNid;
 
     private Long unumNdtlId;
@@ -61,13 +61,13 @@ public class ApplicationTrackerBean {
 
     private Long unumCtypeId;
     
-    @ListColumn(order = 3, name = "Faculty Name")
+    @ListColumn(order = 3, name = "Faculty Name", width = "15%")
     private String facultyName;
 	
-    @ListColumn(order = 6, name = "Applicant Name")
+    @ListColumn(order = 6, name = "Applicant Name", width = "20%")
 	private String applicantName;
     
-    @ListColumn(order = 5, name = "Applicant Date")
+    @ListColumn(order = 5, name = "Application Date", width = "15%")
     private Date udtApplicationDate;
 
     private Date udtCentreGovtApprovalDate;
@@ -110,5 +110,6 @@ public class ApplicationTrackerBean {
 
     private String ustrStateOutnoStategovt;
 
-
+    @ListColumn(order = 7, name = "Status", width = "20%")
+    private String applicationStatus;
 }

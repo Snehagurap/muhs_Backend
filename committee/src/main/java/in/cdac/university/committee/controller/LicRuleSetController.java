@@ -42,6 +42,7 @@ public class LicRuleSetController {
 	    public ResponseEntity<?> updateLicCommitteeRule(@Valid @RequestBody LicCommitteeRuleSetBeanMst licCommitteeRuleSetBeanMst) throws Exception {
 	    	
 	    	licCommitteeRuleSetBeanMst.setUnumIsValid(1);
+			System.out.println("isValid>>"+licCommitteeRuleSetBeanMst.getUnumIsValid());
 			licCommitteeRuleSetBeanMst.setUnumUnivId(RequestUtility.getUniversityId());
 			licCommitteeRuleSetBeanMst.setUnumEntryUid(RequestUtility.getUserId());
 			licCommitteeRuleSetBeanMst.setUdtEntryDate(new Date());

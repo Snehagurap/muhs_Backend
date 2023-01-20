@@ -39,19 +39,19 @@ public class GbltLicCommitteeMemberDtl {
 	private	Integer unumLicRoleId ;
 
 	@Column(name="unum_lic_pref1_empid") 
-	private	Integer unumLicPref1Empid ;
+	private	Long unumLicPref1Empid ;
 
 	@Column(name="unum_lic_pref2_empid") 
-	private	Integer unumLicPref2Empid ;
+	private	Long unumLicPref2Empid ;
 
 	@Column(name="unum_lic_pref3_empid") 
-	private	Integer unumLicPref3Empid ;
+	private	Long unumLicPref3Empid ;
 
 	@Column(name="unum_lic_pref4_empid") 
-	private	Integer unumLicPref4Empid ;
+	private	Long unumLicPref4Empid ;
 
 	@Column(name="unum_lic_pref5_empid") 
-	private	Integer unumLicPref5Empid ;
+	private	Long unumLicPref5Empid ;
 
 	@Column(name="unum_lic_pref1_empname") 
 	private	String unumLicPref1Empname;
