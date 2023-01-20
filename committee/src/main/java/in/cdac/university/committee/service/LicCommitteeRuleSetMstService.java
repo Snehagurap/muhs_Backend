@@ -92,6 +92,7 @@ public class LicCommitteeRuleSetMstService {
 		
         // Create Log
         Integer noOfRecordsAffected = licCommitteeRuleSetMstRespository.createLog(licCommitteeRuleSetBeanMst.getUnumComRsId());
+        licCommitteeRuleSetBeanMst.setUnumIsValid(1);
         if (noOfRecordsAffected == 0) {
             throw new ApplicationException(language.notFoundForId("Lic Rule Set", licCommitteeRuleSetBeanMst.getUnumComRsId()));
         }
@@ -102,6 +103,9 @@ public class LicCommitteeRuleSetMstService {
         List<LicCommitteeRuleSetDtlBean> committeeRuleList = licCommitteeRuleSetBeanMst.getCommitteeRuleList() ;
         if (!committeeRuleList.isEmpty())
         {
+        	committeeRuleList.stream().forEach( DtlBean ->{
+            	DtlBean.setUnumIsValid(1);
+            });
        		licCommitteeRuleSetDtlRespository.createLog(licCommitteeRuleSetBeanMst.getUnumComRsId());
             List<GbltLicCommitteeRuleSetDtl> gbltLicCommitteeRuleSetDtl = BeanUtils.copyListProperties(committeeRuleList, GbltLicCommitteeRuleSetDtl.class);
         	licCommitteeRuleSetDtlRespository.saveAll(gbltLicCommitteeRuleSetDtl);

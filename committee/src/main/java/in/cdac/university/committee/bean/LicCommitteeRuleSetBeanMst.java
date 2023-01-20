@@ -48,13 +48,14 @@ public class LicCommitteeRuleSetBeanMst {
 
 	private Integer unumUnivId;
 
-	private Date udtEntryDate;// to check
+	private Date udtEntryDate;
 
+	@NotNull(message = "Lic Committee Status is mandatory")
 	private Integer unumIsValid;
 
 	private Long unumEntryUid;
 
-	private Date udtRevalidationDate;//to check
+	private Date udtRevalidationDate;
 
 	private Integer unumIsFormulaBased;
 
