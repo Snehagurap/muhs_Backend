@@ -41,13 +41,6 @@ public class CoursePatternService {
     @Autowired
     private StreamRepository streamRepository;
 
-    public List<CoursePatternBean> getAllCoursePatterns() {
-        return BeanUtils.copyListProperties(
-                coursePatternRepository.getAllCoursePatterns(),
-                CoursePatternBean.class
-        );
-    }
-
     public ServiceResponse getCoursePattern(Long coursePatId) {
         Optional<GmstCoursePatternDtl> coursePatOptional = coursePatternRepository.findByUnumIsvalidAndUnumCoursePatId(1, coursePatId);
 
