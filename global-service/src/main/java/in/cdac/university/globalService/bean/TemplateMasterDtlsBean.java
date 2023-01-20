@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 
 @Getter
+@ToString
 @Setter
 public class TemplateMasterDtlsBean {
 
@@ -78,9 +80,9 @@ public class TemplateMasterDtlsBean {
 	private String controlTypeName;
 	private String ustrItemPrintPostText;
 	
-    private Integer unumHeaderOrderNo;
+    private Double unumHeaderOrderNo;
     
-    private Integer unumComponentOrderNo;
+    private Double unumComponentOrderNo;
 
 	private Long unumChecklistId;
 
@@ -88,6 +90,7 @@ public class TemplateMasterDtlsBean {
 
 	private String ustrChecklistItemName;
 
-	private Integer unumChecklistItemOrderno;
-    
+	private Double unumChecklistItemOrderno;
+
+	private Integer unumUiControlId;
 }

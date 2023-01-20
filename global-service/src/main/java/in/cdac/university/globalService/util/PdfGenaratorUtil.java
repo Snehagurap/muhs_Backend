@@ -1,5 +1,6 @@
 package in.cdac.university.globalService.util;
 
+import com.itextpdf.html2pdf.HtmlConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -65,11 +66,7 @@ public class PdfGenaratorUtil {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            ITextRenderer itr = new ITextRenderer();
-            itr.setDocumentFromString(processedHtml);
-            itr.layout();
-            itr.createPDF(baos, false);
-            itr.finishPDF();
+            HtmlConverter.convertToPdf(processedHtml, baos);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -30,4 +30,11 @@ public class ApplicationController {
                applicationService.getApplicationByunumApplicationId(unumApplicationId)
         );
     }
+
+    @GetMapping("{notificationId}")
+    public ResponseEntity<?> getApplicationByNotificationId(@PathVariable("notificationId") Long notificationId) throws Exception {
+        return ResponseHandler.generateResponse(
+                applicationService.getApplicationDetailByNotificationId(notificationId)
+        );
+    }
 }

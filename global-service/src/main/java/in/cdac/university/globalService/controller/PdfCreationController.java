@@ -25,7 +25,6 @@ public class PdfCreationController {
     @Autowired
     private PdfGenaratorUtil pdfGenaratorUtil;
 
-
     @GetMapping("application/{applicationId}")
     public ResponseEntity<?> getTemplate(@PathVariable("applicationId") Long applicationId) throws Exception {
 
@@ -34,6 +33,12 @@ public class PdfCreationController {
         Map<String, Object> templateComponentMap = mapper.convertValue(serviceResponse.getResponseObject(), Map.class);
 
         List<Map<String, Object>> templateList = (List<Map<String, Object>>) templateComponentMap.get("templateList");
+        templateList.get(0).forEach((key, value) -> {
+            if (key != null && key.equals("headers")) {
+                List<Map<String, Object>> headers = (List<Map<String, Object>>) value;
+                System.out.println(headers);
+            }
+        });
 
         byte[] pdfBytes = pdfGenaratorUtil.createPdfBytes("application", templateList.get(0));
         String fileName = "Application.pdf";

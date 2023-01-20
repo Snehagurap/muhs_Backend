@@ -1,6 +1,7 @@
 package in.cdac.university.committee.bean;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
@@ -65,4 +66,10 @@ public class LicCommitteeRuleSetDtlBean {
 	private Integer unumRoleId;
 	
 	private Long unumEntryUid;
+	
+	private String UstrRoleName;
+	
+	private Integer  UnumNoOfMembers;
+	
+	private List<ComboBean> teacherCombo;
 }

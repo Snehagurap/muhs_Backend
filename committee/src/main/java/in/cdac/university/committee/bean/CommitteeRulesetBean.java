@@ -21,7 +21,6 @@ public class CommitteeRulesetBean {
 
     private Date udtEntryDate;
 
-    @ListColumn(order = 1, name = "Committe For")
     private Integer unumComRsCatId;
 
     private Long unumEntryUid;
@@ -41,4 +40,17 @@ public class CommitteeRulesetBean {
     private Date udtEffTo;
 
     private List<CommitteeRulesetDtlBean> committeeRulesetDtl;
+
+    @ListColumn(order = 1, name = "Committe For")
+    private String ustrComRsCatName;
+
+
+    public void setUnumComRsCatId(Integer unumComRsCatId){
+        this.unumComRsCatId = unumComRsCatId;
+        this.setUstrComRsCatName();
+    }
+
+    public void setUstrComRsCatName() {
+       this.ustrComRsCatName = (this.getUnumComRsCatId() == 1) ?  "Application Scrutiny" :  "LIC Report Scrutiny" ;
+    }
 }

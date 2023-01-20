@@ -343,7 +343,8 @@ public class MasterTemplateService {
                 if (configTemplateDtl.getUnumChecklistId() != null
                         && configTemplateDtl.getUstrChecklistName() != null
                         && configTemplateDtl.getUstrChecklistItemName() != null
-                        && configTemplateDtl.getUnumChecklistItemOrderno() != null) {
+                        && configTemplateDtl.getUnumChecklistItemOrderno() != null
+                        && itemControlMap.containsKey(configTemplateDtl.getUnumTempleItemId())) {
                     checkList.setUnumChecklistId(configTemplateDtl.getUnumChecklistId());
                     checkList.setUstrChecklistName(configTemplateDtl.getUstrChecklistName());
                     CheckListItems checkListItem = new CheckListItems();
@@ -663,7 +664,7 @@ public class MasterTemplateService {
                 applicationChklstDataDtl.setUnumComponentOrderNo(checklistItem.getUnumComponentOrderNo());
                 applicationChklstDataDtl.setUnumEntryUid(userId);
                 applicationChklstDataDtl.setUnumHeaderOrderNo(checklistItem.getUnumHeaderOrderNo());
-                applicationChklstDataDtl.setUnumOfcScrutinyIsitemverified(0);
+                applicationChklstDataDtl.setUnumOfcScrutinyIsitemverified(null);
                 applicationChklstDataDtl.setUnumUnivId(universityId);
                 applicationChklstDataDtl.setUstrChecklistName(checklistItem.getUstrChecklistName());
                 applicationChklstDataDtl.setUstrChecklistItemName(checklistItem.getUstrChecklistItemName());
@@ -876,8 +877,9 @@ public class MasterTemplateService {
     public List<MasterTemplateBean> getAllMasterTemplate() {
         List<GmstConfigMastertemplateMst> masterTemplateList = masterTemplateRepository.findByUnumIsvalidIn(List.of(1));
         List<MasterTemplateBean> masterTemplateBeanRes = new ArrayList<>();
-        StringBuffer templeNameList = new StringBuffer();
+        
         for (GmstConfigMastertemplateMst gmstConfigMastertemplateMst : masterTemplateList) {
+        	StringBuffer templeNameList = new StringBuffer();
             MasterTemplateBean masterTemplateBean = BeanUtils.copyProperties(gmstConfigMastertemplateMst, MasterTemplateBean.class);
             masterTemplateBean.setUnumMtempleId(gmstConfigMastertemplateMst.getUnumMtempleId());
             masterTemplateBean.setUstrMtempleName(gmstConfigMastertemplateMst.getUstrMtempleName());
@@ -891,7 +893,7 @@ public class MasterTemplateService {
                 }
             });
 
-            masterTemplateBean.setUstrtempleName(templeNameList.toString());
+            masterTemplateBean.setUstrtempleName(templeNameList.toString().substring(0,templeNameList.length()-1));
             masterTemplateBeanRes.add(masterTemplateBean);
         }
         return BeanUtils.copyListProperties(masterTemplateBeanRes, MasterTemplateBean.class);

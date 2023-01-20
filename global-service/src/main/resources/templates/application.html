@@ -19,15 +19,41 @@
 
     <div th:each="header: ${headers}" th:if="${header.unumTempleHeadId ge 0 && header.unumTempleHeadId ne 27}"
          th:style="'text-align:' + ${header.ustrHeadAllignment}">
-        <span style="white-space: pre-line; font-weight: bold" th:text="${header.ustrHeadPrintText}"></span>
+        <th:block th:if="${header.unumIsHidden ne 1}">
+            <div style="font-weight:bold; padding-top: 15px;">
+                <span style="white-space: pre-line; flex: 2;" th:text="${header.ustrHeadPrintPrefixText}"></span>
+                <span style="white-space: pre-line; flex: 30;" th:text="${header.ustrHeadPrintText}"></span>
+            </div>
+        </th:block>
+
         <div th:each="component: ${header.components}">
             <div th:each="item: ${component.items}" style="padding-top: 10px;">
-                <span style="white-space: pre-line;" th:text="${item.ustrItemPrintPrefixText}"></span>
+                <span style="white-space: pre-line; font-weight: bold;" th:text="${item.ustrItemPrintPrefixText}"></span>
                 <span style="white-space: pre-line" th:text="${item.ustrItemPrintPreText}"></span>
                 <th:block th:switch="${item.unumUiControlId}">
-                    <th:block th:case="'3'">
+                    <th:block th:case="'6'">
                         <span style="white-space: pre-line; font-weight:700; text-decoration: underline;"
-                              th:text="${item.ustrItemValue == 1 ? 'Yes' : 'No' }"></span>
+                              th:text="${item.ustrItemValue} == 1 ? 'Yes' : 'No' "></span>
+                    </th:block>
+                    <th:block th:case="'12'">
+                        <span style="white-space: pre-line; font-weight:700; text-decoration: underline;"
+                              th:text="${item.ustrItemValue} == 1 ? 'Yes' : 'No' "></span>
+                    </th:block>
+                    <th:block th:case="'13'">
+                        <span style="white-space: pre-line; font-weight:700; text-decoration: underline;"
+                              th:text="${item.ustrItemValue} == 1 ? 'Yes' : 'No' "></span>
+                    </th:block>
+                    <th:block th:case="'14'">
+                        <span style="white-space: pre-line; font-weight:700; text-decoration: underline;"
+                              th:text="${item.ustrItemValue} == 1 ? 'Yes' : 'No' "></span>
+                    </th:block>
+                    <th:block th:case="'15'">
+                        <span style="white-space: pre-line; font-weight:700; text-decoration: underline;"
+                              th:text="${item.ustrItemValue} == 1 ? 'Yes' : 'No' "></span>
+                    </th:block>
+                    <th:block th:case="'18'">
+                        <span style="white-space: pre-line; font-weight:700; text-decoration: underline;"
+                              th:text="${item.ustrItemValue} == 1 ? 'Yes' : 'No' "></span>
                     </th:block>
                     <th:block th:case="*">
                         <span style="white-space: pre-line; font-weight:700; text-decoration: underline;"
@@ -37,6 +63,7 @@
                 <span style="white-space: pre-line" th:text="${item.ustrItemPrintPostText}"></span>
             </div>
         </div>
+
     </div>
 
 </div>
