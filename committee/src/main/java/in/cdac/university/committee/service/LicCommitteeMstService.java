@@ -22,7 +22,6 @@ import in.cdac.university.committee.bean.EmployeeProfileBean;
 import in.cdac.university.committee.bean.FacultyBean;
 import in.cdac.university.committee.bean.LicCommitteeBean;
 import in.cdac.university.committee.bean.LicCommitteeDtlBean;
-import in.cdac.university.committee.bean.LicCommitteeRuleSetBeanMst;
 import in.cdac.university.committee.bean.LicCommitteeRuleSetDtlBean;
 import in.cdac.university.committee.bean.StreamBean;
 import in.cdac.university.committee.entity.GbltLicCommitteeMemberDtl;
@@ -85,7 +84,7 @@ public class LicCommitteeMstService {
         	for(LicCommitteeDtlBean licCommitteeDtl : licCommitteeDtlBean) {
         		licCommitteeDtl.setUnumLicMemberId(licCommitteetDtlRespository.getNextId());
         		licCommitteeDtl.setUnumLicRsId(licCommitteeBean.getUnumComRsId());
-        		licCommitteeDtl.setUnumLicId(licCommitteeBean.getUnumLicId());
+        		licCommitteeDtl.setUnumLicId(gbltLicCommitteeMst.getUnumLicId());
         		licCommitteeDtl.setUnumIsValid(1);
         		licCommitteeDtl.setUnumEntryUid(RequestUtility.getUserId());
         		licCommitteeDtl.setUnumUnivId(RequestUtility.getUniversityId());
