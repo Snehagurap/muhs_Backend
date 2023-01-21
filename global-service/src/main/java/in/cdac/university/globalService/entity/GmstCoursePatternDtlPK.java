@@ -12,12 +12,12 @@ import javax.persistence.*;
 @Setter
 @EqualsAndHashCode
 public class GmstCoursePatternDtlPK implements Serializable {
-	@Serial
-	private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
-	@Column(name="unum_course_pat_id")
-	private Long unumCoursePatId;
+    @Column(name = "unum_course_pat_id")
+    private Long unumCoursePatId;
 
-	@Column(name="unum_isvalid")
-	private Long unumIsvalid;
+    @Column(name = "unum_isvalid")
+    private Integer unumIsvalid;
 }
