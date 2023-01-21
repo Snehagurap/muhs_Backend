@@ -37,6 +37,10 @@ public class GatewayConfig {
                         .filters(f-> f.filter(authenticationFilter)
                                 .filter(securityFilter))
                         .uri("lb://planning-board"))
+                .route("student-welfare", r -> r.path("/sw/**")
+                        .filters(f-> f.filter(authenticationFilter)
+                                .filter(securityFilter))
+                        .uri("lb://student-welfare"))
                 .build();
     }
 }
