@@ -1,6 +1,7 @@
 package in.cdac.university.committee.service;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -130,7 +131,25 @@ public class LicCommitteeRuleSetMstService {
        
     }
 
-	public List<LicCommitteeRuleSetBeanMst> getListPageData() {
+	public String getComboCourseTypeByRsID (Long unumComRsId ) {
+		LicCommitteeRuleSetBeanMst licCommitteeRuleSetBeanMst = BeanUtils.copyProperties(
+				licCommitteeRuleSetMstRespository.findByUnumUnivIdAndUnumIsValidAndUnumComRsId(RequestUtility.getUniversityId(), 1,unumComRsId), LicCommitteeRuleSetBeanMst.class);
+		String cCourseTypeName = null;
+		if(licCommitteeRuleSetBeanMst!=null) {
+			String courseType = licCommitteeRuleSetBeanMst.getUstrCtypeids();
+			if(!courseType.isEmpty()) {
+				String courseTypes[] = courseType.split(",");
+				ComboBean[] courseCombo = restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_ALL_COURSE_TYPE,  ComboBean[].class);
+				if (courseCombo != null) {
+					Map<String, String> courseMap = Arrays.stream(courseCombo).collect(Collectors.toMap(ComboBean::getKey, ComboBean::getValue));
+					cCourseTypeName = Arrays.stream(courseTypes).map( e-> courseMap.getOrDefault(e, "")).collect(Collectors.joining(","));
+				       				
+		        }   
+			}
+		}
+		return cCourseTypeName;
+	}
+	public List<LicCommitteeRuleSetBeanMst> getListPageData () {
 		List<LicCommitteeRuleSetBeanMst> licCommitteeRuleSetBeanMst = BeanUtils.copyListProperties(
 				licCommitteeRuleSetMstRespository.findByUnumUnivIdAndUnumIsValid(RequestUtility.getUniversityId(), 1), LicCommitteeRuleSetBeanMst.class);
 		String cCourseTypeName = null;
@@ -150,7 +169,6 @@ public class LicCommitteeRuleSetMstService {
 		return licCommitteeRuleSetBeanMst;
 		
 	}
-	
 
 	public ServiceResponse getCommitteeRuleSetByUnumComRsId(int i, Integer universityId,
 			Long unumComRsId) throws Exception {
