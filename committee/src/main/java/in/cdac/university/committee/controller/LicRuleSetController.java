@@ -59,6 +59,12 @@ public class LicRuleSetController {
     	                )
     	        );
     	    }
+    	@GetMapping("comboCourseTypeByRsID/{Id}")
+	    public ResponseEntity<?> getComboCourseTypeByRsID(@PathVariable("Id") Long unumComRsId) throws Exception {
+	        return ResponseHandler.generateOkResponse(
+	                             		licCommitteeRuleSetMstService.getComboCourseTypeByRsID(unumComRsId)
+	        );
+	    }
     	
     	@GetMapping("listPage")
         public ResponseEntity<?> getListPage() throws IllegalAccessException {
