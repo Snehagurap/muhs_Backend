@@ -27,15 +27,15 @@ public class LicCommitteeDtlBean {
 	
 	private	Integer unumLicRoleId ;
 	
-	private	Integer unumLicPref1Empid ;
+	private	Long unumLicPref1Empid ;
 	
-	private	Integer unumLicPref2Empid ;
+	private	Long unumLicPref2Empid ;
 	
-	private	Integer unumLicPref3Empid ;
+	private	Long unumLicPref3Empid ;
 	
-	private	Integer unumLicPref4Empid ;
+	private	Long unumLicPref4Empid ;
 	
-	private	Integer unumLicPref5Empid ;
+	private	Long unumLicPref5Empid ;
 	
 	private	String unumLicPref1Empname;
 	

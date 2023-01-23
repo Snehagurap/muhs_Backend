@@ -14,6 +14,7 @@ import in.cdac.university.committee.entity.GbltLicCommitteeRuleSetMst;
 import in.cdac.university.committee.entity.GbltLicCommitteeRuleSetMstPk;
 
 
+
 @Repository
 public interface LicCommitteeRuleSetMstRespository extends JpaRepository<GbltLicCommitteeRuleSetMst, GbltLicCommitteeRuleSetMstPk>{
 
@@ -23,8 +24,8 @@ public interface LicCommitteeRuleSetMstRespository extends JpaRepository<GbltLic
     Long getNextId();
 
 
-	List<GbltLicCommitteeRuleSetMst> findByUnumIsValidInAndUstrComRsNameIgnoreCase(List<Integer> of,
-			String ustrComRsName);
+	List<GbltLicCommitteeRuleSetMst> findByUnumIsValidInAndUstrComRsNameIgnoreCaseAndUnumUnivId(List<Integer> of,
+			String ustrComRsName, Integer universityId);
 
 
 	List<GbltLicCommitteeRuleSetMst> findByUnumUnivIdAndUnumIsValid(Integer universityId, int i);
@@ -38,8 +39,18 @@ public interface LicCommitteeRuleSetMstRespository extends JpaRepository<GbltLic
             "where u.unumComRsId in (:unumComRsId) and u.unumIsValid in (1, 2) ")
 	Integer createLog(@Param("unumComRsId") Long unumComRsId);
 
-	List<GbltLicCommitteeRuleSetMst> findByUnumIsValidInAndUstrComRsNameIgnoreCaseAndUnumComRsIdNot(List<Integer> of,
-			String ustrComRsName, @NotNull(message = "Lic Committee Master ID is mandatory") Long unumComRsId);
+
+	List<GbltLicCommitteeRuleSetMst> findByUnumIsValidInAndUstrComRsNameIgnoreCaseAndUnumComRsIdNotAndUnumUnivId(
+			List<Integer> of, String ustrComRsName,
+			@NotNull(message = "Lic Committee Master ID is mandatory") Long unumComRsId, Integer universityId);
+
+	List<GbltLicCommitteeRuleSetMst> findByUnumComRsIdAndUnumIsValidAndUnumUnivId(Long licCommitteeRsId, int i,
+			Integer universityId);
+
+
+
+
+
 
 
 }

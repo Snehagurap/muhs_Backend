@@ -151,8 +151,14 @@ public class NotificationService {
         List<GbltNotificationDocDtl> gbltNotificationDocDtls = documentRepository.findByUnumIsvalidAndUnumUnivIdAndUnumNidOrderByUnumSnoDisplayorderAsc(
                 1, RequestUtility.getUniversityId(), notificationId
         );
-
         notificationBean.setDocuments(BeanUtils.copyListProperties(gbltNotificationDocDtls, NotificationDocumentBean.class));
+
+        //Get Application Details
+        ApplicationDataBean applicationDataBean = restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_APPLICATION_BY_NOTIFICATION_ID + gbltNotificationMaster.getUnumNid(),ApplicationDataBean.class);
+        if (applicationDataBean == null)
+            return ServiceResponse.errorResponse(language.notFoundForId("Notification Id", gbltNotificationMaster.getUnumNid()));
+
+        notificationBean.setUnumApplicationId(applicationDataBean.getUnumApplicationId());
 
         return ServiceResponse.successObject(notificationBean);
     }

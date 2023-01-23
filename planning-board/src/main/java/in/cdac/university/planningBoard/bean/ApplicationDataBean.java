@@ -1,18 +1,13 @@
-package in.cdac.university.globalService.bean;
+package in.cdac.university.planningBoard.bean;
 
-import in.cdac.university.globalService.util.annotations.ListColumn;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.util.Date;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class ApplicationDataBean {
 
-    @ListColumn(name = "Application No.", order = 3)
+
     private Long unumApplicationId;
 
     private Long unumApplicantId;
@@ -61,13 +56,11 @@ public class ApplicationDataBean {
 
     private Long unumMtempleId;
 
-    @ListColumn(name = "Status", order = 4)
+
     private String statusName;
 
-    @ListColumn(name = "Notification")
     private String notificationName;
 
-    @ListColumn(name = "Faculty Name", order = 2)
     private String facultyName;
 
     private String applicantTypeName;

@@ -22,4 +22,10 @@ public interface LicCommitteeRuleSetDtlRespository extends JpaRepository<GbltLic
             "from GbltLicCommitteeRuleSetDtl a where a.unumComRsDtlId = u.unumComRsDtlId and a.unumIsValid > 2) " +
             "where u.unumComRsId in (:unumComRsId) and u.unumIsValid in (1, 2) ")
     Integer createLog(@Param("unumComRsId") Long unumComRsId);
+
+
+
+
+	List<GbltLicCommitteeRuleSetDtl> findByUnumComRsIdAndUnumIsValidAndUnumUnivId(Long licCommitteeRsId, int i,
+			Integer universityId);
 }
