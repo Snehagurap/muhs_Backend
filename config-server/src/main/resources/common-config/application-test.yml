@@ -11,6 +11,8 @@ config:
     clientSecret: secret
     url: http://auth-server:8001
   service:
+    gateway:
+      url: http://api-gateway:8180
     global:
       url: http://global-service:8004
     committee:
@@ -19,6 +21,8 @@ config:
       url: http://user-management:8003
     pb:
       url: http://planning-board:8006
+    sw:
+      url: http://student-welfare:8007
 
 jwt:
   secret: BvPHGM8C0ia4uOuxxqPD5DTbWC9F9TWvPStp3pb7ARo0oK2mJ3pd3YG4lxA9i8bj6OTbadwezxgeEByY

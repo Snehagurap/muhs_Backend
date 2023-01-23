@@ -24,6 +24,7 @@
         <module>committee</module>
         <module>planning-board</module>
         <module>admin-server</module>
+        <module>student-welfare</module>
     </modules>
     <dependencies>
         <dependency>
