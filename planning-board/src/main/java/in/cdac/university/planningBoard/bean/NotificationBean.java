@@ -42,6 +42,8 @@ public class NotificationBean {
     @NotNull(message = "For Faculty is mandatory")
     private Integer unumCfacultyId;
 
+    private Long unumStreamId;
+
     @NotNull(message = "For Department is mandatory")
     private Integer unumDeptId;
 

@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: student-welfare
+  config:
+    import: "optional:configserver:"
+  profiles:
+    active:
+      - dev
+
+server:
+  port: 8007

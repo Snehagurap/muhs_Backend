@@ -72,4 +72,14 @@ public class PdfGenaratorUtil {
         }
         return baos.toByteArray();
     }
+
+    public byte[] createPdfBytesFromHtmlString(String htmlString) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            HtmlConverter.convertToPdf(htmlString, baos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return baos.toByteArray();
+    }
 }
