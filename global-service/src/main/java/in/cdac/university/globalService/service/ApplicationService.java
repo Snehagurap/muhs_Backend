@@ -52,6 +52,8 @@ public class ApplicationService {
         for (GbltConfigApplicationDataMst application : applications) {
             ApplicationDataBean applicationDataBean = BeanUtils.copyProperties(application, ApplicationDataBean.class);
             applicationDataBean.setStatusName(statusMap.getOrDefault(application.getUnumApplicationEntryStatus(), ""));
+            Optional<GmstCoursefacultyMst> faculty = facultyRepository.findByUnumCfacultyIdAndUnumIsvalid(Math.toIntExact(applicationDataBean.getUnumNdtlFacultyId()), 1);
+            faculty.ifPresent(gmstCoursefacultyMst -> applicationDataBean.setFacultyName(gmstCoursefacultyMst.getUstrCfacultyFname()));
 
             // Get Notification Detail
             NotificationBean notificationBean = restUtility.get(RestUtility.SERVICE_TYPE.PLANNING_BOARD, Constants.URL_GET_NOTIFICATION_BY_ID + application.getUnumNid(), NotificationBean.class);
@@ -92,6 +94,7 @@ public class ApplicationService {
         applicationDataBean.setUstrApplicantName(applicant.getUstrApplicantName());
         Optional<GmstApplicantTypeMst> applicantType = applicantTypeRepository.findById(new GmstApplicantTypeMstPK(applicant.getUnumApplicantTypeId(), 1));
         applicantType.ifPresent(aType -> applicationDataBean.setApplicantTypeName(aType.getUstrApplicantTypeFname()));
+        applicationDataBean.setApplicantUserName(applicant.getUstrUid());
 
         NotificationBean notificationBean = restUtility.get(RestUtility.SERVICE_TYPE.PLANNING_BOARD, Constants.URL_GET_NOTIFICATION_BY_ID + applicationDataBean.getUnumNid(), NotificationBean.class);
         if (notificationBean == null)
@@ -108,6 +111,19 @@ public class ApplicationService {
         int courseTypeId = notificationDetail.get().getUnumCoursetypeId();
         Optional<GmstCourseTypeMst> courseTypeMst = courseTypeRepository.findByUnumIsvalidAndUnumCtypeId(1, (long) courseTypeId);
         courseTypeMst.ifPresent(courseType -> applicationDataBean.setCourseTypeName(courseType.getUstrCtypeFname()));
+
+        return ServiceResponse.successObject(applicationDataBean);
+    }
+
+    public ServiceResponse getApplicationDetailByNotificationId(Long notificationId) throws Exception {
+
+        List<GbltConfigApplicationDataMst> application = applicationDataMasterRepository.getApplicationByUnumNidAndUnumUnivIdAndUnumIsvalid(
+                notificationId, RequestUtility.getUniversityId(), 1);
+
+        if (application.isEmpty())
+            return ServiceResponse.errorResponse(language.notFoundForId("Application", notificationId));
+
+        ApplicationDataBean applicationDataBean = BeanUtils.copyProperties(application.get(0), ApplicationDataBean.class);
 
         return ServiceResponse.successObject(applicationDataBean);
     }

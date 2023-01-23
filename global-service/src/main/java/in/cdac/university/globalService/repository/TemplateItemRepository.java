@@ -63,4 +63,10 @@ public interface TemplateItemRepository extends JpaRepository<GmstConfigTemplate
             "and t.unumTempleCompId = :unumTempleCompId ) order by c.unumItemDisplayOrder, c.unumTempleItemId")
     List<GmstConfigTemplateItemMst> findAllByUnumTempleItemIdAndUnumIsvalid(@Param("unumTempleCompId") Long unumTempleCompIdlist,
                                                                             @Param("unumIsvalid") Integer unumIsvalid);
+
+    @Modifying(clearAutomatically = true)
+    @Query("update GmstConfigTemplateItemMst u set u.unumParentValueCheckFlag = :parentValCheckFlag " +
+            "where u.unumTempleItemId = :templItemId " +
+            "and u.unumIsvalid = 1")
+    Integer updateUnumParentValuCheckFlag(@Param("templItemId") Long templItemId, @Param("parentValCheckFlag") String parentValCheckFlag);
 }

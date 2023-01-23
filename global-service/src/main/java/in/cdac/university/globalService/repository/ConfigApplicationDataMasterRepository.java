@@ -57,4 +57,6 @@ public interface ConfigApplicationDataMasterRepository extends JpaRepository<Gbl
 
     Optional<GbltConfigApplicationDataMst> getApplicationByUnumApplicationIdAndUnumUnivIdAndUnumIsvalid(
 			Long unumApplicationId, int universityId, int isValid);
+
+    List<GbltConfigApplicationDataMst> getApplicationByUnumNidAndUnumUnivIdAndUnumIsvalid(Long notificationId, Integer universityId, int i);
 }

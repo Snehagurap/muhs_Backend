@@ -36,6 +36,13 @@ public class CourseController {
         );
     }
 
+    @GetMapping("comboByCourseType/{courseTypeId}")
+    public ResponseEntity<?> getCourseByCourseTypeId(@PathVariable("courseTypeId") Integer courseTypeId) throws Exception {
+        return ResponseHandler.generateOkResponse(
+                ComboUtility.generateComboData(courseService.getCousreByCourseTypeId(courseTypeId))
+        );
+    }
+
     @PostMapping("save")
     public ResponseEntity<?> save(@Valid @RequestBody CourseBean courseBean) throws Exception {
         courseBean.setUnumUnivId(RequestUtility.getUniversityId());
