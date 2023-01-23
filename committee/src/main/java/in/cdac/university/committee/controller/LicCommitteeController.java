@@ -41,7 +41,10 @@ public class LicCommitteeController {
     
     @PostMapping("updateLicCommittee")
     public ResponseEntity<?> updateLicCommittee(@Valid @RequestBody LicCommitteeBean licCommitteeBean) throws Exception {
-    	
+
+        licCommitteeBean.setUnumUnivId(RequestUtility.getUniversityId());
+        licCommitteeBean.setUnumEntryUid(RequestUtility.getUserId());
+        licCommitteeBean.setUdtEntryDate(new Date());
          return ResponseHandler.generateResponse(
         		licCommitteeMstService.updateLicCommittee(licCommitteeBean)
         );
