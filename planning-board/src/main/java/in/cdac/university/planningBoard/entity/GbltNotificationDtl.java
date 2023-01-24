@@ -41,6 +41,9 @@ public class GbltNotificationDtl implements Serializable {
 	@Column(name="unum_faculty_id")
 	private Integer unumFacultyId;
 
+	@Column(name = "unum_stream_id")
+	private Long unumCStreamId;
+
 	@Column(name="unum_npurpose_id")
 	private Integer unumNotificationTypeId;
 
