@@ -9,8 +9,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class StuCatMst {
-			
+public class StudentCatMstBean {
+	
+	@NotNull(message = "Student Cat ID is mandatory")
 	private Long unumStuCatId;
 	
 	private String  ustrStuCatSname;
