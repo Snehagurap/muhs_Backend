@@ -16,18 +16,19 @@ public class DistrictBean extends GlobalBean {
     @ComboKey
     @ListColumn(omit = true)
     private Integer numDistId;
+
     @ListColumn(order = 1, name = "District Code", searchable = false)
     private String strDistCode;
+
     @ComboValue
-    @ListColumn(order = 3, name = "District Name")
+    @ListColumn(order = 2, name = "District Name")
     private String strDistName;
-    @ListColumn(order = 2, name = "Short Name", searchable = false)
+
+    @ListColumn(order = 3, name = "District Shortname", searchable = false)
     private String strDistStName;
     private Integer gnumSlno;
-
     @DateTimeFormat(pattern = Constants.dateFormat)
     private Date gdtEffectiveFrm;
-
     @DateTimeFormat(pattern = Constants.dateFormat)
     private Date gdtEffectiveTo;
     private Integer gnumIsvalid;
