@@ -1,6 +1,9 @@
 package in.cdac.university.globalService.util;
 
+import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
+import com.itextpdf.styledxmlparser.css.media.MediaDeviceDescription;
+import com.itextpdf.styledxmlparser.css.media.MediaType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -76,7 +79,10 @@ public class PdfGenaratorUtil {
     public byte[] createPdfBytesFromHtmlString(String htmlString) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            HtmlConverter.convertToPdf(htmlString, baos);
+            ConverterProperties properties = new ConverterProperties();
+            MediaDeviceDescription mediaDeviceDescription = new MediaDeviceDescription(MediaType.PRINT);
+            properties.setMediaDeviceDescription(mediaDeviceDescription);
+            HtmlConverter.convertToPdf(htmlString, baos, properties);
         } catch (Exception e) {
             e.printStackTrace();
         }

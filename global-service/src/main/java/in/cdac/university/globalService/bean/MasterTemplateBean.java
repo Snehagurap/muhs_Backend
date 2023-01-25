@@ -79,6 +79,6 @@ public class MasterTemplateBean {
     @ListColumn(name = "Template Name", order = 3)
     private String ustrtempleName;
 
-
+    private String ustrAcademicYear;
     
 }

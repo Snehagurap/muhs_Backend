@@ -200,6 +200,7 @@ public class MasterTemplateService {
         if (notificationBean == null)
             return ServiceResponse.errorResponse(language.notFoundForId("Notification", notificationId));
 
+        masterTemplateBean.setUstrAcademicYear(notificationBean.getUstrAcademicYear());
         NotificationDetailBean notificationDetailBean = notificationBean.getNotificationDetails().stream()
                 .filter(bean -> bean.getUnumNdtlId().equals(notificationDetailId))
                 .findFirst()

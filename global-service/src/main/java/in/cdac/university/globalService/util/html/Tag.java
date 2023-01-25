@@ -6,11 +6,11 @@ public class Tag {
 
     private String tagName;
 
-    private boolean isEndTagAdded = false;
+    private boolean isEndBracketAdded = false;
 
     @Override
     public String toString() {
-        if (isEndTagAdded)
+        if (isEndBracketAdded)
             return tagString;
         return tagString + ">";
     }
@@ -31,20 +31,27 @@ public class Tag {
     }
 
     public Tag addText(String text) {
+        isEndBracketAdded = true;
         tagString += ">" + (text == null ? "" : text);
         return this;
     }
 
     public Tag endTag() {
-        isEndTagAdded = true;
+        isEndBracketAdded = true;
         tagString += "</" + tagName + ">";
         return this;
     }
 
+    public Tag endTagOnly() {
+        tagString = "</" + tagName + ">";
+        return this;
+    }
+
     public Tag addTag(Tag tag) {
-        System.out.println("Tag to be added");
-        System.out.println(tag.toString());
+        if (!isEndBracketAdded)
+            tagString += ">";
         tagString += tag.toString();
+        isEndBracketAdded = true;
         return this;
     }
 }
