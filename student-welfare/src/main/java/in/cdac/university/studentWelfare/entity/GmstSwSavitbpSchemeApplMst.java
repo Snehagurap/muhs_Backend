@@ -16,25 +16,26 @@ import lombok.Setter;
 @Entity
 @Table(name="cmst_college_course_mst", schema = "university")
 public class GmstSwSavitbpSchemeApplMst {
+	
 	@Id
 	private Long 	unumSavitbpApplicationid;
 
 	@Id
 	private Integer unumIsvalid;
 
+	@Id
+	private Long 	unumSchemeId;
+	
+	@Id
+	private Long 	unumCollegeId;
+	
+	@Id
+	private Long 	unumStudentId;
+	
 	@Temporal(TemporalType.DATE)
 	@Column(name="unum_savitbp_applicationdt")
 	private Date 	unumSavitbpApplicationdt;
 
-	@Column(name="unum_scheme_id")
-	private Long 	unumSchemeId;
-
-	@Column(name="unum_college_id")
-	private Long 	unumCollegeId;
-
-	@Column(name="unum_student_id")
-	private Long 	unumStudentId;
-	
 	@Temporal(TemporalType.DATE)
 	@Column(name="udt_stu_dob")
 	private Date 	udtStuDob;
