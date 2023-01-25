@@ -13,6 +13,8 @@ config:
     clientSecret: secret
     url: http://localhost:8001
   service:
+    gateway:
+      url: http://localhost:8180
     global:
       url: http://localhost:8004
     committee:
@@ -21,6 +23,8 @@ config:
       url: http://localhost:8003
     pb:
       url: http://localhost:8006
+    sw:
+      url: http://localhost:8007
 
 jwt:
   secret: BvPHGM8C0ia4uOuxxqPD5DTbWC9F9TWvPStp3pb7ARo0oK2mJ3pd3YG4lxA9i8bj6OTbadwezxgeEByY

@@ -49,6 +49,11 @@ public interface LicCommitteeRuleSetMstRespository extends JpaRepository<GbltLic
 
 
 
+	GbltLicCommitteeRuleSetMst findByUnumUnivIdAndUnumIsValidAndUnumComRsId(Integer universityId, int i,
+			Long unumComRsId);
+
+
+
 
 
 

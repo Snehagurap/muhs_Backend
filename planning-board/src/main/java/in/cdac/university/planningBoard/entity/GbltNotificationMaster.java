@@ -48,6 +48,9 @@ public class GbltNotificationMaster implements Serializable {
 	@Column(name="unum_cfaculty_id")
 	private Integer unumCfacultyId;
 
+	@Column(name = "unum_stream_id")
+	private Long unumStreamId;
+
 	@Column(name="unum_dept_id")
 	private Integer unumDeptId;
 

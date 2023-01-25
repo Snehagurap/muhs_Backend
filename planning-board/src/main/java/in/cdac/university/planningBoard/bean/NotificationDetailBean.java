@@ -22,6 +22,8 @@ public class NotificationDetailBean {
     private Long unumDocId;
     private Long unumEntryUid;
     private Integer unumFacultyId;
+
+    private Long unumCStreamId;
     private Integer unumNotificationTypeId;
 
     @ComboKey

@@ -72,4 +72,8 @@ public class LicCommitteeRuleSetDtlBean {
 	private Integer  UnumNoOfMembers;
 	
 	private List<ComboBean> teacherCombo;
+
+	private Long unumLicRsId;
+
+	private Long unumLicRsDtlId;
 }

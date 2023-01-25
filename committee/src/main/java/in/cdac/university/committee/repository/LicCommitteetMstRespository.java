@@ -30,5 +30,8 @@ public interface LicCommitteetMstRespository extends JpaRepository<GbltLicCommit
             "where u.unumLicId in (:unumLicId) and u.unumIsValid in (1, 2) ")
 	Integer createLog(@Param("unumLicId") Long unumLicId);
 
+	List<GbltLicCommitteeMst> findByUnumIsValidInAndUstrLicNameIgnoreCaseNotAndUnumUnivId(List<Integer> of,
+			String ustrLicName, Integer unumUnivId);
+
 
 }

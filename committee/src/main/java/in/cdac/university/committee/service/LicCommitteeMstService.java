@@ -28,7 +28,6 @@ import in.cdac.university.committee.entity.GbltLicCommitteeMemberDtl;
 import in.cdac.university.committee.entity.GbltLicCommitteeMst;
 import in.cdac.university.committee.entity.GbltLicCommitteeRuleSetDtl;
 import in.cdac.university.committee.entity.GbltLicCommitteeRuleSetMst;
-import in.cdac.university.committee.entity.GbltScrutinycommitteeMemberDtl;
 import in.cdac.university.committee.entity.GmstCommitteeRoleMst;
 import in.cdac.university.committee.exception.ApplicationException;
 import in.cdac.university.committee.repository.CommitteeRoleRepository;
@@ -75,6 +74,33 @@ public class LicCommitteeMstService {
         if (!licCommitteeMst.isEmpty()) {
             return ServiceResponse.errorResponse(language.duplicate("Lic Committee", licCommitteeBean.getUstrLicName()));
         }
+        int slNo=1;
+		Set<Long> members = new HashSet<>();
+	    for(LicCommitteeDtlBean licCommitteeDtlBean : licCommitteeBean.getLicCommitteeDtlBean()) {
+	           if(licCommitteeDtlBean.getUnumLicPref1Empid()==null &&
+	            		licCommitteeDtlBean.getUnumLicPref2Empid()==null &&
+	            		licCommitteeDtlBean.getUnumLicPref3Empid()==null &&
+	            		licCommitteeDtlBean.getUnumLicPref4Empid()==null &&
+	            		licCommitteeDtlBean.getUnumLicPref5Empid()==null ) {
+	                return ServiceResponse.errorResponse("No employee selected for S.No." + slNo);
+	            }
+	            if(isDuplicateMember(members,licCommitteeDtlBean.getUnumLicPref1Empid())){
+	                return ServiceResponse.errorResponse(language.message("Duplicate Employee selected : "+licCommitteeDtlBean.getUnumLicPref1Empid()));
+	            }
+	            if(isDuplicateMember(members,licCommitteeDtlBean.getUnumLicPref2Empid())){
+	                return ServiceResponse.errorResponse(language.message("Duplicate Employee selected : "+licCommitteeDtlBean.getUnumLicPref2Empid()));
+	            }
+	            if(isDuplicateMember(members,licCommitteeDtlBean.getUnumLicPref3Empid())){
+	                return ServiceResponse.errorResponse(language.message("Duplicate Employee selected : "+licCommitteeDtlBean.getUnumLicPref3Empid()));
+	            }
+	            if(isDuplicateMember(members,licCommitteeDtlBean.getUnumLicPref4Empid())){
+	                return ServiceResponse.errorResponse(language.message("Duplicate Employee selected : "+licCommitteeDtlBean.getUnumLicPref4Empid()));
+	            }
+	            if(isDuplicateMember(members,licCommitteeDtlBean.getUnumLicPref5Empid())){
+	                return ServiceResponse.errorResponse(language.message("Duplicate Employee selected : "+licCommitteeDtlBean.getUnumLicPref5Empid()));
+	            }
+	            slNo++;
+	    }
         GbltLicCommitteeMst gbltLicCommitteeMst = new GbltLicCommitteeMst();
         BeanUtils.copyProperties(licCommitteeBean, gbltLicCommitteeMst);
         gbltLicCommitteeMst.setUnumLicId(licCommitteetMstRespository.getNextId());
@@ -156,6 +182,8 @@ public class LicCommitteeMstService {
             LicCommitteeRuleSetDtlBean licCommitteeRuleSetDtlBean = BeanUtils.copyProperties(licCommitterulesetDtl, LicCommitteeRuleSetDtlBean.class);
             licCommitteeRuleSetDtlBean.setUstrRoleName(committeeRoleMapList.getOrDefault(licCommitteeRuleSetDtlBean.getUnumRoleId(), ""));
             licCommitteeRuleSetDtlBean.setUnumNoOfMembers(gbltLicCommitteeRuleSetMst.get(0).getUnumNoOfMembers());
+            licCommitteeRuleSetDtlBean.setUnumLicRsId(licCommitteeRuleSetDtlBean.getUnumComRsId());  // changes addded for sync between Lic ruleset and lic committee
+            licCommitteeRuleSetDtlBean.setUnumLicRsDtlId(licCommitteeRuleSetDtlBean.getUnumComRsDtlId());  // changes addded for sync between Lic ruleset and lic committee
             int comRsFacultyId = licCommitterulesetDtl.getUnumRoleCfacultyId();
             List<EmployeeBean> finalTeacherList = teachers;
             if(comRsFacultyId != 0){
@@ -217,16 +245,43 @@ public class LicCommitteeMstService {
 	}
 	
 	@Transactional
-	public ServiceResponse updateLicCommittee( LicCommitteeBean licCommitteeBean )throws Exception{
-    	List<GbltLicCommitteeMst> licCommitteeMst = licCommitteetMstRespository.findByUnumIsValidInAndUstrLicNameIgnoreCaseAndUnumUnivId(
+	public ServiceResponse updateLicCommittee( LicCommitteeBean licCommitteeBean ){
+    	List<GbltLicCommitteeMst> licCommitteeMst = licCommitteetMstRespository.findByUnumIsValidInAndUstrLicNameIgnoreCaseNotAndUnumUnivId(
                 List.of(1,2), licCommitteeBean.getUstrLicName(),licCommitteeBean.getUnumUnivId());
-    	if (!licCommitteeMst.isEmpty()) {
+    	if (licCommitteeMst.isEmpty()) {
             return ServiceResponse.errorResponse(language.duplicate("Lic Committee ", licCommitteeBean.getUstrLicName()));
         }
+    	int slNo=1;
+		Set<Long> members = new HashSet<>();
+	    for(LicCommitteeDtlBean licCommitteeDtlBean : licCommitteeBean.getLicCommitteeDtlBean()) {
+	            if(licCommitteeDtlBean.getUnumLicPref1Empid()==null &&
+	            		licCommitteeDtlBean.getUnumLicPref2Empid()==null &&
+	            		licCommitteeDtlBean.getUnumLicPref3Empid()==null &&
+	            		licCommitteeDtlBean.getUnumLicPref4Empid()==null &&
+	            		licCommitteeDtlBean.getUnumLicPref5Empid()==null ) {
+	                return ServiceResponse.errorResponse("No employee selected for S.No." + slNo);
+	            }
+	            if(isDuplicateMember(members,licCommitteeDtlBean.getUnumLicPref1Empid())){
+	                return ServiceResponse.errorResponse(language.message("Duplicate Employee selected : "+licCommitteeDtlBean.getUnumLicPref1Empid()));
+	            }
+	            if(isDuplicateMember(members,licCommitteeDtlBean.getUnumLicPref2Empid())){
+	                return ServiceResponse.errorResponse(language.message("Duplicate Employee selected : "+licCommitteeDtlBean.getUnumLicPref2Empid()));
+	            }
+	            if(isDuplicateMember(members,licCommitteeDtlBean.getUnumLicPref3Empid())){
+	                return ServiceResponse.errorResponse(language.message("Duplicate Employee selected : "+licCommitteeDtlBean.getUnumLicPref3Empid()));
+	            }
+	            if(isDuplicateMember(members,licCommitteeDtlBean.getUnumLicPref4Empid())){
+	                return ServiceResponse.errorResponse(language.message("Duplicate Employee selected : "+licCommitteeDtlBean.getUnumLicPref4Empid()));
+	            }
+	            if(isDuplicateMember(members,licCommitteeDtlBean.getUnumLicPref5Empid())){
+	                return ServiceResponse.errorResponse(language.message("Duplicate Employee selected : "+licCommitteeDtlBean.getUnumLicPref5Empid()));
+	            }
+	            slNo++;
+	    }
     	// Create Log
         Integer noOfRecordsAffected = licCommitteetMstRespository.createLog(licCommitteeBean.getUnumLicId());
         if (noOfRecordsAffected == 0) {
-            throw new ApplicationException(language.notFoundForId("Lic Rule Set", licCommitteeBean.getUnumLicId()));
+            throw new ApplicationException(language.notFoundForId("Lic Committee", licCommitteeBean.getUnumLicId()));
         }
         licCommitteeBean.setUnumIsValid(1);
         GbltLicCommitteeMst gbltLicCommitteeMst =  BeanUtils.copyProperties(licCommitteeBean, GbltLicCommitteeMst.class);
@@ -238,6 +293,7 @@ public class LicCommitteeMstService {
         		commList.setUnumUnivId(RequestUtility.getUniversityId());
         		commList.setUnumEntryUid(RequestUtility.getUserId());
         		commList.setUdtEntryDate(new Date());
+                commList.setUnumLicId(licCommitteeBean.getUnumLicId());
         	});
         	licCommitteetDtlRespository.createLog(licCommitteeBean.getUnumLicId());
             List<GbltLicCommitteeMemberDtl> gbltLicCommitteeMemberDtl = BeanUtils.copyListProperties(committeeList, GbltLicCommitteeMemberDtl.class);
@@ -246,6 +302,17 @@ public class LicCommitteeMstService {
         return ServiceResponse.builder().status(1).message(language.saveSuccess("Lic Committee Save")).build();
 
 	}
+	
+    private boolean isDuplicateMember(Set<Long> memberIds, Long memberIdToCheck) {
+        if(memberIdToCheck==null)
+            return false;
+
+        if(memberIds.contains(memberIdToCheck))
+            return true;
+
+        memberIds.add(memberIdToCheck);
+        return false;
+    }
 
 }
 		

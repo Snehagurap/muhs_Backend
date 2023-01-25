@@ -26,6 +26,7 @@ public class NotificationController {
         notificationBean.setUdtEntryDate(new Date());
         notificationBean.setUnumEntryUid(RequestUtility.getUserId());
         notificationBean.setUnumUnivId(RequestUtility.getUniversityId());
+
         return ResponseHandler.generateResponse(
                 notificationService.save(notificationBean)
         );
