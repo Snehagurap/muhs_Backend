@@ -282,6 +282,8 @@ public class MasterTemplateService {
                     case 18 ->
                             item.getUnumAudiologyAndSpeechFlag() != null && item.getUnumAudiologyAndSpeechFlag() == 1;
                     case 19 -> item.getUnumPAndOFlag() != null && item.getUnumPAndOFlag() == 1;
+                    case 20 -> item.getUnumOptometryFlag() != null && item.getUnumOptometryFlag() == 1;
+                    case 21 -> item.getUnumNAndYsFlag() != null && item.getUnumNAndYsFlag() == 1;
                     default -> true;
                 })
                 .collect(Collectors.toList());
