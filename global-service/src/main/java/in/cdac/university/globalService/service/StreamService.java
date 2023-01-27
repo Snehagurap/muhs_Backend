@@ -48,6 +48,12 @@ public class StreamService {
         );
     }
 
+    public List<StreamBean> getAllStreams() {
+        return BeanUtils.copyListProperties(
+                streamRepository.findAllByunumIsvalid(1), StreamBean.class
+        );
+    }
+
     @Transactional
     public ServiceResponse save(StreamBean streamBean) {
         // Duplicate check

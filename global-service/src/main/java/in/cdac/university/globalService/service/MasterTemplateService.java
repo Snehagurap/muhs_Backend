@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class MasterTemplateService {
+    @Autowired
+    private StreamRepository streamRepository;
 
     @Autowired
     private MasterTemplateRepository masterTemplateRepository;
@@ -67,9 +69,6 @@ public class MasterTemplateService {
     private FtpUtility ftpUtility;
 
     @Autowired
-    private FacultyRepository facultyRepository;
-
-    @Autowired
     private TemplateService templateService;
 
 
@@ -97,10 +96,11 @@ public class MasterTemplateService {
         if (notificationDetailBean == null)
             return ServiceResponse.errorResponse(language.notFoundForId("Notification Detail", notificationDetailId));
 
-        Optional<GmstCoursefacultyMst> facultyById = facultyRepository.findById(new GmstCoursefacultyMstPK(notificationDetailBean.getUnumFacultyId(), 1));
+        int facultyId = notificationDetailBean.getUnumCStreamId() == null? notificationDetailBean.getUnumFacultyId() : notificationDetailBean.getUnumCStreamId().intValue();
+        Optional<GmstStreamMst> facultyById = Optional.ofNullable(streamRepository.findByUnumStreamIdAndUnumIsvalid((long) facultyId, 1));
         String tempFacultyName = "";
         if (facultyById.isPresent()) {
-            tempFacultyName = facultyById.get().getUstrCfacultyFname();
+            tempFacultyName = facultyById.get().getUstrStreamFname();
         }
 
         final String facultyName = tempFacultyName;
@@ -141,7 +141,7 @@ public class MasterTemplateService {
         masterTemplateBean.setTemplateList(templateBeans);
 
         // Get Template details
-        processTemplateItems(notificationDetailBean.getUnumFacultyId(), universityId, facultyName, purpose, itemMap, templateIds, templateBeans, academicYear);
+        processTemplateItems(facultyId, universityId, facultyName, purpose, itemMap, templateIds, templateBeans, academicYear);
 
         return ServiceResponse.successObject(masterTemplateBean);
     }
@@ -209,10 +209,12 @@ public class MasterTemplateService {
         if (notificationDetailBean == null)
             return ServiceResponse.errorResponse(language.notFoundForId("Notification Detail", notificationDetailId));
 
-        Optional<GmstCoursefacultyMst> facultyById = facultyRepository.findById(new GmstCoursefacultyMstPK(notificationDetailBean.getUnumFacultyId(), 1));
+        int facultyId = notificationDetailBean.getUnumCStreamId() == null? notificationDetailBean.getUnumFacultyId() : notificationDetailBean.getUnumCStreamId().intValue();
+
+        Optional<GmstStreamMst> facultyById = Optional.ofNullable(streamRepository.findByUnumStreamIdAndUnumIsvalid((long) facultyId, 1));
         String tempFacultyName = "";
         if (facultyById.isPresent()) {
-            tempFacultyName = facultyById.get().getUstrCfacultyFname();
+            tempFacultyName = facultyById.get().getUstrStreamFname();
         }
 
         final String facultyName = tempFacultyName;
@@ -246,7 +248,7 @@ public class MasterTemplateService {
         masterTemplateBean.setTemplateList(templateBeans);
 
         // Get Template details
-        processTemplateItems(notificationDetailBean.getUnumFacultyId(), universityId, facultyName, purpose, itemMap, templateIds, templateBeans, academicYear);
+        processTemplateItems(facultyId, universityId, facultyName, purpose, itemMap, templateIds, templateBeans, academicYear);
 
         return ServiceResponse.successObject(masterTemplateBean);
     }
@@ -280,6 +282,8 @@ public class MasterTemplateService {
                     case 18 ->
                             item.getUnumAudiologyAndSpeechFlag() != null && item.getUnumAudiologyAndSpeechFlag() == 1;
                     case 19 -> item.getUnumPAndOFlag() != null && item.getUnumPAndOFlag() == 1;
+                    case 20 -> item.getUnumOptometryFlag() != null && item.getUnumOptometryFlag() == 1;
+                    case 21 -> item.getUnumNAndYsFlag() != null && item.getUnumNAndYsFlag() == 1;
                     default -> true;
                 })
                 .collect(Collectors.toList());

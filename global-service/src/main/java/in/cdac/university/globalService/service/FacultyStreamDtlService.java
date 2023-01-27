@@ -95,7 +95,7 @@ public class FacultyStreamDtlService {
             GmstFacultyStreamDtl gmstFacultyStreamDtl = BeanUtils.copyProperties(facultyStreamDtlBean, GmstFacultyStreamDtl.class);
             gmstFacultyStreamDtl.setUnumFacStreamId(facultyStreamDtlRepository.getNextId());
             gmstFacultyStreamDtl.setUnumStreamId(streamId);
-           GmstStreamMst gmstStreamMst = streamRepository.findByUnumStreamIdAndUnumIsvalid(streamId,1);
+            GmstStreamMst gmstStreamMst = streamRepository.findByUnumStreamIdAndUnumIsvalid(streamId,1);
             gmstFacultyStreamDtl.setUstrFacStreamFname(gmstStreamMst.getUstrStreamFname());
 
             streamsToAdd.add(gmstFacultyStreamDtl);
