@@ -29,4 +29,6 @@ public class NotificationDetailBean {
     private String ustrNdtlSnoDescription;
 
     private Long unumMtempleId;
+
+    private Long unumCStreamId;
 }

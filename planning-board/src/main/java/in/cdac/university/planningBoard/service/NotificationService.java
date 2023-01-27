@@ -346,6 +346,14 @@ public class NotificationService {
         else
             mapFaculty = new HashMap<>();
 
+        StreamBean[] streamBeans = restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_ALL_STREAMS, StreamBean[].class);
+        Map<Long, String> mapStream;
+        if (streamBeans != null)
+            mapStream = Arrays.stream(streamBeans)
+                                .collect(Collectors.toMap(StreamBean::getUnumStreamId, StreamBean::getUstrStreamFname));
+        else
+            mapStream = new HashMap<>();
+
         List<NotificationApplyBean> notificationApplyBeans = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat(Constants.dateFormat);
         activeNotifications.forEach(activeNotification -> {
@@ -380,6 +388,10 @@ public class NotificationService {
 
                         String facultyName = mapFaculty.getOrDefault(notificationDtl.getUnumFacultyId(), "");
                         notificationApplyDetailBean.setFaculty(facultyName);
+
+                        long streamId = notificationDtl.getUnumCStreamId() == null ? 0L : notificationDtl.getUnumCStreamId();
+                        String streamName = mapStream.getOrDefault(streamId, "");
+                        notificationApplyDetailBean.setStream(streamName);
 
                         return notificationApplyDetailBean;
                     })
