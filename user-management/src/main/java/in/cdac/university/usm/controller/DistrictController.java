@@ -67,6 +67,7 @@ public class DistrictController {
 
     @PostMapping("update")
     public ResponseEntity<?> update(@Valid @RequestBody DistrictBean districtBean) throws Exception {
+        districtBean.setGnumSlno(1);
         return ResponseHandler.generateResponse(
                 districtService.update(districtBean)
         );
