@@ -23,13 +23,11 @@ import in.cdac.university.committee.bean.FacultyBean;
 import in.cdac.university.committee.bean.LicCommitteeBean;
 import in.cdac.university.committee.bean.LicCommitteeDtlBean;
 import in.cdac.university.committee.bean.LicCommitteeRuleSetDtlBean;
-import in.cdac.university.committee.bean.ScrutinycommitteeMemberDtlBean;
 import in.cdac.university.committee.bean.StreamBean;
 import in.cdac.university.committee.entity.GbltLicCommitteeMemberDtl;
 import in.cdac.university.committee.entity.GbltLicCommitteeMst;
 import in.cdac.university.committee.entity.GbltLicCommitteeRuleSetDtl;
 import in.cdac.university.committee.entity.GbltLicCommitteeRuleSetMst;
-import in.cdac.university.committee.entity.GbltScrutinycommitteeMemberDtl;
 import in.cdac.university.committee.entity.GmstCommitteeRoleMst;
 import in.cdac.university.committee.exception.ApplicationException;
 import in.cdac.university.committee.repository.CommitteeRoleRepository;
@@ -184,6 +182,8 @@ public class LicCommitteeMstService {
             LicCommitteeRuleSetDtlBean licCommitteeRuleSetDtlBean = BeanUtils.copyProperties(licCommitterulesetDtl, LicCommitteeRuleSetDtlBean.class);
             licCommitteeRuleSetDtlBean.setUstrRoleName(committeeRoleMapList.getOrDefault(licCommitteeRuleSetDtlBean.getUnumRoleId(), ""));
             licCommitteeRuleSetDtlBean.setUnumNoOfMembers(gbltLicCommitteeRuleSetMst.get(0).getUnumNoOfMembers());
+            licCommitteeRuleSetDtlBean.setUnumLicRsId(licCommitteeRuleSetDtlBean.getUnumComRsId());  // changes addded for sync between Lic ruleset and lic committee
+            licCommitteeRuleSetDtlBean.setUnumLicRsDtlId(licCommitteeRuleSetDtlBean.getUnumComRsDtlId());  // changes addded for sync between Lic ruleset and lic committee
             int comRsFacultyId = licCommitterulesetDtl.getUnumRoleCfacultyId();
             List<EmployeeBean> finalTeacherList = teachers;
             if(comRsFacultyId != 0){
@@ -245,7 +245,7 @@ public class LicCommitteeMstService {
 	}
 	
 	@Transactional
-	public ServiceResponse updateLicCommittee( LicCommitteeBean licCommitteeBean )throws Exception{
+	public ServiceResponse updateLicCommittee( LicCommitteeBean licCommitteeBean ){
     	List<GbltLicCommitteeMst> licCommitteeMst = licCommitteetMstRespository.findByUnumIsValidInAndUstrLicNameIgnoreCaseNotAndUnumUnivId(
                 List.of(1,2), licCommitteeBean.getUstrLicName(),licCommitteeBean.getUnumUnivId());
     	if (licCommitteeMst.isEmpty()) {
@@ -293,6 +293,7 @@ public class LicCommitteeMstService {
         		commList.setUnumUnivId(RequestUtility.getUniversityId());
         		commList.setUnumEntryUid(RequestUtility.getUserId());
         		commList.setUdtEntryDate(new Date());
+                commList.setUnumLicId(licCommitteeBean.getUnumLicId());
         	});
         	licCommitteetDtlRespository.createLog(licCommitteeBean.getUnumLicId());
             List<GbltLicCommitteeMemberDtl> gbltLicCommitteeMemberDtl = BeanUtils.copyListProperties(committeeList, GbltLicCommitteeMemberDtl.class);

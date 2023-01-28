@@ -15,9 +15,13 @@
         <module name="admin-server" />
         <module name="global-service" />
         <module name="eureka-server" />
-        <module name="planning-board" />
+        <module name="student-welfare" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="planning-board (1)" target="17" />
+      <module name="planning-board (2)" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
@@ -29,6 +33,9 @@
       <module name="eureka-server" options="-parameters" />
       <module name="global-service" options="-parameters" />
       <module name="planning-board" options="-parameters" />
+      <module name="planning-board (1)" options="-parameters" />
+      <module name="planning-board (2)" options="-parameters" />
+      <module name="student-welfare" options="-parameters" />
       <module name="user-management" options="-parameters" />
     </option>
   </component>

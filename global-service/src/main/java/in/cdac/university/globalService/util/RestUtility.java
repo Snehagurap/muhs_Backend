@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -35,6 +36,7 @@ public class RestUtility {
     private static String serviceCommitteeUrl;
     private static String serviceUsmUrl;
     private static String servicePlanningBoardUrl;
+    private static String serviceGlobalUrl;
 
     @Value("${config.service.committee.url}")
     public void setServiceCommitteeUrl(String url) {
@@ -51,7 +53,13 @@ public class RestUtility {
         servicePlanningBoardUrl = url;
     }
 
+    @Value("${config.service.global.url}")
+    public void setServiceGlobalUrl(String url) {
+        serviceGlobalUrl = url;
+    }
+
     public enum SERVICE_TYPE {
+        GLOBAL(serviceGlobalUrl),
         COMMITTEE(serviceCommitteeUrl),
         USM(serviceUsmUrl),
         PLANNING_BOARD(servicePlanningBoardUrl);
@@ -84,6 +92,8 @@ public class RestUtility {
                 }
                 return objectMapper.convertValue(actualObject.get("data"), returnType);
             }
+        } catch (HttpClientErrorException e) {
+            log.error("Client Error: {}", e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }

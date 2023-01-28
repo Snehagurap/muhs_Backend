@@ -48,5 +48,5 @@ public class TemplateBean {
 
     private List<TemplateHeaderBean> headers;
 
-    CheckListBean checkList;
+    private CheckListBean checkList;
 }
