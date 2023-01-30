@@ -21,20 +21,20 @@ public class CollegeBean {
     @ComboKey
     private Long unumCollegeId;
 
-    @NotNull(message = "Status is mandatory")
+   // @NotNull(message = "Status is mandatory")
     private Integer unumIsvalid;
 
-    @NotNull(message = "Effective From is mandatory")
+   // @NotNull(message = "Effective From is mandatory")
     private Date udtEffFrom;
 
     private Date udtEffTo;
 
     private Date udtEntryDate;
 
-    @NotNull(message = "Biometric Status is mandatory")
+   // @NotNull(message = "Biometric Status is mandatory")
     private Integer unumBiometricStatus;
 
-    @NotNull(message = "CCTV Status is mandatory")
+  //  @NotNull(message = "CCTV Status is mandatory")
     private Integer unumCctvStatus;
 
     @Pattern(regexp = "[0-9,/-]+", message = "Contact No. is invalid")
@@ -52,10 +52,10 @@ public class CollegeBean {
 
     private Long unumEntryUid;
 
-    @NotNull(message = "Lab availability status is mandatory")
+  //  @NotNull(message = "Lab availability status is mandatory")
     private Integer unumLabAvailabilityStatus;
 
-    @NotNull(message = "NKN availability status is mandatory")
+  //  @NotNull(message = "NKN availability status is mandatory")
     private Integer unumNknconnectivityStatus;
 
     @NotNull(message = "Pincode is mandatory")
@@ -142,7 +142,7 @@ public class CollegeBean {
     private String ustrSexHarrCellEmailid;
     private String ustrStaticIpaddress;
 
-    @NotNull(message = "Street Address is Mandatory")
+   // @NotNull(message = "Street Address is Mandatory")
     private String ustrStreetAddress;
     private String ustrStreetAddressMarathi;
     private String ustrWebsite1;
@@ -154,4 +154,18 @@ public class CollegeBean {
 
     @ListColumn(order = 5, name = "Region Name")
     private String regionName;
+
+    //added by sneha
+    private String ustrPrincipalName;
+
+    private Long unumPrincipalEmpId;
+
+    private Integer unumFacultyId;
+
+    private Integer unumCategoryId;
+
+    private Integer unumCollegeTypeId;
+
+    private Integer unumAdminRegionId;
+
 }

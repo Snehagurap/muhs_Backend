@@ -26,7 +26,7 @@ public class StateService {
     private Language language;
 
     public List<StateBean> getAllStates(Integer countryCode) {
-        return BeanUtils.copyListProperties(stateRepository.findAllByGnumCountrycodeOrderByGstrStatenameAsc(countryCode), StateBean.class);
+        return BeanUtils.copyListProperties(stateRepository.findAllByGnumCountrycodeAndGnumIsvalidOrderByGstrStatenameAsc(countryCode, 1), StateBean.class);
     }
 
     public List<StateBean> getStateByStateCode() {
