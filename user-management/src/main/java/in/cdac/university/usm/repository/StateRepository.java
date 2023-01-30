@@ -22,7 +22,7 @@ public interface StateRepository extends JpaRepository<GbltStateMstImsc, GbltSta
     @Query(value = "Select c from GbltStateMstImsc c where  c.gnumStatecode = 64 and c.gnumIsvalid = 1")
     List<GbltStateMstImsc> findByGnumStatecodeAndGnumIsvalidOrderByGstrStatename();
 
-    List<GbltStateMstImsc> findAllByGnumCountrycodeOrderByGstrStatenameAsc(Integer countryCode);
+    List<GbltStateMstImsc> findAllByGnumCountrycodeAndGnumIsvalidOrderByGstrStatenameAsc(Integer countryCode,Integer isValid);
 
     //for save
     List<GbltStateMstImsc> findByGnumIsvalidInAndGstrStatenameIgnoreCase(Collection<Integer> gnumIsvalids, String gstrStatename);

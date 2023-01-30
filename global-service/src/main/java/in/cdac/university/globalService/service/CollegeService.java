@@ -27,7 +27,7 @@ public class CollegeService {
     private RestUtility restUtility;
 
     @Autowired
-    private ObjectMapper mapper;
+    private FtpUtility ftpUtility;
 
     public List<CollegeBean> listPageData(int isValid) throws Exception {
         int universityId = RequestUtility.getUniversityId();
@@ -65,7 +65,6 @@ public class CollegeService {
 
         if (collegeMstOptional.isEmpty())
             return ServiceResponse.errorResponse(language.notFoundForId("College", collegeId));
-
         CollegeBean collegeBean = BeanUtils.copyProperties(collegeMstOptional.get(), CollegeBean.class);
 
         return ServiceResponse.builder()
@@ -118,6 +117,12 @@ public class CollegeService {
             throw new ApplicationException(language.notFoundForId("College", collegeBean.getUnumCollegeId()));
         }
 
+        if (collegeBean.getUstrLogo1() != null && !collegeBean.getUstrLogo1().isBlank()) {
+            boolean isFileMoved = ftpUtility.moveFileFromTempToFinalDirectory(collegeBean.getUstrLogo1());
+            if (!isFileMoved) {
+                throw new ApplicationException("Unable to upload file");
+            }
+        }
         // Save new Data
         GmstCollegeMst collegeMst = BeanUtils.copyProperties(collegeBean, GmstCollegeMst.class);
         collegeRepository.save(collegeMst);

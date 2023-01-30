@@ -55,4 +55,7 @@ public class GmstEmpProfileDtl implements Serializable {
 
 	@Column(name="ustr_description")
 	private String ustrDescription;
+
+	@Column(name = "unum_stream_id")
+	private Long unumStreamId;
 }

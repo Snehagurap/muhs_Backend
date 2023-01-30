@@ -331,4 +331,87 @@ public class EmployeeService {
         employeeRepository.updateCommitteeSelectionFlag(employeesToFlag);
         return ServiceResponse.successMessage(language.message("Flag updated successfully"));
     }
+
+    @Transactional
+    public ServiceResponse saveCollegeTeachersDtls(List<EmployeeBean> employeeBeanList) throws Exception {
+
+            Long maxEmpId = 0L;
+            GmstEmpMst gmstEmpMst;
+            List<GmstEmpMst> gmstEmpMstList = new ArrayList<>();
+            if(employeeBeanList != null && employeeBeanList.size() > 0){
+
+
+                for(EmployeeBean employeeBean1 : employeeBeanList) {
+                    maxEmpId  = employeeRepository.getNextId();
+                    gmstEmpMst = BeanUtils.copyProperties(employeeBean1, GmstEmpMst.class);
+                    gmstEmpMst.setUnumEmpId(maxEmpId);
+                    gmstEmpMst.setUdtEntryDate(new Date());
+                    gmstEmpMst.setUdtEffFrom(new Date());
+                    gmstEmpMst.setUnumEntryUid(RequestUtility.getUserId());
+                    gmstEmpMst.setUnumUnivId(RequestUtility.getUniversityId());
+                    gmstEmpMst.setUnumIsvalid(1);
+                    gmstEmpMst.setUstrEmpName(employeeBean1.getUstrEmpName());
+                    gmstEmpMst.setUstrEmpLName(employeeBean1.getUstrEmpLName());
+                    gmstEmpMst.setUstrTAadharNo(employeeBean1.getUstrTAadharNo());
+                    gmstEmpMst.setUstrTPanNo(employeeBean1.getUstrTPanNo());
+                    gmstEmpMst.setUnumMobileNo(employeeBean1.getUnumMobileNo());
+                    gmstEmpMst.setUstrTEmailid(employeeBean1.getUstrTEmailid());
+                    gmstEmpMst.setUdtTDob(employeeBean1.getUdtTDob());
+                    gmstEmpMst.setUnumTAppointtypeId(employeeBean1.getUnumTAppointtypeId());
+                    gmstEmpMst.setUnumUgapproved(employeeBean1.getUnumUgapproved());
+                    gmstEmpMst.setUnumTPgrecog(employeeBean1.getUnumTPgrecog());
+                    gmstEmpMst.setUnumDeptId(employeeBean1.getUnumDeptId());
+                    gmstEmpMst.setUnumIsSelectedfor(employeeBean1.getUnumIsSelectedfor());
+                    gmstEmpMst.setWillingnessToWorkOnLic(employeeBean1.getWillingnessToWorkOnLic());
+                    gmstEmpMstList.add(gmstEmpMst);
+
+                    GmstEmpProfileDtl gmstEmpProfileDtl = new GmstEmpProfileDtl();
+                    EmployeeProfileBean employeeProfileBean = employeeBean1.getEmployeeProfileBean();
+                    if (employeeProfileBean != null) {
+                        Long maxEmpProfileId = employeeProfileRepository.getMaxEmpProfileId(maxEmpId);
+                        gmstEmpProfileDtl =  BeanUtils.copyProperties(employeeProfileBean, GmstEmpProfileDtl.class);
+                            gmstEmpProfileDtl.setUnumEmpId(maxEmpId);
+                            maxEmpProfileId++;
+                            gmstEmpProfileDtl.setUnumProfileId(Long.valueOf(maxEmpId.toString() + "" + StringUtility.padLeftZeros(maxEmpProfileId.toString(), 5)));
+                            gmstEmpProfileDtl.setUnumCollegeId(employeeProfileBean.getUnumCollegeId());
+                            gmstEmpProfileDtl.setUnumIsvalid(1);
+                            gmstEmpProfileDtl.setUdtEntryDate(new Date());
+                            gmstEmpProfileDtl.setUnumUnivId(RequestUtility.getUniversityId());
+                            gmstEmpProfileDtl.setUnumEntryUid(RequestUtility.getUserId());
+                            gmstEmpProfileDtl.setUdtEffFrom(new Date());
+                            gmstEmpProfileDtl.setUnumFacultyId(employeeProfileBean.getUnumFacultyId());
+                            gmstEmpProfileDtl.setUnumStreamId(employeeProfileBean.getUnumStreamId());
+                            gmstEmpProfileDtl.setUnumCourseId(employeeProfileBean.getUnumCourseId());
+                            gmstEmpProfileDtl.setUnumSubId(employeeProfileBean.getUnumSubId());
+                        }
+
+                        employeeProfileRepository.save(gmstEmpProfileDtl);
+
+                    GmstEmpCurDtl gmstEmpCurDtl = new GmstEmpCurDtl();
+                    EmployeeCurrentDetailBean employeeCurrentDetailBean = employeeBean1.getEmployeeCurrentDetailBean();
+                    if(employeeCurrentDetailBean != null){
+                            gmstEmpCurDtl = BeanUtils.copyProperties(employeeCurrentDetailBean, GmstEmpCurDtl.class);
+                            gmstEmpCurDtl.setUnumEmpId(maxEmpId);
+                            gmstEmpCurDtl.setUstrTAadharNo(employeeCurrentDetailBean.getUstrTAadharNo());
+                            gmstEmpCurDtl.setUnumIsvalid(1);
+                            gmstEmpCurDtl.setUdtEntryDate(new Date());
+                            gmstEmpCurDtl.setUnumUnivId(RequestUtility.getUniversityId());
+                            gmstEmpCurDtl.setUnumEntryUid(RequestUtility.getUserId());
+                            gmstEmpCurDtl.setUnumDesigidUg(employeeCurrentDetailBean.getUnumDesigidUg());
+                            gmstEmpCurDtl.setUnumDesigidPg(employeeCurrentDetailBean.getUnumDesigidPg());
+                            gmstEmpCurDtl.setUnumSelectionPriorityId(employeeCurrentDetailBean.getUnumSelectionPriorityId());
+                            gmstEmpCurDtl.setLictlExpyearsUg(employeeCurrentDetailBean.getLictlExpyearsUg());
+                            gmstEmpCurDtl.setLictlExpyearsPg(employeeCurrentDetailBean.getLictlExpyearsPg());
+                            Long maxEmpCurrDetailId = employeeCurrentDetailRepository.getMaxEmpCurrDetailId(maxEmpId);
+                            maxEmpCurrDetailId++;
+                            gmstEmpCurDtl.setUnumEmpCurId(Long.valueOf(maxEmpId.toString() + "" + StringUtility.padLeftZeros(maxEmpCurrDetailId.toString(), 5)));
+                        }
+                        employeeCurrentDetailRepository.save(gmstEmpCurDtl);
+
+                }
+                employeeRepository.saveAll(gmstEmpMstList);
+            }
+
+        return ServiceResponse.successMessage(language.saveSuccess("College teachers details"));
+    }
 }

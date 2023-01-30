@@ -23,4 +23,6 @@ public class EmployeeProfileBean {
     private Long unumEmpId;
     private Integer unumUnivId;
     private String ustrDescription;
+
+    private Long unumStreamId;
 }

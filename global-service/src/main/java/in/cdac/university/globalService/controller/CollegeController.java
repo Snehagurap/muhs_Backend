@@ -57,6 +57,7 @@ public class CollegeController {
 @PostMapping("update")
     public ResponseEntity<?> update(@Valid @RequestBody CollegeBean collegeBean) throws Exception {
         collegeBean.setUdtEntryDate(new Date());
+        collegeBean.setUdtEffFrom(new Date());
         collegeBean.setUnumUnivId(RequestUtility.getUniversityId());
         collegeBean.setUnumEntryUid(RequestUtility.getUserId());
         return ResponseHandler.generateResponse(
