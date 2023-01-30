@@ -153,4 +153,11 @@ public class EmployeeController {
                 employeeService.updateCommitteeSelectionFlag(employeeBean.getEmployeesToFlag())
         );
     }
+
+    @PostMapping("saveAllTeachersDtl")
+    public ResponseEntity<?> saveAll(@Valid @RequestBody List<EmployeeBean> employeeBean) throws Exception {
+        return ResponseHandler.generateResponse(
+                employeeService.saveCollegeTeachersDtls(employeeBean)
+        );
+    }
 }

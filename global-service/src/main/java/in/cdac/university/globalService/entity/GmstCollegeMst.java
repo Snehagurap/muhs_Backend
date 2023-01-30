@@ -75,6 +75,9 @@ public class GmstCollegeMst implements Serializable {
 	@Column(name="unum_regionid")
 	private Integer unumRegionid;
 
+	@Column(name = "unum_admin_region_id")
+	private Integer unumAdminRegionId;
+
 	@Column(name="unum_state_id")
 	private Integer unumStateId;
 

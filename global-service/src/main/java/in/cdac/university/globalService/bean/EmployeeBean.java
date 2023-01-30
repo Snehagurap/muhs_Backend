@@ -96,4 +96,11 @@ public class EmployeeBean {
 
     private Long unumCollegeId;
     private List<EmployeeProfileBean> employeeProfileList;
+    private List<EmployeeCurrentDetailBean> employeeCurrentDetailBeanList;
+
+    private EmployeeProfileBean employeeProfileBean;
+
+    private EmployeeCurrentDetailBean employeeCurrentDetailBean;
+
+    private String ustrEmpLName;
 }
