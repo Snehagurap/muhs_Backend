@@ -62,7 +62,7 @@ public class ApplicantService {
                     gmstApplicantDtl.setUnumIsvalid(applicantBean.getUnumIsvalid());
                     gmstApplicantDtl.setUdtEffFrom(applicantBean.getUdtEffFrom());
                     gmstApplicantDtl.setUdtEntryDate(applicantBean.getUdtEntryDate());
-                    gmstApplicantDtl.setUnumDocIsVerified(0);
+                    gmstApplicantDtl.setUnumDocIsVerified(1);
                     applicantDtls.add(gmstApplicantDtl);
                 }
             }
@@ -83,7 +83,7 @@ public class ApplicantService {
         applicantBean.setUnumApplicantMobile(draftApplicant.getUnumApplicantMobile());
         applicantBean.setUnumApplicantPincode(draftApplicant.getUnumApplicantPincode());
         applicantBean.setUnumApplicantStateid(draftApplicant.getUnumApplicantStateid());
-        applicantBean.setUnumIsVerifiedApplicant(0);
+        applicantBean.setUnumIsVerifiedApplicant(1);
         applicantBean.setUstrApplicantAddress(draftApplicant.getUstrApplicantAddress());
         applicantBean.setUstrApplicantCity(draftApplicant.getUstrApplicantCity());
         applicantBean.setUstrApplicantEmail(draftApplicant.getUstrApplicantEmail());
