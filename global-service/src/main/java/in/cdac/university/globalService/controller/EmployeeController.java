@@ -155,9 +155,9 @@ public class EmployeeController {
     }
 
     @PostMapping("saveAllTeachersDtl")
-    public ResponseEntity<?> saveAll(@Valid @RequestBody List<EmployeeBean> employeeBean) throws Exception {
+    public ResponseEntity<?> saveAll(@Valid @RequestBody List<EmployeeBean> employeeBeanList) throws Exception {
         return ResponseHandler.generateResponse(
-                employeeService.saveCollegeTeachersDtls(employeeBean)
+                employeeService.saveCollegeTeachersDtls(employeeBeanList)
         );
     }
 }
