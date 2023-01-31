@@ -97,7 +97,7 @@ public class MasterTemplateService {
             return ServiceResponse.errorResponse(language.notFoundForId("Notification Detail", notificationDetailId));
 
         int facultyId = notificationDetailBean.getUnumCStreamId() == null? notificationDetailBean.getUnumFacultyId() : notificationDetailBean.getUnumCStreamId().intValue();
-        Optional<GmstStreamMst> facultyById = Optional.ofNullable(streamRepository.findByUnumStreamIdAndUnumIsvalid((long) facultyId, 1));
+        Optional<GmstStreamMst> facultyById = streamRepository.findByUnumStreamIdAndUnumIsvalid((long) facultyId, 1);
         String tempFacultyName = "";
         if (facultyById.isPresent()) {
             tempFacultyName = facultyById.get().getUstrStreamFname();
@@ -211,7 +211,7 @@ public class MasterTemplateService {
 
         int facultyId = notificationDetailBean.getUnumCStreamId() == null? notificationDetailBean.getUnumFacultyId() : notificationDetailBean.getUnumCStreamId().intValue();
 
-        Optional<GmstStreamMst> facultyById = Optional.ofNullable(streamRepository.findByUnumStreamIdAndUnumIsvalid((long) facultyId, 1));
+        Optional<GmstStreamMst> facultyById = streamRepository.findByUnumStreamIdAndUnumIsvalid((long) facultyId, 1);
         String tempFacultyName = "";
         if (facultyById.isPresent()) {
             tempFacultyName = facultyById.get().getUstrStreamFname();
