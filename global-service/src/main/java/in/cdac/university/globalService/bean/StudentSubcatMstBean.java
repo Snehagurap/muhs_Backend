@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
+import in.cdac.university.globalService.util.annotations.ComboKey;
+import in.cdac.university.globalService.util.annotations.ComboValue;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -13,12 +15,12 @@ import lombok.ToString;
 @ToString
 public class StudentSubcatMstBean {
 	
-	@NotNull(message = "Student Sub Cat ID is mandatory")
+	@ComboKey
 	private Long 	unumStuSubCatId;
 	
-	@NotNull(message = "Student Cat ID is mandatory")
 	private Long 	unumStuCatId;
 	
+	@ComboValue
 	private String  ustrStuSubCatSname;
 	
 	private String  ustrStuSubCatFname;
