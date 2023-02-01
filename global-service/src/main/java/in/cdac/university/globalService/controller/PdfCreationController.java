@@ -169,43 +169,42 @@ public class PdfCreationController {
             );
         } else {
             if (headerBean.getUnumTempleHeadId() != 27) {
-                if (headerBean.getUstrHeadHtml() != null) {
-                    html.append(processHtml(headerBean.getUstrHeadHtml(), mapItem));
-                } else {
-                    Style headStyle = Style.createStyle()
-                            .alignment(headerBean.getUstrHeadAllignment())
-                            .paddingTop("25px")
-                            .display("flex");
+                Style headStyle = Style.createStyle()
+                        .alignment(headerBean.getUstrHeadAllignment())
+                        .paddingTop("25px")
+                        .display("flex");
 
-                    html.append("<div").append(headStyle).append(">");
+                html.append("<div").append(headStyle).append(">");
 
-                    boolean isHeaderTextAdded = false;
-                    if (headerBean.getUnumIsHidden() == null || headerBean.getUnumIsHidden() == 0) {
-                        if (headerBean.getUstrHeadPrintPrefixText() != null && !headerBean.getUstrHeadPrintPrefixText().isBlank()) {
-                            Style flexPrefix = Style.createStyle().flex(FLEX_SEQUENCE).fontWeight("bold");
-                            html.append("<div").append(flexPrefix).append(">")
-                                    .append(headerBean.getUstrHeadPrintPrefixText())
-                                    .append("</div>");
-                        }
-                        Style flexPrintText = Style.createStyle().flex(FLEX_TEXT);
-                        html.append("<div")
-                                .append(flexPrintText)
-                                .append("<span").append(Style.createStyle().fontWeight("bold")).append(">")
-                                .append(headerBean.getUstrHeadPrintText())
-                                .append("</span>");
-
-                        isHeaderTextAdded = true;
+                boolean isHeaderTextAdded = false;
+                if (headerBean.getUnumIsHidden() == null || headerBean.getUnumIsHidden() == 0) {
+                    if (headerBean.getUstrHeadPrintPrefixText() != null && !headerBean.getUstrHeadPrintPrefixText().isBlank()) {
+                        Style flexPrefix = Style.createStyle().flex(FLEX_SEQUENCE).fontWeight("bold");
+                        html.append("<div").append(flexPrefix).append(">")
+                                .append(headerBean.getUstrHeadPrintPrefixText())
+                                .append("</div>");
                     }
+                    Style flexPrintText = Style.createStyle().flex(FLEX_TEXT);
+                    html.append("<div")
+                            .append(flexPrintText)
+                            .append("<span").append(Style.createStyle().fontWeight("bold")).append(">")
+                            .append(headerBean.getUstrHeadPrintText())
+                            .append("</span>");
 
-                    if (headerBean.getComponents() != null && !headerBean.getComponents().isEmpty()) {
+                    isHeaderTextAdded = true;
+                }
+
+                if (headerBean.getComponents() != null && !headerBean.getComponents().isEmpty()) {
+                    if (headerBean.getUstrHeadHtml() != null)
+                        html.append(processHtml(headerBean.getUstrHeadHtml(), mapItem));
+                    else
                         processComponents(html, headerBean.getComponents(), mapItem, zout);
-                    }
+                }
 
-                    if (isHeaderTextAdded) {
-                        html.append("</div>");
-                    }
+                if (isHeaderTextAdded) {
                     html.append("</div>");
                 }
+                html.append("</div>");
             }
         }
     }
