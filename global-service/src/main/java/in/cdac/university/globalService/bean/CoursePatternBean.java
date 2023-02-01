@@ -1,5 +1,7 @@
 package in.cdac.university.globalService.bean;
 
+import in.cdac.university.globalService.util.annotations.ComboKey;
+import in.cdac.university.globalService.util.annotations.ComboValue;
 import in.cdac.university.globalService.util.annotations.ListColumn;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +17,7 @@ import java.util.Date;
 
 public class CoursePatternBean {
 
+    @ComboKey
     @ListColumn(omit = true)
     private Long unumCoursePatId;
 
@@ -62,6 +65,7 @@ public class CoursePatternBean {
 
     private String ustrCoursePatDocPath;
 
+    @ComboValue
     @ListColumn(name = "Pattern", order = 6)
     private String ustrCoursePatFname;
 
