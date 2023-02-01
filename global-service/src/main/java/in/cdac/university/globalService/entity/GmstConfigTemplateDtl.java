@@ -95,6 +95,21 @@ public class GmstConfigTemplateDtl implements Serializable {
 	@Column(name="unum_checklist_item_orderno")
 	private Double unumChecklistItemOrderno;
 
+	@Column(name="ustr_head_html")
+	private String ustr_head_html;
+
+	@Column(name="ustr_comp_html")
+	private String ustr_comp_html;
+
+	@Column(name="ustr_item_html")
+	private String ustr_item_html;
+
+	@Column(name="ustr_fetch_fullcolumnname")
+	private String ustr_fetch_fullcolumnname;
+
+	@Column(name="ustr_load_fullcolumnname")
+	private String ustr_load_fullcolumnname;
+
 	@Override
 	public String toString() {
 		return "Template Detail Id = " + this.unumTempledtlId

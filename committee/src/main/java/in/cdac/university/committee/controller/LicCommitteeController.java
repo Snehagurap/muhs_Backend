@@ -69,4 +69,9 @@ public class LicCommitteeController {
     	return ResponseHandler.generateResponse(
                 licCommitteeMstService.getLicCommitteeByid(UnumLicId)) ;
     }
+
+    @GetMapping("print/{Id}")
+    public ResponseEntity<?> print(@PathVariable("Id") Long committeeId) {
+        return licCommitteeMstService.print(committeeId);
+    }
 }

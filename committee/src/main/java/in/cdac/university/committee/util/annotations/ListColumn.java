@@ -17,4 +17,6 @@ public @interface ListColumn {
     boolean omit() default false;
 
     boolean searchable() default true;
+
+    String width() default "";
 }

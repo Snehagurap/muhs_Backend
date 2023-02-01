@@ -20,6 +20,9 @@ public interface ScrutinycommitteeMstRepository extends JpaRepository<GbltScruti
 
     List<GbltScrutinycommitteeMst> findByUnumIsvalidAndUnumUnivId(Integer unumIsvalid, Integer unumUnivId);
 
+    List<GbltScrutinycommitteeMst> findByUstrScomNameIgnoreCaseAndUnumScomCfacultyIdAndUnumIsvalidAndUnumUnivId(String committeeName, Long unumScomCfacultyId, Integer unumIsvalid, Integer unumUnivId);
+
+    List<GbltScrutinycommitteeMst> findByUstrScomNameIgnoreCaseAndUnumScomCfacultyIdAndUnumIsvalidAndUnumUnivIdAndUnumScomIdNot(String committeeName, Long unumScomCfacultyId, Integer unumIsvalid, Integer unumUnivId, Long unumScomId);
 
     @Modifying(clearAutomatically = true)
     @Query("update GbltScrutinycommitteeMst u set u.unumIsvalid = (select coalesce(max(a.unumIsvalid) , 2) + 1 " +
