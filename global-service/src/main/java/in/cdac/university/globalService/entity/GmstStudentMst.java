@@ -212,7 +212,7 @@ public class GmstStudentMst {
 	private Date	udtEffTo ;
 	
 	@Column(name="unum_entry_uid") 
-	private Integer	unumEntryUid;
+	private Long	unumEntryUid;
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name="udt_entry_date") 
@@ -254,5 +254,20 @@ public class GmstStudentMst {
 	
 	@Column(name="unum_is_management_quota") 
 	private Integer	unumIsManagementQuota;
+	
+	@Column(name="ustr_enrollment_no")
+	private String	 ustrEnrollmentNo;
+	
+	@Column(name="ustr_student_fname")
+	private String	 ustrStudentFname;
+	
+	@Column(name="ustr_student_lname")
+	private String	 ustrStudentLname;
+	
+	@Column(name="ustr_per_contactno")
+	private String 	 ustrPerContactno;
+	
+	@Column(name="unum_per_mobileno")
+	private Integer  unumPerMobileno ;
 }
 

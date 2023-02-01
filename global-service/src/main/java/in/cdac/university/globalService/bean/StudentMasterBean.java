@@ -1,5 +1,6 @@
 package in.cdac.university.globalService.bean;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -12,8 +13,14 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class StudentMasterBean {
+public class StudentMasterBean implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+
 	@NotNull(message = "Student ID is mandatory")
 	private Long	unumStudentId;
 	
@@ -143,7 +150,7 @@ public class StudentMasterBean {
 	
 	private Integer	unumIsvalid;
 	
-	private Integer	unumEntryUid;
+	private Long	unumEntryUid;
 	
 	private Date	udtEntryDate;
 	
@@ -170,5 +177,15 @@ public class StudentMasterBean {
 	private Integer	unumIsStipendearner;
 	
 	private Integer	unumIsManagementQuota;
+	
+	private String	 ustrEnrollmentNo;
+	
+	private String	 ustrStudentFname;
+	
+	private String	 ustrStudentLname;
+	
+	private String 	 ustrPerContactno;
+	
+	private Integer  unumPerMobileno ;
 }
 
