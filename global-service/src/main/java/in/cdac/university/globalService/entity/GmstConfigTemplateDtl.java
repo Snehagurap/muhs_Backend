@@ -96,19 +96,19 @@ public class GmstConfigTemplateDtl implements Serializable {
 	private Double unumChecklistItemOrderno;
 
 	@Column(name="ustr_head_html")
-	private String ustr_head_html;
+	private String ustrHeadHtml;
 
 	@Column(name="ustr_comp_html")
-	private String ustr_comp_html;
+	private String ustrCompHtml;
 
 	@Column(name="ustr_item_html")
-	private String ustr_item_html;
+	private String ustrItemHtml;
 
 	@Column(name="ustr_fetch_fullcolumnname")
-	private String ustr_fetch_fullcolumnname;
+	private String ustrFetchFullcolumnname;
 
 	@Column(name="ustr_load_fullcolumnname")
-	private String ustr_load_fullcolumnname;
+	private String ustrLoadFullcolumnname;
 
 	@Override
 	public String toString() {

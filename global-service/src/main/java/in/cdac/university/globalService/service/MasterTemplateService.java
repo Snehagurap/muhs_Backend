@@ -335,6 +335,9 @@ public class MasterTemplateService {
 
                     // Replace constants
                     templateHeaderBean.setUstrHeadPrintText(replaceConstantString(templateHeaderBean.getUstrHeadPrintText(), facultyName, purpose, academicYear));
+
+                    if (configTemplateDtl.getUstrHeadHtml() != null)
+                        templateHeaderBean.setUstrHeadHtml(configTemplateDtl.getUstrHeadHtml());
                     headerBeans.add(templateHeaderBean);
                     headerIdsAdded.put(configTemplateDtl.getUnumTempleHeadId(), templateHeaderBean);
                 } else {
@@ -395,6 +398,9 @@ public class MasterTemplateService {
                                     replaceConstantString(gmstConfigTemplateComponentMst.getUstrCompPrintText(), facultyName, purpose, academicYear)
                             );
 
+                            if (templateDtl.getUstrCompHtml() != null)
+                                templateComponentBean.setUstrCompHtml(templateDtl.getUstrCompHtml());
+
                             return templateComponentBean;
                         })
                         .sorted(Comparator.comparing(TemplateComponentBean::getUnumCompDisplayOrder, Comparator.nullsLast(Comparator.naturalOrder())))
@@ -431,6 +437,9 @@ public class MasterTemplateService {
                                         replaceConstantString(gmstConfigTemplateItemMst.getUstrItemPrintPreText(), facultyName, purpose, academicYear));
                                 templateItemBean.setUstrItemPrintPostText(
                                         replaceConstantString(gmstConfigTemplateItemMst.getUstrItemPrintPostText(), facultyName, purpose, academicYear));
+
+                                if (templateDtl.getUstrItemHtml() != null)
+                                    templateItemBean.setUstrItemHtml(templateDtl.getUstrItemHtml());
 
                                 return templateItemBean;
                             })
@@ -497,6 +506,9 @@ public class MasterTemplateService {
                                 replaceConstantString(gmstConfigTemplateItemMst.getUstrItemPrintPreText(), facultyName, purpose, academicYear));
                         itemBean.setUstrItemPrintPostText(
                                 replaceConstantString(gmstConfigTemplateItemMst.getUstrItemPrintPostText(), facultyName, purpose, academicYear));
+
+                        if (gmstConfigTemplateDtl.getUstrItemHtml() != null)
+                            itemBean.setUstrItemHtml(gmstConfigTemplateDtl.getUstrItemHtml());
                     }
                     return itemBean;
                 })
