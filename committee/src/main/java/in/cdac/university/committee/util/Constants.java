@@ -14,6 +14,8 @@ public class Constants {
     public static final String URL_GET_ALL_TEACHER_CURRENT_DETAILS = "/global/teacher/allCurrentDetails";
     public static final String URL_UPDATE_CHAIRMEN_FLAG = "/global/teacher/updateChairmanFlag";
 
+    public static final String URL_GET_TEACHER_BY_ID = "/global/teacher/";
+
     public static final String URL_UPDATE_MEMBER1_FLAG = "global/teacher/updateMember1Flag";
 
     public static final String URL_UPDATE_MEMBER2_FLAG = "global/teacher/updateMember2Flag";

@@ -41,6 +41,12 @@ public class CommitteeRulesetService {
             return ServiceResponse.errorResponse(language.message("Not all members details defined"));
         }
 
+        // Check for duplicate
+        List<GbltCommitteeRulesetMst> committeeRulesetMsts = committeeRulesetMstRepository.findByUstrComRsNameAndUnumIsvalidAndUnumUnivId(committeeRulesetBean.getUstrComRsName(), 1, committeeRulesetBean.getUnumUnivId());
+        if (!committeeRulesetMsts.isEmpty()) {
+            return ServiceResponse.errorResponse(language.message("Committee Ruleset already defined. Please modify the existing for any changes"));
+        }
+
         GbltCommitteeRulesetMst gbltCommitteeRulesetMst = BeanUtils.copyProperties(committeeRulesetBean, GbltCommitteeRulesetMst.class);
         Long committeeRsID = committeeRulesetMstRepository.getNextId();
         gbltCommitteeRulesetMst.setUnumComRsId(committeeRsID);
@@ -123,11 +129,15 @@ public class CommitteeRulesetService {
         //Save new Data committee ruleset Dtl
         List<GbltCommitteeRulesetDtl> gbltCommitteeRulesetDtlList = new ArrayList<>();
 
+        // Get count of existing ruleset details
+        List<GbltCommitteeRulesetDtl> existingRules = committeeRulesetDtlRepository.findByUnumComRsIdAndUnumUnivId(committeeRulesetBean.getUnumComRsId(), committeeRulesetBean.getUnumUnivId());
+
+        int count = existingRules.size();
         for (int index=1;index <= committeeRulesetBean.getCommitteeRulesetDtl().size();++index) {
             CommitteeRulesetDtlBean committeeRulesetDtlBean = committeeRulesetBean.getCommitteeRulesetDtl().get(index - 1);
             GbltCommitteeRulesetDtl gbltCommitteeRulesetDtl = BeanUtils.copyProperties(committeeRulesetDtlBean, GbltCommitteeRulesetDtl.class);
 
-            Long committeeRsDtlId = Long.parseLong(committeeRulesetBean.getUnumComRsId() + StringUtils.padLeftZeros(Integer.toString(index), 5));
+            Long committeeRsDtlId = Long.parseLong(committeeRulesetBean.getUnumComRsId() + StringUtils.padLeftZeros(Integer.toString(++count), 5));
             gbltCommitteeRulesetDtl.setUnumComRsDtlId(committeeRsDtlId);
             gbltCommitteeRulesetDtl.setUnumComRsId(committeeRulesetBean.getUnumComRsId());
             gbltCommitteeRulesetDtl.setUnumIsvalid(1);

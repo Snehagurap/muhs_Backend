@@ -16,58 +16,59 @@ import lombok.ToString;
 @Setter
 @ToString
 public class LicCommitteeRuleSetBeanMst {
-	
-	
-	@ComboKey
-	@NotNull(message = "Lic Committee Master ID is mandatory")
-	@ListColumn(omit = true)
-	private Long unumComRsId;
-	
-	private Integer unumComRsCatId;
 
-	private Integer unumComdurationDays;
 
-	private Integer udtComStartDate;
+    @ComboKey
+    @NotNull(message = "Lic Committee Master ID is mandatory")
+    @ListColumn(omit = true)
+    private Long unumComRsId;
 
-	private Date udtComEndDate;
-	
-	@ListColumn(name = "Ruleset Name", order= 3)
-	@ComboValue
-	private String ustrComRsName;
-	
-	@ListColumn(name = "No Of Members", order= 4)
-	private Integer unumNoOfMembers;
+    private Integer unumComRsCatId;
 
-	private Integer unumComCfacultyId;
+    private Integer unumComdurationDays;
 
-	private String ustrComForyear;
+    private Integer udtComStartDate;
 
-	private Integer ustrComFormonth;
-	
-	private String ustrComDescription;
+    private Date udtComEndDate;
 
-	private Integer unumUnivId;
+    @ListColumn(name = "Ruleset Name", order = 3)
+    @ComboValue
+    private String ustrComRsName;
 
-	private Date udtEntryDate;
+    @ListColumn(name = "No Of Members", order = 4)
+    private Integer unumNoOfMembers;
 
-	//@NotNull(message = "Lic Committee Status is mandatory")
-	private Integer unumIsValid;
+    private Integer unumComCfacultyId;
 
-	private Long unumEntryUid;
+    private String ustrComForyear;
 
-	private Date udtRevalidationDate;
+    private Integer ustrComFormonth;
 
-	private Integer unumIsFormulaBased;
+    private String ustrComDescription;
 
-	private Integer unumIsLongRestricted;
+    private Integer unumUnivId;
 
-	private Integer unumStreamId;
+    private Date udtEntryDate;
 
-	@ListColumn(name = "Course Type Name", order= 3)
-	private String ustrCtypeids;
+    //@NotNull(message = "Lic Committee Status is mandatory")
+    private Integer unumIsValid;
 
-	@ListColumn(name = "Category Name", order= 2)
-	private String ustrCatName="LIC1 Committee";
-	List<LicCommitteeRuleSetDtlBean> committeeRuleList;
+    private Long unumEntryUid;
+
+    private Date udtRevalidationDate;
+
+    private Integer unumIsFormulaBased;
+
+    private Integer unumIsLongRestricted;
+
+    private Integer unumStreamId;
+
+    @ListColumn(name = "Course Type Name", order = 3)
+    private String ustrCtypeids;
+
+    @ListColumn(name = "Category Name", order = 2)
+    private String ustrCatName = "LIC Committee";
+
+    List<LicCommitteeRuleSetDtlBean> committeeRuleList;
 
 }

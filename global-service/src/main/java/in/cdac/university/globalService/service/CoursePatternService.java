@@ -187,6 +187,12 @@ public class CoursePatternService {
                 .build();
     }
 
+    public List<CoursePatternBean> getAllCoursePatterns() {
+        return BeanUtils.copyListProperties(
+                coursePatternRepository.getAllCoursePatterns(),
+                CoursePatternBean.class
+        );
+    }
 }
 
 

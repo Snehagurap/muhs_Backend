@@ -244,7 +244,7 @@ public class ApplicantService {
         applicantBean.setUnumApplicantMobile(applicantBean1.getUnumApplicantMobile());
         applicantBean.setUnumApplicantPincode(applicantBean1.getUnumApplicantPincode());
         applicantBean.setUnumApplicantStateid(applicantBean1.getUnumApplicantStateid());
-        applicantBean.setUnumIsVerifiedApplicant(0);
+        applicantBean.setUnumIsVerifiedApplicant(1);
         applicantBean.setUstrApplicantAddress(applicantBean1.getUstrApplicantAddress());
         applicantBean.setUstrApplicantCity(applicantBean1.getUstrApplicantCity());
         applicantBean.setUstrApplicantEmail(applicantBean1.getUstrApplicantEmail());

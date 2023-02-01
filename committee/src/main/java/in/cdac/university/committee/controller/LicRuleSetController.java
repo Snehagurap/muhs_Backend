@@ -25,58 +25,59 @@ import in.cdac.university.committee.util.ResponseHandler;
 public class LicRuleSetController {
 
     @Autowired
-	private LicCommitteeRuleSetMstService licCommitteeRuleSetMstService;
+    private LicCommitteeRuleSetMstService licCommitteeRuleSetMstService;
 
-    	@PostMapping("saveLicCommitteeRule")
-	    public ResponseEntity<?> saveLicCommitteeRule(@Valid @RequestBody LicCommitteeRuleSetBeanMst licCommitteeRuleSetBeanMst) throws Exception {
-	    	
-	    	licCommitteeRuleSetBeanMst.setUnumIsValid(1);
-			licCommitteeRuleSetBeanMst.setUnumUnivId(RequestUtility.getUniversityId());
-			licCommitteeRuleSetBeanMst.setUnumEntryUid(RequestUtility.getUserId());
-			licCommitteeRuleSetBeanMst.setUdtEntryDate(new Date());
-	        return ResponseHandler.generateResponse(
-	        		licCommitteeRuleSetMstService.saveLicCommitteeRule(licCommitteeRuleSetBeanMst)
-	        );
-	    }
-    	@PostMapping("updateLicCommitteeRule")
-	    public ResponseEntity<?> updateLicCommitteeRule(@Valid @RequestBody LicCommitteeRuleSetBeanMst licCommitteeRuleSetBeanMst) throws Exception {
-	    	
-	    	licCommitteeRuleSetBeanMst.setUnumIsValid(1);
-			System.out.println("isValid>>"+licCommitteeRuleSetBeanMst.getUnumIsValid());
-			licCommitteeRuleSetBeanMst.setUnumUnivId(RequestUtility.getUniversityId());
-			licCommitteeRuleSetBeanMst.setUnumEntryUid(RequestUtility.getUserId());
-			licCommitteeRuleSetBeanMst.setUdtEntryDate(new Date());
-	        return ResponseHandler.generateResponse(
-	        		licCommitteeRuleSetMstService.updateLicCommitteeRule(licCommitteeRuleSetBeanMst)
-	        );
-	    }
-    	
-    	@GetMapping("combo")
-    	    public ResponseEntity<?> getLicCommitteeRuleCombo() throws Exception {
-    	        return ResponseHandler.generateOkResponse(
-    	                ComboUtility.generateComboData(
-    	                		licCommitteeRuleSetMstService.getCommitteeCombo()
-    	                )
-    	        );
-    	    }
-    	@GetMapping("comboCourseTypeByRsID/{Id}")
-	    public ResponseEntity<?> getComboCourseTypeByRsID(@PathVariable("Id") Long unumComRsId) throws Exception {
-	        return ResponseHandler.generateOkResponse(
-	                             		licCommitteeRuleSetMstService.getComboCourseTypeByRsID(unumComRsId)
-	        );
-	    }
-    	
-    	@GetMapping("listPage")
-        public ResponseEntity<?> getListPage() throws IllegalAccessException {
-            return ResponseHandler.generateOkResponse(
-                    ListPageUtility.generateListPageData(licCommitteeRuleSetMstService.getListPageData())
-            );
-        }
-    	
-    	@GetMapping("/id/{Id}")
-    	public ResponseEntity<?> getCommitteeRuleSetByunumComRsId(@PathVariable("Id") Long unumComRsId) throws Exception {
-            return ResponseHandler.generateResponse(
-            		licCommitteeRuleSetMstService.getCommitteeRuleSetByUnumComRsId(1,RequestUtility.getUniversityId(),unumComRsId)
-            );
-        }
+    @PostMapping("saveLicCommitteeRule")
+    public ResponseEntity<?> saveLicCommitteeRule(@Valid @RequestBody LicCommitteeRuleSetBeanMst licCommitteeRuleSetBeanMst) throws Exception {
+
+        licCommitteeRuleSetBeanMst.setUnumIsValid(1);
+        licCommitteeRuleSetBeanMst.setUnumUnivId(RequestUtility.getUniversityId());
+        licCommitteeRuleSetBeanMst.setUnumEntryUid(RequestUtility.getUserId());
+        licCommitteeRuleSetBeanMst.setUdtEntryDate(new Date());
+        return ResponseHandler.generateResponse(
+                licCommitteeRuleSetMstService.saveLicCommitteeRule(licCommitteeRuleSetBeanMst)
+        );
+    }
+
+    @PostMapping("updateLicCommitteeRule")
+    public ResponseEntity<?> updateLicCommitteeRule(@Valid @RequestBody LicCommitteeRuleSetBeanMst licCommitteeRuleSetBeanMst) throws Exception {
+
+        licCommitteeRuleSetBeanMst.setUnumIsValid(1);
+        licCommitteeRuleSetBeanMst.setUnumUnivId(RequestUtility.getUniversityId());
+        licCommitteeRuleSetBeanMst.setUnumEntryUid(RequestUtility.getUserId());
+        licCommitteeRuleSetBeanMst.setUdtEntryDate(new Date());
+        return ResponseHandler.generateResponse(
+                licCommitteeRuleSetMstService.updateLicCommitteeRule(licCommitteeRuleSetBeanMst)
+        );
+    }
+
+    @GetMapping("combo")
+    public ResponseEntity<?> getLicCommitteeRuleCombo() throws Exception {
+        return ResponseHandler.generateOkResponse(
+                ComboUtility.generateComboData(
+                        licCommitteeRuleSetMstService.getCommitteeCombo()
+                )
+        );
+    }
+
+    @GetMapping("comboCourseTypeByRsID/{Id}")
+    public ResponseEntity<?> getComboCourseTypeByRsID(@PathVariable("Id") Long unumComRsId) throws Exception {
+        return ResponseHandler.generateOkResponse(
+                licCommitteeRuleSetMstService.getComboCourseTypeByRsID(unumComRsId)
+        );
+    }
+
+    @GetMapping("listPage")
+    public ResponseEntity<?> getListPage() throws IllegalAccessException {
+        return ResponseHandler.generateOkResponse(
+                ListPageUtility.generateListPageData(licCommitteeRuleSetMstService.getListPageData())
+        );
+    }
+
+    @GetMapping("/id/{Id}")
+    public ResponseEntity<?> getCommitteeRuleSetByunumComRsId(@PathVariable("Id") Long unumComRsId) throws Exception {
+        return ResponseHandler.generateResponse(
+                licCommitteeRuleSetMstService.getCommitteeRuleSetByUnumComRsId(unumComRsId)
+        );
+    }
 }

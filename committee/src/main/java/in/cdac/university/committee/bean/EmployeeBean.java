@@ -59,5 +59,11 @@ public class EmployeeBean {
     private Integer unumIsSelected;
     private List<Long> employeesToFlag;
 
+    private Integer unumEmpDesigid;
+    private Date udtUgJoiningDate;
+    private Date udtPgJoiningDate;
 
+    private Long unumCollegeId;
+    private List<EmployeeProfileBean> employeeProfileList;
+    private List<EmployeeCurrentDetailBean> employeeCurrentDetailBeanList;
 }
