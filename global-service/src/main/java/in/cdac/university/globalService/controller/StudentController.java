@@ -26,10 +26,18 @@ public class StudentController {
 	private StudentService studentService;
 	
 	@PostMapping("updateStudent")
-    public ResponseEntity<?> saveProcessDtl(@Valid @RequestBody StudentMasterBean studentMasterBean) throws Exception {
+    public ResponseEntity<?> saveUpdateStudentDtl(@Valid @RequestBody StudentMasterBean studentMasterBean) throws Exception {
 
         return ResponseHandler.generateResponse(studentService.saveUpdate(studentMasterBean));
     }
+	
+	@PostMapping("updateStudentDraft")
+    public ResponseEntity<?> saveUpdateStudentDtlDraft(@Valid @RequestBody StudentMasterBean studentMasterBean) throws Exception {
+
+        return ResponseHandler.generateResponse(studentService.saveUpdateDraft(studentMasterBean));
+    }
+	
+	
 	
 	@GetMapping("getStudentDetails/{studentEnrollmentNo}")
     public ResponseEntity<?> getStudentDetails(@PathVariable (value = "studentEnrollmentNo") String studentEnrollmentNo) throws Exception {
@@ -37,4 +45,9 @@ public class StudentController {
         			studentService.getStudentDetails(studentEnrollmentNo));
     }
 
+	@GetMapping("getStudentDetails/Draft/{studentEnrollmentNo}")
+    public ResponseEntity<?> getStudentDetailsDraft(@PathVariable (value = "studentEnrollmentNo") String studentEnrollmentNo) throws Exception {
+          return ResponseHandler.generateResponse(
+        			studentService.getStudentDetailsDraft(studentEnrollmentNo));
+    }
 }

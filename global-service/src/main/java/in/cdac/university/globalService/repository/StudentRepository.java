@@ -2,6 +2,8 @@ package in.cdac.university.globalService.repository;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -27,5 +29,9 @@ public interface StudentRepository extends JpaRepository<GmstStudentMst, GmstStu
     
     @Query(value = "select to_char(current_date, 'yymm') || lpad(nextval('university.seq_gmst_student_mst')\\:\\:text, 6, '0')", nativeQuery = true)
     Long getNextId();
+
+
+	GmstStudentMst findByUnumStudentIdAndUnumUnivIdAndUnumIsvalid(
+			@NotNull(message = "Student ID is mandatory") Long unumStudentId, Integer universityId, int i);
 
 }
