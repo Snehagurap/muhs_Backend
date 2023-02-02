@@ -67,4 +67,5 @@ public class LicCommitteeDtlBean {
 	
 	private	Integer unumCtypeid;     
 
+	private String roleName;
 }

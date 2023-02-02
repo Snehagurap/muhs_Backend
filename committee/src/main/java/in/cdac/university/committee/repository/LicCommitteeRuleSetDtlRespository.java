@@ -14,8 +14,7 @@ import in.cdac.university.committee.entity.GbltLicCommitteeRuleSetDtlPK;
 @Repository
 public interface LicCommitteeRuleSetDtlRespository extends JpaRepository<GbltLicCommitteeRuleSetDtl, GbltLicCommitteeRuleSetDtlPK> {
 
-	List<GbltLicCommitteeRuleSetDtl> findByUnumIsValidAndUnumUnivIdAndUnumComRsId(int i, Integer universityId,
-			Long unumComRsId);
+	List<GbltLicCommitteeRuleSetDtl> findByUnumIsValidAndUnumUnivIdAndUnumComRsId(int i, Integer universityId, Long unumComRsId);
 	
 	@Modifying(clearAutomatically = true)
     @Query("update GbltLicCommitteeRuleSetDtl u set u.unumIsValid = (select coalesce(max(a.unumIsValid), 2) + 1 " +
@@ -23,9 +22,7 @@ public interface LicCommitteeRuleSetDtlRespository extends JpaRepository<GbltLic
             "where u.unumComRsId in (:unumComRsId) and u.unumIsValid in (1, 2) ")
     Integer createLog(@Param("unumComRsId") Long unumComRsId);
 
+	List<GbltLicCommitteeRuleSetDtl> findByUnumComRsIdAndUnumIsValidAndUnumUnivId(Long licCommitteeRsId, int i, Integer universityId);
 
-
-
-	List<GbltLicCommitteeRuleSetDtl> findByUnumComRsIdAndUnumIsValidAndUnumUnivId(Long licCommitteeRsId, int i,
-			Integer universityId);
+	List<GbltLicCommitteeRuleSetDtl> findByUnumComRsIdAndUnumUnivId(Long licCommitteeRsId, Integer universityId);
 }

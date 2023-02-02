@@ -15,11 +15,11 @@ import lombok.ToString;
 @ToString
 public class LicCommitteeBean {
 	
-	@NotNull(message = "Lic Id is mandatory")
+	@NotNull(message = "LIC Id is mandatory")
 	@ListColumn(omit = true)
 	private Long	unumLicId ;
 	
-	@ListColumn(name = "Lic Committee Name")
+	@ListColumn(name = "LIC Committee Name")
 	private String	ustrLicName ;
 	
 	private Long	unumComRsId ;
@@ -58,7 +58,7 @@ public class LicCommitteeBean {
 	
 	private List<LicCommitteeDtlBean> licCommitteeDtlBean;
 	
-	@ListColumn(name = "Lic Committee RuleSet Name")
+	@ListColumn(name = "LIC Committee RuleSet Name")
 	private String	ustrLicRsName ;    
 	
 	@ListColumn(name = "Faculty Name")

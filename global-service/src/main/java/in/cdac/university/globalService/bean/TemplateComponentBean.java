@@ -67,6 +67,8 @@ public class TemplateComponentBean {
 
     private Long unumTempledtlId;
 
+    private String ustrCompHtml;
+
     private List<TemplateItemBean> items;
     
     private List<TemplateComponentDtlsBean> templateComponentDtlsBeanList;
