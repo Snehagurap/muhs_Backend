@@ -159,7 +159,7 @@ public class SavitbpSchemeApplMstBean {
 	
 	private Integer unumIsvalid;
 	
-	private Integer unumEntryUid;
+	private Long unumEntryUid;
 	
 	private Date    udtEntryDate;
 	
@@ -167,5 +167,27 @@ public class SavitbpSchemeApplMstBean {
 	
 	private Date    udtLstModDate;
 	
-	private Integer unumApprovalStatusid;          
+	private Integer unumApprovalStatusid;      
+	
+	private Integer	unumIsNri ;
+	
+	private Integer	unumIsIntern;
+	
+	private Integer	unumIsOms ;
+	
+	private Integer	unumIsStipendearner;
+	
+	private Integer	unumIsManagementQuota;
+	
+	private String	 ustrEnrollmentNo;
+	
+	private String	 ustrStudentFname;
+	
+	private String	 ustrStudentLname;
+	
+	private String 	 ustrPerContactno;
+	
+	private Integer  unumPerMobileno ;
+	
+	private String   ustrPassingMarksheetPath;
 }

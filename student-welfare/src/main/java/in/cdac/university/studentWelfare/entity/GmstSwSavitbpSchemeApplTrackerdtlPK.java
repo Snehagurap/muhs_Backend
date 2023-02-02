@@ -28,7 +28,7 @@ public class GmstSwSavitbpSchemeApplTrackerdtlPK implements Serializable{
 	private Long 	unumStudentId;
 	
 	@Column(name="unum_sno")
-	private Long 	unumSno;
+	private Integer 	unumSno;
 	
 	@Column(name="unum_isvalid")
 	private Integer unumIsvalid;

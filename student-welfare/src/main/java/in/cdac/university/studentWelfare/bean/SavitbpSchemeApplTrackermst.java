@@ -43,7 +43,7 @@ public class SavitbpSchemeApplTrackermst {
 	
 	private Integer unumIsvalid;
 	
-	private Integer unumEntryUid;
+	private Long unumEntryUid;
 	
 	private Date udtEntryDate;
 	

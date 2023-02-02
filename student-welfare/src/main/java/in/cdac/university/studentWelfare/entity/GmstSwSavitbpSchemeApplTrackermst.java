@@ -66,7 +66,7 @@ public class GmstSwSavitbpSchemeApplTrackermst {
 	private String ustrDescription;
 	
 	@Column(name="unum_entry_uid")  
-	private Integer unumEntryUid;
+	private Long unumEntryUid;
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name="udt_entry_date")  
