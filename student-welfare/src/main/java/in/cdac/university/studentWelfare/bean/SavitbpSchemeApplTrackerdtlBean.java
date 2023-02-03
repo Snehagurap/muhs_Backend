@@ -22,7 +22,7 @@ public class SavitbpSchemeApplTrackerdtlBean {
 	
 	private Long 	unumStudentId;
 	
-	private Long 	unumSno;
+	private Integer	unumSno;
 	
 	private Long 	unumApplLevelid;
 	

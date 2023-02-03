@@ -5,6 +5,11 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class GmstStudentMstPK implements Serializable {
 	
 	@Serial

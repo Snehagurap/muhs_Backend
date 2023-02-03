@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 @IdClass(GmstSwSavitbpSchemeApplPK.class)
 @Entity
-@Table(name="cmst_college_course_mst", schema = "university")
+@Table(name="gmst_sw_savitbp_scheme_appl_mst", schema = "sw")
 public class GmstSwSavitbpSchemeApplMst {
 	
 	@Id

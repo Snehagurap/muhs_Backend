@@ -14,4 +14,11 @@ public class Constants {
     public static final String URL_GET_ALL_FACULTIES = "/global/faculty/all";
 
     public static  final String URL_GET_APPLICATION_BY_NOTIFICATION_ID = "/global/application/";
+    public static  final String URL_GET_STUDENT = "/global/Student/getStudentDetails/";
+    
+    public static  final String URL_GET_STUDENT_DRAFT = "/global/Student/getStudentDetails/Draft/";
+    
+    public static  final String URL_GET_UPDATE_SAVE_STUDENT = "/global/Student/updateStudent";
+    
+    public static  final String URL_GET_UPDATE_SAVE_STUDENT_DRAFT = "/global/Student/updateStudentDraft";
  }

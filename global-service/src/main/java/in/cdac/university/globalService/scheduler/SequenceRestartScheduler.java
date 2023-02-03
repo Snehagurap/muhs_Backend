@@ -62,12 +62,15 @@ public class SequenceRestartScheduler {
             "university.seq_gmst_faculty_stream_dtl",
             "university.seq_gmst_config_template_item_api_mst",
             "university.seq_gmst_course_pattern_dtl",
+            "university.seq_gmst_student_mst",
 
             // Planning Board
             "upb.seq_gblt_notification_master",
 
             // Template Data
-            "templedata.seq_gblt_config_application_data_mst"
+            "templedata.seq_gblt_config_application_data_mst",
+            //student welfare
+            "sw.seq_gmst_sw_savitbp_scheme_appl_mst"
     );
 
     @Autowired

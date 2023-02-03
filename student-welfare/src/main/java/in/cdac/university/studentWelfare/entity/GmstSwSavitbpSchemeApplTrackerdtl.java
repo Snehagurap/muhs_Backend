@@ -33,7 +33,7 @@ public class GmstSwSavitbpSchemeApplTrackerdtl {
 	private Long 	unumStudentId;
 
 	@Id
-	private Long 	unumSno;
+	private Integer 	unumSno;
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name="unum_savitbp_applicationdt")
