@@ -2,8 +2,6 @@ package in.cdac.university.globalService.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.cdac.university.globalService.bean.*;
-import in.cdac.university.globalService.entity.GbltConfigApplicationDataDtl;
-import in.cdac.university.globalService.repository.ConfigApplicationDataDetailRepository;
 import in.cdac.university.globalService.service.MasterTemplateService;
 import in.cdac.university.globalService.util.*;
 import in.cdac.university.globalService.util.html.Style;
@@ -18,10 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -43,44 +42,53 @@ public class PdfCreationController {
     @Autowired
     private FtpUtility ftpUtility;
 
-    @Autowired
-    private ConfigApplicationDataDetailRepository applicationDataDetailRepository;
-
     private static final String HTML_START = """
-    <html>
-    <head>
-        <style>
-            @media print {
-                @page {
-                    @top-left {
-                        content: "";
+            <html>
+            <head>
+                <style>
+                    @media print {
+                        @page {
+                            @top-left {
+                                content: "";
+                            }
+                            @top-center {
+                                content: "";
+                            }
+                            @top-right {
+                                content: "";
+                            }
+                            @bottom-left {
+                                content: counter(page) "/" counter(pages);
+                            }
+                            @bottom-center {
+                                content: "";
+                            }
+                            @bottom-right {
+                                content: "Sign of Chairman/Secretary";
+                            }
+                        }
                     }
-                    @top-center {
-                        content: "";
+                    
+                    @media print {
+                        span, div {
+                            page-break-inside: avoid;
+                            overflow-wrap: break-word;
+                            text-align: justify;
+                            text-justify: inter-word;
+                        }
                     }
-                    @top-right {
-                        content: "";
+                    
+                    table, th, tr, td {
+                        border: 1px solid black;
+                        border-collapse: collapse;
                     }
-                    @bottom-left {
-                        content: counter(page) "/" counter(pages);
+                    
+                    .item-value {
                     }
-                    @bottom-center {
-                        content: "";
-                    }
-                    @bottom-right {
-                        content: "Sign of Chairman/Secretary";
-                    }
-                }
-            }
-            
-            table, th, tr, td {
-                border: 1px solid black;
-                border-collapse: collapse;
-            }
-        </style>
-    </head>
-    <body>
-    """;
+                </style>
+            </head>
+            <body>
+            """;
 
 
     @GetMapping("application/{applicationId}/{shouldZip}")
@@ -101,13 +109,6 @@ public class PdfCreationController {
         if (serviceResponse.getStatus() == 1) {
             MasterTemplateBean masterTemplateBean = objectMapper.convertValue(serviceResponse.getResponseObject(), MasterTemplateBean.class);
 
-            List<GbltConfigApplicationDataDtl> applicationDetails = applicationDataDetailRepository.findByUnumIsvalidAndUnumUnivIdAndUnumApplicationId(1, RequestUtility.getUniversityId(), applicationId);
-            Map<Long, TemplateItemBean> mapItem = applicationDetails.stream()
-                    .map(gbltConfigApplicationDataDtl -> BeanUtils.copyProperties(gbltConfigApplicationDataDtl, TemplateItemBean.class))
-                    .collect(Collectors.toMap(TemplateItemBean::getUnumTempleItemId,
-                            Function.identity(),
-                            (v1, v2) -> v2));
-
             html.append("<div>");
             html.append("Proposal for academic year: ").append(masterTemplateBean.getUstrAcademicYear());
             html.append("</div>");
@@ -120,7 +121,7 @@ public class PdfCreationController {
 
             AtomicInteger headerCount = new AtomicInteger(0);
             masterTemplateBean.getTemplateList().forEach(templateBean -> {
-                //Map<Long, TemplateItemBean> mapItem = new HashMap<>();
+                Map<Long, TemplateItemBean> mapItem = templateBean.getItems();
                 List<TemplateHeaderBean> headers = templateBean.getHeaders();
                 headers.forEach((header) -> {
                     int count = headerCount.addAndGet(1);
@@ -171,7 +172,7 @@ public class PdfCreationController {
             if (headerBean.getUnumTempleHeadId() != 27) {
                 Style headStyle = Style.createStyle()
                         .alignment(headerBean.getUstrHeadAllignment())
-                        .paddingTop("25px")
+                        .paddingTop("15px")
                         .display("flex");
 
                 html.append("<div").append(headStyle).append(">");
@@ -196,7 +197,7 @@ public class PdfCreationController {
 
                 if (headerBean.getComponents() != null && !headerBean.getComponents().isEmpty()) {
                     if (headerBean.getUstrHeadHtml() != null)
-                        html.append(processHtml(headerBean.getUstrHeadHtml(), mapItem));
+                        html.append(processHtml(headerBean.getUstrHeadHtml(), mapItem, zout));
                     else
                         processComponents(html, headerBean.getComponents(), mapItem, zout);
                 }
@@ -213,7 +214,7 @@ public class PdfCreationController {
         components.forEach(component -> {
             if (component.getItems() != null && !component.getItems().isEmpty()) {
                 if (component.getUstrCompHtml() != null) {
-                    html.append(processHtml(component.getUstrCompHtml(), mapItem));
+                    html.append(processHtml(component.getUstrCompHtml(), mapItem, zout));
                 } else {
                     processItems(html, component.getItems(), mapItem, false, zout);
                 }
@@ -246,70 +247,68 @@ public class PdfCreationController {
 
             boolean isItemHidden = (item.getUnumIsHidden() != null && item.getUnumIsHidden() == 1);
             if (!isItemHidden) {
-                if (item.getUstrItemHtml() != null) {
-                    html.append(processHtml(item.getUstrItemHtml(), mapItem));
+                if (isMerged) {
+                    Style style = Style.createStyle();
+                    html.append("<span").append(style).append(">");
                 } else {
-                    if (isMerged) {
-                        Style style = Style.createStyle();
-                        html.append("<span").append(style).append(">");
-                    } else {
-                        Style style = Style.createStyle()
-                                .paddingTop("10px")
-                                .paddingBottom("5px")
-                                .display("flex");
-                        html.append("<div").append(style).append(">");
-                    }
+                    Style style = Style.createStyle()
+                            .paddingTop("10px")
+                            .paddingBottom("5px")
+                            .display("flex");
+                    html.append("<div").append(style).append(">");
+                }
 
-                    if (item.getUstrItemPrintPrefixText() != null && !item.getUstrItemPrintPrefixText().isBlank()) {
-                        Style prefixStyle;
-                        if (isMerged)
-                            prefixStyle = Style.createStyle();
-                        else
-                            prefixStyle = Style.createStyle().flex(FLEX_SEQUENCE);
+                if (item.getUstrItemPrintPrefixText() != null && !item.getUstrItemPrintPrefixText().isBlank()) {
+                    Style prefixStyle;
+                    if (isMerged)
+                        prefixStyle = Style.createStyle();
+                    else
+                        prefixStyle = Style.createStyle().flex(FLEX_SEQUENCE);
 
-                        html.append("<span").append(prefixStyle).append(">")
-                                .append(item.getUstrItemPrintPrefixText())
-                                .append("</span>");
-                    }
+                    html.append("<span").append(prefixStyle).append(">")
+                            .append(item.getUstrItemPrintPrefixText())
+                            .append("</span>");
+                }
 
-                    Style textStyle;
-                    if (isMerged) {
-                        textStyle = Style.createStyle();
-                    } else {
-                        textStyle = Style.createStyle().flex(FLEX_TEXT);
-                    }
-                    html.append("<span").append(textStyle).append(">");
+                Style textStyle;
+                if (isMerged) {
+                    textStyle = Style.createStyle();
+                } else {
+                    textStyle = Style.createStyle().flex(FLEX_TEXT);
+                }
+                html.append("<span").append(textStyle).append(">");
 
-                    if (item.getUstrItemPrintPreText() != null && !item.getUstrItemPrintPreText().isBlank()) {
-                        html.append("<span>")
-                                .append(item.getUstrItemPrintPreText())
-                                .append("</span>");
-                    }
+                if (item.getUstrItemPrintPreText() != null && !item.getUstrItemPrintPreText().isBlank()) {
+                    html.append("<span>")
+                            .append(item.getUstrItemPrintPreText())
+                            .append("</span>");
+                }
 
-                    if (item.getUstrItemValue() != null) {
-                        Style valueStyle = Style.createStyle()
-                                .fontWeight("bold")
-                                .textDecoration("underline")
-                                .paddingLeft("10px")
-                                .paddingRight("10px");
+                if (item.getUstrItemValue() != null) {
+                    Style valueStyle = Style.createStyle()
+                            .fontWeight("bold")
+                            .paddingLeft("10px")
+                            .paddingRight("10px");
 
-                        html.append("<span").append(valueStyle).append(">")
-                                .append(processItemValue(item, mapItem, zout))
-                                .append("</span>");
-                    }
+                    html.append("<span class='item-value'").append(valueStyle).append(">")
+                            .append(processItemValue(item, mapItem, zout))
+                            .append("</span>");
+                }
 
-                    if (item.getUstrItemPrintPostText() != null && !item.getUstrItemPrintPostText().isBlank()) {
-                        html.append("<span>")
-                                .append(item.getUstrItemPrintPostText())
-                                .append("</span>");
-                    }
+                if (item.getUstrItemPrintPostText() != null && !item.getUstrItemPrintPostText().isBlank()) {
+                    html.append("<span>")
+                            .append(item.getUstrItemPrintPostText())
+                            .append("</span>");
                 }
             }
 
             if (item.getChildren() != null && !item.getChildren().isEmpty()) {
-                boolean isChildMerged = item.getChildren().get(0).getUnumIsMergeWithParent() != null && item.getChildren().get(0).getUnumIsMergeWithParent() == 1;
-
-                processItems(html, item.getChildren(), mapItem, isChildMerged, zout);
+                if (item.getUstrItemHtml() != null) {
+                    html.append(processHtml(item.getUstrItemHtml(), mapItem, zout));
+                } else {
+                    boolean isChildMerged = item.getChildren().get(0).getUnumIsMergeWithParent() != null && item.getChildren().get(0).getUnumIsMergeWithParent() == 1;
+                    processItems(html, item.getChildren(), mapItem, isChildMerged, zout);
+                }
             }
 
             if (!isItemHidden) {
@@ -473,7 +472,26 @@ public class PdfCreationController {
         html.append("</div>");
     }
 
-    private String processHtml(String htmlLayout, Map<Long, TemplateItemBean> mapItem) {
+    private String processHtml(String htmlLayout, Map<Long, TemplateItemBean> mapItem, ZipOutputStream zout) {
+        log.debug("HTML Layout " + htmlLayout);
+        String[] split = htmlLayout.split("[^#[0-9]#]", 0);
+        List<Long> itemsToReplace = Arrays.stream(split)
+                .filter(s -> !s.isBlank())
+                .map(s -> s.replaceAll("#", ""))
+                .map(Long::valueOf)
+                .toList();
+
+        log.debug("Items to replace " + itemsToReplace);
+
+        for (Long itemToReplace: itemsToReplace) {
+            TemplateItemBean item = mapItem.get(itemToReplace);
+            if (item != null) {
+                String itemValue = processItemValue(item, mapItem, zout);
+                log.debug("Item to replace " + itemToReplace + " with value " + itemValue);
+                htmlLayout = htmlLayout.replaceAll("#" + itemToReplace + "#", itemValue);
+            }
+        }
+        log.debug("HTML " + htmlLayout);
         return htmlLayout;
     }
 }

@@ -1,12 +1,11 @@
-package in.cdac.university.globalService.bean;
+package in.cdac.university.studentWelfare.bean;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
+
 
 import javax.validation.constraints.NotNull;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,14 +13,13 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
-public class StudentMasterBean implements Serializable {
+public class StudentMasterBean implements Serializable  {
+	
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
 
 	@NotNull(message = "Student ID is mandatory")
 	private Long	unumStudentId;
@@ -152,7 +150,7 @@ public class StudentMasterBean implements Serializable {
 	
 	private Integer	unumIsvalid;
 	
-	private Long	unumEntryUid;
+	private Integer	unumEntryUid;
 	
 	private Date	udtEntryDate;
 	

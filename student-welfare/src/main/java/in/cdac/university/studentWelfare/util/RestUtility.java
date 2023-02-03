@@ -3,7 +3,10 @@ package in.cdac.university.studentWelfare.util;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+
+import in.cdac.university.studentWelfare.exception.ServiceNotUpException;
 import lombok.Getter;
+import lombok.var;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,7 +63,7 @@ public class RestUtility {
         }
     }
 
-    public <T> T get(SERVICE_TYPE serviceType, String url, Class<T> returnType) {
+    public <T> T get(SERVICE_TYPE serviceType, String url, Class<T> returnType,int excep) {
         try {
             HttpHeaders headers = getHttpHeaders();
 
@@ -77,9 +80,13 @@ public class RestUtility {
                 int status = actualObject.get("status").asInt();
                 if (status == 0) {
                     String message = actualObject.get("message").asText();
+                    if(excep ==1) {
+                    	throw new ServiceNotUpException();
+                    }
                     log.error("Unable to call Web Service: {}, Error: {}", serviceType.url + "/" + url, message);
                     return null;
                 }
+                //System.out.println(actualObject.get("data"));
                 return objectMapper.convertValue(actualObject.get("data"), returnType);
             }
         } catch (Exception e) {
@@ -88,6 +95,7 @@ public class RestUtility {
 
         return null;
     }
+    
 
     public <T> T postForData(SERVICE_TYPE serviceType, String url, Object requestBody, Class<T> returnType) {
         try {
