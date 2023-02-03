@@ -241,8 +241,8 @@ public class ApplicantService {
             return ServiceResponse.errorResponse(language.notFoundForId("Applicant Id", applicantIdToUpdate));
         }
         ApplicantBean applicantBean1 = BeanUtils.copyProperties(gmstApplicantMst.get(), ApplicantBean.class);
-        Long newApplicantId = applicantRepository.getNextId();
-        applicantBean.setUnumApplicantId(newApplicantId);
+        //Long newApplicantId = applicantRepository.getNextId();
+        //applicantBean.setUnumApplicantId(newApplicantId);
         applicantBean.setUdtEffFrom(new Date());
         applicantBean.setUnumApplicantDistrictid(applicantBean1.getUnumApplicantDistrictid());
         applicantBean.setUnumApplicantMobile(applicantBean1.getUnumApplicantMobile());
