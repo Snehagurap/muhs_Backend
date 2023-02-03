@@ -107,9 +107,9 @@ public class ApplicantController {
         );
     }
 
-    @GetMapping(value = {"field/{fieldName}, field/{fieldName}/{applicantId}"})
+    @GetMapping(value = {"field/{fieldName}", "field/{fieldName}/{applicantId}"})
     public ResponseEntity<?> getApplicantFieldDetail(@PathVariable("fieldName") String fieldName,
-                                                     @PathVariable("applicantId") Long applicantId) throws Exception {
+                                                     @PathVariable(name = "applicantId", required = false) Long applicantId) throws Exception {
         return ResponseHandler.generateResponse(
                 applicantService.getApplicantFieldDetail(fieldName, applicantId)
         );
