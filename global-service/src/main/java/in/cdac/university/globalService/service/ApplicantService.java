@@ -16,6 +16,7 @@ import in.cdac.university.globalService.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +46,9 @@ public class ApplicantService {
 
     @Autowired
     private FtpUtility ftpUtility;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Transactional
     public ServiceResponse saveApplicantDetails(ApplicantBean applicantBean) {
@@ -304,5 +308,21 @@ public class ApplicantService {
             return ServiceResponse.successObject(language.message("No Document uploaded"));
 
         return ServiceResponse.successObject(applicantDtl.get().getUstrDocPath());
+    }
+
+    public ServiceResponse getApplicantFieldDetail(String fieldName, Long applicantId) throws Exception {
+        if (fieldName == null)
+            return ServiceResponse.successObject(fieldName);
+
+        if (applicantId == null || applicantId == 0L)
+            applicantId = RequestUtility.getUserId();
+        String query = "select " + fieldName + " from university.gmst_applicant_mst where unum_isvalid = 1 and unum_applicant_id = " + applicantId;
+
+        String value = "";
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(query);
+        if (!list.isEmpty()) {
+            value = list.get(0).get(fieldName).toString();
+        }
+        return ServiceResponse.successObject(value);
     }
 }

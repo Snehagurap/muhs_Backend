@@ -106,4 +106,12 @@ public class ApplicantController {
                 applicantService.getApplicantDocument(documentId)
         );
     }
+
+    @GetMapping(value = {"field/{fieldName}, field/{fieldName}/{applicantId}"})
+    public ResponseEntity<?> getApplicantFieldDetail(@PathVariable("fieldName") String fieldName,
+                                                     @PathVariable("applicantId") Long applicantId) throws Exception {
+        return ResponseHandler.generateResponse(
+                applicantService.getApplicantFieldDetail(fieldName, applicantId)
+        );
+    }
 }
