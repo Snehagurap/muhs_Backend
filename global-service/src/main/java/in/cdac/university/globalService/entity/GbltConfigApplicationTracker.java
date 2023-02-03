@@ -76,7 +76,7 @@ public class GbltConfigApplicationTracker implements Serializable {
 	private Date udtStateGovtApprovalDate;
 
 	@Column(name="udt_state_outdate")
-	private String udtStateOutdate;
+	private Date udtStateOutdate;
 
 	@Column(name="unum_application_level_id")
 	private Integer unumApplicationLevelId;
@@ -148,8 +148,8 @@ public class GbltConfigApplicationTracker implements Serializable {
 	@Column(name="ustr_state_govt_approval_doc_path")
 	private String ustrStateGovtApprovalDocPath;
 
-	@Column(name="ustr_state_outno_stategovt")
-	private String ustrStateOutnoStategovt;
+	@Column(name="ustr_state_outno")
+	private String ustrStateOutno;
 
 	@Column(name="ustr_status_by")
 	private String ustrStatusBy;
