@@ -448,8 +448,18 @@ public class MasterTemplateService {
 
                     templateComponentBean.setItems(templateItemBeans);
 
+                    // Items add to template
+                    Map<Long, TemplateItemBean> items = templateBean.getItems();
+                    if (items == null) {
+                        items = new HashMap<>();
+                        templateBean.setItems(items);
+                    }
+                    for (TemplateItemBean templateItemBean: templateItemBeans) {
+                        items.put(templateItemBean.getUnumTempleItemId(), templateItemBean);
+                    }
+
                     for (TemplateItemBean templateItemBean : templateItemBeans) {
-                        fetchSubItems(templateItemBean, itemsByTemplateId, templateDetailByTemplateId, itemMap, facultyName, purpose, academicYear);
+                        fetchSubItems(templateItemBean, itemsByTemplateId, templateDetailByTemplateId, itemMap, facultyName, purpose, academicYear, templateBean);
                     }
                 }
             }
@@ -482,7 +492,7 @@ public class MasterTemplateService {
 
     private void fetchSubItems(TemplateItemBean templateItemBean, List<GmstConfigTemplateItemMst> itemsByTemplateId,
                                List<GmstConfigTemplateDtl> templateDetailByTemplateId, Map<Long, String> itemMap,
-                               String facultyName, String purpose, String academicYear) {
+                               String facultyName, String purpose, String academicYear, TemplateBean templateBean) {
 
         List<TemplateItemBean> childItems = itemsByTemplateId.stream()
                 .filter(gmstConfigTemplateItemMst -> gmstConfigTemplateItemMst.getUnumTempleParentItemId() != null &&
@@ -517,11 +527,21 @@ public class MasterTemplateService {
 
         templateItemBean.setChildren(childItems);
 
+        // Items add to template
+        Map<Long, TemplateItemBean> items = templateBean.getItems();
+        if (items == null) {
+            items = new HashMap<>();
+            templateBean.setItems(items);
+        }
+        for (TemplateItemBean itemBean: childItems) {
+            items.put(itemBean.getUnumTempleItemId(), itemBean);
+        }
+
         if (childItems.isEmpty())
             return;
 
         for (TemplateItemBean childItem : childItems) {
-            fetchSubItems(childItem, itemsByTemplateId, templateDetailByTemplateId, itemMap, facultyName, purpose, academicYear);
+            fetchSubItems(childItem, itemsByTemplateId, templateDetailByTemplateId, itemMap, facultyName, purpose, academicYear, templateBean);
         }
     }
 
