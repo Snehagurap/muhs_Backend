@@ -192,6 +192,12 @@ public class StudentMasterBean implements Serializable {
 	
 	private String 	 ustrPerContactno;
 	
-	private Long  unumPerMobileno ;
+	private Long     unumPerMobileno ;
+	
+	private Integer unumStuSalutationId;
+	
+	private Integer unumFatherSalutationId;
+	
+	private Integer unumMotherSalutationId;
 }
 
