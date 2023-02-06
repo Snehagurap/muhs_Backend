@@ -191,13 +191,19 @@ public class SavitbpSchemeApplMstBean {
 	
 	private String 	 ustrPerContactno;
 	
-	private Long  unumPerMobileno ;
+	private Long 	 unumPerMobileno ;
 	
 	private String   ustrPassingMarksheetPath;
 	
-	private String udtPossibleCourseCompDt;
+	private String   udtPossibleCourseCompDt;
 	
-	private String ustrPresentYear;
+	private String 	 ustrPresentYear;
 	
-	private String ustrAcademicYear;
+	private String 	 ustrAcademicYear;
+	
+	private Integer unumStuSalutationId;
+	
+	private Integer unumFatherSalutationId;
+	
+	private Integer unumMotherSalutationId;
 }
