@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +28,8 @@ public class StudentMasterBean implements Serializable {
 	@NotNull(message = "Student ID is mandatory")
 	private Long	unumStudentId;
 	
-	private Date	udtStuDob ;
+	@JsonFormat(pattern="yyyy-MM-dd")
+	private String	udtStuDob ;
 	
 	private Integer	unumGenderId;
 	
@@ -46,11 +49,11 @@ public class StudentMasterBean implements Serializable {
 	
 	private Integer	unumCurPincd ;
 	
-	private Integer	unumCurMobileNo; 
+	private Long	unumCurMobileNo; 
 	
-	private Integer	unumCurLandLine;
+	private Long	unumCurLandline; 
 	
-	private String	unumStuMailId ;
+	private String	unumStuMailid ;
 	
 	private String	ustrPerAddress ;
 	
@@ -70,11 +73,11 @@ public class StudentMasterBean implements Serializable {
 	
 	private Integer	unumFatherPincd ;
 	
-	private Integer	unumFatherMobileNo;
+	private Long	unumFatherMobileno;
 	
-	private Integer	unumParentLandLine;
+	private Long	unumParentLandline;
 	
-	private String	unumFatherMailId ;
+	private String	unumFatherMailid ;
 	
 	private Integer	unumFatherOccupationId; 
 	
@@ -86,7 +89,7 @@ public class StudentMasterBean implements Serializable {
 	
 	private Integer	unumFatherofcPincd ;
 	
-	private Integer	unumFatherofcMobileno; 
+	private Long	unumFatherofcMobileno; 
 	
 	private Long	unumFatherofcLandline ;
 	
@@ -102,7 +105,7 @@ public class StudentMasterBean implements Serializable {
 	
 	private Integer	unumMotherPincd ;
 	
-	private Integer	unumMotherMobileno;
+	private Long	unumMotherMobileno;
 	
 	private Long	unumMorentLandline;
 	
@@ -118,7 +121,7 @@ public class StudentMasterBean implements Serializable {
 	
 	private Integer	unumMotherofcPincd ;
 	
-	private Integer	unumMotherofcMobileno; 
+	private Long	unumMotherofcMobileno; 
 	
 	private Long	unumMotherofcLandline ;
 	
@@ -180,6 +183,7 @@ public class StudentMasterBean implements Serializable {
 	
 	private Integer	unumIsManagementQuota;
 	
+	@NotNull(message = "Enrollment Number is mandatory")
 	private String	 ustrEnrollmentNo;
 	
 	private String	 ustrStudentFname;
@@ -188,6 +192,6 @@ public class StudentMasterBean implements Serializable {
 	
 	private String 	 ustrPerContactno;
 	
-	private Integer  unumPerMobileno ;
+	private Long  unumPerMobileno ;
 }
 

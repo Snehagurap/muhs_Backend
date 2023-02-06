@@ -4,6 +4,9 @@ import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.IdClass;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 
 
@@ -36,6 +39,7 @@ public class GmstSwSavitbpSchemeApplMst {
 	@Column(name="unum_savitbp_applicationdt")
 	private Date 	unumSavitbpApplicationdt;
 
+	@JsonFormat(pattern="yyyy-MM-dd")
 	@Temporal(TemporalType.DATE)
 	@Column(name="udt_stu_dob")
 	private Date 	udtStuDob;
@@ -68,13 +72,13 @@ public class GmstSwSavitbpSchemeApplMst {
 	private Integer unumCurPincd;
 
 	@Column(name="unum_cur_mobileno")
-	private Integer unumCurMobileno;
+	private Long unumCurMobileNo;
 
 	@Column(name="unum_cur_landline")
-	private Integer unumCurLandline;
+	private Long unumCurLandline;
 
 	@Column(name="unum_stu_mailid")
-	private Integer unumStuMailid;
+	private String unumStuMailid;
 
 	@Column(name="ustr_per_address")
 	private String  ustrPerAddress;
@@ -104,13 +108,13 @@ public class GmstSwSavitbpSchemeApplMst {
 	private Integer unumFatherPincd;
 
 	@Column(name="unum_father_mobileno")
-	private Integer unumFatherMobileno;
+	private Long unumFatherMobileno;
 
 	@Column(name="unum_parent_landline")
-	private Integer unumParentLandline;
+	private Long unumParentLandline;
 
 	@Column(name="unum_father_mailid")
-	private Integer unumFatherMailid;
+	private String unumFatherMailid;
 
 	@Column(name="unum_father_occupation_id")
 	private Integer unumFatherOccupationId;
@@ -128,13 +132,13 @@ public class GmstSwSavitbpSchemeApplMst {
 	private Integer unumFatherofcPincd;
 
 	@Column(name="unum_fatherofc_mobileno")
-	private Integer unumFatherofcMobileno;
+	private Long unumFatherofcMobileno;
 
 	@Column(name="unum_fatherofc_landline")
-	private Integer unumFatherofcLandline;
+	private Long unumFatherofcLandline;
 
 	@Column(name="unum_fatherofc_mailid")
-	private Integer unumFatherofcMailid;
+	private String unumFatherofcMailid;
 
 	@Column(name="ustr_mother_fname")
 	private String  ustrMotherFname;
@@ -152,13 +156,13 @@ public class GmstSwSavitbpSchemeApplMst {
 	private Integer unumMotherPincd;
 
 	@Column(name="unum_mother_mobileno")
-	private Integer unumMotherMobileno;
+	private Long unumMotherMobileno;
 
 	@Column(name="unum_morent_landline")
-	private Integer unumMorentLandline;
+	private Long unumMorentLandline;
 
 	@Column(name="unum_mother_mailid")
-	private Integer unumMotherMailid;
+	private String unumMotherMailid;
 
 	@Column(name="unum_mother_occupation_id")
 	private Integer unumMotherOccupationId;
@@ -176,19 +180,19 @@ public class GmstSwSavitbpSchemeApplMst {
 	private Integer unumMotherofcPincd;
 
 	@Column(name="unum_motherofc_mobileno")
-	private Integer unumMotherofcMobileno;
+	private Long unumMotherofcMobileno;
 
 	@Column(name="unum_motherofc_landline")
-	private Integer unumMotherofcLandline;
+	private Long unumMotherofcLandline;
 
 	@Column(name="unum_therofc_mailid")
-	private Integer unumTherofcMailid;
+	private String unumTherofcMailid;
 
 	@Column(name="unum_relationship_id")
 	private Integer unumRelationshipId;
 
 	@Column(name="unum_parent_annual_income")
-	private Integer unumParentAnnualIncome;
+	private Double unumParentAnnualIncome;
 
 	@Column(name="ustr_student_bankaccount_name")
 	private String  ustrStudentBankaccountName;
@@ -238,7 +242,7 @@ public class GmstSwSavitbpSchemeApplMst {
 	private Date    udtEffTo;
 
 	@Column(name="unum_entry_uid")
-	private Integer unumEntryUid;
+	private Long unumEntryUid;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="udt_entry_date")
@@ -252,5 +256,27 @@ public class GmstSwSavitbpSchemeApplMst {
 	private Date    udtLstModDate;
 
 	@Column(name="unum_approval_statusid")
-	private Integer unumApprovalStatusid;          
+	private Integer unumApprovalStatusid;  
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name="udt_possible_course_comp_dt")
+	private Date udtPossibleCourseCompDt;
+	
+	@Column(name="ustr_present_year")
+	private String ustrPresentYear;
+	
+	@Column(name="ustr_academic_year")
+	private String ustrAcademicYear;
+	
+	@Transient 
+	@Column(name="unum_stu_salutation_id")
+	private Integer unumStuSalutationId;
+	
+	@Transient 
+	@Column(name="unum_father_salutation_id")
+	private Integer unumFatherSalutationId;
+	
+	@Transient 
+	@Column(name="unum_mother_salutation_id")
+	private Integer unumMotherSalutationId;
 }

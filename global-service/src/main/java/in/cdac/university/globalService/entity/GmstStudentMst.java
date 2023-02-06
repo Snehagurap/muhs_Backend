@@ -7,6 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +24,7 @@ public class GmstStudentMst {
 	@Id
 	private Integer	unumIsvalid;
 	
+	@JsonFormat(pattern="yyyy-MM-dd")
 	@Temporal(TemporalType.DATE)
 	@Column(name="udt_stu_dob")
 	private Date	udtStuDob ;
@@ -54,13 +57,13 @@ public class GmstStudentMst {
 	private Integer	unumCurPincd ;
 	
 	@Column(name="unum_cur_mobileno") 
-	private Integer	unumCurMobileNo; 
+	private Long	unumCurMobileNo; 
 	
 	@Column(name="unum_cur_landline") 
-	private Integer	unumCurLandLine;
+	private Long	unumCurLandline;
 	
 	@Column(name="unum_stu_mailid") 
-	private String	unumStuMailId ;
+	private String	unumStuMailid ;
 	
 	@Column(name="ustr_per_address") 
 	private String	ustrPerAddress ;
@@ -90,13 +93,13 @@ public class GmstStudentMst {
 	private Integer	unumFatherPincd ;
 	
 	@Column(name="unum_father_mobileno") 
-	private Integer	unumFatherMobileNo;
+	private Long	unumFatherMobileno;
 	
 	@Column(name="unum_parent_landline") 
-	private Integer	unumParentLandLine;
+	private Long	unumParentLandline;
 	
 	@Column(name="unum_father_mailid") 
-	private String	unumFatherMailId ;
+	private String	unumFatherMailid ;
 	
 	@Column(name="unum_father_occupation_id") 
 	private Integer	unumFatherOccupationId; 
@@ -114,7 +117,7 @@ public class GmstStudentMst {
 	private Integer	unumFatherofcPincd ;
 	
 	@Column(name="unum_fatherofc_mobileno") 
-	private Integer	unumFatherofcMobileno; 
+	private Long	unumFatherofcMobileno; 
 	
 	@Column(name="unum_fatherofc_landline")
 	private Long	unumFatherofcLandline ;
@@ -138,7 +141,7 @@ public class GmstStudentMst {
 	private Integer	unumMotherPincd ;
 	
 	@Column(name="unum_mother_mobileno") 
-	private Integer	unumMotherMobileno;
+	private Long	unumMotherMobileno;
 	
 	@Column(name="unum_morent_landline") 
 	private Long	unumMorentLandline;
@@ -162,7 +165,7 @@ public class GmstStudentMst {
 	private Integer	unumMotherofcPincd ;
 	
 	@Column(name="unum_motherofc_mobileno") 
-	private Integer	unumMotherofcMobileno; 
+	private Long	unumMotherofcMobileno; 
 	
 	@Column(name="unum_motherofc_landline") 
 	private Long	unumMotherofcLandline ;

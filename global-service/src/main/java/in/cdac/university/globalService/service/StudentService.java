@@ -1,5 +1,7 @@
 package in.cdac.university.globalService.service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -32,15 +34,17 @@ public class StudentService {
         studentMasterBean.setUdtEffFrom(d1);
         studentMasterBean.setUnumUnivId(RequestUtility.getUniversityId());
         studentMasterBean.setUnumEntryUid(RequestUtility.getUserId());
-        studentMasterBean.setUnumIsvalid(1);
+        
 		if(studentMasterBean.getUnumStudentId() == 1L) { //save
 			studentMasterBean.setUnumStudentId(studentRepository.getNextId());
 		}
-		else if(studentMasterBean.getUnumIsvalid() ==1 ){
-			GmstStudentMst gmstStudentMst =  studentRepository.findByUnumStudentIdAndUnumUnivIdAndUnumIsvalid(studentMasterBean.getUnumStudentId(),RequestUtility.getUniversityId(),1);
-			StudentMasterBean StudentMasterTemp =  BeanUtils.copyProperties(gmstStudentMst, StudentMasterBean.class);
-			if(! studentMasterBean.equals(StudentMasterTemp))
-				studentRepository.createLog(List.of(studentMasterBean.getUnumStudentId()));
+		else if(studentMasterBean.getUnumIsvalid() != null){
+			if(studentMasterBean.getUnumIsvalid() == 1) {
+				GmstStudentMst gmstStudentMst =  studentRepository.findByUnumStudentIdAndUnumUnivIdAndUnumIsvalid(studentMasterBean.getUnumStudentId(),RequestUtility.getUniversityId(),1);
+				StudentMasterBean StudentMasterTemp =  BeanUtils.copyProperties(gmstStudentMst, StudentMasterBean.class);
+				if(! studentMasterBean.equals(StudentMasterTemp))
+					studentRepository.createLog(List.of(studentMasterBean.getUnumStudentId()));
+			}
 		}
 		else { //update
 			//to remove the draft data
@@ -49,7 +53,10 @@ public class StudentService {
 			gmstStudentMstPK.setUnumIsvalid(2);
 			studentRepository.deleteById(gmstStudentMstPK);
 		}
+		studentMasterBean.setUnumIsvalid(1);
 		GmstStudentMst gmstStudentMst = BeanUtils.copyProperties(studentMasterBean, GmstStudentMst.class);
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		gmstStudentMst.setUdtStuDob(df.parse(studentMasterBean.getUdtStuDob()));
 		studentRepository.save(gmstStudentMst);
 		return ServiceResponse.successObject(studentMasterBean);
 	}
@@ -76,6 +83,8 @@ public class StudentService {
         studentMasterBean.setUnumEntryUid(RequestUtility.getUserId());
         
 		GmstStudentMst gmstStudentMst = BeanUtils.copyProperties(studentMasterBean, GmstStudentMst.class);
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		gmstStudentMst.setUdtStuDob(df.parse(studentMasterBean.getUdtStuDob()));
 		studentRepository.save(gmstStudentMst);
 		return ServiceResponse.successObject(studentMasterBean);
 	}

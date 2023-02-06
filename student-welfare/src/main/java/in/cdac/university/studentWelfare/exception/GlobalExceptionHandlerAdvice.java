@@ -71,4 +71,16 @@ public class GlobalExceptionHandlerAdvice {
         e.printStackTrace();
         return ResponseHandler.generateErrorResponse(e.getMessage());
     }
+    
+    @ExceptionHandler(ServiceNotUpException.class)
+    public ResponseEntity<Object> handleApplicationException(ServiceNotUpException e) {
+        e.printStackTrace();
+        return ResponseHandler.generateErrorResponse(e.getMessage());
+    }
+    
+    @ExceptionHandler(DataNotFoundForGivenEnrollmentNumber.class)
+    public ResponseEntity<Object> handleApplicationException(DataNotFoundForGivenEnrollmentNumber e) {
+        e.printStackTrace();
+        return ResponseHandler.generateErrorResponse(e.getMessage());
+    }
 }

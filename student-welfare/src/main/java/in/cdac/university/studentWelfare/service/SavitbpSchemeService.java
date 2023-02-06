@@ -1,6 +1,8 @@
 package in.cdac.university.studentWelfare.service;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -60,7 +62,7 @@ public class SavitbpSchemeService implements Serializable {
 	public ServiceResponse saveSavitbpScheme(SavitbpSchemeApplMstBean savitbpschemeapplmstbean) throws Exception {
 		
 		//student duplicate Check
-		StudentMasterBean  studentBean= restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_STUDENT+savitbpschemeapplmstbean.getUstrEnrollmentNo(), StudentMasterBean.class,1);
+		StudentMasterBean  studentBean= restUtility.getThrow(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_STUDENT+savitbpschemeapplmstbean.getUstrEnrollmentNo(), StudentMasterBean.class);
         
 		//file upload
         if (savitbpschemeapplmstbean.getUstrAadhaarPath() != null && !savitbpschemeapplmstbean.getUstrAadhaarPath().isBlank()
@@ -84,24 +86,22 @@ public class SavitbpSchemeService implements Serializable {
         
         StudentMasterBean studentMasterBean = BeanUtils.copyProperties(savitbpschemeapplmstbean, StudentMasterBean.class);
         Date d1 = new Date();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         savitbpschemeapplmstbean.setUdtEntryDate(d1);
         savitbpschemeapplmstbean.setUdtEffFrom(d1);
-        savitbpschemeapplmstbean.setUnumSavitbpApplicationdt(d1);
-        savitbpschemeapplmstbean.setUnumIsvalid(1);
         savitbpschemeapplmstbean.setUnumUnivId(RequestUtility.getUniversityId());
         savitbpschemeapplmstbean.setUnumEntryUid(RequestUtility.getUserId());
 
 		//save case 
 		if (studentBean == null) {
 			
-			StudentMasterBean  studentBeanDraft= restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_STUDENT_DRAFT+savitbpschemeapplmstbean.getUstrEnrollmentNo(), StudentMasterBean.class,1);
+			StudentMasterBean  studentBeanDraft= restUtility.getThrow(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_STUDENT_DRAFT+savitbpschemeapplmstbean.getUstrEnrollmentNo(), StudentMasterBean.class);
 	        if(studentBeanDraft == null) {
 	        	studentMasterBean.setUnumStudentId(1L);
 	        }
 	        else {
 	        	studentMasterBean.setUnumStudentId(studentBeanDraft.getUnumStudentId());
 	        }
-	        studentMasterBean.setUnumIsvalid(1);
 	        GmstSwSavitbpSchemeApplMst gmstSwSavitbpSchemeApplMstDraft  = gmstSwSavitbpSchemeApplMstRepository.findByUnumIsvalidAndUnumStudentIdAndUnumUnivId(2,studentMasterBean.getUnumStudentId(),RequestUtility.getUniversityId());
 	        if(gmstSwSavitbpSchemeApplMstDraft == null) {
 	        	savitbpschemeapplmstbean.setUnumSavitbpApplicationid( gmstSwSavitbpSchemeApplMstRepository.getNextId());
@@ -112,27 +112,37 @@ public class SavitbpSchemeService implements Serializable {
 	        }
 			StudentMasterBean studentMasterBeanSaved =  restUtility.postForData(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_UPDATE_SAVE_STUDENT,studentMasterBean, StudentMasterBean.class);
 			savitbpschemeapplmstbean.setUnumStudentId(studentMasterBeanSaved.getUnumStudentId());
-			
+			savitbpschemeapplmstbean.setUnumIsvalid(1);
 		    //save
 			GmstSwSavitbpSchemeApplMst gmstSwSavitbpSchemeApplMst = BeanUtils.copyProperties(savitbpschemeapplmstbean, GmstSwSavitbpSchemeApplMst.class);
 			SavitbpSchemeApplTrackermst savitbpSchemeApplTrackermst = BeanUtils.copyProperties(savitbpschemeapplmstbean, SavitbpSchemeApplTrackermst.class);
 			SavitbpSchemeApplTrackerdtlBean savitbpSchemeApplTrackerdtlBean = BeanUtils.copyProperties(savitbpschemeapplmstbean, SavitbpSchemeApplTrackerdtlBean.class);
+			gmstSwSavitbpSchemeApplMst.setUdtStuDob(df.parse(savitbpschemeapplmstbean.getUdtStuDob()));
+			gmstSwSavitbpSchemeApplMst.setUdtPossibleCourseCompDt(df.parse(savitbpschemeapplmstbean.getUdtPossibleCourseCompDt()));
+			gmstSwSavitbpSchemeApplMst.setUnumSavitbpApplicationdt(df.parse(savitbpschemeapplmstbean.getUnumSavitbpApplicationdt()));
 			gmstSwSavitbpSchemeApplMstRepository.save(gmstSwSavitbpSchemeApplMst);
 			savitbpSchemeApplTrackermstService.saveSavitbpSchemeApplTrackermst(savitbpSchemeApplTrackermst);
 			savitbpSchemeApplTrackerdtlService.saveSavitbpSchemeApplTrackerDtl(savitbpSchemeApplTrackerdtlBean);
 		} //update case
 		else {
 			studentMasterBean.setUnumStudentId(studentBean.getUnumStudentId());
+			studentMasterBean.setUnumIsvalid(1);
+			savitbpschemeapplmstbean.setUnumIsvalid(1);
 	        GmstSwSavitbpSchemeApplMst gmstSwSavitbpSchemeApplMstDraft  =gmstSwSavitbpSchemeApplMstRepository.findByUnumIsvalidAndUnumStudentIdAndUnumUnivId(2,studentMasterBean.getUnumStudentId(),RequestUtility.getUniversityId());
 	        if(gmstSwSavitbpSchemeApplMstDraft == null) {
 	        	savitbpschemeapplmstbean.setUnumSavitbpApplicationid( gmstSwSavitbpSchemeApplMstRepository.getNextId());
 	        }
 	        else {
-	        	savitbpschemeapplmstbean.setUnumSavitbpApplicationid(studentMasterBean.getUnumStudentId());
+	        	savitbpschemeapplmstbean.setUnumSavitbpApplicationid(gmstSwSavitbpSchemeApplMstDraft.getUnumSavitbpApplicationid());
+	        	gmstSwSavitbpSchemeApplMstRepository.delete(gmstSwSavitbpSchemeApplMstDraft);
 	        }
-			GmstSwSavitbpSchemeApplMst gmstSwSavitbpSchemeApplMst = BeanUtils.copyProperties(savitbpschemeapplmstbean, GmstSwSavitbpSchemeApplMst.class);
+	        StudentMasterBean studentMasterBeanSaved = restUtility.postForData(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_UPDATE_SAVE_STUDENT,studentMasterBean, StudentMasterBean.class);
+	        savitbpschemeapplmstbean.setUnumStudentId(studentMasterBeanSaved.getUnumStudentId());
+	        GmstSwSavitbpSchemeApplMst gmstSwSavitbpSchemeApplMst = BeanUtils.copyProperties(savitbpschemeapplmstbean, GmstSwSavitbpSchemeApplMst.class);
+			gmstSwSavitbpSchemeApplMst.setUdtStuDob(df.parse(savitbpschemeapplmstbean.getUdtStuDob()));
+			gmstSwSavitbpSchemeApplMst.setUdtPossibleCourseCompDt(df.parse(savitbpschemeapplmstbean.getUdtPossibleCourseCompDt()));
+			gmstSwSavitbpSchemeApplMst.setUnumSavitbpApplicationdt(df.parse(savitbpschemeapplmstbean.getUnumSavitbpApplicationdt()));
 			gmstSwSavitbpSchemeApplMstRepository.save(gmstSwSavitbpSchemeApplMst);
-			restUtility.postForData(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_UPDATE_SAVE_STUDENT,studentMasterBean, StudentMasterBean.class);
 		}
 		     
 		 return ServiceResponse.builder()
@@ -144,7 +154,7 @@ public class SavitbpSchemeService implements Serializable {
 	@Transactional
 	public ServiceResponse saveDraftSavitbpScheme(@Valid SavitbpSchemeApplMstBean savitbpschemeapplmstbean) throws Exception {
 		//student duplicate Check
-				StudentMasterBean  studentBean= restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_STUDENT+savitbpschemeapplmstbean.getUstrEnrollmentNo(), StudentMasterBean.class,1);
+				StudentMasterBean  studentBean= restUtility.getThrow(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_STUDENT+savitbpschemeapplmstbean.getUstrEnrollmentNo(), StudentMasterBean.class);
 		        
 				//file upload
 		        if (savitbpschemeapplmstbean.getUstrAadhaarPath() != null && !savitbpschemeapplmstbean.getUstrAadhaarPath().isBlank()
@@ -168,17 +178,17 @@ public class SavitbpSchemeService implements Serializable {
 		        
 		        StudentMasterBean studentMasterBean = BeanUtils.copyProperties(savitbpschemeapplmstbean, StudentMasterBean.class);
 		        Date d1 = new Date();
+		        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		        savitbpschemeapplmstbean.setUdtEntryDate(d1);
 		        savitbpschemeapplmstbean.setUdtEffFrom(d1);
-		        savitbpschemeapplmstbean.setUnumSavitbpApplicationdt(d1);
 		        savitbpschemeapplmstbean.setUnumIsvalid(2);
 		        savitbpschemeapplmstbean.setUnumUnivId(RequestUtility.getUniversityId());
 		        savitbpschemeapplmstbean.setUnumEntryUid(RequestUtility.getUserId());
 
 				//save case 
 				if (studentBean == null) {
-					
-					StudentMasterBean  studentBeanDraft= restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_STUDENT_DRAFT+savitbpschemeapplmstbean.getUstrEnrollmentNo(), StudentMasterBean.class,1);
+					savitbpschemeapplmstbean.setUdtLstModDate(d1);
+					StudentMasterBean  studentBeanDraft= restUtility.getThrow(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_STUDENT_DRAFT+savitbpschemeapplmstbean.getUstrEnrollmentNo(), StudentMasterBean.class);
 			        if(studentBeanDraft == null) {
 			        	studentMasterBean.setUnumStudentId(1L);
 			        }
@@ -198,10 +208,15 @@ public class SavitbpSchemeService implements Serializable {
 					savitbpschemeapplmstbean.setUnumStudentId(studentMasterBeanSaved.getUnumStudentId());
 			        //cloning
 					GmstSwSavitbpSchemeApplMst gmstSwSavitbpSchemeApplMst = BeanUtils.copyProperties(savitbpschemeapplmstbean, GmstSwSavitbpSchemeApplMst.class);
+
+					gmstSwSavitbpSchemeApplMst.setUdtStuDob(df.parse(savitbpschemeapplmstbean.getUdtStuDob()));
+					gmstSwSavitbpSchemeApplMst.setUdtPossibleCourseCompDt(df.parse(savitbpschemeapplmstbean.getUdtPossibleCourseCompDt()));
+					gmstSwSavitbpSchemeApplMst.setUnumSavitbpApplicationdt(df.parse(savitbpschemeapplmstbean.getUnumSavitbpApplicationdt()));
 					gmstSwSavitbpSchemeApplMstRepository.save(gmstSwSavitbpSchemeApplMst);
 
 				} //update case
 				else {
+					savitbpschemeapplmstbean.setUdtLstModDate(d1);
 					studentMasterBean.setUnumStudentId(studentBean.getUnumStudentId());
 					studentMasterBean.setUnumIsvalid(1);
 			        GmstSwSavitbpSchemeApplMst gmstSwSavitbpSchemeApplMstDraft  =gmstSwSavitbpSchemeApplMstRepository.findByUnumIsvalidAndUnumStudentIdAndUnumUnivId(2,studentMasterBean.getUnumStudentId(),RequestUtility.getUniversityId());
@@ -212,9 +227,13 @@ public class SavitbpSchemeService implements Serializable {
 			        	savitbpschemeapplmstbean.setUnumSavitbpApplicationid(gmstSwSavitbpSchemeApplMstDraft.getUnumSavitbpApplicationid());
 			        	gmstSwSavitbpSchemeApplMstRepository.delete(gmstSwSavitbpSchemeApplMstDraft);
 			        }
-					restUtility.postForData(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_UPDATE_SAVE_STUDENT_DRAFT,studentMasterBean, StudentMasterBean.class);
+			        StudentMasterBean studentMasterBeanSaved = restUtility.postForData(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_UPDATE_SAVE_STUDENT_DRAFT,studentMasterBean, StudentMasterBean.class);
+					savitbpschemeapplmstbean.setUnumStudentId(studentMasterBeanSaved.getUnumStudentId());
 					GmstSwSavitbpSchemeApplMst gmstSwSavitbpSchemeApplMst = BeanUtils.copyProperties(savitbpschemeapplmstbean, GmstSwSavitbpSchemeApplMst.class);
-					gmstSwSavitbpSchemeApplMstRepository.save(gmstSwSavitbpSchemeApplMst);
+					gmstSwSavitbpSchemeApplMst.setUdtStuDob(df.parse(savitbpschemeapplmstbean.getUdtStuDob()));
+					gmstSwSavitbpSchemeApplMst.setUdtPossibleCourseCompDt(df.parse(savitbpschemeapplmstbean.getUdtPossibleCourseCompDt()));
+					gmstSwSavitbpSchemeApplMst.setUnumSavitbpApplicationdt(df.parse(savitbpschemeapplmstbean.getUnumSavitbpApplicationdt()));
+			        gmstSwSavitbpSchemeApplMstRepository.save(gmstSwSavitbpSchemeApplMst);
 				}
 				     
 				 return ServiceResponse.builder()
@@ -225,20 +244,20 @@ public class SavitbpSchemeService implements Serializable {
 	}
 
 	public ServiceResponse getDraftSavitbpScheme(String studentEnrollmentNo) throws Exception {
-		StudentMasterBean  studentBean= restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_STUDENT_DRAFT+studentEnrollmentNo, StudentMasterBean.class,1);
+		StudentMasterBean  studentBean= restUtility.getThrow(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_STUDENT_DRAFT+studentEnrollmentNo, StudentMasterBean.class);
+		if(studentBean == null)
+        	throw new DataNotFoundForGivenEnrollmentNumber("No Student Found With Given Enrollment Number in Draft");
         GmstSwSavitbpSchemeApplMst gmstSwSavitbpSchemeApplMstDraft  = gmstSwSavitbpSchemeApplMstRepository.findByUnumIsvalidAndUnumStudentIdAndUnumUnivId(2,studentBean.getUnumStudentId(),RequestUtility.getUniversityId());
-        SavitbpSchemeApplMstBean savitbpschemeapplmstbean =  BeanUtils.copyProperties(gmstSwSavitbpSchemeApplMstDraft, SavitbpSchemeApplMstBean.class);
-        if(savitbpschemeapplmstbean == null)
-        	throw new DataNotFoundForGivenEnrollmentNumber();
+		SavitbpSchemeApplMstBean savitbpschemeapplmstbean =  BeanUtils.copyProperties(gmstSwSavitbpSchemeApplMstDraft, SavitbpSchemeApplMstBean.class);
         return ServiceResponse.successObject(savitbpschemeapplmstbean);
 	}
 
 	public ServiceResponse getSavitbpScheme(String studentEnrollmentNo) throws Exception {
-		StudentMasterBean  studentBean= restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_STUDENT+studentEnrollmentNo, StudentMasterBean.class,1);
-        GmstSwSavitbpSchemeApplMst gmstSwSavitbpSchemeApplMstDraft  = gmstSwSavitbpSchemeApplMstRepository.findByUnumIsvalidAndUnumStudentIdAndUnumUnivId(1,studentBean.getUnumStudentId(),RequestUtility.getUniversityId());
-        SavitbpSchemeApplMstBean savitbpschemeapplmstbean =  BeanUtils.copyProperties(gmstSwSavitbpSchemeApplMstDraft, SavitbpSchemeApplMstBean.class);
-        if(savitbpschemeapplmstbean == null)
-        	throw new DataNotFoundForGivenEnrollmentNumber();
+		StudentMasterBean  studentBean= restUtility.getThrow(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_STUDENT+studentEnrollmentNo, StudentMasterBean.class);
+        if(studentBean == null)
+         	throw new DataNotFoundForGivenEnrollmentNumber("No Student Found With Given Enrollment Number");
+		GmstSwSavitbpSchemeApplMst gmstSwSavitbpSchemeApplMst  = gmstSwSavitbpSchemeApplMstRepository.findByUnumIsvalidAndUnumStudentIdAndUnumUnivId(1,studentBean.getUnumStudentId(),RequestUtility.getUniversityId());
+        SavitbpSchemeApplMstBean savitbpschemeapplmstbean =  BeanUtils.copyProperties(gmstSwSavitbpSchemeApplMst, SavitbpSchemeApplMstBean.class);
         return ServiceResponse.successObject(savitbpschemeapplmstbean);
 	}
 }
