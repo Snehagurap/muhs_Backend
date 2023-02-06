@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import in.cdac.university.studentWelfare.exception.ServiceNotUpException;
-import lombok.Getter;
-import lombok.var;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +20,6 @@ import java.util.Objects;
 
 @Component
 @RefreshScope
-@Getter
 @Slf4j
 public class RestUtility {
 
@@ -63,15 +60,35 @@ public class RestUtility {
         }
     }
 
-    public <T> T get(SERVICE_TYPE serviceType, String url, Class<T> returnType,int excep) {
+    public <T> T getThrow(SERVICE_TYPE serviceType, String url, Class<T> returnType) throws ServiceNotUpException {
+    	try {
+            var restResponse = extracted(serviceType, url);
+            if (restResponse.getStatusCode() == HttpStatus.OK) {
+            	return this.get(serviceType, url, returnType);
+            } 
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ServiceNotUpException("Called Service is Not UP or Not Responding");
+        }
+    	
+        return null;
+    
+    }
+
+	private ResponseEntity<String> extracted(SERVICE_TYPE serviceType, String url) {
+		HttpHeaders headers = getHttpHeaders();
+
+		HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
+
+		var restResponse = restTemplate.exchange(
+		        serviceType.url + "/" + url, HttpMethod.GET, httpEntity, String.class
+		);
+		return restResponse;
+	}
+	
+    public <T> T get(SERVICE_TYPE serviceType, String url, Class<T> returnType) {
         try {
-            HttpHeaders headers = getHttpHeaders();
-
-            HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
-
-            var restResponse = restTemplate.exchange(
-                    serviceType.url + "/" + url, HttpMethod.GET, httpEntity, String.class
-            );
+            var restResponse = extracted(serviceType, url);
 
             if (restResponse.getStatusCode() == HttpStatus.OK) {
                 var jsonString = restResponse.getBody();
@@ -80,13 +97,9 @@ public class RestUtility {
                 int status = actualObject.get("status").asInt();
                 if (status == 0) {
                     String message = actualObject.get("message").asText();
-                    if(excep ==1) {
-                    	throw new ServiceNotUpException();
-                    }
                     log.error("Unable to call Web Service: {}, Error: {}", serviceType.url + "/" + url, message);
                     return null;
                 }
-                //System.out.println(actualObject.get("data"));
                 return objectMapper.convertValue(actualObject.get("data"), returnType);
             }
         } catch (Exception e) {

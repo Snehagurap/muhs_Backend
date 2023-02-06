@@ -268,4 +268,15 @@ public class GmstSwSavitbpSchemeApplMst {
 	@Column(name="ustr_academic_year")
 	private String ustrAcademicYear;
 	
+	@Transient 
+	@Column(name="unum_stu_salutation_id")
+	private Integer unumStuSalutationId;
+	
+	@Transient 
+	@Column(name="unum_father_salutation_id")
+	private Integer unumFatherSalutationId;
+	
+	@Transient 
+	@Column(name="unum_mother_salutation_id")
+	private Integer unumMotherSalutationId;
 }
