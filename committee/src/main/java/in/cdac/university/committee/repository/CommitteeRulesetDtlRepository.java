@@ -13,6 +13,7 @@ import java.util.List;
 @Repository
 public interface CommitteeRulesetDtlRepository extends JpaRepository<GbltCommitteeRulesetDtl, GbltCommitteeRulesetDtlPK> {
 
+    List<GbltCommitteeRulesetDtl> findByUnumComRsIdAndUnumUnivId(Long unumComRsId, Integer unumUnivId);
 
     List<GbltCommitteeRulesetDtl> findByUnumComRsIdAndUnumIsvalidAndUnumUnivId(Long unumComRsId, Integer unumIsvalid, Integer unumUnivId);
 

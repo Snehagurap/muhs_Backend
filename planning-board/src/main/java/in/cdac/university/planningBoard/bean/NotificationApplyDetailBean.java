@@ -13,6 +13,8 @@ public class NotificationApplyDetailBean {
     private String notificationType;
     private String faculty;
 
+    private String stream;
+
     private Long unumMtempleId;
     private Long unumNdtlId;
     private Long unumNid;

@@ -77,7 +77,6 @@ public class ApplicantController {
         );
     }
 
-
     // Put mapping replaced by POST
     @PostMapping("verify")
     public ResponseEntity<?> verifyApplicant(@Valid @RequestBody ApplicantBean applicantBean) throws Exception {
@@ -104,6 +103,14 @@ public class ApplicantController {
     public ResponseEntity<?> getApplicantDocument(@PathVariable("documentId") Integer documentId) throws Exception {
         return ResponseHandler.generateResponse(
                 applicantService.getApplicantDocument(documentId)
+        );
+    }
+
+    @GetMapping(value = {"field/{fieldName}", "field/{fieldName}/{applicantId}"})
+    public ResponseEntity<?> getApplicantFieldDetail(@PathVariable("fieldName") String fieldName,
+                                                     @PathVariable(name = "applicantId", required = false) Long applicantId) throws Exception {
+        return ResponseHandler.generateResponse(
+                applicantService.getApplicantFieldDetail(fieldName, applicantId)
         );
     }
 }

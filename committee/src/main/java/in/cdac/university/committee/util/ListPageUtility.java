@@ -24,6 +24,7 @@ public class ListPageUtility {
                 listColumnBean.setOrder(column.order());
                 listColumnBean.setOmit(column.omit());
                 listColumnBean.setSearchable(column.searchable());
+                listColumnBean.setWidth(column.width());
                 columnList.add(listColumnBean);
             }
         }

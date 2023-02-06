@@ -33,10 +33,11 @@ public class FtpService {
             "image/jpeg", "image/png", "image/jpeg",
             "application/pdf", "application/msword",
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document",      // docx
-            "application/vnd.oasis.opendocument.text"                                       // odt
+            "application/vnd.oasis.opendocument.text",                                      // odt
+            "application/x-zip-compressed", "application/zip"                               // zip
     );
 
-    private static final List<String> allowedExtensions = List.of("png", "jpg", "jpeg", "pdf", "doc", "docx");
+    private static final List<String> allowedExtensions = List.of("png", "jpg", "jpeg", "pdf", "doc", "docx", "zip");
 
     private final Pattern fileNameRegex = Pattern.compile("^[A-Za-z0-9-_\\s]+[.][A-Za-z]{3,4}$");
 
@@ -69,13 +70,14 @@ public class FtpService {
 
         // Check for file types
         String contentType = file.getContentType();
+        log.info("File Name: {}, Content Type: {}", file.getOriginalFilename(), contentType);
         Optional<String> contentTypeOptional = allowedContentTypes.stream()
                 .filter(allowedContentType -> allowedContentType.equals(contentType))
                 .findFirst();
 
         if (contentTypeOptional.isEmpty()) {
             log.error("Content Type: {}", contentType);
-            return ServiceResponse.errorResponse("Invalid file type. Allowed file types are png, jpeg, jpg, pdf, doc, docx");
+            return ServiceResponse.errorResponse("Invalid file type. Allowed file types are " + allowedExtensions);
         }
 
         // Check for file content
@@ -84,6 +86,8 @@ public class FtpService {
 
         Tika tika = new Tika();
         String detectedType = tika.detect(file.getInputStream(), metadata);
+        if (detectedType.equals("application/zip"))
+            detectedType = "application/x-zip-compressed";
         if (!detectedType.equals(contentType)) {
             log.error("Detected file type: {}", detectedType);
             log.error("File Content type: {}", contentType);

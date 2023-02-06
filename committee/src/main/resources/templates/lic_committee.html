@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>LIC Committee</title>
+</head>
+<body>
+    <div>
+        <div style="text-align: center">
+            <h3>LIC Appointment Letter</h3>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+            <div>Outward No: MUHS/</div>
+            <div style="flex-grow: 1"></div>
+            <div>Date: <th:block th:text="${#dates.format(committee.udtLicCreateDate, 'dd-MM-yyyy')}"/></div>
+        </div>
+        <div style="display: block; margin-top: 10px">
+            To,
+        </div>
+        <div style="padding-left: 15px">
+            <table width="100%" cellpadding="5">
+                <tr th:each="member, iStat: ${members}">
+                    <td width="4%" style="padding-top: 15px; vertical-align: top" th:text="${iStat.index + 1}"/>
+                    <td width="48%" style="padding-top: 15px; vertical-align: top" th:text="${member.unumLicPref1Empname}"/>
+                    <td width="48%" style="padding-top: 15px; padding-left: 30px; vertical-align: top" th:text="${member.roleName}"/>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td colspan="2">
+                        <div style="padding-top: 15px; white-space: pre-line;"
+                             th:text="'Subject: Regarding formation of Local Inspection Committee for opening of new college'" />
+
+                        <div style="padding-top: 15px; white-space: pre-line;"
+                             th:text="'Sir/Madam,'" />
+
+                        <div style="padding-top: 15px; white-space: pre-line;"> </div>
+                             Above mentioned college has received No Objection Certificate from Government of Maharashtra as per the
+                             letter no. ${committee.letterNo}, Dt. ${#dates.format(committee.letterDate, 'dd-MM-yyyy')}
+                             for intake capacity of ${committee.intakeCapacity} students.
+
+
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

@@ -62,7 +62,7 @@ public class PdfGeneratorUtil {
         }
 
         String processedHtml = templateEngine.process(templateName, ctx);
-
+        log.info("HTML: {}", processedHtml);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             HtmlConverter.convertToPdf(processedHtml, baos);
