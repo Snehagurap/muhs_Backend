@@ -60,7 +60,7 @@ public class RestUtility {
         }
     }
 
-    public <T> T getThrow(SERVICE_TYPE serviceType, String url, Class<T> returnType) throws ServiceNotUpException {
+    public <T> T getOrThrow(SERVICE_TYPE serviceType, String url, Class<T> returnType) throws ServiceNotUpException {
     	try {
             var restResponse = extracted(serviceType, url);
             if (restResponse.getStatusCode() == HttpStatus.OK) {
