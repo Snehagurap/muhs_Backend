@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -17,7 +19,7 @@ public class SavitbpSchemeApplMstBean {
 	
 	private Long 	unumSavitbpApplicationid;
 	
-	private Date 	unumSavitbpApplicationdt;
+	private String 	unumSavitbpApplicationdt;
 	
 	private Long 	unumSchemeId;
 	
@@ -25,7 +27,8 @@ public class SavitbpSchemeApplMstBean {
 	
 	private Long 	unumStudentId;
 	
-	private Date 	udtStuDob;
+	@JsonFormat(pattern="yyyy-MM-dd")
+	private String 	udtStuDob;
 	
 	private Integer unumGenderId;
 	
@@ -45,11 +48,11 @@ public class SavitbpSchemeApplMstBean {
 	
 	private Integer unumCurPincd;
 	
-	private Integer unumCurMobileno;
+	private Long unumCurMobileNo; 
 	
-	private Integer unumCurLandline;
+	private Long unumCurLandline;
 	
-	private Integer unumStuMailid;
+	private String unumStuMailid;
 	
 	private String  ustrPerAddress;
 	
@@ -69,11 +72,11 @@ public class SavitbpSchemeApplMstBean {
 	
 	private Integer unumFatherPincd;
 	
-	private Integer unumFatherMobileno;
+	private Long unumFatherMobileno;
 	
-	private Integer unumParentLandline;
+	private Long unumParentLandline;
 	
-	private Integer unumFatherMailid;
+	private String unumFatherMailid;
 	
 	private Integer unumFatherOccupationId;
 	
@@ -85,11 +88,11 @@ public class SavitbpSchemeApplMstBean {
 	
 	private Integer unumFatherofcPincd;
 	
-	private Integer unumFatherofcMobileno;
+	private Long unumFatherofcMobileno;
 	
-	private Integer unumFatherofcLandline;
+	private Long unumFatherofcLandline;
 	
-	private Integer unumFatherofcMailid;
+	private String unumFatherofcMailid;
 	
 	private String  ustrMotherFname;
 	
@@ -101,11 +104,11 @@ public class SavitbpSchemeApplMstBean {
 	
 	private Integer unumMotherPincd;
 	
-	private Integer unumMotherMobileno;
+	private Long unumMotherMobileno;
 	
-	private Integer unumMorentLandline;
+	private Long unumMorentLandline;
 	
-	private Integer unumMotherMailid;
+	private String unumMotherMailid;
 	
 	private Integer unumMotherOccupationId;
 	
@@ -117,15 +120,15 @@ public class SavitbpSchemeApplMstBean {
 	
 	private Integer unumMotherofcPincd;
 	
-	private Integer unumMotherofcMobileno;
+	private Long unumMotherofcMobileno;
 	
-	private Integer unumMotherofcLandline;
+	private Long unumMotherofcLandline;
 	
-	private Integer unumTherofcMailid;
+	private String unumTherofcMailid;
 	
 	private Integer unumRelationshipId;
 	
-	private Integer unumParentAnnualIncome;
+	private Double unumParentAnnualIncome;
 	
 	private String  ustrStudentBankaccountName;
 	
@@ -179,6 +182,7 @@ public class SavitbpSchemeApplMstBean {
 	
 	private Integer	unumIsManagementQuota;
 	
+	
 	private String	 ustrEnrollmentNo;
 	
 	private String	 ustrStudentFname;
@@ -187,7 +191,13 @@ public class SavitbpSchemeApplMstBean {
 	
 	private String 	 ustrPerContactno;
 	
-	private Integer  unumPerMobileno ;
+	private Long  unumPerMobileno ;
 	
 	private String   ustrPassingMarksheetPath;
+	
+	private String udtPossibleCourseCompDt;
+	
+	private String ustrPresentYear;
+	
+	private String ustrAcademicYear;
 }
