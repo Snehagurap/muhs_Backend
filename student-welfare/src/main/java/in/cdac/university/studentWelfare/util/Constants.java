@@ -10,6 +10,8 @@ public class Constants {
     public static final String URL_GET_NOTIFICATION_TYPE = "/global/notificationType/all";
     public static final String URL_GET_NOTIFICATION_TYPE_BY_ID = "/global/notificationType/";
 
+    public static final String URL_GET_NOTIFICATION_BY_ID = "/pb/notification/";
+
     public static final String URL_GET_ALL_COURSE_TYPES = "/global/courseType/all";
     public static final String URL_GET_ALL_FACULTIES = "/global/faculty/all";
 
