@@ -3,9 +3,6 @@ package in.cdac.university.globalService.entity;
 import java.util.Date;
 
 import javax.persistence.*;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -222,7 +219,7 @@ public class GmstStudentMst {
 	private Date	udtEntryDate;
 	
 	@Column(name="unum_lst_mod_uid") 
-	private Integer	unumLstModUid;
+	private Long	unumLstModUid;
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name="udt_lst_mod_date") 
@@ -272,5 +269,14 @@ public class GmstStudentMst {
 	
 	@Column(name="unum_per_mobileno")
 	private Integer  unumPerMobileno ;
+	
+	@Column(name="unum_stu_salutation_id")
+	private Integer unumStuSalutationId;
+	
+	@Column(name="unum_father_salutation_id")
+	private Integer unumFatherSalutationId;
+	
+	@Column(name="unum_mother_salutation_id")
+	private Integer unumMotherSalutationId;
 }
 
