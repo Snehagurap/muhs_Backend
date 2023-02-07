@@ -3,6 +3,7 @@ package in.cdac.university.globalService.util;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import in.cdac.university.globalService.exception.ApplicationException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +71,7 @@ public class RestUtility {
         }
     }
 
-    public <T> T get(SERVICE_TYPE serviceType, String url, Class<T> returnType) {
+    public <T> T callService(SERVICE_TYPE serviceType, String url, Class<T> returnType, boolean shouldThrow) {
         try {
             HttpHeaders headers = getHttpHeaders();
 
@@ -90,15 +91,26 @@ public class RestUtility {
                     log.error("Unable to call Web Service: {}", message);
                     return null;
                 }
-                return objectMapper.convertValue(actualObject.get("data"), returnType);
+                if (actualObject.get("data") != null)
+                    return objectMapper.convertValue(actualObject.get("data"), returnType);
             }
         } catch (HttpClientErrorException e) {
+            if (shouldThrow)
+                throw new ApplicationException("Service is not working");
             log.error("Client Error: {}", e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return null;
+    }
+
+    public <T> T get(SERVICE_TYPE serviceType, String url, Class<T> returnType) {
+        return callService(serviceType, url, returnType, false);
+    }
+
+    public <T> T getOrThrow(SERVICE_TYPE serviceType, String url, Class<T> returnType) {
+        return callService(serviceType, url, returnType, true);
     }
 
     public <T> T post(SERVICE_TYPE serviceType, String url, Object requestBody, Class<T> returnType) {
