@@ -30,6 +30,9 @@ public class RestUtility {
     private ObjectMapper objectMapper;
 
     private static String serviceCommitteeUrl;
+
+    private static String servicePlanningBoardUrl;
+
     private static String serviceUsmUrl;
 
     private static String serviceGlobalUrl;
@@ -49,10 +52,17 @@ public class RestUtility {
         serviceGlobalUrl = url;
     }
 
+    @Value("${config.service.pb.url}")
+    public void setServicePlanningBoardUrl(String url) {
+        servicePlanningBoardUrl = url;
+    }
+
     public enum SERVICE_TYPE {
         COMMITTEE(serviceCommitteeUrl),
         GLOBAL(serviceGlobalUrl),
-        USM(serviceUsmUrl);
+        USM(serviceUsmUrl),
+
+        PLANNING_BOARD(servicePlanningBoardUrl);
 
         public final String url;
         SERVICE_TYPE(String url) {
