@@ -64,11 +64,20 @@ public class RestUtility {
     	try {
             var restResponse = extracted(serviceType, url);
             if (restResponse.getStatusCode() == HttpStatus.OK) {
-            	return this.get(serviceType, url, returnType);
-            } 
+                var jsonString = restResponse.getBody();
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode actualObject = mapper.readTree(jsonString);
+                int status = actualObject.get("status").asInt();
+                if (status == 0) {
+                    String message = actualObject.get("message").asText();
+                    throw new ServiceNotUpException("Called Service is Not UP or Not Responding");
+                    //return null;
+                }
+                return objectMapper.convertValue(actualObject.get("data"), returnType);
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ServiceNotUpException("Called Service is Not UP or Not Responding");
+            
         }
     	
         return null;

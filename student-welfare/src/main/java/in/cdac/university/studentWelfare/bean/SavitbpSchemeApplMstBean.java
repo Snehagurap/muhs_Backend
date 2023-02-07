@@ -156,7 +156,7 @@ public class SavitbpSchemeApplMstBean {
 	
 	private Integer unumUnivId;
 	
-	private Date    udtEffFrom;
+	private String    udtEffFrom;
 	
 	private Date    udtEffTo;
 	
@@ -164,9 +164,9 @@ public class SavitbpSchemeApplMstBean {
 	
 	private Long unumEntryUid;
 	
-	private Date    udtEntryDate;
+	private String    udtEntryDate;
 	
-	private Integer unumLstModUid;
+	private Long unumLstModUid;
 	
 	private Date    udtLstModDate;
 	
@@ -206,4 +206,7 @@ public class SavitbpSchemeApplMstBean {
 	private Integer unumFatherSalutationId;
 	
 	private Integer unumMotherSalutationId;
+	
+	private Integer 	unumCourseId;
+	
 }
