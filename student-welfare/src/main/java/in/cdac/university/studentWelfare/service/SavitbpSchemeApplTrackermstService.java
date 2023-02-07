@@ -1,5 +1,7 @@
 package in.cdac.university.studentWelfare.service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,24 +27,50 @@ public class SavitbpSchemeApplTrackermstService {
 	
 	@Transactional
 	public ServiceResponse saveSavitbpSchemeApplTrackermst(SavitbpSchemeApplTrackermst savitbpSchemeApplTrackermst) throws Exception {
+		Date d1 = new Date();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         savitbpSchemeApplTrackermst.setUnumIsvalid(1);
         savitbpSchemeApplTrackermst.setUnumSno(1);
         savitbpSchemeApplTrackermst.setUnumApplDecisionStatusid(1L);
         savitbpSchemeApplTrackermst.setUnumApplLevelid(1L);
         savitbpSchemeApplTrackermst.setUnumApplStatusid(1L);
+        savitbpSchemeApplTrackermst.setUdtLstModDate(d1);
 		GmstSwSavitbpSchemeApplTrackermst gmstSwSavitbpSchemeApplTrackermst = BeanUtils.copyProperties(savitbpSchemeApplTrackermst, GmstSwSavitbpSchemeApplTrackermst.class);
+		if(savitbpSchemeApplTrackermst.getUdtEffFrom() != null && (!savitbpSchemeApplTrackermst.getUdtEffFrom().isEmpty()) )
+			gmstSwSavitbpSchemeApplTrackermst.setUdtEffFrom(df.parse(savitbpSchemeApplTrackermst.getUdtEffFrom()));
+		else {
+			gmstSwSavitbpSchemeApplTrackermst.setUdtEffFrom(d1);
+		}
+		if(savitbpSchemeApplTrackermst.getUdtEntryDate() != null && (!savitbpSchemeApplTrackermst.getUdtEntryDate().isEmpty()))
+			gmstSwSavitbpSchemeApplTrackermst.setUdtEntryDate(df.parse(savitbpSchemeApplTrackermst.getUdtEntryDate()));
+		else {
+			gmstSwSavitbpSchemeApplTrackermst.setUdtEntryDate(d1);
+		}
 		gmstSwSavitbpSchemeApplTrackermstRepository.save(gmstSwSavitbpSchemeApplTrackermst);
 		return ServiceResponse.successObject(savitbpSchemeApplTrackermst);
 	}
 	
 	@Transactional
 	public ServiceResponse updateSavitbpSchemeApplTrackermst(SavitbpSchemeApplTrackermst savitbpSchemeApplTrackermst) throws Exception {
-        savitbpSchemeApplTrackermst.setUnumIsvalid(1);
+		Date d1 = new Date();
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		savitbpSchemeApplTrackermst.setUnumIsvalid(1);
         savitbpSchemeApplTrackermst.setUnumSno(1);
         savitbpSchemeApplTrackermst.setUnumApplDecisionStatusid(1L);
         savitbpSchemeApplTrackermst.setUnumApplLevelid(1L);
         savitbpSchemeApplTrackermst.setUnumApplStatusid(1L);
+        savitbpSchemeApplTrackermst.setUdtLstModDate(d1);
 		GmstSwSavitbpSchemeApplTrackermst gmstSwSavitbpSchemeApplTrackermst = BeanUtils.copyProperties(savitbpSchemeApplTrackermst, GmstSwSavitbpSchemeApplTrackermst.class);
+		if(savitbpSchemeApplTrackermst.getUdtEffFrom() != null && (!savitbpSchemeApplTrackermst.getUdtEffFrom().isEmpty()) )
+			gmstSwSavitbpSchemeApplTrackermst.setUdtEffFrom(df.parse(savitbpSchemeApplTrackermst.getUdtEffFrom()));
+		else {
+			gmstSwSavitbpSchemeApplTrackermst.setUdtEffFrom(d1);
+		}
+		if(savitbpSchemeApplTrackermst.getUdtEntryDate() != null && (!savitbpSchemeApplTrackermst.getUdtEntryDate().isEmpty()))
+			gmstSwSavitbpSchemeApplTrackermst.setUdtEntryDate(df.parse(savitbpSchemeApplTrackermst.getUdtEntryDate()));
+		else {
+			gmstSwSavitbpSchemeApplTrackermst.setUdtEntryDate(d1);
+		}
 		gmstSwSavitbpSchemeApplTrackermstRepository.save(gmstSwSavitbpSchemeApplTrackermst);
 		return ServiceResponse.successObject(savitbpSchemeApplTrackermst);
 	}

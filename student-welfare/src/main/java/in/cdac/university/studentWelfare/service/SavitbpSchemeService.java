@@ -131,7 +131,7 @@ public class SavitbpSchemeService implements Serializable {
 
 	private void dateConverstion(SavitbpSchemeApplMstBean savitbpschemeapplmstbean, DateFormat df,
 			GmstSwSavitbpSchemeApplMst gmstSwSavitbpSchemeApplMst) throws ParseException {
-		
+		 Date d1 = new Date();
 		if(savitbpschemeapplmstbean.getUdtStuDob()!=null && (!savitbpschemeapplmstbean.getUdtStuDob().isEmpty()) )
 				gmstSwSavitbpSchemeApplMst.setUdtStuDob(df.parse(savitbpschemeapplmstbean.getUdtStuDob()));
 		if(savitbpschemeapplmstbean.getUdtPossibleCourseCompDt()!=null && (!savitbpschemeapplmstbean.getUdtPossibleCourseCompDt().isEmpty()))
@@ -140,8 +140,14 @@ public class SavitbpSchemeService implements Serializable {
 			gmstSwSavitbpSchemeApplMst.setUnumSavitbpApplicationdt(df.parse(savitbpschemeapplmstbean.getUnumSavitbpApplicationdt()));
 		if(savitbpschemeapplmstbean.getUdtEffFrom() != null && (!savitbpschemeapplmstbean.getUdtEffFrom().isEmpty()) )
 			gmstSwSavitbpSchemeApplMst.setUdtEffFrom(df.parse(savitbpschemeapplmstbean.getUdtEffFrom()));
+		else {
+			gmstSwSavitbpSchemeApplMst.setUdtEffFrom(d1);
+		}
 		if(savitbpschemeapplmstbean.getUdtEntryDate() != null && (!savitbpschemeapplmstbean.getUdtEntryDate().isEmpty()))
 			gmstSwSavitbpSchemeApplMst.setUdtEntryDate(df.parse(savitbpschemeapplmstbean.getUdtEntryDate()));
+		else {
+			gmstSwSavitbpSchemeApplMst.setUdtEntryDate(d1);
+		}
 	}
 
 	@Transactional
