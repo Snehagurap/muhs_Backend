@@ -149,7 +149,7 @@ public class StudentMasterBean implements Serializable {
 	
 	private Integer	unumUnivId ;
 	
-	private Date	udtEffFrom ;
+	private String	udtEffFrom ;
 	
 	private Date	udtEffTo ;
 	
@@ -157,9 +157,9 @@ public class StudentMasterBean implements Serializable {
 	
 	private Long	unumEntryUid;
 	
-	private Date	udtEntryDate;
+	private String	udtEntryDate;
 	
-	private Integer	unumLstModUid;
+	private Long	unumLstModUid;
 	
 	private Date	udtLstModDate;
 	
@@ -192,6 +192,12 @@ public class StudentMasterBean implements Serializable {
 	
 	private String 	 ustrPerContactno;
 	
-	private Long  unumPerMobileno ;
+	private Long     unumPerMobileno ;
+	
+	private Integer unumStuSalutationId;
+	
+	private Integer unumFatherSalutationId;
+	
+	private Integer unumMotherSalutationId;
 }
 
