@@ -13,5 +13,7 @@ public class Constants {
     public static final String URL_GET_ALL_COURSE_TYPES = "/global/courseType/all";
     public static final String URL_GET_ALL_FACULTIES = "/global/faculty/all";
 
+    public static final String URL_GET_ALL_STREAMS = "/global/stream/all";
+
     public static  final String URL_GET_APPLICATION_BY_NOTIFICATION_ID = "/global/application/";
  }

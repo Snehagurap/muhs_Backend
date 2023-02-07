@@ -20,7 +20,7 @@ import java.util.List;
 public class ApiGatewayApplication {
 
 	@Autowired
-	CloseableHttpClient httpClient;
+	private CloseableHttpClient httpClient;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ApiGatewayApplication.class, args);

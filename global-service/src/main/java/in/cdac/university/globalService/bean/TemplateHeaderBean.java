@@ -72,5 +72,7 @@ public class TemplateHeaderBean {
 
     private Integer unumPageColumns;
 
+    private String ustrHeadHtml;
+
     List<TemplateComponentBean> components;
 }

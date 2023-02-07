@@ -1,7 +1,6 @@
 package in.cdac.university.globalService.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import in.cdac.university.globalService.util.annotations.ComboKey;
 import in.cdac.university.globalService.util.annotations.ComboValue;
 import lombok.Getter;
@@ -9,6 +8,7 @@ import lombok.Setter;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -48,5 +48,7 @@ public class TemplateBean {
 
     private List<TemplateHeaderBean> headers;
 
-    CheckListBean checkList;
+    private CheckListBean checkList;
+
+    private Map<Long, TemplateItemBean> items;
 }

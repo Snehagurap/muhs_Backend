@@ -8,15 +8,18 @@ import java.util.Date;
 
 @Getter
 @Setter
+@IdClass(GbltStateMstImscPK.class)
 @Entity
 @Table(name = "gblt_state_mst_imsc", schema = "usm")
 public class GbltStateMstImsc implements java.io.Serializable {
 
 	@Id
-	@GeneratedValue(strategy= GenerationType.SEQUENCE, generator="gblt_state_mst_imsc")
-	@SequenceGenerator(name="gblt_state_mst_imsc", sequenceName = "usm.seq_gblt_state_mst_imsc", allocationSize = 1)
 	@Column(name = "gnum_statecode", nullable = false, precision = 2)
 	private Integer gnumStatecode;
+
+	@Id
+	@Column(name="gnum_isvalid", nullable = false, insertable = false, columnDefinition = "numeric default 1")
+	private Integer gnumIsvalid;
 
 	@Column(name = "gnum_countrycode", precision = 3)
 	private Integer gnumCountrycode;
@@ -33,9 +36,6 @@ public class GbltStateMstImsc implements java.io.Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="gdt_entry_date", nullable = false, insertable = false, columnDefinition = "timestamp without time zone default current_timestamp")
 	private Date gdtEntrydate;
-
-	@Column(name="gnum_isvalid", nullable = false, insertable = false, columnDefinition = "numeric default 1")
-	private Integer gnumIsvalid;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "gdt_lstmod_date")

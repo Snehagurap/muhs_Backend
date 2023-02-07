@@ -21,6 +21,9 @@ public interface CommitteeRulesetMstRepository extends JpaRepository<GbltCommitt
 
     Optional<GbltCommitteeRulesetMst> findByUnumComRsIdAndUnumIsvalidAndUnumUnivId(Long unumComRsId, Integer unumIsvalids, Integer unumUnivId);
 
+    List<GbltCommitteeRulesetMst> findByUstrComRsNameAndUnumIsvalidAndUnumUnivId(String ustrComRsName, Integer unumIsvalid, Integer unumUnivId);
+
+
     @Modifying(clearAutomatically = true)
     @Query("update GbltCommitteeRulesetMst u set u.unumIsvalid = (select coalesce(max(a.unumIsvalid), 2) + 1 " +
             "from GbltCommitteeRulesetMst a where a.unumComRsId = u.unumComRsId and a.unumIsvalid > 2) , " +

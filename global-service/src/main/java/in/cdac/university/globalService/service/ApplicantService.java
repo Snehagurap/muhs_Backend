@@ -16,6 +16,7 @@ import in.cdac.university.globalService.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +47,9 @@ public class ApplicantService {
     @Autowired
     private FtpUtility ftpUtility;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @Transactional
     public ServiceResponse saveApplicantDetails(ApplicantBean applicantBean) {
         // Upload Documents
@@ -62,7 +66,7 @@ public class ApplicantService {
                     gmstApplicantDtl.setUnumIsvalid(applicantBean.getUnumIsvalid());
                     gmstApplicantDtl.setUdtEffFrom(applicantBean.getUdtEffFrom());
                     gmstApplicantDtl.setUdtEntryDate(applicantBean.getUdtEntryDate());
-                    gmstApplicantDtl.setUnumDocIsVerified(0);
+                    gmstApplicantDtl.setUnumDocIsVerified(1);
                     applicantDtls.add(gmstApplicantDtl);
                 }
             }
@@ -83,7 +87,7 @@ public class ApplicantService {
         applicantBean.setUnumApplicantMobile(draftApplicant.getUnumApplicantMobile());
         applicantBean.setUnumApplicantPincode(draftApplicant.getUnumApplicantPincode());
         applicantBean.setUnumApplicantStateid(draftApplicant.getUnumApplicantStateid());
-        applicantBean.setUnumIsVerifiedApplicant(0);
+        applicantBean.setUnumIsVerifiedApplicant(1);
         applicantBean.setUstrApplicantAddress(draftApplicant.getUstrApplicantAddress());
         applicantBean.setUstrApplicantCity(draftApplicant.getUstrApplicantCity());
         applicantBean.setUstrApplicantEmail(draftApplicant.getUstrApplicantEmail());
@@ -237,14 +241,14 @@ public class ApplicantService {
             return ServiceResponse.errorResponse(language.notFoundForId("Applicant Id", applicantIdToUpdate));
         }
         ApplicantBean applicantBean1 = BeanUtils.copyProperties(gmstApplicantMst.get(), ApplicantBean.class);
-        Long newApplicantId = applicantRepository.getNextId();
-        applicantBean.setUnumApplicantId(newApplicantId);
+        //Long newApplicantId = applicantRepository.getNextId();
+        //applicantBean.setUnumApplicantId(newApplicantId);
         applicantBean.setUdtEffFrom(new Date());
         applicantBean.setUnumApplicantDistrictid(applicantBean1.getUnumApplicantDistrictid());
         applicantBean.setUnumApplicantMobile(applicantBean1.getUnumApplicantMobile());
         applicantBean.setUnumApplicantPincode(applicantBean1.getUnumApplicantPincode());
         applicantBean.setUnumApplicantStateid(applicantBean1.getUnumApplicantStateid());
-        applicantBean.setUnumIsVerifiedApplicant(0);
+        applicantBean.setUnumIsVerifiedApplicant(1);
         applicantBean.setUstrApplicantAddress(applicantBean1.getUstrApplicantAddress());
         applicantBean.setUstrApplicantCity(applicantBean1.getUstrApplicantCity());
         applicantBean.setUstrApplicantEmail(applicantBean1.getUstrApplicantEmail());
@@ -304,5 +308,21 @@ public class ApplicantService {
             return ServiceResponse.successObject(language.message("No Document uploaded"));
 
         return ServiceResponse.successObject(applicantDtl.get().getUstrDocPath());
+    }
+
+    public ServiceResponse getApplicantFieldDetail(String fieldName, Long applicantId) throws Exception {
+        if (fieldName == null)
+            return ServiceResponse.successObject(fieldName);
+
+        if (applicantId == null || applicantId == 0L)
+            applicantId = RequestUtility.getUserId();
+        String query = "select " + fieldName + " from university.gmst_applicant_mst where unum_isvalid = 1 and unum_applicant_id = " + applicantId;
+
+        String value = "";
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(query);
+        if (!list.isEmpty()) {
+            value = list.get(0).get(fieldName).toString();
+        }
+        return ServiceResponse.successObject(value);
     }
 }

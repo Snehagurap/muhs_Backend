@@ -130,4 +130,7 @@ public class GmstEmpMst implements Serializable {
 
 	@Column(name = "unum_is_selected")
 	private Integer unumIsSelected;
+
+	@Column(name = "ustr_emp_lname")
+	private String ustrEmpLName;
 }

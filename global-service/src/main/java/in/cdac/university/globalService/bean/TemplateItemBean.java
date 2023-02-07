@@ -147,6 +147,8 @@ public class TemplateItemBean {
 
     private String ustrItemValue;
 
+    private String ustrItemHtml;
+
     List<TemplateItemBean> children;
 
     List<DataBeanForTemplateItem> dataBean; //bean added

@@ -81,8 +81,8 @@ public class StreamController {
     }
 
     @GetMapping("all")
-    public ResponseEntity<?> getAllStreams() throws Exception {
-        return ResponseHandler.generateOkResponse(streamService.getStreamCombo());
+    public ResponseEntity<?> getAllStreams() {
+        return ResponseHandler.generateOkResponse(streamService.getAllStreams());
     }
 
 }

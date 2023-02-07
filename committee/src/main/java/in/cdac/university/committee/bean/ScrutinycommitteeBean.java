@@ -5,10 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -20,7 +16,7 @@ import java.util.List;
 @ToString
 public class ScrutinycommitteeBean {
 
-    @ListColumn(omit = true)
+    @ListColumn(omit = true, width = "5%")
     private Long unumScomId;
 
     private Integer unumIsvalid;
@@ -31,13 +27,15 @@ public class ScrutinycommitteeBean {
 
     private Date udtScomCreateDate;
 
+    @ListColumn(order = 5, name = "From Date", width = "10%")
     private Date udtScomFromDate;
 
+    @ListColumn(order = 6, name = "To Date", width = "10%")
     private Date udtScomToDate;
 
     private Long unumComRsId;
 
-    @ListColumn(order = 2,name = "Committee Ruleset Name")
+    @ListColumn(order = 2, name = "Committee Ruleset Name", width = "20%")
     private String ustrComRsName;
 
     private Integer unumCtypeid;
@@ -52,19 +50,19 @@ public class ScrutinycommitteeBean {
 
     private Long unumScomCfacultyId;
 
-    @ListColumn(order = 3,name = "Faculty Name")
+    @ListColumn(order = 3, name = "Faculty Name", width = "15%")
     private String ustrCfacultyName;
 
     private Long unumStreamId;
 
-    @ListColumn(order = 4,name = "Stream Name")
+    @ListColumn(order = 4, name = "Stream Name", width = "15%")
     private String ustrStreamName;
 
     private Integer unumUnivId;
 
     private String ustrComDescription;
 
-    @ListColumn(order = 2,name = "Committee Name")
+    @ListColumn(order = 2, name = "Committee Name", width = "25%")
     private String ustrScomName;
 
     private Long unumSubId;
@@ -75,4 +73,5 @@ public class ScrutinycommitteeBean {
     private List<ScrutinycommitteeMemberDtlBean> scrutinyComMemberDtl;
 
     private Integer isSave;
+
 }
