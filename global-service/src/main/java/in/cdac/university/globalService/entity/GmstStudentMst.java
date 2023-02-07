@@ -219,7 +219,7 @@ public class GmstStudentMst {
 	private Date	udtEntryDate;
 	
 	@Column(name="unum_lst_mod_uid") 
-	private Integer	unumLstModUid;
+	private Long	unumLstModUid;
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name="udt_lst_mod_date") 
