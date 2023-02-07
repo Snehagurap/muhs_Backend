@@ -1,4 +1,4 @@
-package in.cdac.university.globalService.entity;
+package in.cdac.university.studentWelfare.entity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +11,7 @@ import java.util.Date;
 @Setter
 @IdClass(GmstConfigTemplateDtlPK.class)
 @Entity
-@Table(name="gmst_config_template_dtl", schema = "university")
+@Table(name="gmst_config_template_dtl", schema = "swtemple")
 public class GmstConfigTemplateDtl implements Serializable {
 
 	@Id
