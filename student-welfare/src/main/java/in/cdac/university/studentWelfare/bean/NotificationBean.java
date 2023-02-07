@@ -1,4 +1,4 @@
-package in.cdac.university.globalService.bean;
+package in.cdac.university.studentWelfare.bean;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +22,7 @@ public class NotificationBean {
     private Integer unumCfacultyId;
 
     private Long unumStreamId;
-
+    
     private Integer unumDeptId;
     private Long unumEntryUid;
     private Integer unumIsAmmendment = 0;

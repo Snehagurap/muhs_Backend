@@ -3,14 +3,14 @@ package in.cdac.university.studentWelfare.util;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-
-import in.cdac.university.studentWelfare.exception.ServiceNotUpException;
+import in.cdac.university.studentWelfare.exception.ApplicationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -30,6 +30,9 @@ public class RestUtility {
     private ObjectMapper objectMapper;
 
     private static String serviceCommitteeUrl;
+
+    private static String servicePlanningBoardUrl;
+
     private static String serviceUsmUrl;
 
     private static String serviceGlobalUrl;
@@ -49,10 +52,17 @@ public class RestUtility {
         serviceGlobalUrl = url;
     }
 
+    @Value("${config.service.pb.url}")
+    public void setServicePlanningBoardUrl(String url) {
+        servicePlanningBoardUrl = url;
+    }
+
     public enum SERVICE_TYPE {
         COMMITTEE(serviceCommitteeUrl),
         GLOBAL(serviceGlobalUrl),
-        USM(serviceUsmUrl);
+        USM(serviceUsmUrl),
+
+        PLANNING_BOARD(servicePlanningBoardUrl);
 
         public final String url;
         SERVICE_TYPE(String url) {
@@ -60,44 +70,15 @@ public class RestUtility {
         }
     }
 
-    public <T> T getOrThrow(SERVICE_TYPE serviceType, String url, Class<T> returnType) throws ServiceNotUpException {
-    	try {
-            var restResponse = extracted(serviceType, url);
-            if (restResponse.getStatusCode() == HttpStatus.OK) {
-                var jsonString = restResponse.getBody();
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode actualObject = mapper.readTree(jsonString);
-                int status = actualObject.get("status").asInt();
-                if (status == 0) {
-                    String message = actualObject.get("message").asText();
-                    throw new ServiceNotUpException("Called Service is Not UP or Not Responding");
-                    //return null;
-                }
-                return objectMapper.convertValue(actualObject.get("data"), returnType);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            
-        }
-    	
-        return null;
-    
-    }
-
-	private ResponseEntity<String> extracted(SERVICE_TYPE serviceType, String url) {
-		HttpHeaders headers = getHttpHeaders();
-
-		HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
-
-		var restResponse = restTemplate.exchange(
-		        serviceType.url + "/" + url, HttpMethod.GET, httpEntity, String.class
-		);
-		return restResponse;
-	}
-	
-    public <T> T get(SERVICE_TYPE serviceType, String url, Class<T> returnType) {
+    public <T> T callService(SERVICE_TYPE serviceType, String url, Class<T> returnType, boolean shouldThrow) {
         try {
-            var restResponse = extracted(serviceType, url);
+            HttpHeaders headers = getHttpHeaders();
+
+            HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
+
+            var restResponse = restTemplate.exchange(
+                    serviceType.url + "/" + url, HttpMethod.GET, httpEntity, String.class
+            );
 
             if (restResponse.getStatusCode() == HttpStatus.OK) {
                 var jsonString = restResponse.getBody();
@@ -106,18 +87,30 @@ public class RestUtility {
                 int status = actualObject.get("status").asInt();
                 if (status == 0) {
                     String message = actualObject.get("message").asText();
-                    log.error("Unable to call Web Service: {}, Error: {}", serviceType.url + "/" + url, message);
+                    log.error("Unable to call Web Service: {}", message);
                     return null;
                 }
-                return objectMapper.convertValue(actualObject.get("data"), returnType);
+                if (actualObject.get("data") != null)
+                    return objectMapper.convertValue(actualObject.get("data"), returnType);
             }
+        } catch (HttpClientErrorException e) {
+            if (shouldThrow)
+                throw new ApplicationException("Service is not working");
+            log.error("Client Error: {}", e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return null;
     }
-    
+
+    public <T> T get(SERVICE_TYPE serviceType, String url, Class<T> returnType) {
+        return callService(serviceType, url, returnType, false);
+    }
+
+    public <T> T getOrThrow(SERVICE_TYPE serviceType, String url, Class<T> returnType) {
+        return callService(serviceType, url, returnType, true);
+    }
 
     public <T> T postForData(SERVICE_TYPE serviceType, String url, Object requestBody, Class<T> returnType) {
         try {
