@@ -62,12 +62,19 @@ public class StudentService {
 
 	private void dateFormater(StudentMasterBean studentMasterBean, GmstStudentMst gmstStudentMst) throws ParseException {
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		if(studentMasterBean.getUdtEntryDate() != null)
+		 Date d1 = new Date();
+		if(studentMasterBean.getUdtEntryDate() != null && (!studentMasterBean.getUdtEntryDate().isEmpty()))
 			gmstStudentMst.setUdtStuDob(df.parse(studentMasterBean.getUdtStuDob()));
-		if(studentMasterBean.getUdtEntryDate() != null)
+		if(studentMasterBean.getUdtEntryDate() != null  && (!studentMasterBean.getUdtEffFrom().isEmpty()) )
 			gmstStudentMst.setUdtEffFrom(df.parse(studentMasterBean.getUdtEffFrom()));
-		if(studentMasterBean.getUdtEntryDate() != null)
+		else {
+			gmstStudentMst.setUdtEffFrom(d1);
+		}
+		if(studentMasterBean.getUdtEntryDate() != null  && (!studentMasterBean.getUdtEntryDate().isEmpty()))
 			gmstStudentMst.setUdtEntryDate(df.parse(studentMasterBean.getUdtEntryDate()));
+		else {
+			gmstStudentMst.setUdtEntryDate(d1);
+		}
 	}
 	
 	@Transactional
