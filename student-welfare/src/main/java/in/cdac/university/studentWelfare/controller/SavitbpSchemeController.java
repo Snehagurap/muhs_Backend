@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import in.cdac.university.studentWelfare.util.*;
+import in.cdac.university.studentWelfare.util.ListPageUtility;
+import in.cdac.university.studentWelfare.util.ResponseHandler;
 import in.cdac.university.studentWelfare.bean.SavitbpSchemeApplMstBean;
 import in.cdac.university.studentWelfare.service.SavitbpSchemeService;
 
@@ -42,6 +44,12 @@ public class SavitbpSchemeController {
 	@GetMapping("retrive/{studentEnrollmentNo}")
     public ResponseEntity<?> getSchemeRetrive(@PathVariable (value = "studentEnrollmentNo") String studentEnrollmentNo) throws Exception {
 		return ResponseHandler.generateResponse(savitbpSchemeService.getSavitbpScheme(studentEnrollmentNo));
+	}
+	
+	
+	@GetMapping("getAllStudentForScheme")
+    public ResponseEntity<?> getAllStudentForScheme() throws Exception {
+		return ResponseHandler.generateOkResponse(ListPageUtility.generateListPageData(savitbpSchemeService.getAllStudentForScheme()));
 	}
 }
 		   

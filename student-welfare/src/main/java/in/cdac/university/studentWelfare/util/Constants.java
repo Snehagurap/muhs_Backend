@@ -23,4 +23,7 @@ public class Constants {
     public static  final String URL_GET_UPDATE_SAVE_STUDENT = "/global/Student/updateStudent";
     
     public static  final String URL_GET_UPDATE_SAVE_STUDENT_DRAFT = "/global/Student/updateStudentDraft";
+    
+    public static final String URL_GET_STUDENT_CAT = "/global/StudentCat/combo";
+    public static final String URL_GET_STUDENT_SUB_CAT = "/global/StudentCat/comboSubCatAll";
  }

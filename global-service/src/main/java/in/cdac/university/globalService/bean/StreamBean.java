@@ -42,13 +42,17 @@ public class StreamBean {
     @NotNull(message = "Stream Code is mandatory")
     @ListColumn(name = "Stream Code")
     private String ustrStreamCode;
-    
+
+
+    private String ustrCFacultyFname;
     
     @NotNull(message = "Stream Name is mandatory")
-    @ComboValue
+    @ComboValue(order = 1)
     @ListColumn(name = "Stream Name", order = 2)
     private String ustrStreamFname;
 
     private String ustrStreamSname;
+
+
 
 }
