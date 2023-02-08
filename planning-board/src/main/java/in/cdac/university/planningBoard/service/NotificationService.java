@@ -408,9 +408,9 @@ public class NotificationService {
     }
 
 
-    public List<NotificationDetailBean> getNotificationComboByYear(String year) {
+    public List<NotificationDetailBean> getNotificationComboByYear(String year, Long streamId) {
 
-        List<GbltNotificationDtl> notificationMasterList = masterRepository.getNotificationComboByYear(year);
+        List<GbltNotificationDtl> notificationMasterList = masterRepository.getNotificationComboByYear(year,streamId);
 
         NotificationTypeBean[] notificationTypes = restUtility.get(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_NOTIFICATION_TYPE, NotificationTypeBean[].class);
         Map<Integer, String> mapNotificationType = Arrays.stream(notificationTypes)

@@ -92,11 +92,12 @@ public class ApplicationTrackerService {
     public List<ApplicationTrackerBean> getApplicationForDepartmentScrutiny(Long notificationId,
                                                                             Long notificationDetailId,
                                                                             String levelId,
-                                                                            String finYear) throws Exception {
+                                                                            String finYear,
+                                                                            Long streamId) throws Exception {
 
         List<String> notificationList;
         if (notificationId.equals(0L)) {
-            ComboBean[] notificationBean = restUtility.get(RestUtility.SERVICE_TYPE.PLANNING_BOARD, Constants.URL_GET_NOTIFICATIONS_BY_YEAR + finYear, ComboBean[].class);
+            ComboBean[] notificationBean = restUtility.get(RestUtility.SERVICE_TYPE.PLANNING_BOARD, Constants.URL_GET_NOTIFICATIONS_BY_YEAR + finYear + "/" + streamId, ComboBean[].class);
             notificationList = Arrays.stream(notificationBean)
                     .map(ComboBean::getKey)
                     .filter(key -> key != null && !key.isBlank() && !key.equals("0"))
@@ -223,12 +224,26 @@ public class ApplicationTrackerService {
 
         //    Long applicationStatusSno  = applicationTrackerDtlRepository.getApplicationStatusSno(applicationId);
         long applicationStatusSno = gbltConfigApplicationTracker.get().getUnumApplicationStatusSno() + 1;
+        int noOfRowsAffected = 0;
+        if(applicationTrackerDtlBean.getUnumApplicationLevelId()==12 ) {
+            if (applicationTrackerDtlBean.getUstrOutNo() != null && applicationTrackerDtlBean.getUdtOutDate() != null) {
+                noOfRowsAffected = applicationTrackerRepository.updateApplicationOnVerificationState(
+                        applicationId, applicationStatusSno, applicationTrackerDtlBean.getUnumApplicationLevelId(),
+                        applicationTrackerDtlBean.getUnumApplicationStatusId(), applicationTrackerDtlBean.getUnumDecisionStatusId(),
+                        applicationTrackerDtlBean.getUdtApplicationStatusDt(), applicationTrackerDtlBean.getUdtOutDate(), applicationTrackerDtlBean.getUstrOutNo()
+                );
+            }
+            else
+                return ServiceResponse.errorResponse(language.mandatory("Out Date && Out No "));
+        }
+        else{
+            noOfRowsAffected = applicationTrackerRepository.updateApplicationOnVerification(
+                    applicationId, applicationStatusSno, applicationTrackerDtlBean.getUnumApplicationLevelId(),
+                    applicationTrackerDtlBean.getUnumApplicationStatusId(), applicationTrackerDtlBean.getUnumDecisionStatusId(),
+                    applicationTrackerDtlBean.getUdtApplicationStatusDt()
+            );
+        }
 
-        int noOfRowsAffected = applicationTrackerRepository.updateApplicationOnVerification(
-                applicationId, applicationStatusSno, applicationTrackerDtlBean.getUnumApplicationLevelId(),
-                applicationTrackerDtlBean.getUnumApplicationStatusId(), applicationTrackerDtlBean.getUnumDecisionStatusId(),
-                applicationTrackerDtlBean.getUdtApplicationStatusDt()
-        );
         if (noOfRowsAffected == 0) {
             throw new ApplicationException(language.notFoundForId("Application Id", applicationId));
         }
@@ -249,6 +264,10 @@ public class ApplicationTrackerService {
         gbltConfigApplicationTrackerDtl.setUstrStatusBy(applicationTrackerDtlBean.getUstrStatusBy());
         gbltConfigApplicationTrackerDtl.setUstrRemarks(applicationTrackerDtlBean.getUstrRemarks());
 
+        if(applicationTrackerDtlBean.getUnumApplicationLevelId()==12){
+            gbltConfigApplicationTrackerDtl.setUdtOutDate(applicationTrackerDtlBean.getUdtOutDate());
+            gbltConfigApplicationTrackerDtl.setUstrOutNo(applicationTrackerDtlBean.getUstrOutNo());
+        }
         if (applicationTrackerDtlBean.getUstrDocPath() != null && !applicationTrackerDtlBean.getUstrDocPath().isBlank()) {
             gbltConfigApplicationTrackerDtl.setUstrDocPath(applicationTrackerDtlBean.getUstrDocPath());
         }

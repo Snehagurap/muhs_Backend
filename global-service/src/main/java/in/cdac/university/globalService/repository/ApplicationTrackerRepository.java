@@ -53,4 +53,21 @@ public interface ApplicationTrackerRepository extends JpaRepository<GbltConfigAp
 	Integer updateApplicationOnVerification(@Param("applicationId") Long applicationId, @Param("applicationStatusSno") Long applicationStatusSno,
 											@Param("levelId") Integer levelId, @Param("applicationStatusId") Integer applicationStatusId,
 											@Param("decisionStatusId") Integer decisionStatusId,@Param("applicationStatusDate") Date applicationStatusDate);
+
+
+
+	@Modifying(clearAutomatically = true)
+	@Query("update GbltConfigApplicationTracker u set u.unumApplicationLevelId = :levelId ,  " +
+			"u.unumApplicationStatusSno = :applicationStatusSno ,  " +
+			"u.unumApplicationStatusId = :applicationStatusId , " +
+			"u.unumDecisionStatusId = :decisionStatusId , " +
+			"u.udtApplicationStatusDt = :applicationStatusDate , " +
+			"u.udtStateOutdate = :outDate , " +
+			"u.ustrStateOutno = :outNo " +
+			"where u.unumApplicationId = :applicationId ")
+	Integer updateApplicationOnVerificationState(@Param("applicationId") Long applicationId, @Param("applicationStatusSno") Long applicationStatusSno,
+											@Param("levelId") Integer levelId, @Param("applicationStatusId") Integer applicationStatusId,
+											@Param("decisionStatusId") Integer decisionStatusId,@Param("applicationStatusDate") Date applicationStatusDate,
+											@Param("outDate") Date udtOutDate, @Param("outNo") String ustrOutNo);
+
 }

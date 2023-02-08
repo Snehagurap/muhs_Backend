@@ -131,8 +131,8 @@ public class GbltConfigApplicationTrackerDtl implements Serializable {
 	@Column(name="unum_ndtl_faculty_id")
 	private Integer unumNdtlFacultyId;
 
-	@Column(name="unum_out_no")
-	private String unumOutNo;
+	@Column(name="ustr_out_no")
+	private String ustrOutNo;
 
 	@Column(name="unum_recommendedfor_intake")
 	private Integer unumRecommendedforIntake;

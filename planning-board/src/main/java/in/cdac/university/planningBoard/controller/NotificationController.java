@@ -78,10 +78,10 @@ public class NotificationController {
         );
     }
 
-    @GetMapping("notificationCombo/{year}")
-    public ResponseEntity<?> getNotificationComboByYear(@PathVariable("year") String year) throws IllegalAccessException {
+    @GetMapping("notificationCombo/{year}/{streamId}")
+    public ResponseEntity<?> getNotificationComboByYear(@PathVariable("year") String year,@PathVariable("streamId") Long streamId) throws IllegalAccessException {
         return ResponseHandler.generateOkResponse(
-                ComboUtility.generateComboDataWithAll(notificationService.getNotificationComboByYear(year)
+                ComboUtility.generateComboDataWithAll(notificationService.getNotificationComboByYear(year,streamId)
         ));
     }
 }

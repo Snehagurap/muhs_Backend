@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.validation.Valid;
 
 import in.cdac.university.globalService.util.ListPageUtility;
+import in.cdac.university.globalService.util.annotations.ComboValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,13 @@ public class StreamController {
     public ResponseEntity<?> getStreamCombo() throws Exception {
         return ResponseHandler.generateOkResponse(
                 ComboUtility.generateComboData(streamService.getStreamCombo())
+        );
+    }
+
+    @GetMapping("combo/withFacultyName")
+    public ResponseEntity<?> getStreamComboWithFacultyName() throws Exception {
+        return ResponseHandler.generateOkResponse(
+                ComboUtility.generateComboData(streamService.getStreamComboWithFacultyName())
         );
     }
 
