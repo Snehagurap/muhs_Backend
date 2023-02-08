@@ -6,7 +6,10 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import in.cdac.university.studentWelfare.util.annotations.ListColumn;
+import in.cdac.university.studentWelfare.util.annotations.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -16,7 +19,8 @@ import lombok.ToString;
 @ToString
 public class SavitbpSchemeApplMstBean {
 
-	
+	@ListColumn(omit = true)
+	@JsonIgnore
 	private Long 	unumSavitbpApplicationid;
 	
 	private String 	unumSavitbpApplicationdt;
@@ -128,6 +132,7 @@ public class SavitbpSchemeApplMstBean {
 	
 	private Integer unumRelationshipId;
 	
+	@ListColumn(name = "Annual Income", order = 5)
 	private Double unumParentAnnualIncome;
 	
 	private String  ustrStudentBankaccountName;
@@ -170,6 +175,7 @@ public class SavitbpSchemeApplMstBean {
 	
 	private Date    udtLstModDate;
 	
+	@ListColumn(name = "Approval Status", order = 6)
 	private Integer unumApprovalStatusid;      
 	
 	private Integer	unumIsNri ;
@@ -182,7 +188,7 @@ public class SavitbpSchemeApplMstBean {
 	
 	private Integer	unumIsManagementQuota;
 	
-	
+	@ListColumn(name = "Enrollment Number", order = 2)
 	private String	 ustrEnrollmentNo;
 	
 	private String	 ustrStudentFname;
@@ -208,5 +214,15 @@ public class SavitbpSchemeApplMstBean {
 	private Integer unumMotherSalutationId;
 	
 	private Integer 	unumCourseId;
+	
+	@ListColumn(name = "Student Catagery", order = 3)
+	private String 	ustrStuCatName;
+	
+	@ListColumn(name = "Student Sub Catagery", order = 4)
+	private String 	ustrStuSubCatName;
+	
+	
+	@ListColumn(name = "Gender", order = 5)
+	private String ustrGenderName;
 	
 }
