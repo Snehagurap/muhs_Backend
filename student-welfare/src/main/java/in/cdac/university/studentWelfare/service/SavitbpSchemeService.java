@@ -5,7 +5,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -21,6 +24,7 @@ import in.cdac.university.studentWelfare.util.RequestUtility;
 import in.cdac.university.studentWelfare.util.Constants;
 import in.cdac.university.studentWelfare.util.RestUtility;
 import in.cdac.university.studentWelfare.service.SavitbpSchemeApplTrackermstService;
+import in.cdac.university.studentWelfare.bean.ComboBean;
 import in.cdac.university.studentWelfare.bean.SavitbpSchemeApplMstBean;
 import in.cdac.university.studentWelfare.bean.SavitbpSchemeApplTrackerdtlBean;
 import in.cdac.university.studentWelfare.bean.SavitbpSchemeApplTrackermst;
@@ -131,7 +135,7 @@ public class SavitbpSchemeService implements Serializable {
 
 	private void dateConverstion(SavitbpSchemeApplMstBean savitbpschemeapplmstbean, DateFormat df,
 			GmstSwSavitbpSchemeApplMst gmstSwSavitbpSchemeApplMst) throws ParseException {
-		
+		 Date d1 = new Date();
 		if(savitbpschemeapplmstbean.getUdtStuDob()!=null && (!savitbpschemeapplmstbean.getUdtStuDob().isEmpty()) )
 				gmstSwSavitbpSchemeApplMst.setUdtStuDob(df.parse(savitbpschemeapplmstbean.getUdtStuDob()));
 		if(savitbpschemeapplmstbean.getUdtPossibleCourseCompDt()!=null && (!savitbpschemeapplmstbean.getUdtPossibleCourseCompDt().isEmpty()))
@@ -140,8 +144,14 @@ public class SavitbpSchemeService implements Serializable {
 			gmstSwSavitbpSchemeApplMst.setUnumSavitbpApplicationdt(df.parse(savitbpschemeapplmstbean.getUnumSavitbpApplicationdt()));
 		if(savitbpschemeapplmstbean.getUdtEffFrom() != null && (!savitbpschemeapplmstbean.getUdtEffFrom().isEmpty()) )
 			gmstSwSavitbpSchemeApplMst.setUdtEffFrom(df.parse(savitbpschemeapplmstbean.getUdtEffFrom()));
+		else {
+			gmstSwSavitbpSchemeApplMst.setUdtEffFrom(d1);
+		}
 		if(savitbpschemeapplmstbean.getUdtEntryDate() != null && (!savitbpschemeapplmstbean.getUdtEntryDate().isEmpty()))
 			gmstSwSavitbpSchemeApplMst.setUdtEntryDate(df.parse(savitbpschemeapplmstbean.getUdtEntryDate()));
+		else {
+			gmstSwSavitbpSchemeApplMst.setUdtEntryDate(d1);
+		}
 	}
 
 	@Transactional
@@ -266,5 +276,23 @@ public class SavitbpSchemeService implements Serializable {
 		savitbpschemeapplmstbean.setUnumSavitbpApplicationdt(df.format(gmstSwSavitbpSchemeApplMst.getUnumSavitbpApplicationdt()));
 		savitbpschemeapplmstbean.setUdtStuDob(df.format(gmstSwSavitbpSchemeApplMst.getUdtStuDob()));
         return ServiceResponse.successObject(savitbpschemeapplmstbean);
+	}
+
+	public List<SavitbpSchemeApplMstBean> getAllStudentForScheme() throws Exception {
+		// TODO Auto-generated method stub
+		List<GmstSwSavitbpSchemeApplMst> gmstSwSavitbpSchemeApplMst = gmstSwSavitbpSchemeApplMstRepository.findByUnumIsvalidAndUnumUnivIdAndUnumSchemeId(1,RequestUtility.getUniversityId(),1L);
+		List<SavitbpSchemeApplMstBean> savitbpSchemeApplMstBean = BeanUtils.copyListProperties(gmstSwSavitbpSchemeApplMst,SavitbpSchemeApplMstBean.class);
+		Map<String,String>  comboBeanCatMap 	 = List.of( restUtility.getOrThrow(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_STUDENT_CAT, ComboBean[].class)).stream().collect(Collectors.toMap(ComboBean::getKey, ComboBean::getValue));
+		Map<String,String>  comboBeanSubCatMap   = List.of( restUtility.getOrThrow(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_STUDENT_SUB_CAT, ComboBean[].class)).stream().collect(Collectors.toMap(ComboBean::getKey, ComboBean::getValue));
+		Map<Integer,String> genderCombo = new HashMap<>();
+		genderCombo.put(1, "Male");
+		genderCombo.put(2, "FeMale");
+		genderCombo.put(3, "Others");
+		for(SavitbpSchemeApplMstBean schemeApplMstBean :savitbpSchemeApplMstBean) {
+			schemeApplMstBean.setUstrStuCatName(comboBeanCatMap.getOrDefault(String.valueOf(schemeApplMstBean.getUnumStuCatId()), ""));
+			schemeApplMstBean.setUstrStuSubCatName(comboBeanSubCatMap.getOrDefault(String.valueOf(schemeApplMstBean.getUnumStuSubCatId()), ""));
+			schemeApplMstBean.setUstrGenderName(genderCombo.getOrDefault(schemeApplMstBean.getUnumGenderId(), ""));
+		}
+		return savitbpSchemeApplMstBean;
 	}
 }

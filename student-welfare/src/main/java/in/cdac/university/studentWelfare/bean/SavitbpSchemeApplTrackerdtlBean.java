@@ -42,7 +42,7 @@ public class SavitbpSchemeApplTrackerdtlBean {
 	
 	private Integer unumUnivId;
 	
-	private Date 	udtEffFrom;
+	private String 	udtEffFrom;
 	
 	private Date 	udtEffTo;
 	
@@ -52,7 +52,7 @@ public class SavitbpSchemeApplTrackerdtlBean {
 	
 	private Integer unumEntryUid;
 	
-	private Date 	udtEntryDate;
+	private String 	udtEntryDate;
 	
 	private Integer unumLstModUid;
 	

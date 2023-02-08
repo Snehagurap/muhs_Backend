@@ -13,5 +13,7 @@ public interface GmstStuSubcatMstRepository extends JpaRepository<GmstStuSubcatM
 
 	List<GmstStuSubcatMst> findByUnumIsvalidAndUnumUnivIdAndUnumStuCatId(int i, Integer universityId, Long subCatId);
 
+	List<GmstStuSubcatMst> findByUnumIsvalidAndUnumUnivId(int i, Integer universityId);
+
 
 }

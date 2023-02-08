@@ -38,4 +38,15 @@ public class StudentCatMstService {
 
 	}
 
+
+	public List<StudentSubcatMstBean> getComboSubCatAll() throws Exception {
+		return BeanUtils.copyListProperties(
+				 gmstStuSubcatMstRepository.findByUnumIsvalidAndUnumUnivId(
+						1,RequestUtility.getUniversityId()
+						),StudentSubcatMstBean.class);
+	}
+
+
+
+
 }

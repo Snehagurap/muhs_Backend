@@ -33,4 +33,12 @@ public class StudentCatMstController {
         );
     }
 	
+	@GetMapping("comboSubCatAll")
+    public ResponseEntity<?> getComboSubCatAll() throws Exception {
+        return ResponseHandler.generateOkResponse(
+                ComboUtility.generateComboData(stuCatMstService.getComboSubCatAll())
+        );
+    }
+	
+	
 }
