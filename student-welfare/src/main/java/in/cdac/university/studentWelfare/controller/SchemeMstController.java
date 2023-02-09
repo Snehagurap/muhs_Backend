@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import in.cdac.university.studentWelfare.service.SchemeMstService;
+import in.cdac.university.studentWelfare.util.ResponseHandler;
 
 @RestController
 @RequestMapping("/sw/Scheme/")
@@ -19,8 +20,10 @@ public class SchemeMstController {
 	
 	
 	@GetMapping("schemeDetail/{schemeNo}")
-    public ResponseEntity<?> getSchemeDraft(@PathVariable (value = "schemeNo") int schemeNo) throws Exception {
-		return null;
+    public ResponseEntity<?> getSchemeDraft(@PathVariable (value = "schemeNo") Long schemeNo) throws Exception {
+		
+		
+		return ResponseHandler.generateOkResponse(schemeMstService.getStudentDetailsByScheme(schemeNo));
 		//getStudentDetailsByScheme use this serive for end point 
 	
 	}

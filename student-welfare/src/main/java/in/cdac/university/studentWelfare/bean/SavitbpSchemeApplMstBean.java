@@ -19,8 +19,6 @@ import lombok.ToString;
 @ToString
 public class SavitbpSchemeApplMstBean {
 
-	@ListColumn(omit = true)
-	@JsonIgnore
 	private Long 	unumSavitbpApplicationid;
 	
 	private String 	unumSavitbpApplicationdt;
@@ -175,7 +173,6 @@ public class SavitbpSchemeApplMstBean {
 	
 	private Date    udtLstModDate;
 	
-	@ListColumn(name = "Approval Status", order = 6)
 	private Integer unumApprovalStatusid;      
 	
 	private Integer	unumIsNri ;
@@ -221,8 +218,13 @@ public class SavitbpSchemeApplMstBean {
 	@ListColumn(name = "Student Sub Catagery", order = 4)
 	private String 	ustrStuSubCatName;
 	
-	
 	@ListColumn(name = "Gender", order = 5)
 	private String ustrGenderName;
+	
+	@ListColumn(name = "Status", order = 6)
+	private String ustrStatus;
+	
+	@ListColumn(name = "Student Name", order = 7)
+	private String ustrStudentName;
 	
 }

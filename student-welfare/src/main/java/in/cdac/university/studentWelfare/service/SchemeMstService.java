@@ -21,8 +21,7 @@ public class SchemeMstService {
 	
 	
 	public SchemeMstBean getStudentDetailsByScheme(Long schemeNo) throws Exception {
-		List<GmstUswSchemeMst> gmstUswSchemeMst = gmstUswSchemeMstRepository.findByUnumIsvalidAndUnumUnivIdAndUnumSchemeId(
-																					1,RequestUtility.getUniversityId(),schemeNo);
+		GmstUswSchemeMst gmstUswSchemeMst = gmstUswSchemeMstRepository.findByUnumSchemeIdAndUnumIsvalidAndUnumUnivId(schemeNo,1,RequestUtility.getUniversityId());
 		return 	BeanUtils.copyProperties(gmstUswSchemeMst,SchemeMstBean.class);
 	}
 
