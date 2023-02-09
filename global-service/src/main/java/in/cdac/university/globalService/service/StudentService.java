@@ -120,4 +120,22 @@ public class StudentService {
 		}
 		return ServiceResponse.successObject(studentMasterBean);
 	}
+
+	public ServiceResponse getStudentDetailsByScheme(int schemeNo) {
+		
+		
+		
+		
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public ServiceResponse getAllStudentDetails() throws Exception {
+		List<GmstStudentMst> gmstStudentMst = studentRepository.findByUnumUnivIdAndUnumIsvalid(RequestUtility.getUniversityId(),1);
+		List<StudentMasterBean> studentMasterBean = null ;
+		if(gmstStudentMst!=null) {
+			studentMasterBean =BeanUtils.copyListProperties(gmstStudentMst, StudentMasterBean.class);
+		}
+		return ServiceResponse.successObject(studentMasterBean);
+	}
 }
