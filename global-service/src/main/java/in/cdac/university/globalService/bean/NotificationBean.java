@@ -20,6 +20,9 @@ public class NotificationBean {
     private Date udtValidTo;
     private Long unumApprovingUserid;
     private Integer unumCfacultyId;
+
+    private Long unumStreamId;
+
     private Integer unumDeptId;
     private Long unumEntryUid;
     private Integer unumIsAmmendment = 0;

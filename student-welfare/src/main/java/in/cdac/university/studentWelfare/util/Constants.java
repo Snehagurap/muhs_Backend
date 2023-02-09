@@ -10,6 +10,8 @@ public class Constants {
     public static final String URL_GET_NOTIFICATION_TYPE = "/global/notificationType/all";
     public static final String URL_GET_NOTIFICATION_TYPE_BY_ID = "/global/notificationType/";
 
+    public static final String URL_GET_NOTIFICATION_BY_ID = "/pb/notification/";
+
     public static final String URL_GET_ALL_COURSE_TYPES = "/global/courseType/all";
     public static final String URL_GET_ALL_FACULTIES = "/global/faculty/all";
 
@@ -21,4 +23,7 @@ public class Constants {
     public static  final String URL_GET_UPDATE_SAVE_STUDENT = "/global/Student/updateStudent";
     
     public static  final String URL_GET_UPDATE_SAVE_STUDENT_DRAFT = "/global/Student/updateStudentDraft";
+    
+    public static final String URL_GET_STUDENT_CAT = "/global/StudentCat/combo";
+    public static final String URL_GET_STUDENT_SUB_CAT = "/global/StudentCat/comboSubCatAll";
  }

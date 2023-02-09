@@ -110,6 +110,15 @@ public class GmstConfigTemplateDtl implements Serializable {
 	@Column(name="ustr_load_fullcolumnname")
 	private String ustrLoadFullcolumnname;
 
+	@Column(name="ustr_header_style")
+	private String ustrHeaderStyle;
+
+	@Column(name="ustr_comp_style")
+	private String ustrCompStyle;
+
+	@Column(name="ustr_item_style")
+	private String ustrItemStyle;
+
 	@Override
 	public String toString() {
 		return "Template Detail Id = " + this.unumTempledtlId

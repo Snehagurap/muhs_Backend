@@ -1,6 +1,7 @@
 package in.cdac.university.globalService.service;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -30,10 +31,9 @@ public class StudentService {
 	public ServiceResponse saveUpdate(@Valid StudentMasterBean studentMasterBean) throws Exception {
 		
         Date d1 = new Date();
-        studentMasterBean.setUdtEntryDate(d1);
-        studentMasterBean.setUdtEffFrom(d1);
         studentMasterBean.setUnumUnivId(RequestUtility.getUniversityId());
         studentMasterBean.setUnumEntryUid(RequestUtility.getUserId());
+        
         
 		if(studentMasterBean.getUnumStudentId() == 1L) { //save
 			studentMasterBean.setUnumStudentId(studentRepository.getNextId());
@@ -55,10 +55,26 @@ public class StudentService {
 		}
 		studentMasterBean.setUnumIsvalid(1);
 		GmstStudentMst gmstStudentMst = BeanUtils.copyProperties(studentMasterBean, GmstStudentMst.class);
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		gmstStudentMst.setUdtStuDob(df.parse(studentMasterBean.getUdtStuDob()));
+		dateFormater(studentMasterBean, gmstStudentMst);
 		studentRepository.save(gmstStudentMst);
 		return ServiceResponse.successObject(studentMasterBean);
+	}
+
+	private void dateFormater(StudentMasterBean studentMasterBean, GmstStudentMst gmstStudentMst) throws ParseException {
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		 Date d1 = new Date();
+		if(studentMasterBean.getUdtEntryDate() != null && (!studentMasterBean.getUdtEntryDate().isEmpty()))
+			gmstStudentMst.setUdtStuDob(df.parse(studentMasterBean.getUdtStuDob()));
+		if(studentMasterBean.getUdtEntryDate() != null  && (!studentMasterBean.getUdtEffFrom().isEmpty()) )
+			gmstStudentMst.setUdtEffFrom(df.parse(studentMasterBean.getUdtEffFrom()));
+		else {
+			gmstStudentMst.setUdtEffFrom(d1);
+		}
+		if(studentMasterBean.getUdtEntryDate() != null  && (!studentMasterBean.getUdtEntryDate().isEmpty()))
+			gmstStudentMst.setUdtEntryDate(df.parse(studentMasterBean.getUdtEntryDate()));
+		else {
+			gmstStudentMst.setUdtEntryDate(d1);
+		}
 	}
 	
 	@Transactional
@@ -77,14 +93,12 @@ public class StudentService {
 		}
 		
         Date d1 = new Date();
-        studentMasterBean.setUdtEntryDate(d1);
-        studentMasterBean.setUdtEffFrom(d1);
+
         studentMasterBean.setUnumUnivId(RequestUtility.getUniversityId());
         studentMasterBean.setUnumEntryUid(RequestUtility.getUserId());
         
 		GmstStudentMst gmstStudentMst = BeanUtils.copyProperties(studentMasterBean, GmstStudentMst.class);
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		gmstStudentMst.setUdtStuDob(df.parse(studentMasterBean.getUdtStuDob()));
+		dateFormater(studentMasterBean, gmstStudentMst);
 		studentRepository.save(gmstStudentMst);
 		return ServiceResponse.successObject(studentMasterBean);
 	}

@@ -1,5 +1,7 @@
 package in.cdac.university.studentWelfare.repository;
 
+import java.util.List;
+
 import javax.validation.constraints.NotNull;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,4 +20,7 @@ public interface GmstSwSavitbpSchemeApplMstRepository extends JpaRepository<Gmst
 
 	GmstSwSavitbpSchemeApplMst findByUnumIsvalidAndUnumStudentIdAndUnumUnivId(int i,
 			@NotNull(message = "Student ID is mandatory") Long unumStudentId, Integer universityId);
+
+
+	List<GmstSwSavitbpSchemeApplMst> findByUnumIsvalidAndUnumUnivIdAndUnumSchemeId(int i, Integer universityId, long l);
 }

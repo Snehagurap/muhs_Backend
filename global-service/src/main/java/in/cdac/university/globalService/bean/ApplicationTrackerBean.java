@@ -108,7 +108,7 @@ public class ApplicationTrackerBean {
 
     private String ustrStateGovtApprovalDocPath;
 
-    private String ustrStateOutnoStategovt;
+    private String ustrStateOutno;
 
     @ListColumn(order = 7, name = "Status", width = "20%")
     private String applicationStatus;

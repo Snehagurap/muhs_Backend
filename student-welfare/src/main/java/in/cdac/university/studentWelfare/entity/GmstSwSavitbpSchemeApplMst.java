@@ -249,7 +249,7 @@ public class GmstSwSavitbpSchemeApplMst {
 	private Date    udtEntryDate;
 
 	@Column(name="unum_lst_mod_uid")
-	private Integer unumLstModUid;
+	private Long unumLstModUid;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="udt_lst_mod_date")
@@ -267,6 +267,9 @@ public class GmstSwSavitbpSchemeApplMst {
 	
 	@Column(name="ustr_academic_year")
 	private String ustrAcademicYear;
+	
+	@Column(name="ustr_enrollment_no")
+	private String	 ustrEnrollmentNo;
 	
 	@Transient 
 	@Column(name="unum_stu_salutation_id")

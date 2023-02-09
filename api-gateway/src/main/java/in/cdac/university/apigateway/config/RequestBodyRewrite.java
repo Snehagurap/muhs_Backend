@@ -47,10 +47,16 @@ public class RequestBodyRewrite implements RewriteFunction<String, String> {
                 }
             }
         } else if(body instanceof ArrayList<?> bodyAsList) {
-            String string = bodyAsList.stream()
-                    .map(String::valueOf)
-                    .collect(Collectors.joining());
-            result.append(string);
+            if (!bodyAsList.isEmpty()) {
+                if (bodyAsList.get(0) instanceof Map<?, ?>) {
+                    bodyAsList.forEach(bodyElementAsMap -> jsonToString(bodyElementAsMap, result));
+                } else {
+                    String string = bodyAsList.stream()
+                            .map(String::valueOf)
+                            .collect(Collectors.joining());
+                    result.append(string);
+                }
+            }
         } else if (body instanceof String bodyAsString) {
             result.append(bodyAsString);
         }

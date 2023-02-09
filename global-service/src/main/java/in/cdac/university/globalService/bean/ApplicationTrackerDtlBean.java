@@ -4,10 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -107,10 +103,8 @@ public class ApplicationTrackerDtlBean {
 
     private Long unumLstModUid;
 
-    @Column(name="unum_out_no")
-    private String unumOutNo;
+    private String ustrOutNo;
 
-    @Column(name="unum_stream_id")
     private Long unumStreamId;
 
     private String ustrApplicationDocNo;

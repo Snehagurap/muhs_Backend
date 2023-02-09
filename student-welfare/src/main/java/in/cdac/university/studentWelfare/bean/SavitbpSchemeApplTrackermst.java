@@ -35,7 +35,7 @@ public class SavitbpSchemeApplTrackermst {
 	
 	private Integer unumUnivId;
 	
-	private Date udtEffFrom;
+	private String udtEffFrom;
 	
 	private Date udtEffTo;
 	
@@ -45,9 +45,9 @@ public class SavitbpSchemeApplTrackermst {
 	
 	private Long unumEntryUid;
 	
-	private Date udtEntryDate;
+	private String udtEntryDate;
 	
-	private Integer unumLstModUid;
+	private Long unumLstModUid;
 	
 	private Date udtLstModDate;
 	
