@@ -444,8 +444,6 @@ public class EmployeeService {
     @Transactional
     public ServiceResponse updateTeacherByCollegeId(EmployeeBean employeeBean) throws Exception {
 
-        System.out.println("employeeBean in service>>" + employeeBean.getUnumEmpId());
-        System.out.println("employeeBean in service>>" + employeeBean.getUstrTPanNo());
         if (employeeBean.getUnumEmpId() == null) {
             return ServiceResponse.errorResponse(language.mandatory("Employee Id"));
         }
@@ -471,7 +469,6 @@ public class EmployeeService {
             employeeBean.getEmployeeProfileBean().setUnumEmpId(employeeBean.getUnumEmpId());
             employeeBean.setEmployeeProfileBean(employeeBean.getEmployeeProfileBean());
 
-            System.out.println("current >>" + employeeBean.getEmployeeProfileBean().getUnumProfileId());
             GmstEmpProfileDtl gmstEmpProfileDtl = BeanUtils.copyProperties(employeeBean.getEmployeeProfileBean(), GmstEmpProfileDtl.class);
             employeeProfileRepository.saveAndFlush(gmstEmpProfileDtl);
         int noOfEmpCurrAffected = employeeCurrentDetailRepository.createLog(List.of(employeeBean.getUnumEmpId()));
@@ -486,7 +483,6 @@ public class EmployeeService {
             employeeBean.getEmployeeCurrentDetailBean().setUnumEmpId(employeeBean.getUnumEmpId());
             employeeBean.setEmployeeCurrentDetailBean(employeeBean.getEmployeeCurrentDetailBean());
 
-            System.out.println("current >>" + employeeBean.getEmployeeCurrentDetailBean().getUnumEmpCurId());
             GmstEmpCurDtl gmstEmpCurDtl = BeanUtils.copyProperties(employeeBean.getEmployeeCurrentDetailBean(), GmstEmpCurDtl.class);
 
            employeeCurrentDetailRepository.saveAndFlush(gmstEmpCurDtl);
