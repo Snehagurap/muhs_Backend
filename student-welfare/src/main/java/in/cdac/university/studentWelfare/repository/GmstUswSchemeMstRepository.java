@@ -11,7 +11,8 @@ import in.cdac.university.studentWelfare.entity.GmstUswSchemeMstPK;
 
 public interface GmstUswSchemeMstRepository extends JpaRepository<GmstUswSchemeMst, GmstUswSchemeMstPK> {
 
-	List<GmstUswSchemeMst> findByUnumIsvalidAndUnumUnivIdAndUnumSchemeId(int i, Integer universityId, Long schemeNo);
+
+	GmstUswSchemeMst findByUnumSchemeIdAndUnumIsvalidAndUnumUnivId(Long schemeNo, int i, Integer universityId);
 
 
 }

@@ -122,7 +122,7 @@ public class GmstUswSchemeMst {
 		private Integer unumUnivId;
 		
 		@Column(name="udt_entry_date")
-		private Long 	udtEntryDate;
+		private Date 	udtEntryDate;
 				
 		@Column(name="unum_entry_uid")
 		private Integer unumEntryUid;
