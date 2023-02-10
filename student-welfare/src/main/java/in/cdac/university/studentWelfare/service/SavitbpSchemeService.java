@@ -4,10 +4,13 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -28,11 +31,13 @@ import in.cdac.university.studentWelfare.bean.ComboBean;
 import in.cdac.university.studentWelfare.bean.SavitbpSchemeApplMstBean;
 import in.cdac.university.studentWelfare.bean.SavitbpSchemeApplTrackerdtlBean;
 import in.cdac.university.studentWelfare.bean.SavitbpSchemeApplTrackermst;
+import in.cdac.university.studentWelfare.bean.SchemeMstBean;
 import in.cdac.university.studentWelfare.entity.GmstSwSavitbpSchemeApplMst;
 import in.cdac.university.studentWelfare.repository.GmstSwSavitbpSchemeApplMstRepository;
 import in.cdac.university.studentWelfare.util.Language;
 import in.cdac.university.studentWelfare.util.ServiceResponse;
 import in.cdac.university.studentWelfare.bean.StudentMasterBean;
+import in.cdac.university.studentWelfare.controller.SchemeMstController;
 
 
 @Service
@@ -62,6 +67,8 @@ public class SavitbpSchemeService implements Serializable {
     @Autowired
     RestUtility restUtility;
     
+	@Autowired
+	private SchemeMstService schemeMstService;
     
 	@Transactional
 	public ServiceResponse saveSavitbpScheme(SavitbpSchemeApplMstBean savitbpschemeapplmstbean) throws Exception {
@@ -277,22 +284,45 @@ public class SavitbpSchemeService implements Serializable {
 		savitbpschemeapplmstbean.setUdtStuDob(df.format(gmstSwSavitbpSchemeApplMst.getUdtStuDob()));
         return ServiceResponse.successObject(savitbpschemeapplmstbean);
 	}
-
+//
 	public List<SavitbpSchemeApplMstBean> getAllStudentForScheme() throws Exception {
 		// TODO Auto-generated method stub
 		List<GmstSwSavitbpSchemeApplMst> gmstSwSavitbpSchemeApplMst = gmstSwSavitbpSchemeApplMstRepository.findByUnumIsvalidAndUnumUnivIdAndUnumSchemeId(1,RequestUtility.getUniversityId(),1L);
-		List<SavitbpSchemeApplMstBean> savitbpSchemeApplMstBean = BeanUtils.copyListProperties(gmstSwSavitbpSchemeApplMst,SavitbpSchemeApplMstBean.class);
+		HashSet<String> enrolledStudent = gmstSwSavitbpSchemeApplMst.stream().map(app -> app.getUstrEnrollmentNo()).collect(Collectors.toCollection(HashSet::new));
+		List<GmstSwSavitbpSchemeApplMst> gmstSwSavitbpSchemeApplMstdraft = gmstSwSavitbpSchemeApplMstRepository.findByUnumIsvalidAndUnumUnivIdAndUnumSchemeId(2,RequestUtility.getUniversityId(),1L);
+		HashSet<String> enrolledStudentDraft = gmstSwSavitbpSchemeApplMstdraft.stream().map(app -> app.getUstrEnrollmentNo()).collect(Collectors.toCollection(HashSet::new));
+		//List<SavitbpSchemeApplMstBean> savitbpSchemeApplMstBean = BeanUtils.copyListProperties(gmstSwSavitbpSchemeApplMst,SavitbpSchemeApplMstBean.class);
+		List<StudentMasterBean> StudentDetails = List.of( restUtility.getOrThrow(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_STUDENT_ALL, StudentMasterBean[].class));
+		SchemeMstBean schemeMstBean = schemeMstService.getStudentDetailsByScheme(1L);
+		List<StudentMasterBean> StudentUpdated = StudentDetails.stream().filter( s-> { 	boolean eligible=true;
+												eligible=schemeMstBean.getUnumGenderSpecific().equals(s.getUnumGenderId());
+												eligible=(schemeMstBean.getUnumBeneficiaryMaxIncome() >= (s.getUnumParentAnnualIncome()));
+												eligible=(schemeMstBean.getUnumNriEligibleFlag() == s.getUnumIsNri()); 
+												eligible=(schemeMstBean.getUnumStipendEarnerEligibleFlag() == s.getUnumIsStipendearner());
+												eligible=(schemeMstBean.getUnumOmsEligibleFlag() == s.getUnumIsOms());
+												eligible=(schemeMstBean.getUnumManagementquotaEligibleFlag() == s.getUnumIsManagementQuota());
+												return eligible;
+		}).collect(Collectors.toList());		
+				
 		Map<String,String>  comboBeanCatMap 	 = List.of( restUtility.getOrThrow(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_STUDENT_CAT, ComboBean[].class)).stream().collect(Collectors.toMap(ComboBean::getKey, ComboBean::getValue));
 		Map<String,String>  comboBeanSubCatMap   = List.of( restUtility.getOrThrow(RestUtility.SERVICE_TYPE.GLOBAL, Constants.URL_GET_STUDENT_SUB_CAT, ComboBean[].class)).stream().collect(Collectors.toMap(ComboBean::getKey, ComboBean::getValue));
 		Map<Integer,String> genderCombo = new HashMap<>();
 		genderCombo.put(1, "Male");
 		genderCombo.put(2, "FeMale");
 		genderCombo.put(3, "Others");
-		for(SavitbpSchemeApplMstBean schemeApplMstBean :savitbpSchemeApplMstBean) {
-			schemeApplMstBean.setUstrStuCatName(comboBeanCatMap.getOrDefault(String.valueOf(schemeApplMstBean.getUnumStuCatId()), ""));
-			schemeApplMstBean.setUstrStuSubCatName(comboBeanSubCatMap.getOrDefault(String.valueOf(schemeApplMstBean.getUnumStuSubCatId()), ""));
-			schemeApplMstBean.setUstrGenderName(genderCombo.getOrDefault(schemeApplMstBean.getUnumGenderId(), ""));
+		//enrolledStudent
+		List<SavitbpSchemeApplMstBean> finalResult = new ArrayList<>();
+		for(StudentMasterBean schemeApplMstBean :StudentUpdated) {
+			SavitbpSchemeApplMstBean StudentMastert = new SavitbpSchemeApplMstBean();
+			StudentMastert.setUstrStuCatName(comboBeanCatMap.getOrDefault(String.valueOf(schemeApplMstBean.getUnumStuCatId()), ""));
+			StudentMastert.setUstrStuSubCatName(comboBeanSubCatMap.getOrDefault(String.valueOf(schemeApplMstBean.getUnumStuSubCatId()), ""));
+			StudentMastert.setUstrGenderName(genderCombo.getOrDefault(schemeApplMstBean.getUnumGenderId(), ""));
+			StudentMastert.setUstrStatus(enrolledStudent.contains(schemeApplMstBean.getUstrEnrollmentNo())?"Enrolled":(enrolledStudentDraft.contains(schemeApplMstBean.getUstrEnrollmentNo())?"Draft":"Not Enrolled"));
+			StudentMastert.setUnumParentAnnualIncome(schemeApplMstBean.getUnumParentAnnualIncome());
+			StudentMastert.setUstrEnrollmentNo(schemeApplMstBean.getUstrEnrollmentNo());
+			StudentMastert.setUstrStudentName(schemeApplMstBean.getUstrStudentFname()+" "+schemeApplMstBean.getUstrStudentLname());
+			finalResult.add(StudentMastert);
 		}
-		return savitbpSchemeApplMstBean;
+		return finalResult;
 	}
 }

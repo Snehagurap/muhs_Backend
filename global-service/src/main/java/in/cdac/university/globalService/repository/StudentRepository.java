@@ -34,4 +34,7 @@ public interface StudentRepository extends JpaRepository<GmstStudentMst, GmstStu
 	GmstStudentMst findByUnumStudentIdAndUnumUnivIdAndUnumIsvalid(
 			@NotNull(message = "Student ID is mandatory") Long unumStudentId, Integer universityId, int i);
 
+
+	List<GmstStudentMst> findByUnumUnivIdAndUnumIsvalid(Integer universityId, int i);
+
 }

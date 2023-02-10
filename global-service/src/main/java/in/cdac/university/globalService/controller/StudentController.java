@@ -50,4 +50,16 @@ public class StudentController {
           return ResponseHandler.generateResponse(
         			studentService.getStudentDetailsDraft(studentEnrollmentNo));
     }
+	
+	@GetMapping("getStudentDetailsByScheme/{schemeNo}")
+    public ResponseEntity<?> getStudentDetailsByScheme(@PathVariable (value = "schemeNo") int schemeNo) throws Exception {
+          return ResponseHandler.generateResponse(
+        			studentService.getStudentDetailsByScheme(schemeNo));
+    }
+	
+	@GetMapping("getAllStudentDetails")
+    public ResponseEntity<?> getAllStudentDetails() throws Exception {
+		return ResponseHandler.generateResponse(
+    			studentService.getAllStudentDetails());
+	}
 }
