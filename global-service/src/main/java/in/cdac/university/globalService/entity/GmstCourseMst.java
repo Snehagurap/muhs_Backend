@@ -130,4 +130,10 @@ public class GmstCourseMst implements Serializable {
 
 	@Column(name="unum_eligible_institute_type")
 	private Integer unumEligibleInstituteType;
+
+	@Column(name = "unum_stream_id")
+	private Long unumStreamId;
+
+	@Column(name = "unum_dept_id")
+	private Integer unumDeptId;
 }

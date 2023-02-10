@@ -104,7 +104,7 @@ public class EmployeeController {
     }
 
     // Put mapping replaced by POST
-@PostMapping("update")
+    @PostMapping("update")
     public ResponseEntity<?> update(@Valid @RequestBody EmployeeBean employeeBean) throws Exception {
         employeeBean.setUdtEntryDate(new Date());
         employeeBean.setUnumUnivId(RequestUtility.getUniversityId());
@@ -115,7 +115,7 @@ public class EmployeeController {
     }
 
     // Delete mapping replaced by POST
-@PostMapping("delete")
+    @PostMapping("delete")
     public ResponseEntity<?> delete(@RequestBody Long[] idsToDelete) throws Exception {
         EmployeeBean employeeBean = new EmployeeBean();
         employeeBean.setUdtEntryDate(new Date());
@@ -158,6 +158,25 @@ public class EmployeeController {
     public ResponseEntity<?> saveAll(@Valid @RequestBody List<EmployeeBean> employeeBeanList) throws Exception {
         return ResponseHandler.generateResponse(
                 employeeService.saveCollegeTeachersDtls(employeeBeanList)
+        );
+    }
+
+    @GetMapping("/getTeachersByCollegeId/{collegeId}")
+    public ResponseEntity<?> getTeachersDetailsByCollegeId(@PathVariable("collegeId") Long collegeId) throws Exception {
+
+            return ResponseHandler.generateOkResponse(
+                    employeeService.getTeacherDetailsByCollegeId(collegeId)
+            );
+
+    }
+    @PostMapping("updateTeacher")
+    public ResponseEntity<?> updateTeacherByCollegeId(@Valid @RequestBody EmployeeBean employeeBean) throws Exception {
+        employeeBean.setUnumEntryUid(RequestUtility.getUserId());
+        employeeBean.setUnumUnivId(RequestUtility.getUniversityId());
+        employeeBean.setUdtEntryDate(new Date());
+        employeeBean.setUnumIsvalid(1);
+        return ResponseHandler.generateResponse(
+                employeeService.updateTeacherByCollegeId(employeeBean)
         );
     }
 }

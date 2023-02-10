@@ -3,6 +3,7 @@ package in.cdac.university.globalService.bean;
 import in.cdac.university.globalService.util.annotations.ComboKey;
 import in.cdac.university.globalService.util.annotations.ComboValue;
 import in.cdac.university.globalService.util.annotations.ListColumn;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -103,4 +105,16 @@ public class EmployeeBean {
     private EmployeeCurrentDetailBean employeeCurrentDetailBean;
 
     private String ustrEmpLName;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EmployeeBean that = (EmployeeBean) o;
+        return Objects.equals(unumEmpId, that.unumEmpId) && Objects.equals(unumIsvalid, that.unumIsvalid) && Objects.equals(deanforpanel, that.deanforpanel) && Objects.equals(lictlPgrecog, that.lictlPgrecog) && Objects.equals(lictlUgapproved, that.lictlUgapproved) && Objects.equals(selectedfor, that.selectedfor) && Objects.equals(selectedforlicId, that.selectedforlicId) &&  Objects.equals(unumDeanforpanel, that.unumDeanforpanel) && Objects.equals(unumEntryUid, that.unumEntryUid) && Objects.equals(unumMobileNo, that.unumMobileNo) && Objects.equals(unumTAppointtypeId, that.unumTAppointtypeId) && Objects.equals(unumTPgrecog, that.unumTPgrecog) && Objects.equals(unumUgapproved, that.unumUgapproved) && Objects.equals(unumUnivId, that.unumUnivId) && Objects.equals(unumWillingnessToWorkOnLic, that.unumWillingnessToWorkOnLic) && Objects.equals(ustrDescription, that.ustrDescription) && Objects.equals(ustrTAppointtype, that.ustrTAppointtype) && Objects.equals(ustrTEmailid, that.ustrTEmailid) && Objects.equals(ustrTPanNo, that.ustrTPanNo) && Objects.equals(ustrEmpName, that.ustrEmpName) && Objects.equals(unumIsexternal, that.unumIsexternal) && Objects.equals(willingnessToWorkOnLic, that.willingnessToWorkOnLic) && Objects.equals(unumDeptId, that.unumDeptId) && Objects.equals(ustrEmpId, that.ustrEmpId) && Objects.equals(unumIsTeacher, that.unumIsTeacher) && Objects.equals(unumIsSelectedfor, that.unumIsSelectedfor) && Objects.equals(unumTotLicChairmanCount, that.unumTotLicChairmanCount) && Objects.equals(unumTotLicMember1Count, that.unumTotLicMember1Count) && Objects.equals(unumTotLicMember2Count, that.unumTotLicMember2Count) && Objects.equals(unumAyLicChairmanCount, that.unumAyLicChairmanCount) && Objects.equals(unumAyLicMember1Count, that.unumAyLicMember1Count) && Objects.equals(unumAyLicMember2Count, that.unumAyLicMember2Count) && Objects.equals(unumIsSelected, that.unumIsSelected) && Objects.equals(employeesToFlag, that.employeesToFlag) && Objects.equals(ustrTAadharNo, that.ustrTAadharNo) && Objects.equals(unumEmpDesigid, that.unumEmpDesigid) && Objects.equals(udtUgJoiningDate, that.udtUgJoiningDate) && Objects.equals(udtPgJoiningDate, that.udtPgJoiningDate) && Objects.equals(unumCollegeId, that.unumCollegeId) && Objects.equals(employeeProfileList, that.employeeProfileList) && Objects.equals(employeeCurrentDetailBeanList, that.employeeCurrentDetailBeanList) && Objects.equals(employeeProfileBean, that.employeeProfileBean) && Objects.equals(employeeCurrentDetailBean, that.employeeCurrentDetailBean) && Objects.equals(ustrEmpLName, that.ustrEmpLName) && Objects.equals(isDisabled, that.isDisabled);
+    }
+
+
+
+    private Boolean isDisabled;
 }

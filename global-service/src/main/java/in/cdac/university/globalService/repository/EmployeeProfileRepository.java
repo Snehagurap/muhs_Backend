@@ -32,4 +32,8 @@ public interface EmployeeProfileRepository extends JpaRepository<GmstEmpProfileD
             "from GmstEmpProfileDtl a where a.unumEmpId = u.unumEmpId and a.unumIsvalid > 2) " +
             "where u.unumEmpId in (:empId) and u.unumIsvalid in (1, 2) ")
     Integer createLog(@Param("empId") List<Long> empId);
+
+    GmstEmpProfileDtl findByUnumEmpIdAndUnumIsvalidAndUnumUnivId(Long unumEmpId, Integer unumIsvalid, Integer unumUnivId);
+
+    List<GmstEmpProfileDtl> findAllByUnumCollegeIdAndUnumIsvalid(Long collegeId, Integer isValid);
 }
