@@ -1,8 +1,8 @@
 package in.cdac.university.globalService.bean;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
@@ -22,6 +22,7 @@ public class StudentMasterBean implements Serializable {
 	/**
 	 * 
 	 */
+	@Serial
 	private static final long serialVersionUID = 1L;
 	
 
@@ -199,5 +200,7 @@ public class StudentMasterBean implements Serializable {
 	private Integer unumFatherSalutationId;
 	
 	private Integer unumMotherSalutationId;
+
+	private CoursePaternYearColStuDtl coursePaternYearColStuDtlBean;
 }
 
