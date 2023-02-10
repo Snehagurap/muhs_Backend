@@ -2,6 +2,7 @@ package in.cdac.university.globalService.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,6 +13,7 @@ import java.util.Date;
 @Entity
 @Table(name="gmst_emp_mst", schema = "university")
 @IdClass(GmstEmpMstPK.class)
+@ToString
 public class GmstEmpMst implements Serializable {
 
 	@Id

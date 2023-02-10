@@ -30,6 +30,8 @@ public interface EmployeeRepository extends JpaRepository<GmstEmpMst, GmstEmpMst
 
     List<GmstEmpMst> findByUnumEmpIdInAndUnumIsvalidInAndUnumUnivId(Collection<Long> unumEmpIds, Collection<Integer> unumIsvalids, Integer unumUnivId);
 
+    List<GmstEmpMst> findByUnumIsvalidInAndUnumUnivIdAndUstrTPanNo(Collection<Integer> isValid,Integer universityId,String panNo);
+
     @Modifying(clearAutomatically = true)
     @Query("update GmstEmpMst u set u.unumIsvalid = (select coalesce(max(a.unumIsvalid), 2) + 1 " +
             "from GmstEmpMst a where a.unumEmpId = u.unumEmpId and a.unumIsvalid > 2) " +
@@ -63,4 +65,7 @@ public interface EmployeeRepository extends JpaRepository<GmstEmpMst, GmstEmpMst
             "where u.unumIsvalid = 1 " +
             "and u.unumEmpId in (:empList) ")
     Integer updateCommitteeSelectionFlag(@Param("empList") List<Long> employeeList);
+
+     GmstEmpMst findByUnumEmpIdAndUnumIsvalidAndUnumUnivId(Long unumEmpId, Integer unumIsvalid, Integer unumUnivId);
+
 }

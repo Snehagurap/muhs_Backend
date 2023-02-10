@@ -34,5 +34,6 @@ public interface EmployeeCurrentDetailRepository extends JpaRepository<GmstEmpCu
     List<GmstEmpCurDtl> findByUnumIsvalidAndUnumUnivId(Integer unumIsvalid, Integer unumUnivId);
 
 
+    GmstEmpCurDtl findByUnumEmpIdAndUnumIsvalidAndUnumUnivId(Long unumEmpId, Integer unumIsvalid, Integer unumUnivId);
 }
 

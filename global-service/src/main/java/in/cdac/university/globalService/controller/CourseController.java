@@ -89,4 +89,16 @@ public class CourseController {
                 ComboUtility.generateComboData(courseService.getMinReqCourseByCourseType(courseTypeIds))
         );
     }
+
+    //get course combo on the basis of course type,facultyId,stream and department
+
+    @GetMapping("courseCombo/{courseTypeId}/{facultyId}/{streamId}/{deptId}")
+    public ResponseEntity<?> GetCourses(@PathVariable("courseTypeId") Integer courseTypeId,
+                                        @PathVariable("facultyId") Integer facultyId,
+                                        @PathVariable("streamId") Long streamId,
+                                        @PathVariable("deptId") Integer deptId) throws Exception {
+        return ResponseHandler.generateOkResponse(
+                ComboUtility.generateComboData(courseService.getCourses(courseTypeId,facultyId,streamId,deptId))
+        );
+    }
 }

@@ -3,9 +3,7 @@ package in.cdac.university.globalService.service;
 
 
 import in.cdac.university.globalService.bean.*;
-import in.cdac.university.globalService.entity.GmstEmpCurDtl;
-import in.cdac.university.globalService.entity.GmstEmpMst;
-import in.cdac.university.globalService.entity.GmstEmpProfileDtl;
+import in.cdac.university.globalService.entity.*;
 import in.cdac.university.globalService.exception.ApplicationException;
 import in.cdac.university.globalService.repository.EmployeeCurrentDetailRepository;
 import in.cdac.university.globalService.repository.EmployeeProfileRepository;
@@ -70,6 +68,14 @@ public class EmployeeService {
 
     @Transactional
     public ServiceResponse save(EmployeeBean employeeBean) {
+
+        //for duplicate
+        List<GmstEmpMst> empMstList = employeeRepository.findByUnumIsvalidInAndUnumUnivIdAndUstrTPanNo(
+                List.of(1, 2), employeeBean.getUnumUnivId(), employeeBean.getUstrTPanNo()
+        );
+        if (!empMstList.isEmpty()) {
+            return ServiceResponse.errorResponse(language.duplicate("Employee", employeeBean.getUstrTPanNo()));
+        }
         GmstEmpMst gmstEmpMst = BeanUtils.copyProperties(employeeBean, GmstEmpMst.class);
         Long empID = employeeRepository.getNextId();
         gmstEmpMst.setUnumEmpId(empID);
@@ -79,6 +85,7 @@ public class EmployeeService {
         if(employeeProfileBeanList != null && employeeProfileBeanList.size()>0){
             Long maxEmpProfileId = employeeProfileRepository.getMaxEmpProfileId(empID);
             for(EmployeeProfileBean employeeProfileBean :employeeProfileBeanList) {
+
                 GmstEmpProfileDtl gmstEmpProfileDtl = BeanUtils.copyProperties(employeeProfileBean, GmstEmpProfileDtl.class);
                 gmstEmpProfileDtl.setUnumEmpId(empID);
                 maxEmpProfileId++;
@@ -259,7 +266,7 @@ public class EmployeeService {
         List<GmstEmpCurDtl> gmstEmpCurDtlList = employeeCurrentDetailRepository.findByUnumEmpIdInAndUnumIsvalidInAndUnumUnivId(
                 List.of(idsToDelete),  List.of(1, 2), employeeBean.getUnumUnivId()
         );
-
+        System.out.println("gmstEmpCurDtlList>>"+gmstEmpCurDtlList.size());
         if(gmstEmpCurDtlList.isEmpty()) {
             return ServiceResponse.errorResponse(language.notFoundForId("Teacher", Arrays.toString(idsToDelete)));
         }
@@ -342,6 +349,13 @@ public class EmployeeService {
 
 
                 for(EmployeeBean employeeBean1 : employeeBeanList) {
+                    //for duplicate
+                    List<GmstEmpMst> empMstList = employeeRepository.findByUnumIsvalidInAndUnumUnivIdAndUstrTPanNo(
+                            List.of(1, 2), employeeBean1.getUnumUnivId(), employeeBean1.getUstrTPanNo()
+                    );
+                    if (!empMstList.isEmpty()) {
+                        return ServiceResponse.errorResponse(language.duplicate("Employee", employeeBean1.getUstrTPanNo()));
+                    }
                     maxEmpId  = employeeRepository.getNextId();
                     gmstEmpMst = BeanUtils.copyProperties(employeeBean1, GmstEmpMst.class);
                     gmstEmpMst.setUnumEmpId(maxEmpId);
@@ -395,4 +409,92 @@ public class EmployeeService {
 
         return ServiceResponse.successMessage(language.saveSuccess("College teachers details"));
     }
+
+    @Transactional
+    public List<EmployeeBean> getTeacherDetailsByCollegeId(Long collegeId) {
+        List<GmstEmpProfileDtl> gmstEmpProfileDtlList = employeeProfileRepository.findAllByUnumCollegeIdAndUnumIsvalid(collegeId,1);
+        List<EmployeeBean> employeeBeanList = new ArrayList<>();
+
+         if(!gmstEmpProfileDtlList.isEmpty()){
+
+             for(GmstEmpProfileDtl gmstEmpProfileDtl : gmstEmpProfileDtlList){
+                 if(gmstEmpProfileDtl != null){
+                 EmployeeProfileBean employeeProfileBean = BeanUtils.copyProperties(gmstEmpProfileDtl, EmployeeProfileBean.class);
+
+                     GmstEmpMst gmstEmpMst = employeeRepository.findByUnumEmpIdAndUnumIsvalidAndUnumUnivId(employeeProfileBean.getUnumEmpId()
+                             ,employeeProfileBean.getUnumIsvalid(),employeeProfileBean.getUnumUnivId());
+                     if(gmstEmpMst != null){
+                         EmployeeBean employeeBean = BeanUtils.copyProperties(gmstEmpMst, EmployeeBean.class);
+                         GmstEmpCurDtl gmstEmpCurDtl = employeeCurrentDetailRepository.findByUnumEmpIdAndUnumIsvalidAndUnumUnivId(employeeBean.getUnumEmpId(),
+                                 employeeBean.getUnumIsvalid(),employeeBean.getUnumUnivId());
+                         EmployeeCurrentDetailBean employeeCurrentDetailBean = BeanUtils.copyProperties(gmstEmpCurDtl, EmployeeCurrentDetailBean.class);
+                         employeeBean.setEmployeeProfileBean(employeeProfileBean);
+                         employeeBean.setEmployeeCurrentDetailBean(employeeCurrentDetailBean);
+                         employeeBean.setIsDisabled(true);
+                         employeeBeanList.add(employeeBean);
+                     }
+
+                 }
+             }
+
+         }
+     return employeeBeanList;
+    }
+
+    @Transactional
+    public ServiceResponse updateTeacherByCollegeId(EmployeeBean employeeBean) throws Exception {
+
+        System.out.println("employeeBean in service>>" + employeeBean.getUnumEmpId());
+        System.out.println("employeeBean in service>>" + employeeBean.getUstrTPanNo());
+        if (employeeBean.getUnumEmpId() == null) {
+            return ServiceResponse.errorResponse(language.mandatory("Employee Id"));
+        }
+
+
+        //create log
+        int noOfEmpAffected = employeeRepository.createLog(List.of(employeeBean.getUnumEmpId()));
+            if (noOfEmpAffected == 0) {
+                throw new ApplicationException(language.notFoundForId("Teacher Id", employeeBean.getUnumEmpId()));
+            }
+            GmstEmpMst gmstEmpMst = BeanUtils.copyProperties(employeeBean, GmstEmpMst.class);
+            employeeRepository.saveAndFlush(gmstEmpMst);
+
+        int noOfEmpProfileAffected = employeeProfileRepository.createLog(List.of(employeeBean.getUnumEmpId()));
+            if (noOfEmpProfileAffected == 0) {
+                throw new ApplicationException(language.updateError("Teacher"));
+            }
+            //save record
+            employeeBean.getEmployeeProfileBean().setUdtEntryDate(new Date());
+            employeeBean.getEmployeeProfileBean().setUnumIsvalid(1);
+            employeeBean.getEmployeeProfileBean().setUnumEntryUid(RequestUtility.getUserId());
+            employeeBean.getEmployeeProfileBean().setUnumUnivId(RequestUtility.getUniversityId());
+            employeeBean.getEmployeeProfileBean().setUnumEmpId(employeeBean.getUnumEmpId());
+            employeeBean.setEmployeeProfileBean(employeeBean.getEmployeeProfileBean());
+
+            System.out.println("current >>" + employeeBean.getEmployeeProfileBean().getUnumProfileId());
+            GmstEmpProfileDtl gmstEmpProfileDtl = BeanUtils.copyProperties(employeeBean.getEmployeeProfileBean(), GmstEmpProfileDtl.class);
+            employeeProfileRepository.saveAndFlush(gmstEmpProfileDtl);
+        int noOfEmpCurrAffected = employeeCurrentDetailRepository.createLog(List.of(employeeBean.getUnumEmpId()));
+            if (noOfEmpCurrAffected == 0) {
+                throw new ApplicationException(language.updateError("Teacher"));
+            }
+
+            employeeBean.getEmployeeCurrentDetailBean().setUdtEntryDate(new Date());
+            employeeBean.getEmployeeCurrentDetailBean().setUnumIsvalid(1);
+            employeeBean.getEmployeeCurrentDetailBean().setUnumEntryUid(RequestUtility.getUserId());
+            employeeBean.getEmployeeCurrentDetailBean().setUnumUnivId(RequestUtility.getUniversityId());
+            employeeBean.getEmployeeCurrentDetailBean().setUnumEmpId(employeeBean.getUnumEmpId());
+            employeeBean.setEmployeeCurrentDetailBean(employeeBean.getEmployeeCurrentDetailBean());
+
+            System.out.println("current >>" + employeeBean.getEmployeeCurrentDetailBean().getUnumEmpCurId());
+            GmstEmpCurDtl gmstEmpCurDtl = BeanUtils.copyProperties(employeeBean.getEmployeeCurrentDetailBean(), GmstEmpCurDtl.class);
+
+           employeeCurrentDetailRepository.saveAndFlush(gmstEmpCurDtl);
+
+        return ServiceResponse.builder()
+                .status(1)
+                .message(language.updateSuccess("Teacher Details"))
+                .build();
+    }
+
 }

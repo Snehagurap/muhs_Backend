@@ -32,6 +32,7 @@ public class RequestBodyRewrite implements RewriteFunction<String, String> {
 
     private void jsonToString(Object body, StringBuilder result) {
         if (body instanceof Map<?, ?> bodyAsMap) {
+            System.out.println("body in map>>"+ body);
             for (Object key: bodyAsMap.keySet()) {
                 Object value = bodyAsMap.get(key);
                 if (value instanceof String valueAsString) {

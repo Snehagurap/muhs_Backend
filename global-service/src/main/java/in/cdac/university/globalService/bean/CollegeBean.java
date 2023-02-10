@@ -37,7 +37,7 @@ public class CollegeBean {
     //  @NotNull(message = "CCTV Status is mandatory")
     private Integer unumCctvStatus;
 
-    @Pattern(regexp = "[0-9,/-]+", message = "Contact No. is invalid")
+    //@Pattern(regexp = "[0-9,/-]+", message = "Contact No. is invalid")
     @Length(max = 100, message = "Contact No. can contain maximum of 100 digits")
     @NotBlank(message = "Contact No. is mandatory")
     private String unumContactnumber1;
@@ -47,7 +47,7 @@ public class CollegeBean {
     private Long unumContactnumber4;
     private Long unumContactnumber5;
 
-    @NotNull(message = "District is mandatory")
+   // @NotNull(message = "District is mandatory")
     private Integer unumDistrictId;
 
     private Long unumEntryUid;
@@ -58,14 +58,14 @@ public class CollegeBean {
     //  @NotNull(message = "NKN availability status is mandatory")
     private Integer unumNknconnectivityStatus;
 
-    @NotNull(message = "Pincode is mandatory")
+   // @NotNull(message = "Pincode is mandatory")
     @Length(min = 6, max = 6, message = "Pincode must be of 6 digits")
     private String unumPincode;
 
     private Integer unumPresentAffStatusId;
     private Integer unumRegionid;
 
-    @NotNull(message = "State is mandatory")
+    //@NotNull(message = "State is mandatory")
     private Integer unumStateId;
 
     @Range(min = 0, max = 999999, message = "No of Adhoc Teachers should be less than 999999")

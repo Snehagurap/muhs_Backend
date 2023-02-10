@@ -179,4 +179,11 @@ public class CourseService {
                         courseTypeId, 1, RequestUtility.getUniversityId()), CourseBean.class
         );
     }
+
+    public List<CourseBean> getCourses(Integer courseTypeId, Integer facultyId, Long streamId, Integer deptId) throws Exception {
+        return BeanUtils.copyListProperties(
+                courseRepository.findByUnumCtypeIdAndUnumCfacultyIdAndUnumStreamIdAndUnumDeptIdAndUnumIsvalidAndUnumUnivId(
+                        courseTypeId, facultyId, streamId, deptId,RequestUtility.getUniversityId(),1), CourseBean.class
+        );
+    }
 }
