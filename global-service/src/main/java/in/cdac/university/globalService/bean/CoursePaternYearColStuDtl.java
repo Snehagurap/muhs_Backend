@@ -53,4 +53,10 @@ public class CoursePaternYearColStuDtl {
 	
 	private String	ustrPassingMarksheetPath;
 
+	private String  ustrAcademicYear;
+
+	private Date udtPossibleCourseCompletionDate;
+
+	private Integer unumPresentYearId;
+
 }
