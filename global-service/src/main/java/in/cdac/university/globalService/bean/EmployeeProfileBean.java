@@ -1,12 +1,11 @@
 package in.cdac.university.globalService.bean;
 
-import lombok.EqualsAndHashCode;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
 import java.util.Date;
-import java.util.Objects;
+
 
 @Getter
 @Setter
@@ -29,12 +28,6 @@ public class EmployeeProfileBean {
 
     private Long unumStreamId;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        EmployeeProfileBean that = (EmployeeProfileBean) o;
-        return Objects.equals(unumProfileId, that.unumProfileId) && Objects.equals(unumIsvalid, that.unumIsvalid) && Objects.equals(unumCollegeId, that.unumCollegeId) && Objects.equals(unumEntryUid, that.unumEntryUid) && Objects.equals(unumFacultyId, that.unumFacultyId) && Objects.equals(unumCourseId, that.unumCourseId) && Objects.equals(unumSubId, that.unumSubId) && Objects.equals(unumEmpId, that.unumEmpId) && Objects.equals(unumUnivId, that.unumUnivId) && Objects.equals(ustrDescription, that.ustrDescription) && Objects.equals(unumStreamId, that.unumStreamId);
-    }
+    private Integer unumCourseTypeId;
 
 }
