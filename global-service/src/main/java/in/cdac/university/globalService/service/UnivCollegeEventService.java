@@ -1,7 +1,5 @@
 package in.cdac.university.globalService.service;
 
-import in.cdac.university.globalService.bean.ComboBean;
-import in.cdac.university.globalService.bean.FacultyBean;
 import in.cdac.university.globalService.bean.UnivCollegeEventBean;
 import in.cdac.university.globalService.repository.UnivCollegeEventRespository;
 import in.cdac.university.globalService.util.BeanUtils;
