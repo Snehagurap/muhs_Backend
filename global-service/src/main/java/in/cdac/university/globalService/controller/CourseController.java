@@ -101,4 +101,14 @@ public class CourseController {
                 ComboUtility.generateComboData(courseService.getCourses(courseTypeId,facultyId,streamId,deptId))
         );
     }
+
+    //get course combo on the basis of faculty and stream
+    @GetMapping("courseCombo/{facultyId}/{streamId}")
+    public ResponseEntity<?> getCoursesByFacultyIdAndStreamId(@PathVariable("facultyId") Integer facultyId,
+                                                              @PathVariable("streamId") Long streamId) throws Exception {
+        return ResponseHandler.generateOkResponse(
+                ComboUtility.generateComboData(courseService.getCoursesByFacultyIdAndStreamId(facultyId,streamId))
+        );
+    }
+
 }

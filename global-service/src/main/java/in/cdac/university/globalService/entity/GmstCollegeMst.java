@@ -231,6 +231,12 @@ public class GmstCollegeMst implements Serializable {
     @Column(name = "unum_female_hostel_rooms")
     private Integer unumFemaleHostelRooms;
 
+    @Column(name = "ustr_principal_name")
+    private String ustrPrincipalName;
+
+    @Column(name = "unum_principal_emp_id")
+    private Long unumPrincipalEmpId;
+
     @Formula("(select t.ustr_region_fname from university.gmst_region_mst t where t.unum_region_id = unum_regionid)")
     private String regionName;
 }

@@ -60,6 +60,7 @@ public class CollegeController {
         collegeBean.setUdtEffFrom(new Date());
         collegeBean.setUnumUnivId(RequestUtility.getUniversityId());
         collegeBean.setUnumEntryUid(RequestUtility.getUserId());
+
         return ResponseHandler.generateResponse(
                 collegeService.update(collegeBean)
         );

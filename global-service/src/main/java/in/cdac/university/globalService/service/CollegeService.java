@@ -1,12 +1,13 @@
 package in.cdac.university.globalService.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import in.cdac.university.globalService.bean.CollegeBean;
 import in.cdac.university.globalService.bean.DistrictBean;
+import in.cdac.university.globalService.bean.FtpBean;
 import in.cdac.university.globalService.entity.GmstCollegeMst;
 import in.cdac.university.globalService.exception.ApplicationException;
 import in.cdac.university.globalService.repository.CollegeRepository;
 import in.cdac.university.globalService.util.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class CollegeService {
 
     @Autowired
@@ -118,9 +120,18 @@ public class CollegeService {
         }
 
         if (collegeBean.getUstrLogo1() != null && !collegeBean.getUstrLogo1().isBlank()) {
-            boolean isFileMoved = ftpUtility.moveFileFromTempToFinalDirectory(collegeBean.getUstrLogo1());
-            if (!isFileMoved) {
-                throw new ApplicationException("Unable to upload file");
+
+            // Save the file to permanent location on FTP
+            // Check if file exists in final directory
+            boolean isFileExists = ftpUtility.isFileExists(collegeBean.getUstrLogo1());
+            log.debug("Is File exists {}", isFileExists);
+            if (!isFileExists) {
+                // File already exists in final directory no need to move
+                log.debug("Moving file to final location");
+                boolean isFileMoved = ftpUtility.moveFileFromTempToFinalDirectory(collegeBean.getUstrLogo1());
+                if (!isFileMoved) {
+                    throw new ApplicationException("Unable to upload file");
+                }
             }
         }
         // Save new Data

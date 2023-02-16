@@ -186,4 +186,10 @@ public class CourseService {
                         courseTypeId, facultyId, streamId, deptId,RequestUtility.getUniversityId(),1), CourseBean.class
         );
     }
+
+    public List<CourseBean> getCoursesByFacultyIdAndStreamId(Integer facultyId, Long streamId) throws Exception {
+        return BeanUtils.copyListProperties(
+                courseRepository.findByUnumCfacultyIdAndUnumStreamIdAndUnumIsvalidAndUnumUnivId(facultyId,streamId,1,RequestUtility.getUniversityId()),CourseBean.class
+        );
+    }
 }
