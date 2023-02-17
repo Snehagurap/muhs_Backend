@@ -174,5 +174,7 @@ public class CollegeBean {
 
     private Integer unumFemaleHostelRooms;
 
+    private Long unumApplicantId;
+
 
 }
